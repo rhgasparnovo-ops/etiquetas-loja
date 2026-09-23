@@ -156,7 +156,21 @@
   
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1.1; }
+  /* LINHA ÚNICA BLINDADA PARA ORIGEM / CAT / CAL */
+  .fruit-info { 
+    font-size: 8.5px; 
+    text-transform: uppercase; 
+    font-weight: 800; 
+    color: #084298; 
+    display: none; 
+    line-height: 1; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    max-width: 98%; 
+    letter-spacing: -0.2px;
+  }
+
   .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
@@ -328,7 +342,7 @@
       <label for="product">Produto / Variedade</label>
       <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL">
 
-      <!-- DETALHES DE ORIGEM / CAT / CALIBRE (SEMPRE DISPONÍVEL EM FORMATOS GRANDES) -->
+      <!-- DETALHES DE ORIGEM / CAT / CALIBRE -->
       <div class="fruit-panel" id="fruitPanel">
         <h4>🍎 Origem, Categoria e Calibre</h4>
         <div class="size-row-3">
@@ -503,7 +517,7 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               
-              <!-- BLOCO DE PREÇO COM DESCONTO POTENCIADO -->
+              <!-- BLOCO DE PREÇO -->
               <div class="price-wrapper" id="cardPriceWrapper">
                 <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
                   <span class="old-price" id="cardOldPrice"></span>
@@ -515,6 +529,8 @@
               <div id="cardUnitPrice" style="font-size:8px; color:#555; display:none; font-weight:bold; line-height:1;"></div>
               <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7px; font-weight:900;" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="font-size:8px; color:#333; display:none; line-height:1;"></div>
+              
+              <!-- LINHA ÚNICA GARANTIDA -->
               <div class="fruit-info" id="cardFruit"></div>
             </div>
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
@@ -789,6 +805,7 @@ function updateCard() {
   const dims = getDimensions();
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
+  const showOrientation = isLargeFormat(formatVal);
 
   const card = $("mainLabelCard");
   if (isAmanhecer) {
@@ -809,7 +826,6 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
-  // ESCALAS TIPOGRÁFICAS POTENCIADAS PARA FORMATOS GRANDES
   if (isLarge) {
     $("cardProduct").style.fontSize = (formatVal === "A5") ? "32px" : "26px";
     $("cardPrice").style.fontSize = (formatVal === "A5") ? "68px" : "54px";
@@ -834,7 +850,6 @@ function updateCard() {
     $("cardCode").style.display = "none";
   }
 
-  // PREÇOS E PROMOÇÃO
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
     
@@ -878,7 +893,7 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // ORIGEM / CATEGORIA / CALIBRE (SEMPRE EM DESTAQUE NOS GRANDES OU QUANDO PREENCHIDO)
+  // ORIGEM / CAT / CAL - LINHA ÚNICA
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
@@ -890,13 +905,12 @@ function updateCard() {
   if (parts.length > 0) {
     $("cardFruit").style.display = "block";
     $("cardFruit").textContent = parts.join(" | ");
-    $("cardFruit").style.fontSize = isLarge ? "15px" : "9.5px";
+    $("cardFruit").style.fontSize = isLarge ? "13px" : "8.5px";
     $("cardFruit").style.marginTop = isLarge ? "4px" : "1px";
   } else {
     $("cardFruit").style.display = "none";
   }
 
-  // TAXA VOLTA
   const depositSelect = $("depositFeeSelect").value;
   let depositVal = "";
   if (depositSelect === "custom") {
@@ -924,7 +938,6 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
-  // FOTOGRAFIA
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
   if (activePhoto) {
     $("cardPhotoBox").style.display = "flex";
@@ -933,7 +946,6 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
-  // CÓDIGO DE BARRAS
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -958,7 +970,7 @@ function updateOrientationVisibility() {
   if (show) {
     orientBox.style.display = "block";
     row.style.gridTemplateColumns = "1fr 1fr";
-    $("fruitPanel").style.display = "block"; // Disponibiliza sempre Origem/Cat/Calibre nos grandes
+    $("fruitPanel").style.display = "block";
   } else {
     orientBox.style.display = "none";
     row.style.gridTemplateColumns = "1fr";
@@ -966,12 +978,9 @@ function updateOrientationVisibility() {
   }
 }
 
-// EVENTOS
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isCustom = (val === "custom");
-  const isLarge = isLargeFormat(val);
-  
   $("customDimensionsRow").style.display = isCustom ? "grid" : "none";
   
   if (val === "amanhecer") {
