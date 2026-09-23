@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Etiquetas de Preço Profissional</title>
+<title>Gerador de Etiquetas de Preço - Balcão Agrícola</title>
 <style>
   :root { 
     --red:#c8102e; 
@@ -15,9 +15,44 @@
   }
   * { box-sizing:border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f2f3f5; color:var(--dark); }
-  .app { max-width:1200px; margin:0 auto; padding:24px; }
-  h1 { margin:0 0 6px; font-size:28px; }
-  .subtitle { margin:0 0 22px; color:#666; }
+  .app { max-width:1200px; margin:0 auto; padding:20px; }
+  
+  /* TOPO PRINCIPAL COM NOME DA EMPRESA E LOGOS */
+  .top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 3px 12px #0000000a;
+    margin-bottom: 22px;
+    gap: 16px;
+  }
+  .top-header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--dark);
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .top-logos {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .top-logos img {
+    height: 44px;
+    max-width: 140px;
+    object-fit: contain;
+  }
+  .top-logos .divider {
+    width: 1px;
+    height: 32px;
+    background: #e0e0e0;
+  }
+
   .grid { display:grid; grid-template-columns:360px 1fr; gap:24px; align-items:start; }
   .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 3px 12px #0000000d; }
   label { display:block; font-weight:700; margin:14px 0 6px; }
@@ -72,7 +107,7 @@
 
   .store-text, .item-code, .product, .price, .unit-price, .unit, .fruit-info, .ean-text, .promo-text, .print-date { margin: 0; padding: 0; font-weight: bold; color: #000; }
   .store-text { white-space: nowrap; text-align: right; text-transform: uppercase; font-size: 11px; line-height: 1; }
-  .item-code { white-space: nowrap; text-align: center; font-size: 8px; color: #333; text-transform: uppercase; letter-spacing: 0.5px; }
+  .item-code { white-space: nowrap; text-align: center; font-size: 9px; color: #444; letter-spacing: 0.5px; }
   .product { white-space: normal; word-break: break-word; text-align: center; font-size: 10px; line-height: 1.05; } 
   .price { white-space: nowrap; text-align: center; display: flex; align-items: baseline; justify-content: center; font-size: 18px; line-height: 1; }
   .unit-price { white-space: nowrap; text-align: center; color: #555; font-size: 8.5px; }
@@ -92,7 +127,7 @@
   }
   .f125-header { flex: 0 0 15%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
   .f125-main { flex: 1 1 auto; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
-  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; }
+  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 2px; }
   .f125-right { flex: 0.7; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
   .f125-right img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .f125-product { font-size: 22px; font-weight: bold; text-align: center; line-height: 1.1; word-break: break-word; }
@@ -106,8 +141,8 @@
     width: 105mm; height: 148mm;
   }
   .a6-header { flex: 0 0 14%; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
-  .a6-main { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 8px; }
-  .a6-product { flex: 0 0 15%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; text-align: center; line-height: 1.1; }
+  .a6-main { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 6px; }
+  .a6-product { flex: 0 0 14%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; text-align: center; line-height: 1.1; }
   .a6-image-box { flex: 0 0 35%; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
   .a6-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .a6-dual-price { flex: 0 0 26%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
@@ -123,7 +158,11 @@
 
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  @media(max-width:850px){ .grid{grid-template-columns:1fr;} .preview-wrap{min-height:400px;} }
+  @media(max-width:850px){ 
+    .top-header { flex-direction: column; align-items: flex-start; }
+    .grid { grid-template-columns:1fr; } 
+    .preview-wrap { min-height:400px; } 
+  }
   
   @media print {
     @page { margin: 0; size: auto; }
@@ -169,8 +208,15 @@
 </head>
 <body>
 <div class="app">
-  <h1>Gerador de Etiquetas de Preço</h1>
-  <p class="subtitle">Sistema Completo Mestre (Amanhecer + Fruta + Tabuleta A6)</p>
+  <!-- CABEÇALHO PROFISSIONAL COM EMPRESA E LOGOS -->
+  <header class="top-header">
+    <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
+    <div class="top-logos">
+      <img src="https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000" alt="Balcão Agrícola">
+      <div class="divider"></div>
+      <img src="https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000" alt="Amanhecer">
+    </div>
+  </header>
 
   <div class="grid">
     <section class="panel">
@@ -192,11 +238,11 @@
         <option value="GARCIA">GARCIA</option>
       </select>
       
-      <label for="internalCode">Código Interno (ART.)</label>
-      <input id="internalCode" type="text" value="DR058860" placeholder="Ex.: DR058860">
+      <label for="internalCode">Código Interno</label>
+      <input id="internalCode" type="text" placeholder="Ex.: DR058860">
 
       <label for="product">Produto</label>
-      <input id="product" type="text" value="Maçã Gala" placeholder="Ex.: Maçã Gala">
+      <input id="product" type="text" placeholder="Nome do produto">
 
       <!-- SECÇÃO EXCLUSIVA DE FRUTARIA -->
       <div class="fruit-panel" id="fruitPanel">
@@ -204,20 +250,20 @@
         <div class="size-row-3">
           <div>
             <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
-            <input id="origem" type="text" value="PORTUGAL">
+            <input id="origem" type="text" placeholder="Ex.: Portugal">
           </div>
           <div>
             <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
-            <input id="categoria" type="text" value="I">
+            <input id="categoria" type="text" placeholder="Ex.: I">
           </div>
           <div>
             <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
-            <input id="calibre" type="text" value="65/70">
+            <input id="calibre" type="text" placeholder="Ex.: 65/70">
           </div>
         </div>
         <div id="bulkPriceContainer" style="display:none;">
           <label for="bulkPrice" style="font-size:11px; margin-top:8px;">Preço Promocional p/ Quantidade (€) (A partir de 2 kg)</label>
-          <input id="bulkPrice" type="number" min="0" step="0.01" value="1.59" placeholder="Ex: 1.59">
+          <input id="bulkPrice" type="number" min="0" step="0.01" placeholder="Ex.: 1.59">
           <label for="bulkLabel" style="font-size:11px; margin-top:8px;">Descrição da Quantidade</label>
           <input id="bulkLabel" type="text" value="A partir de 2 KG">
         </div>
@@ -225,20 +271,20 @@
 
       <div id="standardPricePanel">
         <label for="price">Preço da Embalagem / KG (€)</label>
-        <input id="price" type="number" min="0" step="0.01" value="1.89">
+        <input id="price" type="number" min="0" step="0.01" placeholder="0.00">
         
         <div class="size-row">
           <div>
-            <label for="capacity">Quantidade Exata</label>
+            <label for="capacity">Quantidade</label>
             <input id="capacity" type="number" min="0.001" step="0.001" value="1">
           </div>
           <div>
             <label for="capacityUnit">Unidade</label>
             <select id="capacityUnit">
-              <option value="g">Gramas (g) -> €/KG</option>
               <option value="kg" selected>Quilos (KG) -> €/KG</option>
-              <option value="ml">Mililitros (ml) -> €/LT</option>
+              <option value="g">Gramas (g) -> €/KG</option>
               <option value="lt">Litros (LT) -> €/LT</option>
+              <option value="ml">Mililitros (ml) -> €/LT</option>
               <option value="un">Unidades (UN) -> €/UN</option>
               <option value="peso">⚖️ Venda ao Peso (Só €/KG)</option>
             </select>
@@ -248,7 +294,6 @@
         <label for="depositFeeSelect">Taxa de Garrafa / Vasilhame</label>
         <select id="depositFeeSelect" style="margin-bottom: 6px;">
           <option value="" selected>Nenhuma (Sem taxa)</option>
-          <option value="+0,10 € (Inclui tara)">+0,10 € (Inclui tara)</option>
           <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
           <option value="custom">Outro valor...</option>
         </select>
@@ -463,12 +508,11 @@ function updateLabel() {
   const is125x80 = formatVal === "125x80";
   
   const storeVal = $("store").value;
-  const productVal = $("product").value.trim() || "Nome do produto";
-  const codeVal = $("internalCode").value.trim() ? "ART. " + $("internalCode").value.trim() : "";
-  const codeRaw = $("internalCode").value.trim();
+  const productVal = $("product").value.trim() || "";
+  const codeVal = $("internalCode").value.trim();
   const printDateStr = getPrintDateStr();
   const ean = onlyDigits($("ean").value);
-  const barcodeVal = codeRaw || ean || "5601227849374";
+  const barcodeVal = codeVal || ean || "";
 
   const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
   const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
@@ -476,10 +520,13 @@ function updateLabel() {
   previewWrap.innerHTML = "";
 
   if (isA6) {
-    const price = Number($("price")?.value || 1.89);
-    const priceFormatted = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
-    const bulkPrice = Number($("bulkPrice").value);
-    const bulkPriceFormatted = Number.isFinite(bulkPrice) && bulkPrice > 0 ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const rawPrice = $("price")?.value;
+    const price = Number(rawPrice);
+    const priceFormatted = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    
+    const rawBulk = $("bulkPrice").value;
+    const bulkPrice = Number(rawBulk);
+    const bulkPriceFormatted = (rawBulk !== "" && Number.isFinite(bulkPrice) && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
     const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
 
     const origemVal = $("origem").value.trim();
@@ -497,7 +544,7 @@ function updateLabel() {
     let dualPriceHTML = `
       <div class="a6-price-normal">
         <div class="price-label">Preço por KG</div>
-        <div class="price-main">${priceFormatted} <span style="font-size:0.6em; color:#444;">€/KG</span></div>
+        <div class="price-main">${priceFormatted ? priceFormatted + ' <span style="font-size:0.6em; color:#444;">€/KG</span>' : '—'}</div>
       </div>
     `;
 
@@ -515,14 +562,14 @@ function updateLabel() {
         <div class="logo-wrapper-1">${logo1HTML}</div>
         <div class="logo-wrapper-2">${logo2HTML}</div>
         <div class="header-store-container">
-          <div style="display:flex; flex-direction:column; align-items:flex-end;">
-            <div style="font-size:11px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
-            <div class="store-text">${storeVal}</div>
-          </div>
+          <div class="store-text">${storeVal}</div>
         </div>
       </div>
       <div class="a6-main">
-        <div class="a6-product">${productVal}</div>
+        <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;">
+          <div style="font-size:12px; font-weight:bold; color:#444; text-align:center; min-height:14px;">${codeVal}</div>
+          <div class="a6-product">${productVal}</div>
+        </div>
         <div class="a6-image-box" style="display:${globalPhotoData ? 'flex' : 'none'};">
           <img src="${globalPhotoData}" alt="Foto">
         </div>
@@ -542,8 +589,10 @@ function updateLabel() {
     drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
 
   } else if (is125x80) {
-    const price = Number($("price")?.value || 1.89);
-    const priceFormatted = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+    const rawPrice = $("price")?.value;
+    const price = Number(rawPrice);
+    const priceFormatted = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    
     const origemVal = $("origem").value.trim();
     const categoriaVal = $("categoria").value.trim();
     const calibreVal = $("calibre").value.trim();
@@ -555,22 +604,22 @@ function updateLabel() {
 
     const labelDiv = document.createElement("div");
     labelDiv.className = "fruit-label-125x80";
-    let priceStr = priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>';
+    let priceStr = priceFormatted ? priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>' : '—';
 
     labelDiv.innerHTML = `
       <div class="f125-header">
         <div class="logo-wrapper-1">${logo1HTML}</div>
         <div class="logo-wrapper-2">${logo2HTML}</div>
         <div class="header-store-container">
-          <div style="display:flex; flex-direction:column; align-items:flex-end;">
-            <div style="font-size:9px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
-            <div class="store-text" style="font-size:14px;">${storeVal}</div>
-          </div>
+          <div class="store-text" style="font-size:14px;">${storeVal}</div>
         </div>
       </div>
       <div class="f125-main">
         <div class="f125-left">
-          <div class="f125-product">${productVal}</div>
+          <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+            <div style="font-size:10px; font-weight:bold; color:#444; text-align:center; min-height:12px;">${codeVal}</div>
+            <div class="f125-product">${productVal}</div>
+          </div>
           <div class="price" style="font-size:32px;">${priceStr}</div>
           <div class="fruit-info" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
         </div>
@@ -591,31 +640,34 @@ function updateLabel() {
     drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
 
   } else {
-    // MODO FOLHA OFICIAL AMANHECER (21 ETIQUETAS) OU FORMATOS SOLTOS
-    const price = Number($("price").value);
-    let priceStr = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
+    // MODO FOLHA OFICIAL AMANHECER OU ETIQUETAS SOLTAS
+    const rawPrice = $("price").value;
+    const price = Number(rawPrice);
+    let priceStr = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "";
 
     const capacity = Number($("capacity").value);
     const capacityUnit = $("capacityUnit").value;
     let unitPriceStr = "";
     
-    if (capacityUnit === "peso") {
-      const pFormat = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
-      priceStr = pFormat + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
-    } else if (capacity > 0 && price >= 0) {
-      let unitPrice = 0;
-      let displayUnit = "";
-      if (capacityUnit === "g") { unitPrice = price / (capacity / 1000); displayUnit = "KG"; }
-      else if (capacityUnit === "kg") { unitPrice = price / capacity; displayUnit = "KG"; }
-      else if (capacityUnit === "ml") { unitPrice = price / (capacity / 1000); displayUnit = "LT"; }
-      else if (capacityUnit === "lt") { unitPrice = price / capacity; displayUnit = "LT"; }
-      else if (capacityUnit === "un") { unitPrice = price / capacity; displayUnit = "UN"; }
-      
-      if (capacity === 1 && (capacityUnit === "kg" || capacityUnit === "lt")) {
-         const pFormat = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
-         priceStr = pFormat + ` <span style="font-size:0.55em; margin-left:3px; color:#333;">€/${displayUnit}</span>`;
-      } else {
-         unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+    if (rawPrice !== "" && Number.isFinite(price)) {
+      if (capacityUnit === "peso") {
+        const pFormat = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
+        priceStr = pFormat + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
+      } else if (capacity > 0 && price >= 0) {
+        let unitPrice = 0;
+        let displayUnit = "";
+        if (capacityUnit === "g") { unitPrice = price / (capacity / 1000); displayUnit = "KG"; }
+        else if (capacityUnit === "kg") { unitPrice = price / capacity; displayUnit = "KG"; }
+        else if (capacityUnit === "ml") { unitPrice = price / (capacity / 1000); displayUnit = "LT"; }
+        else if (capacityUnit === "lt") { unitPrice = price / capacity; displayUnit = "LT"; }
+        else if (capacityUnit === "un") { unitPrice = price / capacity; displayUnit = "UN"; }
+        
+        if (capacity === 1 && (capacityUnit === "kg" || capacityUnit === "lt")) {
+           const pFormat = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
+           priceStr = pFormat + ` <span style="font-size:0.55em; margin-left:3px; color:#333;">€/${displayUnit}</span>`;
+        } else {
+           unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+        }
       }
     }
 
@@ -645,14 +697,12 @@ function updateLabel() {
           <div class="logo-wrapper-1">${logo1HTML}</div>
           <div class="logo-wrapper-2">${logo2HTML}</div>
           <div class="header-store-container">
-            <div style="display:flex; flex-direction:column; align-items:flex-end;">
-              <div style="font-size:7.5px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
-              <div class="store-text">${storeVal}</div>
-            </div>
+            <div class="store-text">${storeVal}</div>
           </div>
         </div>
         <div class="main-content">
           <div class="left-column">
+            <div class="code-container" style="display:${codeVal ? 'flex' : 'none'};"><div class="item-code">${codeVal}</div></div>
             <div class="product-container"><div class="product">${productVal}</div></div>
             <div class="price-container"><div class="price">${priceStr}</div></div>
             <div class="unit-price-container" style="display:${unitPriceStr ? 'flex' : 'none'};"><div class="unit-price">${unitPriceStr}</div></div>
@@ -747,16 +797,36 @@ $("printBtn").addEventListener("click", function() {
 });
 
 $("clearBtn").addEventListener("click", function() {
-  $("store").value = "PATAIAS"; $("internalCode").value = "DR058860"; $("product").value = "Maçã Gala";
-  $("price").value = "1.89"; $("bulkPrice").value = "1.59"; $("bulkLabel").value = "A partir de 2 KG";
-  $("ean").value = ""; $("copiesCount").value = "21";
-  $("origem").value = "PORTUGAL"; $("categoria").value = "I"; $("calibre").value = "65/70";
-  $("presetSizes").value = "amanhecer"; $("labelWidth").value = "70"; $("labelHeight").value = "40";
+  $("store").value = "PATAIAS"; 
+  $("internalCode").value = ""; 
+  $("product").value = "";
+  $("price").value = ""; 
+  $("bulkPrice").value = ""; 
+  $("bulkLabel").value = "A partir de 2 KG";
+  $("capacity").value = "1";
+  $("capacityUnit").value = "kg";
+  $("depositFeeSelect").value = "";
+  $("depositFeeCustom").value = "";
+  $("depositFeeCustom").style.display = "none";
+  $("unit").value = "";
+  $("promoStart").value = "";
+  $("promoEnd").value = "";
+  $("ean").value = ""; 
+  $("copiesCount").value = "21";
+  $("origem").value = ""; 
+  $("categoria").value = ""; 
+  $("calibre").value = "";
+  $("presetSizes").value = "amanhecer"; 
+  $("labelWidth").value = "70"; 
+  $("labelHeight").value = "40";
   $("fruitPanel").style.display = "none";
+  $("bulkPriceContainer").style.display = "none";
+  $("standardPricePanel").style.display = "block";
   document.documentElement.style.setProperty('--offset-x', "-6mm");
   document.documentElement.style.setProperty('--offset-y', "-6mm");
   $("previewWrap").className = "preview-wrap amanhecer-sheet";
-  globalPhotoData = ""; $("photo").value = "";
+  globalPhotoData = ""; 
+  $("photo").value = "";
   updateLabel();
 });
 
