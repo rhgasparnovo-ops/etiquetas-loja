@@ -66,10 +66,16 @@
 
   details.quick-drawer { margin-top: 8px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 6px; padding: 6px 10px; font-size: 12px; }
   details.quick-drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; }
-  .chips-group { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
-  .chips-label { width: 100%; font-size: 11px; color: #747d8c; font-weight: 700; margin-top: 4px; text-transform: uppercase; }
-  .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
+  .chips-group { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; transition: all 0.2s ease; }
+  .chips-label { width: 100%; font-size: 11px; color: #747d8c; font-weight: 800; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .chip-btn { padding: 4px 9px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 5px; cursor: pointer; display: inline-block; user-select: none; transition: transform 0.1s, background 0.15s; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
+  .chip-btn[data-field="origem"] { background: #e8f4ff; border-color: #a4c8e8; color: #084298; }
+  .chip-btn[data-field="origem"]:hover { background: #cfe4f7; border-color: #5a9bd4; }
+  .chip-btn[data-field="categoria"] { background: #fff4e6; border-color: #f5c98b; color: #8a4b00; }
+  .chip-btn[data-field="categoria"]:hover { background: #ffe6c4; border-color: #e8a44a; }
+  .chip-btn[data-field="calibre"] { background: #eefbe9; border-color: #b5d99f; color: #2d6b1f; }
+  .chip-btn[data-field="calibre"]:hover { background: #dcf5d1; border-color: #7bbf5a; }
 
   .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
@@ -99,7 +105,7 @@
   .offset-hint { font-size: 11px; color: #856404; margin-top: 6px; line-height: 1.4; }
 
   /* ============================================================ */
-  /* CARTÃO BASE — motor fluido + auto-escala                      */
+  /* CARTÃO                                                       */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -114,14 +120,12 @@
     border-radius: 2px;
     padding: 2px 4px !important;
     container-type: inline-size;
-    /* Valores padrão — sobrescritos pelas classes de tamanho */
     --header-h: 12%;
     --img-flex: 0.7;
     --barcode-h: 14%;
     --footer-h: 10%;
     --img-pad: 1px;
     --gap-main: 4px;
-    --pad-label: 2px 4px;
     --desc-flex: 1.3;
     --price-flex: 1;
   }
@@ -164,21 +168,89 @@
   .print-date { font-size: clamp(5px, 1.5cqw, 7.5px); color: #666; white-space: nowrap; line-height: 1; flex-shrink: 0; }
 
   /* ============================================================ */
-  /* 🎨 CLASSES DE TAMANHO — AUTO-ESCALA POR CLASSE                */
+  /* LAYOUT OPORTUNIDADE "LEVE 2+" (Fruta/Legumes)                */
   /* ============================================================ */
+  .fruit-promo-prices {
+    display: none;
+    flex-direction: row;
+    width: 100%;
+    flex: 0 0 auto;
+    gap: 5px;
+    padding: 3px 0;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+  .label-card.layout-fruit-promo .col-price { display: none !important; }
+  .label-card.layout-fruit-promo .fruit-promo-prices { display: flex !important; }
 
-  /* ────────── TINY (50x30, 52x30) ──────────
-     Sem espaço: esconde imagem, código de barras e rodapé.
-     Preço e produto dominam. */
+  .fp-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 7px;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .fp-box.fp-normal {
+    flex: 1;
+    background: #fff;
+    border: 2px solid #222;
+    color: #222;
+  }
+  .fp-box.fp-promo {
+    flex: 1.4;
+    background: #c8102e;
+    border: 2px solid #c8102e;
+    color: #fff;
+    position: relative;
+  }
+  .fp-box.fp-promo::before {
+    content: "💡";
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    font-size: clamp(10px, 2.8cqw, 18px);
+    line-height: 1;
+  }
+  .fp-label {
+    font-size: clamp(7px, 2cqw, 13px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+    line-height: 1.05;
+  }
+  .fp-price {
+    font-size: clamp(18px, 6.5cqw, 44px);
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .fp-box.fp-promo .fp-price { font-size: clamp(22px, 8cqw, 54px); }
+  .fp-unit {
+    font-size: clamp(7px, 1.9cqw, 12px);
+    font-weight: 700;
+    margin-top: 2px;
+    opacity: 0.85;
+  }
+
+  .label-card.layout-fruit-promo.size-large { --img-flex: 0.8; --barcode-h: 12%; --footer-h: 9%; }
+  .label-card.layout-fruit-promo.size-large .fruit-promo-prices { padding: 3px 0; gap: 6px; }
+  .label-card.layout-fruit-promo.size-large .fp-box { padding: 6px 9px; border-radius: 7px; }
+
+  .label-card.layout-fruit-promo .product { font-size: clamp(12px, 3.6cqw, 26px) !important; max-height: 2.4em; }
+  .label-card.layout-fruit-promo .item-code { font-size: clamp(9px, 2.2cqw, 14px) !important; }
+
+  /* ============================================================ */
+  /* CLASSES DE TAMANHO — Auto-escala                              */
+  /* ============================================================ */
   .label-card.size-tiny {
-    --header-h: 18%;
-    --img-flex: 0;
-    --barcode-h: 0;
-    --footer-h: 0;
-    --gap-main: 1px;
-    --desc-flex: 1.6;
-    --price-flex: 1.4;
-    --pad-label: 1px 2px;
+    --header-h: 18%; --img-flex: 0; --barcode-h: 0; --footer-h: 0;
+    --gap-main: 1px; --desc-flex: 1.6; --price-flex: 1.4;
   }
   .label-card.size-tiny .col-image,
   .label-card.size-tiny .barcode-container,
@@ -191,38 +263,17 @@
   .label-card.size-tiny .unit-price-text { font-size: clamp(4px, 2.2cqw, 7px) !important; }
   .label-card.size-tiny .promo-tag { font-size: clamp(5px, 3cqw, 10px) !important; padding: 0 2px; }
   .label-card.size-tiny .old-price { font-size: clamp(4px, 2.5cqw, 8px) !important; }
-  .label-card.size-tiny .header { border-bottom-width: 1px; }
   .label-card.size-tiny .brand-logo { max-height: 95%; }
 
-  /* ────────── SMALL (65x38, 70x38, Amanhecer) ────────── */
-  .label-card.size-small {
-    --header-h: 12%;
-    --img-flex: 0.7;
-    --barcode-h: 12%;
-    --footer-h: 9%;
-  }
+  .label-card.size-small { --header-h: 12%; --img-flex: 0.7; --barcode-h: 12%; --footer-h: 9%; }
 
-  /* ────────── MEDIUM (105x38, 100x70) ────────── */
-  .label-card.size-medium {
-    --header-h: 12%;
-    --img-flex: 1;
-    --barcode-h: 13%;
-    --footer-h: 10%;
-  }
+  .label-card.size-medium { --header-h: 12%; --img-flex: 1; --barcode-h: 13%; --footer-h: 10%; }
   .label-card.size-medium .product { font-size: clamp(10px, 3.5cqw, 22px) !important; }
   .label-card.size-medium .price { font-size: clamp(18px, 7cqw, 42px) !important; }
   .label-card.size-medium .store-text { font-size: clamp(8px, 2.3cqw, 14px) !important; }
   .label-card.size-medium .item-code { font-size: clamp(7px, 2cqw, 12px) !important; }
 
-  /* ────────── LARGE (125x80, A6) ────────── */
-  .label-card.size-large {
-    --header-h: 14%;
-    --img-flex: 1.2;
-    --barcode-h: 12%;
-    --footer-h: 10%;
-    --gap-main: 6px;
-    --img-pad: 2px;
-  }
+  .label-card.size-large { --header-h: 14%; --img-flex: 1.2; --barcode-h: 12%; --footer-h: 10%; --gap-main: 6px; --img-pad: 2px; }
   .label-card.size-large .product { font-size: clamp(14px, 4cqw, 30px) !important; max-height: 3em; }
   .label-card.size-large .price { font-size: clamp(24px, 8cqw, 62px) !important; }
   .label-card.size-large .store-text { font-size: clamp(10px, 2.6cqw, 18px) !important; }
@@ -233,17 +284,7 @@
   .label-card.size-large .fruit-full-bar { font-size: clamp(9px, 2.2cqw, 15px) !important; }
   .label-card.size-large .deposit-box { font-size: clamp(8px, 2cqw, 14px) !important; }
 
-  /* ────────── XL (A5) ────────── */
-  .label-card.size-xl {
-    --header-h: 12%;
-    --img-flex: 1.4;
-    --barcode-h: 12%;
-    --footer-h: 10%;
-    --gap-main: 10px;
-    --img-pad: 3px;
-    --desc-flex: 1.2;
-    --price-flex: 1.1;
-  }
+  .label-card.size-xl { --header-h: 12%; --img-flex: 1.4; --barcode-h: 12%; --footer-h: 10%; --gap-main: 10px; --img-pad: 3px; --desc-flex: 1.2; --price-flex: 1.1; }
   .label-card.size-xl .product { font-size: clamp(20px, 4.5cqw, 48px) !important; max-height: 3em; }
   .label-card.size-xl .price { font-size: clamp(36px, 9cqw, 96px) !important; }
   .label-card.size-xl .store-text { font-size: clamp(14px, 2.7cqw, 26px) !important; }
@@ -261,6 +302,9 @@
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
   .promo-panel { background: #fff5f5; border: 1px solid #fed7d7; padding: 10px; border-radius: 8px; margin-top: 8px; }
+  .fruit-promo-panel { background: #fff5f5; border: 2px solid #c8102e; padding: 12px; border-radius: 8px; margin-top: 10px; display: none; }
+  .fruit-promo-panel h4 { margin: 0 0 8px 0; color: #c8102e; font-size: 13px; font-weight: 800; }
+  .fruit-promo-panel .size-row { gap: 8px; }
   
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
@@ -344,13 +388,15 @@
         <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
           <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
           <option value="125x80">🍎 Fruta e Legumes Suporte (125 x 80 mm)</option>
-          <option value="A6">📄 Tabuleta A6 Fruta / Promoção (148 x 105 mm)</option>
+          <option value="A6">📄 Tabuleta A6 Fruta (148 x 105 mm)</option>
+          <option value="frutaPromo125x80">💡 Fruta e Legumes 125x80 (Oportunidade Leve 2+)</option>
+          <option value="frutaPromoA6">💡 Tabuleta A6 (Oportunidade Leve 2+)</option>
           <option value="A5">📄 Tabuleta A5 Grande Destaque (210 x 148 mm)</option>
           <option value="105x38">🏷️ Prateleira Longa / Gôndola (105 x 38 mm)</option>
           <option value="70x38">🏷️ Prateleira Standard Recheio (70 x 38 mm)</option>
           <option value="65x38">🏷️ Prateleira Média (65 x 38 mm)</option>
           <option value="52x30">🏷️ Tala Estreita / Pequena (52 x 30 mm)</option>
-          <option value="100x70">🏷️ Cartaz Médio Promoção (100 x 70 mm)</option>
+          <option value="100x70">🏷️ Cartaz Médio (100 x 70 mm)</option>
           <option value="50x30">🏷️ Fruta Individual / Mini (50 x 30 mm)</option>
           <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
         </select>
@@ -382,24 +428,162 @@
               <div><label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label><input id="categoria" type="text" class="uppercase-input" placeholder="I"></div>
               <div><label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label><input id="calibre" type="text" class="uppercase-input" placeholder="65/70"></div>
             </div>
-            <details class="quick-drawer">
-              <summary>⚡ Opções rápidas...</summary>
-              <div class="chips-label">Origens comuns:</div>
+
+            <details class="quick-drawer" open>
+              <summary>⚡ Códigos rápidos (origens, categorias e calibres)</summary>
+
+              <div class="chips-label" style="margin-top:8px;">🌍 Europa</div>
               <div class="chips-group">
-                <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">Portugal</span> <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">Espanha</span> <span class="chip-btn" onclick="setField('origem', 'MARROCOS')">Marrocos</span> <span class="chip-btn" onclick="setField('origem', 'FRANÇA')">França</span> <span class="chip-btn" onclick="setField('origem', 'HOLANDA')">Holanda</span> <span class="chip-btn" onclick="setField('origem', 'BRASIL')">Brasil</span>
+                <span class="chip-btn" data-field="origem" data-val="PORTUGAL">Portugal</span>
+                <span class="chip-btn" data-field="origem" data-val="ESPANHA">Espanha</span>
+                <span class="chip-btn" data-field="origem" data-val="FRANÇA">França</span>
+                <span class="chip-btn" data-field="origem" data-val="ITÁLIA">Itália</span>
+                <span class="chip-btn" data-field="origem" data-val="HOLANDA">Holanda</span>
+                <span class="chip-btn" data-field="origem" data-val="ALEMANHA">Alemanha</span>
+                <span class="chip-btn" data-field="origem" data-val="BÉLGICA">Bélgica</span>
+                <span class="chip-btn" data-field="origem" data-val="GRÉCIA">Grécia</span>
+                <span class="chip-btn" data-field="origem" data-val="POLÓNIA">Polónia</span>
+                <span class="chip-btn" data-field="origem" data-val="REINO UNIDO">Reino Unido</span>
+                <span class="chip-btn" data-field="origem" data-val="ROMÉNIA">Roménia</span>
+                <span class="chip-btn" data-field="origem" data-val="TURQUIA">Turquia</span>
               </div>
-              <div class="chips-label">Categorias:</div>
-              <div class="chips-group"><span class="chip-btn" onclick="setField('categoria', 'EXTRA')">Cat. Extra</span> <span class="chip-btn" onclick="setField('categoria', 'I')">Cat. I</span> <span class="chip-btn" onclick="setField('categoria', 'II')">Cat. II</span></div>
-              <div class="chips-label">Calibres:</div>
-              <div class="chips-group"><span class="chip-btn" onclick="setField('calibre', '65/70')">65/70</span> <span class="chip-btn" onclick="setField('calibre', '70/75')">70/75</span> <span class="chip-btn" onclick="setField('calibre', '75/80')">75/80</span> <span class="chip-btn" onclick="setField('calibre', 'M')">M</span> <span class="chip-btn" onclick="setField('calibre', 'G')">G</span></div>
+
+              <div class="chips-label">🌍 África</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="MARROCOS">Marrocos</span>
+                <span class="chip-btn" data-field="origem" data-val="EGITO">Egito</span>
+                <span class="chip-btn" data-field="origem" data-val="ÁFRICA DO SUL">África do Sul</span>
+                <span class="chip-btn" data-field="origem" data-val="QUÉNIA">Quénia</span>
+                <span class="chip-btn" data-field="origem" data-val="SENEGAL">Senegal</span>
+                <span class="chip-btn" data-field="origem" data-val="COSTA DO MARFIM">Costa do Marfim</span>
+                <span class="chip-btn" data-field="origem" data-val="TUNÍSIA">Tunísia</span>
+              </div>
+
+              <div class="chips-label">🌎 América</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="BRASIL">Brasil</span>
+                <span class="chip-btn" data-field="origem" data-val="CHILE">Chile</span>
+                <span class="chip-btn" data-field="origem" data-val="PERU">Peru</span>
+                <span class="chip-btn" data-field="origem" data-val="ARGENTINA">Argentina</span>
+                <span class="chip-btn" data-field="origem" data-val="COLÔMBIA">Colômbia</span>
+                <span class="chip-btn" data-field="origem" data-val="EQUADOR">Equador</span>
+                <span class="chip-btn" data-field="origem" data-val="COSTA RICA">Costa Rica</span>
+                <span class="chip-btn" data-field="origem" data-val="MÉXICO">México</span>
+                <span class="chip-btn" data-field="origem" data-val="EUA">EUA</span>
+                <span class="chip-btn" data-field="origem" data-val="CANADÁ">Canadá</span>
+              </div>
+
+              <div class="chips-label">🌏 Ásia / Oceânia</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="ÍNDIA">Índia</span>
+                <span class="chip-btn" data-field="origem" data-val="CHINA">China</span>
+                <span class="chip-btn" data-field="origem" data-val="TAILÂNDIA">Tailândia</span>
+                <span class="chip-btn" data-field="origem" data-val="VIETNAME">Vietname</span>
+                <span class="chip-btn" data-field="origem" data-val="ISRAEL">Israel</span>
+                <span class="chip-btn" data-field="origem" data-val="NOVA ZELÂNDIA">Nova Zelândia</span>
+                <span class="chip-btn" data-field="origem" data-val="AUSTRÁLIA">Austrália</span>
+              </div>
+
+              <div class="chips-label" style="margin-top:14px;">🏅 Categorias (norma UE)</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="categoria" data-val="EXTRA">EXTRA</span>
+                <span class="chip-btn" data-field="categoria" data-val="I">I</span>
+                <span class="chip-btn" data-field="categoria" data-val="II">II</span>
+                <span class="chip-btn" data-field="categoria" data-val="III">III</span>
+                <span class="chip-btn" data-field="categoria" data-val="CAT I">CAT I</span>
+                <span class="chip-btn" data-field="categoria" data-val="CAT II">CAT II</span>
+                <span class="chip-btn" data-field="categoria" data-val="COMERCIAL">COMERCIAL</span>
+                <span class="chip-btn" data-field="categoria" data-val="INDUSTRIAL">INDUSTRIAL</span>
+              </div>
+
+              <div class="chips-label" style="margin-top:14px;">📏 Calibre — Frutos de caroço / pomo</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="calibre" data-val="55/60">55/60</span>
+                <span class="chip-btn" data-field="calibre" data-val="60/65">60/65</span>
+                <span class="chip-btn" data-field="calibre" data-val="65/70">65/70</span>
+                <span class="chip-btn" data-field="calibre" data-val="70/75">70/75</span>
+                <span class="chip-btn" data-field="calibre" data-val="75/80">75/80</span>
+                <span class="chip-btn" data-field="calibre" data-val="80/85">80/85</span>
+                <span class="chip-btn" data-field="calibre" data-val="85/90">85/90</span>
+                <span class="chip-btn" data-field="calibre" data-val="90/95">90/95</span>
+                <span class="chip-btn" data-field="calibre" data-val="95/100">95/100</span>
+                <span class="chip-btn" data-field="calibre" data-val="100/110">100/110</span>
+                <span class="chip-btn" data-field="calibre" data-val="110/120">110/120</span>
+                <span class="chip-btn" data-field="calibre" data-val="120/135">120/135</span>
+              </div>
+
+              <div class="chips-label">📏 Calibre — Citrinos (numérico)</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="calibre" data-val="1X">1X</span>
+                <span class="chip-btn" data-field="calibre" data-val="1">1</span>
+                <span class="chip-btn" data-field="calibre" data-val="2">2</span>
+                <span class="chip-btn" data-field="calibre" data-val="3">3</span>
+                <span class="chip-btn" data-field="calibre" data-val="4">4</span>
+                <span class="chip-btn" data-field="calibre" data-val="5">5</span>
+                <span class="chip-btn" data-field="calibre" data-val="6">6</span>
+                <span class="chip-btn" data-field="calibre" data-val="7">7</span>
+                <span class="chip-btn" data-field="calibre" data-val="8">8</span>
+                <span class="chip-btn" data-field="calibre" data-val="9">9</span>
+                <span class="chip-btn" data-field="calibre" data-val="10">10</span>
+                <span class="chip-btn" data-field="calibre" data-val="11">11</span>
+                <span class="chip-btn" data-field="calibre" data-val="12">12</span>
+                <span class="chip-btn" data-field="calibre" data-val="13">13</span>
+              </div>
+
+              <div class="chips-label">📏 Calibre — Letras (batata, cebola, alho, etc.)</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="calibre" data-val="P">P (Pequeno)</span>
+                <span class="chip-btn" data-field="calibre" data-val="M">M (Médio)</span>
+                <span class="chip-btn" data-field="calibre" data-val="G">G (Grande)</span>
+                <span class="chip-btn" data-field="calibre" data-val="GG">GG (Extra Grande)</span>
+                <span class="chip-btn" data-field="calibre" data-val="PP">PP (Muito Pequeno)</span>
+                <span class="chip-btn" data-field="calibre" data-val="XXL">XXL</span>
+              </div>
+
+              <div class="chips-label">📏 Calibre — Diâmetro (mm) — Melão, melancia, abóbora</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="calibre" data-val="60/80">60/80</span>
+                <span class="chip-btn" data-field="calibre" data-val="80/100">80/100</span>
+                <span class="chip-btn" data-field="calibre" data-val="100/120">100/120</span>
+                <span class="chip-btn" data-field="calibre" data-val="120/140">120/140</span>
+                <span class="chip-btn" data-field="calibre" data-val="140/160">140/160</span>
+                <span class="chip-btn" data-field="calibre" data-val=">160">&gt; 160</span>
+              </div>
+
+              <div style="margin-top:10px; font-size:11px; color:#666; font-style:italic;">
+                💡 Clica para preencher. Podes sempre escrever valores personalizados nos campos acima.
+              </div>
             </details>
           </div>
 
+          <!-- PAINEL OPORTUNIDADE FRUTA (LEVE 2+) -->
+          <div class="fruit-promo-panel" id="fruitPromoPanel">
+            <h4>💡 Oportunidade "Leve 2 ou mais"</h4>
+            <div class="size-row">
+              <div>
+                <label for="promoMinQty" style="margin-top:0; font-size:11px;">Quantidade mínima</label>
+                <input id="promoMinQty" type="number" min="1" step="1" value="2">
+              </div>
+              <div>
+                <label for="promoUnit" style="margin-top:0; font-size:11px;">Unidade</label>
+                <select id="promoUnit">
+                  <option value="KG" selected>Quilos (KG)</option>
+                  <option value="UN">Unidades (UN)</option>
+                </select>
+              </div>
+            </div>
+            <label for="promoPrice" style="margin-top:8px; font-size:11px;">Preço Especial (€)</label>
+            <input id="promoPrice" type="text" inputmode="decimal" placeholder="Ex.: 1,49" style="border-color:#c8102e; background:#fff9fb;">
+            <div style="font-size:10.5px; color:#666; margin-top:6px; line-height:1.35;">
+              💡 O preço <strong>normal</strong> vai no campo "Preço de Venda" acima. Este é o preço <strong>especial</strong> quando o cliente leva <strong>2+</strong> unidades.
+            </div>
+          </div>
+
           <div id="standardPricePanel">
-            <label for="price" id="priceLabel">Preço de Venda / Promoção (€)</label>
+            <label for="price" id="priceLabel">Preço de Venda (€)</label>
             <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 3,99">
 
-            <label class="checkbox-label" style="margin-top: 10px;"><input type="checkbox" id="isPromoActive"> 🔥 Ativar Preço Promocional (Riscado)</label>
+            <label class="checkbox-label" style="margin-top: 10px;"><input type="checkbox" id="isPromoActive"> 💡 Mostrar Oportunidade (Preço Anterior Riscado)</label>
             <div id="promoBox" class="promo-panel" style="display:none;">
               <label for="oldPrice" style="margin-top:0; font-size:11px; color:#c8102e;">Preço Normal Anterior (€)</label>
               <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
@@ -408,7 +592,7 @@
             <div id="packagingRow" style="display:block; margin-top: 8px;">
               <div class="size-row">
                 <div><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001" value="0.75"></div>
-                <div><label for="capacityUnit">Unidade de Medida</label><select id="capacityUnit"><option value="lt" selected>Litros (LT)</option><option value="peso">Quilos (KG)</option><option value="g">Gramas (g)</option><option value="un">Unidade (UN)</option></select></div>
+                <div><label for="capacityUnit">Unidade de Medida</label><select id="capacityUnit"><option value="lt">Litros (LT)</option><option value="peso" selected>Quilos (KG)</option><option value="g">Gramas (g)</option><option value="un">Unidade (UN)</option></select></div>
               </div>
             </div>
 
@@ -424,8 +608,8 @@
             </div>
 
             <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
-              <div><label for="promoStart">Início Promoção</label><input id="promoStart" type="date"></div>
-              <div><label for="promoEnd">Fim Promoção</label><input id="promoEnd" type="date"></div>
+              <div><label for="promoStart">Início Oportunidade</label><input id="promoStart" type="date"></div>
+              <div><label for="promoEnd">Fim Oportunidade</label><input id="promoEnd" type="date"></div>
             </div>
           </div>
 
@@ -538,6 +722,20 @@
             </div>
             <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
           </div>
+
+          <div class="fruit-promo-prices" id="cardFruitPromo">
+            <div class="fp-box fp-normal">
+              <div class="fp-label">PREÇO NORMAL</div>
+              <div class="fp-price" id="cardFpNormalPrice">0,00 €</div>
+              <div class="fp-unit" id="cardFpNormalUnit">/ KG</div>
+            </div>
+            <div class="fp-box fp-promo">
+              <div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div>
+              <div class="fp-price" id="cardFpPromoPrice">0,00 €</div>
+              <div class="fp-unit" id="cardFpPromoUnit">/ KG</div>
+            </div>
+          </div>
+
           <div class="fruit-full-bar" id="cardFruit"></div>
           <div class="barcode-container" id="cardBarcodeBox">
             <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
@@ -565,9 +763,6 @@ let globalProcessedPhoto = "";
 let printInProgress = false;
 let photoProcessingToken = 0;
 
-// ==========================================
-// UTILITÁRIOS
-// ==========================================
 function escapeHTML(str) {
   return String(str || "").replace(/[&<>"']/g, m => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -585,9 +780,6 @@ const Storage = {
   }
 };
 
-// ==========================================
-// OFFSETS DE IMPRESSÃO
-// ==========================================
 let offsetX = parseFloat(Storage.get("balcao_offset_x", "0"));
 let offsetY = parseFloat(Storage.get("balcao_offset_y", "6"));
 if (!Number.isFinite(offsetX)) offsetX = 0;
@@ -604,9 +796,6 @@ function applyOffsets() {
   if (yVal) yVal.textContent = offsetY + " mm";
 }
 
-// ==========================================
-// DADOS
-// ==========================================
 let printQueue = [];
 let savedProducts = [];
 
@@ -644,7 +833,10 @@ function getFormData() {
     ean: $("ean").value.trim(),
     autoRemoveBg: $("autoRemoveBg").checked,
     originalPhoto: globalOriginalPhoto,
-    processedPhoto: globalProcessedPhoto
+    processedPhoto: globalProcessedPhoto,
+    promoMinQty: $("promoMinQty") ? $("promoMinQty").value : "2",
+    promoUnit: $("promoUnit") ? $("promoUnit").value : "KG",
+    promoPrice: $("promoPrice") ? $("promoPrice").value : ""
   };
 }
 
@@ -664,7 +856,7 @@ function setFormData(data) {
   $("isPromoActive").checked = data.isPromoActive || false;
   $("oldPrice").value = data.oldPrice || "";
   $("capacity").value = data.capacity || "0.75";
-  $("capacityUnit").value = data.capacityUnit || "lt";
+  $("capacityUnit").value = data.capacityUnit || "peso";
   $("depositFeeSelect").value = data.depositFeeSelect || "";
   $("customDepositInput").value = data.customDepositInput || "";
   $("unit").value = data.unit || "";
@@ -672,6 +864,9 @@ function setFormData(data) {
   $("promoEnd").value = data.promoEnd || "";
   $("ean").value = data.ean || "";
   $("autoRemoveBg").checked = data.autoRemoveBg !== false;
+  if($("promoMinQty")) $("promoMinQty").value = data.promoMinQty || "2";
+  if($("promoUnit")) $("promoUnit").value = data.promoUnit || "KG";
+  if($("promoPrice")) $("promoPrice").value = data.promoPrice || "";
   
   globalOriginalPhoto = data.originalPhoto || "";
   globalProcessedPhoto = data.processedPhoto || "";
@@ -683,9 +878,6 @@ function setFormData(data) {
   updateCard();
 }
 
-// ==========================================
-// FILA
-// ==========================================
 function renderQueue() {
   const container = $("queueListContainer");
   $("queueBadge").textContent = printQueue.length;
@@ -753,9 +945,6 @@ $("clearQueueBtn").addEventListener("click", () => {
   }
 });
 
-// ==========================================
-// BASE DE DADOS
-// ==========================================
 function renderDb() {
   const container = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -827,6 +1016,18 @@ window.removeFromDb = function(index) {
 };
 
 document.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip-btn[data-field]");
+  if (chip) {
+    const field = chip.dataset.field;
+    const val = chip.dataset.val;
+    if (field && val !== undefined) {
+      setField(field, val);
+      chip.style.transform = "scale(0.9)";
+      setTimeout(() => { chip.style.transform = ""; }, 120);
+    }
+    return;
+  }
+  
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
   const action = btn.dataset.action;
@@ -847,9 +1048,6 @@ document.addEventListener("click", (e) => {
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
-// ==========================================
-// PARSING E DATAS
-// ==========================================
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
   let clean = String(valStr).trim().replace(/€|\s/g, "");
@@ -866,23 +1064,20 @@ function formatPromoDate(startStr, endStr) {
     if (startStr && endStr) {
       const d1 = new Date(startStr), d2 = new Date(endStr);
       if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear())
-        return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-      return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+        return "Oportunidade de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+      return "Oportunidade de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
     } else if (endStr) {
       const d2 = new Date(endStr);
-      return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+      return "Oportunidade válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
     } else {
       const d1 = new Date(startStr);
-      return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
+      return "Oportunidade a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
     }
   } catch (e) {
     return "Preço sujeito às condições comerciais em vigor.";
   }
 }
 
-// ==========================================
-// REMOÇÃO DE FUNDO
-// ==========================================
 function removeBackground(dataUrl, callback) {
   const token = ++photoProcessingToken;
   const img = new Image();
@@ -922,9 +1117,6 @@ function removeBackground(dataUrl, callback) {
   img.src = dataUrl;
 }
 
-// ==========================================
-// CÓDIGO DE BARRAS
-// ==========================================
 const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
 const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
 const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
@@ -1036,17 +1228,18 @@ function drawCode128(svg, text) {
   }
 }
 
-// ==========================================
-// DIMENSÕES / FORMATO
-// ==========================================
 function isLargeFormat(val) {
-  if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70") return true;
+  if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70" || val === "frutaPromo125x80" || val === "frutaPromoA6") return true;
   if (val === "custom") {
     const w = parseFloat($("customWidth").value) || 0;
     const h = parseFloat($("customHeight").value) || 0;
     return (w >= 90 || h >= 65);
   }
   return false;
+}
+
+function isFruitPromoFormat(val) {
+  return val === "frutaPromo125x80" || val === "frutaPromoA6";
 }
 
 function getDimensions() {
@@ -1065,6 +1258,8 @@ function getDimensions() {
     case "52x30": w = 52; h = 30; break;
     case "100x70": w = 100; h = 70; break;
     case "50x30": w = 50; h = 30; break;
+    case "frutaPromo125x80": w = 125; h = 80; break;
+    case "frutaPromoA6": w = 148; h = 105; break;
     case "custom":
       w = parseFloat($("customWidth").value) || 70;
       h = parseFloat($("customHeight").value) || 38;
@@ -1076,14 +1271,6 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
-/**
- * Motor de auto-escala: escolhe a classe visual conforme o tamanho.
- *  - tiny   → 50x30, 52x30 (esconde imagem/barcode/footer, preço grande)
- *  - small  → 65x38, 70x38, Amanhecer (equilíbrio)
- *  - medium → 105x38, 100x70 (mais espaço, preço maior)
- *  - large  → 125x80, A6 (imagem grande, preço enorme)
- *  - xl     → A5 (tudo em grande destaque)
- */
 function getSizeClass(w, h) {
   const maxDim = Math.max(w, h);
   if (maxDim < 55) return "size-tiny";
@@ -1108,9 +1295,6 @@ function setField(id, val) {
 }
 window.setField = setField;
 
-// ==========================================
-// RENDERIZAÇÃO
-// ==========================================
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -1119,10 +1303,12 @@ function updateCardUnsafe() {
   const barcodeToDraw = eanInput || codeVal;
   const priceNum = parsePrice($("price").value);
   const oldPriceNum = parsePrice($("oldPrice").value);
+  const promoPriceNum = parsePrice($("promoPrice") ? $("promoPrice").value : "");
   const isPromo = $("isPromoActive").checked;
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isLarge = isLargeFormat(formatVal);
+  const isFruitPromo = isFruitPromoFormat(formatVal);
   const orientation = $("labelOrientation").value;
   const dims = getDimensions();
   const capUnit = $("capacityUnit").value;
@@ -1130,10 +1316,13 @@ function updateCardUnsafe() {
 
   const card = $("mainLabelCard");
 
+  if (isFruitPromo) card.classList.add("layout-fruit-promo");
+  else card.classList.remove("layout-fruit-promo");
+
   if (isAmanhecer) {
     card.style.width = "380px";
     card.style.height = "214px";
-    applySizeClass(card, 70, 38); // Amanhecer é small
+    applySizeClass(card, 70, 38);
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
     $("gridStartContainer").style.display = "block";
     document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "16px");
@@ -1143,8 +1332,10 @@ function updateCardUnsafe() {
     card.style.height = (dims.height * scale) + "px";
     applySizeClass(card, dims.width, dims.height);
     if (isLarge) {
-      $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
-      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "40px" : (formatVal === "A6") ? "32px" : "26px");
+      let badgePrefix = "📐 Formato";
+      if (isFruitPromo) badgePrefix = "💡 Fruta/Legumes Oportunidade";
+      $("badgeSheet").textContent = `${badgePrefix}: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "40px" : (formatVal === "A6" || formatVal === "frutaPromoA6") ? "32px" : "26px");
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
       document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "18px");
@@ -1197,6 +1388,35 @@ function updateCardUnsafe() {
     $("cardPrice").textContent = "0,00 €";
     $("cardPromoTopRow").style.display = "none";
     $("cardUnitPrice").style.display = "none";
+  }
+
+  if (isFruitPromo) {
+    const promoUnitVal = ($("promoUnit") ? $("promoUnit").value : "KG") || "KG";
+    const promoMinVal = ($("promoMinQty") ? $("promoMinQty").value : "2") || "2";
+    
+    if (priceNum !== null) {
+      const formatted = priceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      $("cardFpNormalPrice").textContent = formatted + " €";
+    } else {
+      $("cardFpNormalPrice").textContent = "0,00 €";
+    }
+    $("cardFpNormalUnit").textContent = "/ " + promoUnitVal;
+
+    if (promoPriceNum !== null) {
+      const formatted = promoPriceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      $("cardFpPromoPrice").textContent = formatted + " €";
+    } else {
+      $("cardFpPromoPrice").textContent = "0,00 €";
+    }
+    $("cardFpPromoUnit").textContent = "/ " + promoUnitVal;
+
+    let promoLabel = "";
+    if (promoUnitVal === "KG") {
+      promoLabel = "LEVE " + promoMinVal + " KG OU MAIS";
+    } else {
+      promoLabel = "LEVE " + promoMinVal + " UN OU MAIS";
+    }
+    $("cardFpPromoLabel").textContent = promoLabel;
   }
 
   const org = ($("origem") ? $("origem").value : "").trim().toUpperCase();
@@ -1252,20 +1472,14 @@ function updateCardUnsafe() {
   $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 
-  // Auto-fit do nome do produto (só encolhe, nunca aumenta — mantém design)
   requestAnimationFrame(() => autoFitText($("cardProduct")));
 }
 
-/**
- * Auto-shrink: reduz o font-size do produto até caber.
- * Ideal para nomes compridos em etiquetas pequenas.
- */
 function autoFitText(el) {
   if (!el) return;
   el.style.fontSize = "";
   let iter = 0;
   const maxIter = 10;
-  // Se não está a transbordar, sai já
   while (el.scrollHeight > el.clientHeight + 1 && iter < maxIter) {
     const cur = parseFloat(getComputedStyle(el).fontSize);
     if (!cur || cur < 4) break;
@@ -1299,18 +1513,27 @@ function setStatus(message, type = "info") {
 function setValidationState() {
   const price = parsePrice($("price").value);
   const oldPrice = parsePrice($("oldPrice").value);
+  const promoPrice = parsePrice($("promoPrice") ? $("promoPrice").value : "");
   const ean = normalizeBarcode($("ean").value);
   const errors = [];
+  const formatVal = $("presetSizes").value;
+  const isFruitPromo = isFruitPromoFormat(formatVal);
 
   if ($("price").value.trim() && price === null) errors.push("Preço inválido.");
   if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) errors.push("Preço anterior inválido.");
-  if ($("isPromoActive").checked && price !== null && oldPrice !== null && oldPrice <= price) errors.push("O preço anterior deve ser superior ao preço promocional.");
+  if ($("isPromoActive").checked && !isFruitPromo && price !== null && oldPrice !== null && oldPrice <= price) errors.push("O preço anterior deve ser superior ao preço especial.");
+  
+  if (isFruitPromo) {
+    if ($("promoPrice").value.trim() && promoPrice === null) errors.push("Preço especial inválido.");
+    if (price !== null && promoPrice !== null && promoPrice >= price) errors.push("O preço especial deve ser inferior ao preço normal.");
+  }
+  
   if (ean) {
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
     if (!valid) errors.push("Código inválido (verifique os dígitos).");
   }
   if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) {
-    errors.push("A data final da promoção não pode ser anterior à inicial.");
+    errors.push("A data final da oportunidade não pode ser anterior à inicial.");
   }
 
   setStatus(errors.join(" "), errors.length ? "error" : "");
@@ -1321,6 +1544,8 @@ function updateOrientationVisibility() {
   const show = isLargeFormat(formatVal);
   const orientBox = $("orientationBox");
   const row = $("storeOrientationRow");
+  const isFruitPromo = isFruitPromoFormat(formatVal);
+  
   if (show) {
     orientBox.style.display = "block";
     row.style.gridTemplateColumns = "1fr 1fr";
@@ -1330,11 +1555,17 @@ function updateOrientationVisibility() {
     row.style.gridTemplateColumns = "1fr";
     $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none";
   }
+
+  const fruitPromoPanel = $("fruitPromoPanel");
+  if (fruitPromoPanel) {
+    fruitPromoPanel.style.display = isFruitPromo ? "block" : "none";
+  }
+
+  const promoLabelEl = $("isPromoActive") ? $("isPromoActive").closest("label") : null;
+  if (promoLabelEl) promoLabelEl.style.display = isFruitPromo ? "none" : "flex";
+  if (isFruitPromo && $("promoBox")) $("promoBox").style.display = "none";
 }
 
-// ==========================================
-// EVENTOS
-// ==========================================
 $("presetSizes").addEventListener("change", function () {
   const val = this.value;
   $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
@@ -1351,12 +1582,12 @@ $("isPromoActive").addEventListener("change", function () {
 });
 $("labelOrientation").addEventListener("change", updateCard);
 
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput"].forEach(id => {
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("input", updateCard);
 });
 
-["store","capacityUnit","depositFeeSelect","promoStart","promoEnd"].forEach(id => {
+["store","capacityUnit","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("change", updateCard);
 });
@@ -1408,9 +1639,12 @@ $("clearBtn").addEventListener("click", function () {
   $("promoStart").value = "";
   $("promoEnd").value = "";
   $("capacity").value = "0.75";
-  $("capacityUnit").value = "lt";
+  $("capacityUnit").value = "peso";
   $("isPromoActive").checked = false;
   $("promoBox").style.display = "none";
+  if ($("promoMinQty")) $("promoMinQty").value = "2";
+  if ($("promoUnit")) $("promoUnit").value = "KG";
+  if ($("promoPrice")) $("promoPrice").value = "";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
   if ($("calibre")) $("calibre").value = "";
@@ -1431,9 +1665,6 @@ $("clearBtn").addEventListener("click", function () {
   updateCard();
 });
 
-// ==========================================
-// AJUSTES DE IMPRESSÃO
-// ==========================================
 $("offsetXRange").addEventListener("input", function () {
   offsetX = parseFloat(this.value) || 0;
   $("offsetXVal").textContent = offsetX + " mm";
@@ -1476,9 +1707,6 @@ $("printCalibBtn").addEventListener("click", function () {
   }, 80);
 });
 
-// ==========================================
-// IMPRESSÃO
-// ==========================================
 $("printBtn").addEventListener("click", function () {
   if (window.__PRO && typeof window.__PRO.safePrint === "function") {
     window.__PRO.safePrint();
@@ -1503,6 +1731,15 @@ function validateBeforePrint() {
     }
     
     const formatVal = $("presetSizes").value;
+    if (isFruitPromoFormat(formatVal)) {
+      const promoPrice = parsePrice($("promoPrice") ? $("promoPrice").value : "");
+      if (promoPrice === null) {
+        setStatus("Introduza o preço especial.", "error");
+        $("promoPrice").focus();
+        return false;
+      }
+    }
+    
     const startPos = parseInt($("startPosition").value, 10) || 1;
     const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
     if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
@@ -1593,7 +1830,6 @@ function triggerPrint() {
           const barcodeSvg = clone.querySelector("svg");
           if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
           
-          // Auto-fit do nome no clone
           const prodEl = clone.querySelector(".product");
           if (prodEl) requestAnimationFrame(() => autoFitText(prodEl));
           
@@ -1668,9 +1904,6 @@ window.addEventListener("beforeunload", (ev) => {
   }
 });
 
-// ==========================================
-// ARRANQUE
-// ==========================================
 (function boot() {
   try {
     applyOffsets();
