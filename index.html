@@ -324,7 +324,7 @@
       </div>
       
       <label for="internalCode">Código Interno</label>
-      <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR058860">
+      <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR123456">
 
       <label for="product">Produto / Variedade</label>
       <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL">
@@ -434,8 +434,9 @@
         </div>
       </div>
 
-      <label for="ean">Código de Barras (EAN-13, EAN-14 / Código)</label>
-      <input id="ean" type="text" style="text-transform: none;" placeholder="Insira até 14 dígitos (Ex.: 56012345678901)">
+      <!-- NOVO COMPORTAMENTO INTELIGENTE -->
+      <label for="ean" style="color: #084298;">Código de Barras (EAN-13, EAN-14)</label>
+      <input id="ean" type="text" style="text-transform: none; border-color: #b6d4fe; background: #f8fbff;" placeholder="Se vazio, gera código de barras a partir do Código Interno">
 
       <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
@@ -560,7 +561,6 @@ function setField(id, val) {
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
   let clean = String(valStr).trim().replace(/€|\s/g, "");
-  // Aceita 3,99 / 3.99 e também 1.234,56.
   if (clean.includes(",") && clean.includes(".")) {
     clean = clean.replace(/\./g, "").replace(",", ".");
   } else {
@@ -710,7 +710,7 @@ function drawBarcode(svg, value) {
     return;
   }
 
-  // Para códigos internos/alfa-numéricos, usa Code 128-B.
+  // Se tem letras, traços ou números (como Códigos Internos DR123456)
   if (/^[\x20-\x7E]+$/.test(cleanVal)) {
     drawCode128(svg, cleanVal);
   }
@@ -761,8 +761,7 @@ function drawCode128(svg, text) {
   const clean = String(text || "");
   if (!/^[\x20-\x7E]+$/.test(clean)) return;
 
-  // Code 128-B: START B + dados + checksum + STOP.
-  const codes = [104]; // START B
+  const codes = [104]; 
   for (const ch of clean) codes.push(ch.charCodeAt(0) - 32);
 
   let checksum = codes[0];
@@ -773,12 +772,11 @@ function drawCode128(svg, text) {
   let fullBits = "";
 
   for (const code of sequence) {
-    // RESOLVIDO: O erro que parava o código acontecia aqui por causa de C128_PATTERNS.STOP
     const pat = code === "STOP"
-      ? "2331112" // Código de padrão direto para STOP no Code 128
+      ? "2331112"
       : C128_PATTERNS_BY_VALUE[Number(code)];
 
-    if (!pat) return;
+    if (!pat) return; 
 
     let isBar = true;
     for (const digit of pat) {
@@ -814,16 +812,19 @@ function drawCode128(svg, text) {
   }
 }
 
-// Mapa numérico dos padrões Code 128 (0..106), derivado do objeto textual existente.
+// 107 padrões gráficos do sistema Code 128
 const C128_PATTERNS_BY_VALUE = [
   "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213",
   "221312","231212","112232","122132","122231","113222","123122","123221","223211","221132",
   "221231","213212","223112","312131","311222","321122","321221","312212","322112","322211",
   "212123","212321","232121","111323","131123","131321","112313","132113","132311","211313",
   "231113","231311","112133","112331","132131","113123","113321","133121","313121","211331",
-  "231131","213113","213311","213131","311123","311321","331121","312113","312311","411212",
-  "421112","421211","212141","214121","412121","111143","111341","131141","114113","114311",
-  "411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"
+  "231131","213113","213311","213131","311123","311321","331121","312113","312311","332111",
+  "314111","221411","431111","111224","111422","121124","121421","141122","141221","112214",
+  "112412","122114","122411","142112","142211","241211","221114","413111","241112","134111",
+  "111242","121142","121241","114212","124112","124211","411212","421112","421211","212141",
+  "214121","412121","111143","111341","131141","114113","114311","411113","411311","113141",
+  "114131","311141","411131","211412","211214","211232","2331112"
 ];
 
 function isLargeFormat(val) {
@@ -870,7 +871,11 @@ function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
-  const eanVal = ($("ean").value || "").trim();
+  
+  // A LÓGICA INTELIGENTE: Lê do Código de Barras (EAN). Se estiver vazio, lê do Código Interno!
+  const eanInput = ($("ean").value || "").trim();
+  const barcodeToDraw = eanInput || codeVal;
+
   const priceNum = parsePrice($("price").value);
   const oldPriceNum = parsePrice($("oldPrice").value);
   const isPromo = $("isPromoActive").checked;
@@ -913,6 +918,7 @@ function updateCardUnsafe() {
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
+  // Apresenta o código interno no canto superior esquerdo em formato de texto
   if (codeVal) {
     $("cardCode").style.display = "block";
     $("cardCode").textContent = codeVal;
@@ -1009,10 +1015,11 @@ function updateCardUnsafe() {
     $("cardPhotoBox").style.display = "none";
   }
 
-  if (eanVal) {
+  // GERAÇÃO DA IMAGEM DE LEITURA ÓTICA NA BASE DA ETIQUETA
+  if (barcodeToDraw) {
     $("cardBarcodeBox").style.display = "flex";
-    $("cardBarcodeText").textContent = eanVal;
-    drawBarcode($("cardBarcodeSvg"), eanVal);
+    $("cardBarcodeText").textContent = barcodeToDraw;
+    drawBarcode($("cardBarcodeSvg"), barcodeToDraw);
   } else {
     $("cardBarcodeBox").style.display = "none";
   }
@@ -1055,10 +1062,11 @@ function setValidationState() {
     errors.push("O preço anterior deve ser superior ao preço promocional.");
   }
   if (ean) {
+    // Permite formato EAN-13, EAN-14 ou Código Interno Alfanumérico Livre
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) ||
                  (/^\d{14}$/.test(ean) && isValidEAN14(ean)) ||
                  /^[\x20-\x7E]+$/.test(ean);
-    if (!valid) errors.push("Código de barras inválido.");
+    if (!valid) errors.push("Código inválido (verifique os dígitos).");
   }
   if ($("promoStart").value && $("promoEnd").value &&
       $("promoStart").value > $("promoEnd").value) {
@@ -1228,6 +1236,7 @@ function validateBeforePrint() {
     }
   }
 
+  // Verifica os códigos 
   const ean = normalizeBarcode($("ean").value);
   if (ean && /^\d{13}$/.test(ean) && !isValidEAN13(ean)) {
     setStatus("O EAN-13 introduzido não é válido. Verifique o dígito de controlo.", "error");
@@ -1279,7 +1288,11 @@ function triggerPrint() {
   const dims = getDimensions();
   const startPos = parseInt($("startPosition").value, 10) || 1;
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-  const eanVal = normalizeBarcode($("ean").value);
+  
+  // Na impressão, tal como na visualização, usa o EAN se existir, senão usa o Código Interno.
+  const codeVal = ($("internalCode").value || "").trim().toUpperCase();
+  const eanInput = ($("ean").value || "").trim();
+  const eanVal = normalizeBarcode(eanInput || codeVal);
 
   // Remover o cartão original apenas depois de o termos clonado.
   previewWrap.className = "preview-wrap";
@@ -1447,15 +1460,18 @@ updateCard();
       return Number.isFinite(n) ? n : null;
     },
     validEan(code) {
-      const digits = String(code || "").replace(/\D/g, "");
-      if (![8,13,14].includes(digits.length)) return false;
-      const body = digits.slice(0,-1);
-      const check = Number(digits.slice(-1));
-      let sum = 0;
-      for (let i = body.length - 1, pos = 0; i >= 0; i--, pos++) {
-        sum += Number(body[i]) * (pos % 2 === 0 ? 3 : 1);
+      const s = String(code || "").trim().replace(/\s+/g, "");
+      if (!s) return true;
+      if (/^\d{13}$/.test(s) \vert{}\vert{} /^\d{14}$/.test(s)) {
+        const body = s.slice(0,-1);
+        const check = Number(s.slice(-1));
+        let sum = 0;
+        for (let i = body.length - 1, pos = 0; i >= 0; i--, pos++) {
+          sum += Number(body[i]) * (pos % 2 === 0 ? 3 : 1);
+        }
+        return ((10 - (sum % 10)) % 10) === check;
       }
-      return ((10 - (sum % 10)) % 10) === check;
+      return /^[\x20-\x7E]+$/.test(s);
     },
     setInvalid(el, message) {
       if (!el) return false;
