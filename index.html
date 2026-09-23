@@ -304,7 +304,7 @@
         </div>
       </div>
 
-      <!-- LOJA E ORIENTAÇÃO (ORIENTAÇÃO SÓ APARECE EM FORMATOS GRANDES) -->
+      <!-- LOJA E ORIENTAÇÃO -->
       <div class="size-row" id="storeOrientationRow" style="margin-bottom: 8px;">
         <div id="orientationBox" style="display:none;">
           <label for="labelOrientation" style="margin-top:0;">Orientação da Folha</label>
@@ -407,14 +407,15 @@
           </div>
         </div>
 
+        <!-- TAXA VOLTA: ESPECÍFICA PARA BEBIDAS EM PLÁSTICO / LATAS -->
         <div id="depositContainer" style="margin-top: 8px;">
-          <label for="depositFeeSelect">Taxa Volta (Garrafa / Vasilhame)</label>
+          <label for="depositFeeSelect">Taxa Volta (Garrafas de Plástico / Latas)</label>
           <select id="depositFeeSelect">
             <option value="" selected>Nenhuma (Sem taxa)</option>
-            <option value="Acresce 0,10 € Taxa Volta">Acresce 0,10 € Taxa Volta (Garrafa vidro regular)</option>
+            <option value="Acresce 0,10 € Taxa Volta">Acresce 0,10 € Taxa Volta (Plástico PET / Lata)</option>
             <option value="custom">Outro valor (Personalizado)...</option>
           </select>
-          <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,20 € Taxa Volta" style="display:none; margin-top: 6px;">
+          <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,10 € Taxa Volta" style="display:none; margin-top: 6px;">
         </div>
 
         <div id="extraUnitContainer" style="margin-top: 8px;">
@@ -733,7 +734,6 @@ function drawCode128(svg, text) {
   }
 }
 
-// FORMATOS CONSIDERADOS GRANDES ONDE A ORIENTAÇÃO É ÚTIL
 function isLargeFormat(val) {
   if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70") return true;
   if (val === "custom") {
@@ -768,7 +768,6 @@ function getDimensions() {
       break;
   }
 
-  // Só inverte largura e altura se for um formato grande
   if (allowOrientation && orientation === "vertical" && w > h) {
     const temp = w; w = h; h = temp;
   }
@@ -886,7 +885,7 @@ function updateCard() {
     $("cardFruit").style.display = "none";
   }
 
-  // TAXA VOLTA
+  // TAXA VOLTA REGULAMENTADA
   const depositSelect = $("depositFeeSelect").value;
   let depositVal = "";
   if (depositSelect === "custom") {
@@ -937,12 +936,10 @@ function updateCard() {
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
-// GESTÃO DE VISIBILIDADE DO SELETOR DE ORIENTAÇÃO
 function updateOrientationVisibility() {
   const formatVal = $("presetSizes").value;
   const show = isLargeFormat(formatVal);
   const orientBox = $("orientationBox");
-  const storeBox = $("storeBox");
   const row = $("storeOrientationRow");
 
   if (show) {
