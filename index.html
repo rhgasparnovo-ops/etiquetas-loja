@@ -57,6 +57,10 @@
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
   input[type="file"] { padding:6px; }
+  
+  /* MAIÚSCULAS VISUAIS NATIVAS SEM TRAVAR O CURSOR */
+  .uppercase-input { text-transform: uppercase; }
+  
   button { cursor:pointer; font-weight:700; }
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
   .secondary { background:#fff; font-size:15px; }
@@ -122,12 +126,7 @@
     border-radius: 3px;
   }
 
-  /* MODO HORIZONTAL / PAISAGEM */
-  .label-card.layout-landscape {
-    flex-direction: column;
-  }
-
-  .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; }
+  .header { flex: 0 0 18%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; }
   .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; align-items: center; }
   .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; }
   .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; }
@@ -148,7 +147,6 @@
   .item-code { font-size: 10px; font-weight: bold; color: #444; }
   .product { font-size: 14px; font-weight: bold; color: #000; word-break: break-word; text-align: center; }
   .price { font-size: 28px; font-weight: bold; color: #000; white-space: nowrap; text-align: center; }
-  .unit-price { font-size: 10px; color: #555; text-align: center; }
   .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; text-align: center; }
   .ean-text { font-family: monospace; font-size: 9px; font-weight: bold; }
   .promo-text { font-size: 8px; color: #555; }
@@ -214,7 +212,7 @@
 
   <div class="grid">
     <section class="panel">
-      <!-- FORMATO DA ETIQUETA COM TODAS AS MEDIDAS DE RETALHO -->
+      <!-- FORMATO DA ETIQUETA -->
       <label for="presetSizes">Medida / Formato da Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
         <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
@@ -241,7 +239,7 @@
         </div>
       </div>
 
-      <!-- SELETOR DE ORIENTAÇÃO (HORIZONTAL / VERTICAL) -->
+      <!-- SELETOR DE ORIENTAÇÃO -->
       <div class="size-row" style="margin-bottom: 8px;">
         <div>
           <label for="labelOrientation" style="margin-top:0;">Orientação</label>
@@ -260,10 +258,10 @@
       </div>
       
       <label for="internalCode">Código Interno</label>
-      <input id="internalCode" type="text" placeholder="Ex.: DR058860">
+      <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR058860">
 
       <label for="product">Produto / Variedade</label>
-      <input id="product" type="text" placeholder="Ex.: MAÇÃ GALA">
+      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA">
 
       <!-- DETALHES DE FRUTA E LEGUMES -->
       <div class="fruit-panel" id="fruitPanel">
@@ -271,7 +269,7 @@
         <div class="size-row-3">
           <div>
             <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
-            <input id="origem" type="text" placeholder="PORTUGAL">
+            <input id="origem" type="text" class="uppercase-input" placeholder="PORTUGAL">
             <div class="quick-chips">
               <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">PT</span>
               <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">ES</span>
@@ -279,7 +277,7 @@
           </div>
           <div>
             <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
-            <input id="categoria" type="text" placeholder="I">
+            <input id="categoria" type="text" class="uppercase-input" placeholder="I">
             <div class="quick-chips">
               <span class="chip-btn" onclick="setField('categoria', 'I')">Cat I</span>
               <span class="chip-btn" onclick="setField('categoria', 'II')">Cat II</span>
@@ -287,7 +285,7 @@
           </div>
           <div>
             <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
-            <input id="calibre" type="text" placeholder="65/70">
+            <input id="calibre" type="text" class="uppercase-input" placeholder="65/70">
           </div>
         </div>
 
@@ -386,8 +384,11 @@ const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T
 let globalPhotoData = "";
 
 function setField(fieldId, val) {
-  $(fieldId).value = val;
-  updateLabel();
+  const el = $(fieldId);
+  if (el) {
+    el.value = val;
+    updateLabel();
+  }
 }
 
 function parsePrice(valStr) {
@@ -412,7 +413,63 @@ function formatPromoDate(startStr, endStr) {
     return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
   } else {
     const d1 = new Date(startStr);
-    return `Promoção a partir de ${d1.getDate()} de${months[d1.getMonth()]} de ${d1.getFullYear()}`;   } }  function getPrintDateStr() {   const now = new Date();   return "Impresso a: " + now.toLocaleDateString('pt-PT'); }  const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"]; const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"]; const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"]; const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];  function onlyDigits(value) { return String(value \vert{}\vert{} "").replace(/\D/g, ""); } function ean13CheckDigit(first12) {   const digits = onlyDigits(first12).slice(0, 12);   if (digits.length !== 12) return null;   let sum = 0;   for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i \% 2 === 0 ? 1 : 3); }   return String((10 - (sum \% 10)) \% 10); } function isValidEAN13(value) {   const digits = onlyDigits(value);   return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12]; }  function drawBarcode(svg, value) {   if (!svg) return;   svg.innerHTML = "";   const cleanVal = String(value \vert{}\vert{} "").trim();   if (!cleanVal) return;    if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {     drawEAN13(svg, cleanVal);   } else {     drawCode128(svg, cleanVal);   } }  function drawEAN13(svg, value) {   const digits = onlyDigits(value);   const first = Number(digits[0]);   const leftDigits = digits.slice(1, 7);   const rightDigits = digits.slice(7);   const parity = EAN_PARITY[first];    let bits = "101";   for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }   bits += "01010";    for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }   bits += "101";     const quietZone = 11;   const totalWidth = bits.length + (quietZone * 2);   const ns = "http://www.w3.org/2000/svg";   svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
+  }
+}
+
+function getPrintDateStr() {
+  const now = new Date();
+  return "Impresso a: " + now.toLocaleDateString('pt-PT');
+}
+
+const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+
+function onlyDigits(value) { return String(value || "").replace(/\D/g, ""); }
+function ean13CheckDigit(first12) {
+  const digits = onlyDigits(first12).slice(0, 12);
+  if (digits.length !== 12) return null;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i % 2 === 0 ? 1 : 3); }
+  return String((10 - (sum % 10)) % 10);
+}
+function isValidEAN13(value) {
+  const digits = onlyDigits(value);
+  return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12];
+}
+
+function drawBarcode(svg, value) {
+  if (!svg) return;
+  svg.innerHTML = "";
+  const cleanVal = String(value || "").trim();
+  if (!cleanVal) return;
+
+  if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {
+    drawEAN13(svg, cleanVal);
+  } else {
+    drawCode128(svg, cleanVal);
+  }
+}
+
+function drawEAN13(svg, value) {
+  const digits = onlyDigits(value);
+  const first = Number(digits[0]);
+  const leftDigits = digits.slice(1, 7);
+  const rightDigits = digits.slice(7);
+  const parity = EAN_PARITY[first];
+
+  let bits = "101";
+  for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }
+  bits += "01010"; 
+  for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }
+  bits += "101"; 
+
+  const quietZone = 11;
+  const totalWidth = bits.length + (quietZone * 2);
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -473,7 +530,6 @@ function drawCode128(svg, text) {
   }
 }
 
-// RESOLUÇÃO DE DIMENSÕES
 function getDimensions() {
   const formatVal = $("presetSizes").value;
   const orientation = $("labelOrientation").value;
@@ -497,11 +553,16 @@ function getDimensions() {
       break;
   }
 
-  // Se orientação for vertical, inverte largura e altura
   if (orientation === "vertical" && w > h && formatVal !== "amanhecer") {
     const temp = w; w = h; h = temp;
   }
   return { width: w, height: h };
+}
+
+let updateTimer = null;
+function updateLabelDebounced() {
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(() => updateLabel(false), 80);
 }
 
 function updateLabel(isPrinting = false) {
@@ -512,7 +573,7 @@ function updateLabel(isPrinting = false) {
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isA6 = formatVal === "A6";
-  const is125x80 = formatVal === "125x80";
+  const isFruit = (val => val === "A6" || val === "125x80")(formatVal);
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   const dims = getDimensions();
 
@@ -522,13 +583,13 @@ function updateLabel(isPrinting = false) {
       badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
     } else {
       badgeSheet.style.display = "block";
-      badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
+      badgeSheet.textContent = `📐 Dimensões Reais: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
     }
   }
 
   const storeVal = $("store").value;
-  const productVal = $("product").value.trim().toUpperCase() || "NOME DO PRODUTO";
-  const codeVal = $("internalCode").value.trim().toUpperCase();
+  const productVal = ($("product").value || "").trim().toUpperCase();
+  const codeVal = ($("internalCode").value || "").trim().toUpperCase();
   const printDateStr = getPrintDateStr();
   const ean = onlyDigits($("ean").value);
   const barcodeVal = codeVal || ean || "5601227849374";
@@ -579,7 +640,7 @@ function updateLabel(isPrinting = false) {
         <div class="main-content">
           <div class="left-column">
             <div style="font-size:9px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product">${productVal}</div>
+            <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
             <div class="price">${priceStr}</div>
             <div style="font-size:10px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
             <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
@@ -601,7 +662,7 @@ function updateLabel(isPrinting = false) {
     }
 
   } else {
-    // TODOS OS OUTROS FORMATOS DE RETALHO (COM MEDIDAS REAIS E ORIENTAÇÃO)
+    // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL
     previewWrap.className = "preview-wrap";
     const price = parsePrice($("price")?.value);
     const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
@@ -610,9 +671,9 @@ function updateLabel(isPrinting = false) {
     const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
     const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
 
-    const origemVal = $("origem").value.trim().toUpperCase();
-    const categoriaVal = $("categoria").value.trim().toUpperCase();
-    const calibreVal = $("calibre").value.trim().toUpperCase();
+    const origemVal = ($("origem").value || "").trim().toUpperCase();
+    const categoriaVal = ($("categoria").value || "").trim().toUpperCase();
+    const calibreVal = ($("calibre").value || "").trim().toUpperCase();
     let fruitParts = [];
     if (origemVal) fruitParts.push("Origem: " + origemVal);
     if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
@@ -652,7 +713,7 @@ function updateLabel(isPrinting = false) {
         <div class="main-content">
           <div class="left-column">
             <div style="font-size:10px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product" style="font-size:${dims.height > 60 ? '20px' : '13px'};">${productVal}</div>
+            <div class="product" style="font-size:${dims.height > 60 ? '20px' : '13px'};">${productVal || 'NOME DO PRODUTO'}</div>
             ${dualPriceHTML ? dualPriceHTML : `<div class="price" style="font-size:${dims.height > 60 ? '34px' : '24px'};">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
             <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
           </div>
@@ -673,7 +734,6 @@ function updateLabel(isPrinting = false) {
   }
 }
 
-// ATUALIZAÇÃO DE INTERFACE QUANDO MUDA O FORMATO
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
@@ -695,29 +755,20 @@ $("presetSizes").addEventListener("change", function() {
 });
 
 $("labelOrientation").addEventListener("change", () => updateLabel());
-$("customWidth").addEventListener("input", () => updateLabel());
-$("customHeight").addEventListener("input", () => updateLabel());
+$("customWidth").addEventListener("input", updateLabelDebounced);
+$("customHeight").addEventListener("input", updateLabelDebounced);
 
-["product","internalCode","origem","categoria","calibre"].forEach(id => {
+["product","internalCode","origem","categoria","calibre","price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
   const el = $(id);
   if (el) {
-    el.addEventListener("input", e => {
-      e.target.value = e.target.value.toUpperCase();
-      updateLabel();
-    });
+    el.addEventListener("input", updateLabelDebounced);
   }
-});
-
-["price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
-  const el = $(id);
-  if (el) el.addEventListener("input", () => updateLabel());
 });
 
 ["store","capacityUnit","depositFeeSelect","copiesCount","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) {
     el.addEventListener("change", () => updateLabel());
-    el.addEventListener("input", () => updateLabel());
   }
 });
 
