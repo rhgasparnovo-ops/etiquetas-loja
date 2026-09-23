@@ -156,7 +156,7 @@
   
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1; }
+  .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1.1; }
   .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
@@ -326,11 +326,11 @@
       <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR058860">
 
       <label for="product">Produto / Variedade</label>
-      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: VINHO TINTO ALENTEJANO">
+      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL">
 
-      <!-- DETALHES DE FRUTA E LEGUMES -->
+      <!-- DETALHES DE ORIGEM / CAT / CALIBRE (SEMPRE DISPONÍVEL EM FORMATOS GRANDES) -->
       <div class="fruit-panel" id="fruitPanel">
-        <h4>🍎 Detalhes Fruta e Legumes</h4>
+        <h4>🍎 Origem, Categoria e Calibre</h4>
         <div class="size-row-3">
           <div>
             <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
@@ -398,16 +398,15 @@
             <div>
               <label for="capacityUnit">Unidade de Referência Legal</label>
               <select id="capacityUnit">
-                <option value="lt" selected>Litros (LT) — Garrafas / Bebidas</option>
+                <option value="lt">Litros (LT) — Garrafas / Bebidas</option>
                 <option value="un">Unidade (UN)</option>
-                <option value="peso">Venda a Granel (€/KG)</option>
+                <option value="peso" selected>Venda a Granel (€/KG)</option>
                 <option value="g">Gramas (g) — Pacotes / Embalados</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- TAXA VOLTA: ESPECÍFICA PARA BEBIDAS EM PLÁSTICO / LATAS -->
         <div id="depositContainer" style="margin-top: 8px;">
           <label for="depositFeeSelect">Taxa Volta (Garrafas de Plástico / Latas)</label>
           <select id="depositFeeSelect">
@@ -504,6 +503,7 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               
+              <!-- BLOCO DE PREÇO COM DESCONTO POTENCIADO -->
               <div class="price-wrapper" id="cardPriceWrapper">
                 <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
                   <span class="old-price" id="cardOldPrice"></span>
@@ -784,12 +784,11 @@ function updateCard() {
   const isPromo = $("isPromoActive").checked;
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
-  const isFruit = (formatVal === "A6" || formatVal === "125x80");
+  const isLarge = isLargeFormat(formatVal);
   const orientation = $("labelOrientation").value;
   const dims = getDimensions();
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
-  const showOrientation = isLargeFormat(formatVal);
 
   const card = $("mainLabelCard");
   if (isAmanhecer) {
@@ -802,7 +801,7 @@ function updateCard() {
     card.style.width = (dims.width * scale) + "px";
     card.style.height = (dims.height * scale) + "px";
     
-    if (showOrientation) {
+    if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
@@ -810,10 +809,20 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
-  const isLarge = dims.height > 65 || dims.width > 125;
-  $("cardProduct").style.fontSize = isLarge ? "20px" : (isAmanhecer ? "13px" : "14px");
-  $("cardPrice").style.fontSize = isLarge ? "38px" : (isAmanhecer ? "26px" : "28px");
-  $("cardPromoTag").style.fontSize = isLarge ? "18px" : (isAmanhecer ? "11.5px" : "13px");
+  // ESCALAS TIPOGRÁFICAS POTENCIADAS PARA FORMATOS GRANDES
+  if (isLarge) {
+    $("cardProduct").style.fontSize = (formatVal === "A5") ? "32px" : "26px";
+    $("cardPrice").style.fontSize = (formatVal === "A5") ? "68px" : "54px";
+    $("cardOldPrice").style.fontSize = "16px";
+    $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "18px";
+    $("cardPromoTag").style.padding = "3px 8px";
+  } else {
+    $("cardProduct").style.fontSize = isAmanhecer ? "13px" : "14px";
+    $("cardPrice").style.fontSize = isAmanhecer ? "26px" : "28px";
+    $("cardOldPrice").style.fontSize = "10px";
+    $("cardPromoTag").style.fontSize = isAmanhecer ? "11.5px" : "13px";
+    $("cardPromoTag").style.padding = "1.5px 6px";
+  }
 
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
@@ -839,7 +848,7 @@ function updateCard() {
       $("cardPromoTopRow").style.display = "none";
     }
 
-    if (isFruit || capUnit === "peso") {
+    if (capUnit === "peso") {
       $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.5em; color:#333;">€/KG</span>';
       $("cardUnitPrice").style.display = "none";
     } else {
@@ -849,13 +858,16 @@ function updateCard() {
         const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerLt + " € / LT";
         $("cardUnitPrice").style.display = "block";
+        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else if (capUnit === "g" && capacityNum > 0) {
         const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerKg + " € / KG";
         $("cardUnitPrice").style.display = "block";
+        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else if (capUnit === "un") {
         $("cardUnitPrice").textContent = formatted + " € / UN";
         $("cardUnitPrice").style.display = "block";
+        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else {
         $("cardUnitPrice").style.display = "none";
       }
@@ -866,26 +878,25 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // FRUTA / LEGUMES
-  if (isFruit) {
-    const org = ($("origem")?.value || "").trim().toUpperCase();
-    const cat = ($("categoria")?.value || "").trim().toUpperCase();
-    const cal = ($("calibre")?.value || "").trim().toUpperCase();
-    let parts = [];
-    if (org) parts.push("Origem: " + org);
-    if (cat) parts.push("Cat: " + cat);
-    if (cal) parts.push("Cal: " + cal);
-    if (parts.length > 0) {
-      $("cardFruit").style.display = "block";
-      $("cardFruit").textContent = parts.join(" | ");
-    } else {
-      $("cardFruit").style.display = "none";
-    }
+  // ORIGEM / CATEGORIA / CALIBRE (SEMPRE EM DESTAQUE NOS GRANDES OU QUANDO PREENCHIDO)
+  const org = ($("origem")?.value || "").trim().toUpperCase();
+  const cat = ($("categoria")?.value || "").trim().toUpperCase();
+  const cal = ($("calibre")?.value || "").trim().toUpperCase();
+  let parts = [];
+  if (org) parts.push("Origem: " + org);
+  if (cat) parts.push("Cat: " + cat);
+  if (cal) parts.push("Cal: " + cal);
+  
+  if (parts.length > 0) {
+    $("cardFruit").style.display = "block";
+    $("cardFruit").textContent = parts.join(" | ");
+    $("cardFruit").style.fontSize = isLarge ? "15px" : "9.5px";
+    $("cardFruit").style.marginTop = isLarge ? "4px" : "1px";
   } else {
     $("cardFruit").style.display = "none";
   }
 
-  // TAXA VOLTA REGULAMENTADA
+  // TAXA VOLTA
   const depositSelect = $("depositFeeSelect").value;
   let depositVal = "";
   if (depositSelect === "custom") {
@@ -899,6 +910,7 @@ function updateCard() {
   if (depositVal) {
     $("cardDeposit").style.display = "block";
     $("cardDepositText").textContent = depositVal;
+    $("cardDepositText").style.fontSize = isLarge ? "11px" : "7px";
   } else {
     $("cardDeposit").style.display = "none";
   }
@@ -907,6 +919,7 @@ function updateCard() {
   if (extraUnit) {
     $("cardExtraUnit").style.display = "block";
     $("cardExtraUnit").textContent = extraUnit;
+    $("cardExtraUnit").style.fontSize = isLarge ? "12px" : "8px";
   } else {
     $("cardExtraUnit").style.display = "none";
   }
@@ -932,7 +945,7 @@ function updateCard() {
   const pStart = $("promoStart").value;
   const pEnd = $("promoEnd").value;
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
-
+  $("cardPromoText").style.fontSize = isLarge ? "10px" : "7px";
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
@@ -945,31 +958,21 @@ function updateOrientationVisibility() {
   if (show) {
     orientBox.style.display = "block";
     row.style.gridTemplateColumns = "1fr 1fr";
+    $("fruitPanel").style.display = "block"; // Disponibiliza sempre Origem/Cat/Calibre nos grandes
   } else {
     orientBox.style.display = "none";
     row.style.gridTemplateColumns = "1fr";
+    $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none";
   }
 }
 
 // EVENTOS
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
-  const isFruit = (val === "A6" || val === "125x80");
   const isCustom = (val === "custom");
+  const isLarge = isLargeFormat(val);
   
   $("customDimensionsRow").style.display = isCustom ? "grid" : "none";
-  $("fruitPanel").style.display = isFruit ? "block" : "none";
-  
-  if (isFruit) {
-    $("capacityUnit").value = "peso";
-    $("packagingRow").style.display = "none";
-    $("depositContainer").style.display = "none";
-    $("extraUnitContainer").style.display = "none";
-  } else {
-    $("packagingRow").style.display = "block";
-    $("depositContainer").style.display = "block";
-    $("extraUnitContainer").style.display = "block";
-  }
   
   if (val === "amanhecer") {
     $("copiesCount").value = "21";
@@ -1031,7 +1034,7 @@ $("clearBtn").addEventListener("click", function() {
   $("internalCode").value = ""; $("product").value = ""; $("price").value = ""; $("oldPrice").value = "";
   $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = ""; $("customDepositInput").value = "";
   $("promoStart").value = ""; $("promoEnd").value = "";
-  $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
+  $("capacity").value = "0.75"; $("capacityUnit").value = "peso";
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
