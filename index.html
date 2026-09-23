@@ -14,18 +14,18 @@
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
-  .app { max-width:1300px; margin:0 auto; padding:20px; }
+  .app { max-width:1320px; margin:0 auto; padding:20px; }
   
   .top-header {
     display: flex; justify-content: space-between; align-items: center;
-    background: #fff; padding: 14px 24px; border-radius: 12px;
+    background: #fff; padding: 12px 24px; border-radius: 12px;
     border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     margin-bottom: 20px; gap: 16px;
   }
-  .top-header h1 { margin: 0; font-size: 22px; color: var(--dark); font-weight: 800; }
-  .top-logos { display: flex; align-items: center; gap: 16px; }
-  .top-logos img { height: 42px; max-width: 140px; object-fit: contain; }
-  .top-logos .divider { width: 1px; height: 30px; background: #e0e0e0; }
+  .top-header h1 { margin: 0; font-size: 20px; color: var(--dark); font-weight: 800; }
+  .top-logos { display: flex; align-items: center; gap: 14px; }
+  .top-logos img { height: 36px; max-width: 130px; object-fit: contain; }
+  .top-logos .divider { width: 1px; height: 26px; background: #e0e0e0; }
 
   .grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
   .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
@@ -47,6 +47,12 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
+  /* HISTÓRICO */
+  .history-box { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
+  .history-title { font-size: 11px; font-weight: 700; color: #666; margin-bottom: 8px; text-transform: uppercase; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
+  .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+
   /* ÁREA DE PRÉ-VISUALIZAÇÃO */
   .preview-container {
     background: #dfe4ea; border: 1px solid #ced6e0; border-radius: 12px;
@@ -60,7 +66,7 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; }
 
-  /* CARTÃO DE ETIQUETA COM DIMENSIONAMENTO DINÂMICO */
+  /* CARTÃO DE ETIQUETA UNIVERSAL BALANCEADO */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333 !important;
@@ -71,53 +77,65 @@
     overflow: hidden !important;
     position: relative !important;
     border-radius: 4px;
-    transition: width 0.2s, height 0.2s;
+    transition: width 0.15s, height 0.15s;
   }
 
+  /* CABEÇALHO COMPACTO: NÃO ROUBA ESPAÇO AO CONTEÚDO */
   .header {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #c8102e; padding-bottom: 4px; flex-shrink: 0;
+    border-bottom: 2px solid #c8102e; padding-bottom: 2px;
+    height: 22px; flex-shrink: 0; overflow: hidden;
   }
-  .logo-wrapper-1, .logo-wrapper-2 { width: 30%; height: 100%; display: flex; align-items: center; }
-  .header-store-container { flex: 1; text-align: right; }
-  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .logo-wrapper-1, .logo-wrapper-2 { width: 26%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
+  .logo-wrapper-2 { justify-content: center; }
+  .header-store-container { flex: 1; text-align: right; overflow: hidden; }
+  .brand-logo { max-width: 100%; max-height: 18px; object-fit: contain; }
 
+  /* ÁREA PRINCIPAL: ESPAÇOSA E INTEGRADA */
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
-    padding: 6px 0; gap: 8px; overflow: hidden; align-items: center;
+    padding: 3px 0; gap: 8px; overflow: hidden; align-items: center;
   }
   .left-column {
-    flex: 1.2; display: flex; flex-direction: column;
-    justify-content: space-around; align-items: center; text-align: center;
-    height: 100%; overflow: hidden;
+    flex: 1.1; min-width: 0; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    height: 100%; overflow: hidden; gap: 2px;
   }
+  
+  /* CAIXA DE FOTO AMPLA E AUTO-ADAPTADA */
   .right-column {
-    flex: 0.8; display: none; justify-content: center; align-items: center;
-    border: 1px solid #eee; border-radius: 4px; background: #fafafa;
-    height: 100%; overflow: hidden;
+    flex: 0.9; min-width: 0; display: none; justify-content: center; align-items: center;
+    border: 1px solid #e2e8f0; border-radius: 5px; background: #ffffff;
+    height: 96%; overflow: hidden; padding: 2px;
   }
-  .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .right-column img {
+    max-width: 100%; max-height: 100%; width: auto; height: auto;
+    object-fit: contain; display: block; margin: auto;
+  }
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; margin-top: 4px;
+    width: 100%; flex-shrink: 0; margin-top: 2px; height: 26px;
   }
-  .svg-container { width: 100%; height: 26px; display: flex; justify-content: center; }
+  .svg-container { width: 100%; height: 18px; display: flex; justify-content: center; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
     display: flex; justify-content: space-between; align-items: flex-end;
-    width: 100%; border-top: 1px dashed #ccc; padding-top: 4px; margin-top: auto; flex-shrink: 0;
+    width: 100%; border-top: 1px dashed #ccc; padding-top: 2px; margin-top: auto; flex-shrink: 0;
   }
 
-  .store-text { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #000; }
-  .item-code { font-size: 11px; font-weight: bold; color: #444; }
-  .product { font-size: 16px; font-weight: bold; color: #000; word-break: break-word; line-height: 1.15; }
-  .price { font-size: 32px; font-weight: bold; color: #000; line-height: 1; margin: 4px 0; }
-  .fruit-info { font-size: 12px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; margin-top: 2px; }
-  .ean-text { font-family: monospace; font-size: 10px; font-weight: bold; }
-  .promo-text { font-size: 8.5px; color: #555; }
-  .print-date { font-size: 7.5px; color: #666; }
+  .store-text { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #000; }
+  .item-code { font-size: 9.5px; font-weight: bold; color: #555; line-height: 1; }
+  .product {
+    font-size: 14px; font-weight: bold; color: #000; word-break: break-word;
+    line-height: 1.1; max-height: 2.3em; overflow: hidden; text-align: center;
+  }
+  .price { font-size: 28px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
+  .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1.1; }
+  .ean-text { font-family: monospace; font-size: 8.5px; font-weight: bold; line-height: 1; }
+  .promo-text { font-size: 8px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%; }
+  .print-date { font-size: 7px; color: #666; white-space: nowrap; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -126,7 +144,7 @@
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
   
-  /* IMPRESSÃO */
+  /* IMPRESSÃO: REGRAS MILIMÉTRICAS BLINDADAS */
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
@@ -212,6 +230,7 @@
       <label for="product">Produto / Variedade</label>
       <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA">
 
+      <!-- DETALHES DE FRUTA E LEGUMES -->
       <div class="fruit-panel" id="fruitPanel">
         <h4>🍎 Detalhes Fruta e Legumes</h4>
         <div class="size-row-3">
@@ -285,8 +304,21 @@
           <label for="unit">Informação Extra (Opcional)</label>
           <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
         </div>
+
+        <!-- VALIDADE DE PROMOÇÃO COMPLETA: DE X A X -->
+        <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
+          <div>
+            <label for="promoStart">Início Promoção</label>
+            <input id="promoStart" type="date">
+          </div>
+          <div>
+            <label for="promoEnd">Fim Promoção</label>
+            <input id="promoEnd" type="date">
+          </div>
+        </div>
       </div>
 
+      <!-- CÓDIGO DE BARRAS -->
       <label for="ean">Código de Barras (EAN / Leitura ótica - Opcional)</label>
       <input id="ean" type="text" placeholder="Insira só se quiser barras (Ex.: 5601234567890)">
 
@@ -300,9 +332,14 @@
         <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
         <button class="secondary" id="clearBtn" type="button">Limpar</button>
       </div>
+
+      <div class="history-box">
+        <div class="history-title">🕒 Últimos Artigos Emitidos</div>
+        <div class="history-list" id="historyList"></div>
+      </div>
     </section>
 
-    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO COM REDIMENSIONAMENTO REAL -->
+    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
@@ -318,19 +355,19 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               <div class="price" id="cardPrice">0,00 €</div>
-              <div id="cardUnitPrice" style="font-size:9.5px; color:#555; display:none;"></div>
-              <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 4px; font-size:8.5px; font-weight:900;" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="font-size:9.5px; color:#333; display:none;"></div>
+              <div id="cardUnitPrice" style="font-size:9px; color:#555; display:none;"></div>
+              <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:8px; font-weight:900;" id="cardDepositText"></span></div>
+              <div id="cardExtraUnit" style="font-size:9px; color:#333; display:none;"></div>
               <div class="fruit-info" id="cardFruit"></div>
             </div>
-            <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt=""></div>
+            <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
           </div>
           <div class="barcode-container" id="cardBarcodeBox">
             <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
             <div class="ean-text" id="cardBarcodeText"></div>
           </div>
           <div class="footer-container" id="cardFooter">
-            <div class="promo-text">Preço sujeito às condições comerciais em vigor.</div>
+            <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
             <div class="print-date" id="cardPrintDate"></div>
           </div>
         </div>
@@ -356,6 +393,25 @@ function parsePrice(valStr) {
   const clean = String(valStr).replace(",", ".").trim();
   const num = parseFloat(clean);
   return Number.isFinite(num) ? num : null;
+}
+
+function formatPromoDate(startStr, endStr) {
+  if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
+  const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  if (startStr && endStr) {
+    const d1 = new Date(startStr); const d2 = new Date(endStr);
+    if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) {
+      return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    } else {
+      return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    }
+  } else if (endStr) {
+    const d2 = new Date(endStr);
+    return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+  } else {
+    const d1 = new Date(startStr);
+    return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
+  }
 }
 
 const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
@@ -456,15 +512,14 @@ function drawCode128(svg, text) {
     if (fullBits[i] !== "1") continue;
     const rect = document.createElementNS(ns, "rect");
     rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", "0");
+    rect.setAttribute("y", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 0 : 4);
     rect.setAttribute("width", "1");
-    rect.setAttribute("height", "62");
+    rect.setAttribute("height", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 64 : 60);
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
   }
 }
 
-// OBTÉM AS MEDIDAS DE CADA FORMATO
 function getDimensions() {
   const formatVal = $("presetSizes").value;
   const orientation = $("labelOrientation").value;
@@ -490,7 +545,6 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
-// ATUALIZAÇÃO VISUAL EM TEMPO REAL
 function updateCard() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -503,24 +557,21 @@ function updateCard() {
   const orientation = $("labelOrientation").value;
   const dims = getDimensions();
 
-  // AJUSTA AS DIMENSÕES DO CARTÃO VISÍVEL NO ECRÃ
   const card = $("mainLabelCard");
   if (isAmanhecer) {
     card.style.width = "380px";
-    card.style.height = "210px";
+    card.style.height = "214px";
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
   } else {
-    // Escala proporcional no ecrã para representar o formato escolhido
-    const scale = 3.2; // Pixels por milímetro no ecrã
+    const scale = 3.2;
     card.style.width = (dims.width * scale) + "px";
     card.style.height = (dims.height * scale) + "px";
     $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
   }
 
-  // Ajuste do tamanho de texto proporcional
-  const isLarge = dims.height > 60 || dims.width > 120;
-  $("cardProduct").style.fontSize = isLarge ? "22px" : "15px";
-  $("cardPrice").style.fontSize = isLarge ? "40px" : "30px";
+  const isLarge = dims.height > 65 || dims.width > 125;
+  $("cardProduct").style.fontSize = isLarge ? "22px" : "14px";
+  $("cardPrice").style.fontSize = isLarge ? "38px" : "28px";
 
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
@@ -577,6 +628,7 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
+  // FOTOGRAFIA VISÍVEL E PROPORCIONAL
   if (globalPhotoData) {
     $("cardPhotoBox").style.display = "flex";
     $("cardPhotoImg").src = globalPhotoData;
@@ -584,6 +636,7 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
+  // CÓDIGO DE BARRAS
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -591,6 +644,11 @@ function updateCard() {
   } else {
     $("cardBarcodeBox").style.display = "none";
   }
+
+  // PROMOÇÃO E VALIDADE "DE X A X"
+  const pStart = $("promoStart").value;
+  const pEnd = $("promoEnd").value;
+  $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
 
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
@@ -614,12 +672,12 @@ $("presetSizes").addEventListener("change", function() {
 
 $("labelOrientation").addEventListener("change", updateCard);
 
-["product","internalCode","origem","categoria","calibre","price","ean","unit","capacity"].forEach(id => {
+["product","internalCode","origem","categoria","calibre","price","ean","unit","capacity","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("input", updateCard);
 });
 
-["store","capacityUnit","depositFeeSelect"].forEach(id => {
+["store","capacityUnit","depositFeeSelect","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("change", updateCard);
 });
@@ -635,6 +693,7 @@ $("photo").addEventListener("change", function(e) {
 $("clearBtn").addEventListener("click", function() {
   $("internalCode").value = ""; $("product").value = ""; $("price").value = "";
   $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = "";
+  $("promoStart").value = ""; $("promoEnd").value = "";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
   if ($("calibre")) $("calibre").value = "";
@@ -652,6 +711,7 @@ window.addEventListener("keydown", e => {
 $("printBtn").addEventListener("click", triggerPrint);
 
 function triggerPrint() {
+  saveToHistory();
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
   const card = $("mainLabelCard");
@@ -695,7 +755,48 @@ function triggerPrint() {
   }, 120);
 }
 
+function saveToHistory() {
+  try {
+    const item = {
+      code: $("internalCode").value.trim(),
+      product: $("product").value.trim(),
+      price: $("price").value.trim(),
+      format: $("presetSizes").value
+    };
+    if (!item.product) return;
+    let history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+    history = history.filter(h => h.product !== item.product);
+    history.unshift(item);
+    if (history.length > 8) history.pop();
+    localStorage.setItem("etiquetas_history", JSON.stringify(history));
+    renderHistory();
+  } catch(e){}
+}
+
+function renderHistory() {
+  try {
+    const list = $("historyList");
+    if (!list) return;
+    const history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+    list.innerHTML = "";
+    history.forEach(item => {
+      const btn = document.createElement("div");
+      btn.className = "history-item";
+      btn.textContent = item.product + (item.price ? ` (${item.price}€)` : "");
+      btn.onclick = () => {
+        $("internalCode").value = item.code || "";
+        $("product").value = item.product || "";
+        $("price").value = item.price || "";
+        $("presetSizes").value = item.format || "amanhecer";
+        $("presetSizes").dispatchEvent(new Event("change"));
+      };
+      list.appendChild(btn);
+    });
+  } catch(e){}
+}
+
 // Inicialização imediata
+renderHistory();
 updateCard();
 </script>
 </body>
