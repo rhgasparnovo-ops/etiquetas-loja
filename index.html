@@ -64,7 +64,7 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* CARTÃO DE ETIQUETA */
+  /* CARTÃO DE ETIQUETA UNIVERSAL */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333;
@@ -116,7 +116,6 @@
     white-space: nowrap;
     overflow: visible;
     line-height: 1.1;
-    font-size: 8px;
     font-weight: 800;
     color: #084298;
     text-transform: uppercase;
@@ -127,54 +126,35 @@
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; height: 18px; overflow: hidden;
+    width: 100%; flex-shrink: 0; height: 16px; overflow: hidden;
   }
-  .svg-container { width: 100%; height: 12px; display: flex; justify-content: center; overflow: hidden; }
+  .svg-container { width: 100%; height: 10px; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
     display: flex; justify-content: space-between; align-items: flex-end;
     width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; margin-top: 1px; flex-shrink: 0;
-    height: 12px; overflow: hidden;
+    height: 11px; overflow: hidden;
   }
 
   .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
-  .item-code { font-size: 9px; font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
-  
-  .product {
-    font-size: 11px; font-weight: bold; color: #000; word-break: break-word;
-    line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
-  }
+  .item-code { font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
+  .product { font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center; }
   
   .price-wrapper { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     line-height: 1; margin: 1px 0; width: 100%;
   }
   .promo-top-row {
-    display: flex; align-items: center; justify-content: center; gap: 6px; line-height: 1; margin-bottom: 2px;
+    display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1; margin-bottom: 1px;
   }
-  .old-price { 
-    font-size: 10px; color: #666; text-decoration: line-through; font-weight: 700; line-height: 1; 
-  }
-  
-  .promo-tag { 
-    font-size: 12px; 
-    font-weight: 900; 
-    color: #ffffff; 
-    background: #c8102e; 
-    padding: 1.5px 6px; 
-    border-radius: 3px; 
-    line-height: 1; 
-    letter-spacing: 0.3px;
-    box-shadow: 0 1px 3px rgba(200, 16, 46, 0.35);
-    display: inline-block;
-  }
-  
-  .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
+  .old-price { color: #666; text-decoration: line-through; font-weight: 700; line-height: 1; }
+  .promo-tag { color: #ffffff; background: #c8102e; border-radius: 3px; font-weight: 900; line-height: 1; }
+  .price { font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  .ean-text { font-family: monospace; font-size: 7px; font-weight: bold; line-height: 1; text-transform: none; letter-spacing: 0.2px; }
-  .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
-  .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
+  .ean-text { font-family: monospace; font-size: 6.5px; font-weight: bold; line-height: 1; text-transform: none; }
+  .promo-text { color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68%; line-height: 1; }
+  .print-date { color: #666; white-space: nowrap; line-height: 1; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -449,7 +429,7 @@
         </div>
       </div>
 
-      <!-- CÓDIGO DE BARRAS (SUPORTE ATÉ 14 DÍGITOS) -->
+      <!-- CÓDIGO DE BARRAS -->
       <label for="ean">Código de Barras (EAN-13, EAN-14 / Código)</label>
       <input id="ean" type="text" style="text-transform: none;" placeholder="Insira até 14 dígitos (Ex.: 56012345678901)">
 
@@ -528,9 +508,9 @@
                 <div class="price" id="cardPrice">0,00 €</div>
               </div>
 
-              <div id="cardUnitPrice" style="font-size:8px; color:#555; display:none; font-weight:bold; line-height:1;"></div>
-              <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7px; font-weight:900;" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="font-size:8px; color:#333; display:none; line-height:1;"></div>
+              <div id="cardUnitPrice" style="color:#555; display:none; font-weight:bold; line-height:1;"></div>
+              <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-weight:900;" id="cardDepositText"></span></div>
+              <div id="cardExtraUnit" style="color:#333; display:none; line-height:1;"></div>
             </div>
             
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
@@ -667,9 +647,6 @@ function isValidEAN13(v) {
   return d.length === 13 && ean13CheckDigit(d.slice(0,12)) === d[12];
 }
 
-/* ============================================================ */
-/* MOTOR DE CÓDIGO DE BARRAS AVANÇADO (SUPORTE 13 E 14 DÍGITOS)   */
-/* ============================================================ */
 function drawBarcode(svg, value) {
   if (!svg) return;
   svg.innerHTML = "";
@@ -678,9 +655,6 @@ function drawBarcode(svg, value) {
 
   if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {
     drawEAN13(svg, cleanVal);
-  } else if ((cleanVal.length === 14 || cleanVal.length === 8) && /^\d+$/.test(cleanVal)) {
-    // Se for EAN-14 ou EAN-8 numérico, usa Code 128 otimizado para leitura linear perfeita
-    drawCode128(svg, cleanVal);
   } else {
     drawCode128(svg, cleanVal);
   }
@@ -836,18 +810,29 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
+  // ESCALAS TIPOGRÁFICAS ADAPTADAS: PEQUENAS COMPACTAS / GRANDES DESTAQUE
   if (isLarge) {
     $("cardProduct").style.fontSize = (formatVal === "A5") ? "32px" : "26px";
     $("cardPrice").style.fontSize = (formatVal === "A5") ? "68px" : "54px";
     $("cardOldPrice").style.fontSize = "16px";
     $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "18px";
     $("cardPromoTag").style.padding = "3px 8px";
+    $("cardCode").style.fontSize = "11px";
+    $("cardUnitPrice").style.fontSize = "14px";
+    $("cardDepositText").style.fontSize = "11px";
+    $("cardExtraUnit").style.fontSize = "12px";
   } else {
-    $("cardProduct").style.fontSize = isAmanhecer ? "13px" : "14px";
-    $("cardPrice").style.fontSize = isAmanhecer ? "26px" : "28px";
-    $("cardOldPrice").style.fontSize = "10px";
-    $("cardPromoTag").style.fontSize = isAmanhecer ? "11.5px" : "13px";
-    $("cardPromoTag").style.padding = "1.5px 6px";
+    // Escala rigorosa compacta para a folha Amanhecer e etiquetas de prateleira (cabe sempre tudo sem cortar)
+    $("cardProduct.style.fontSize") // aplicado inline abaixo
+    $("cardProduct").style.fontSize = isAmanhecer ? "11px" : "12.5px";
+    $("cardPrice").style.fontSize = isAmanhecer ? "20px" : "24px";
+    $("cardOldPrice").style.fontSize = "8.5px";
+    $("cardPromoTag").style.fontSize = isAmanhecer ? "9.5px" : "11px";
+    $("cardPromoTag").style.padding = "1px 4px";
+    $("cardCode").style.fontSize = isAmanhecer ? "7.5px" : "8.5px";
+    $("cardUnitPrice").style.fontSize = isAmanhecer ? "7px" : "8px";
+    $("cardDepositText").style.fontSize = isAmanhecer ? "6.5px" : "7.5px";
+    $("cardExtraUnit").style.fontSize = isAmanhecer ? "7px" : "8px";
   }
 
   $("cardStore").textContent = storeVal;
@@ -883,16 +868,13 @@ function updateCard() {
         const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerLt + " € / LT";
         $("cardUnitPrice").style.display = "block";
-        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else if (capUnit === "g" && capacityNum > 0) {
         const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerKg + " € / KG";
         $("cardUnitPrice").style.display = "block";
-        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else if (capUnit === "un") {
         $("cardUnitPrice").textContent = formatted + " € / UN";
         $("cardUnitPrice").style.display = "block";
-        $("cardUnitPrice").style.fontSize = isLarge ? "14px" : "8px";
       } else {
         $("cardUnitPrice").style.display = "none";
       }
@@ -903,6 +885,7 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
+  // ORIGEM / CAT / CAL - TAMANHO COMPACTO E ADAPTADO PARA CABER SEMPRE
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
@@ -919,12 +902,13 @@ function updateCard() {
     if (isLarge) {
       $("cardFruit").style.fontSize = (formatVal === "A5") ? "15px" : "13px";
     } else {
+      // Escala perfeita para folha Amanhecer caber sem cortes
       if (fullText.length > 38) {
-        $("cardFruit").style.fontSize = "7.2px";
+        $("cardFruit").style.fontSize = "6.5px";
       } else if (fullText.length > 30) {
-        $("cardFruit").style.fontSize = "7.8px";
+        $("cardFruit").style.fontSize = "7.2px";
       } else {
-        $("cardFruit").style.fontSize = "8.5px";
+        $("cardFruit").style.fontSize = "7.8px";
       }
     }
   } else {
@@ -944,7 +928,6 @@ function updateCard() {
   if (depositVal) {
     $("cardDeposit").style.display = "block";
     $("cardDepositText").textContent = depositVal;
-    $("cardDepositText").style.fontSize = isLarge ? "11px" : "7px";
   } else {
     $("cardDeposit").style.display = "none";
   }
@@ -953,7 +936,6 @@ function updateCard() {
   if (extraUnit) {
     $("cardExtraUnit").style.display = "block";
     $("cardExtraUnit").textContent = extraUnit;
-    $("cardExtraUnit").style.fontSize = isLarge ? "12px" : "8px";
   } else {
     $("cardExtraUnit").style.display = "none";
   }
@@ -977,8 +959,9 @@ function updateCard() {
   const pStart = $("promoStart").value;
   const pEnd = $("promoEnd").value;
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
-  $("cardPromoText").style.fontSize = isLarge ? "10px" : "7px";
+  $("cardPromoText").style.fontSize = isLarge ? "10px" : "6.5px";
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
+  $("cardPrintDate").style.fontSize = isLarge ? "9px" : "6px";
 }
 
 function updateOrientationVisibility() {
