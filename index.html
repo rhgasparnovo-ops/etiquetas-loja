@@ -14,10 +14,10 @@
     --offset-y: -6mm; 
   }
   * { box-sizing:border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#dcdde1; color:var(--dark); }
-  .app { max-width:1440px; margin:0 auto; padding:20px; }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f4f5f7; color:var(--dark); }
+  .app { max-width:1300px; margin:0 auto; padding:20px; }
   
-  /* TOPO PRINCIPAL */
+  /* TOPO COM LOGÓTIPOS */
   .top-header {
     display: flex;
     justify-content: space-between;
@@ -26,7 +26,7 @@
     padding: 14px 24px;
     border-radius: 12px;
     border: 1px solid var(--border);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     margin-bottom: 20px;
     gap: 16px;
   }
@@ -42,218 +42,167 @@
     gap: 16px;
   }
   .top-logos img {
-    height: 42px;
+    height: 40px;
     max-width: 140px;
     object-fit: contain;
   }
   .top-logos .divider {
     width: 1px;
-    height: 30px;
+    height: 28px;
     background: #e0e0e0;
   }
 
-  .grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
-  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
+  .grid { display:grid; grid-template-columns:370px 1fr; gap:24px; align-items:start; }
+  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
-  input, button, select { width:100%; padding:10px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
+  input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
   input[type="file"] { padding:6px; }
   button { cursor:pointer; font-weight:700; }
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
   .secondary { background:#fff; font-size:15px; }
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
 
-  /* BOTÕES DE ATALHO RÁPIDO */
+  /* ATALHOS RÁPIDOS */
   .quick-chips { display: flex; gap: 6px; margin-top: 5px; }
   .chip-btn {
     width: auto; padding: 4px 10px; font-size: 11px; font-weight: 600;
     background: #f1f2f6; border: 1px solid #ced6e0; border-radius: 4px;
-    cursor: pointer; transition: 0.15s;
+    cursor: pointer;
   }
-  .chip-btn:hover { background: #dfe4ea; border-color: #a4b0be; }
+  .chip-btn:hover { background: #dfe4ea; }
 
-  /* HISTÓRICO DE ARTIGOS RECENTES */
-  .history-box {
-    margin-top: 18px; border-top: 1px solid #e1e2e6; padding-top: 12px;
-  }
-  .history-title { font-size: 12px; font-weight: 700; color: #57606f; margin-bottom: 8px; text-transform: uppercase; }
-  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 90px; overflow-y: auto; }
-  .history-item {
-    font-size: 11px; background: #f8f9fa; border: 1px solid #dcdde1; padding: 4px 8px;
-    border-radius: 4px; cursor: pointer; white-space: nowrap;
-  }
-  .history-item:hover { background: #ffeaa7; border-color: #fdcb6e; }
+  /* HISTÓRICO */
+  .history-box { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
+  .history-title { font-size: 11px; font-weight: 700; color: #666; margin-bottom: 8px; text-transform: uppercase; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
+  .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+  .history-item:hover { background: #ffeaa7; }
 
-  /* SIMULAÇÃO DE FOLHA DE IMPRESSÃO REAL NO ECRÃ */
-  .sheet-viewport {
-    background: #747d8c;
+  /* ÁREA DE PRÉ-VISUALIZAÇÃO */
+  .preview-container {
+    background: #eaedf1;
     border-radius: 12px;
     padding: 30px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: flex-start;
+    min-height: 540px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
     overflow-x: auto;
-    min-height: 800px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
   }
-  .paper-sheet {
-    background: #ffffff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    transform-origin: top center;
-    position: relative;
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  .sheet-badge {
+    background: #fff;
+    border: 1px solid #ccd1d9;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #485460;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    margin-bottom: 12px;
+  }
+
+  /* ESTRUTURA UNIVERSAL DA ETIQUETA */
+  .label-card {
+    background: #fff;
+    border: 1px solid #999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    border-radius: 3px;
   }
 
-  /* FORMATO A4 EXATO */
-  .paper-a4 {
-    width: 210mm;
-    min-height: 297mm;
-    height: 297mm;
-    padding: 0;
+  /* MODO HORIZONTAL / PAISAGEM */
+  .label-card.layout-landscape {
+    flex-direction: column;
   }
 
-  .preview-wrap.amanhecer-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, 70mm) !important;
-    grid-template-rows: 38mm repeat(6, 40mm) !important;
-    margin-left: var(--offset-x);
-    margin-top: var(--offset-y);
-    width: 210mm;
-  }
+  .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; }
+  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; align-items: center; }
+  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; }
+  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; }
+  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .main-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; padding: 4px 0; gap: 6px; }
+  .left-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+  .right-column { flex: 0.8; min-width: 0; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; border-radius: 4px; background: #fafafa; }
+  .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .barcode-container { flex: 0 0 18%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; }
+  .svg-container svg { width: 85%; height: 100%; display: block; margin: 0 auto; }
+
+  .footer-container { flex: 0 0 9%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; border-top: 1px dashed #ccc; padding-top: 2px; }
+
+  .store-text { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #000; }
+  .item-code { font-size: 10px; font-weight: bold; color: #444; }
+  .product { font-size: 14px; font-weight: bold; color: #000; word-break: break-word; text-align: center; }
+  .price { font-size: 28px; font-weight: bold; color: #000; white-space: nowrap; text-align: center; }
+  .unit-price { font-size: 10px; color: #555; text-align: center; }
+  .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; text-align: center; }
+  .ean-text { font-family: monospace; font-size: 9px; font-weight: bold; }
+  .promo-text { font-size: 8px; color: #555; }
+  .print-date { font-size: 7px; color: #666; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
 
-  /* ETIQUETA FOLHA AMANHECER */
-  .label {
-    background: #fff;
-    display: flex; flex-direction: column;
-    padding: 3px 5px; box-sizing: border-box; 
-    overflow: hidden; position: relative;
-    border: 1px dashed #e4e7ea;
-  }
-  .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; overflow: hidden; gap: 4px; }
-  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; justify-content: flex-start; align-items: center; overflow: hidden; }
-  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
-  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
-  
-  .main-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; overflow: hidden; padding: 1px 0; gap: 4px; }
-  .left-column { flex: 1.1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; overflow: hidden; padding: 1px 0; }
-  .right-column { flex: 0.9; min-width: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-  .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-  .code-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .product-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .price-container { flex: 0 0 28%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .unit-price-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .deposit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .unit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-
-  .deposit-text { white-space: nowrap; text-align: center; font-size: 8px; font-weight: 900; color: #c8102e; background: #fff5f5; padding: 0 3px; border-radius: 2px; border: 1px solid #fed7d7; line-height: 1; }
-
-  .barcode-container { flex: 0 0 17%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; }
-  .svg-container svg { width: 88%; height: 100%; display: block; margin: 0 auto; }
-  .ean-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-
-  .footer-container { flex: 0 0 10%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; border-top: 1px dashed #ccc; padding-top: 1px; }
-  .promo-container { flex: 1; min-width: 0; display: flex; justify-content: flex-start; align-items: flex-end; }
-  .print-container { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: flex-end; padding-left: 4px; }
-
-  .store-text, .item-code, .product, .price, .unit-price, .unit, .fruit-info, .ean-text, .promo-text, .print-date { margin: 0; padding: 0; font-weight: bold; color: #000; }
-  .store-text { white-space: nowrap; text-align: right; text-transform: uppercase; font-size: 11px; line-height: 1; }
-  .item-code { white-space: nowrap; text-align: center; font-size: 9px; color: #444; letter-spacing: 0.5px; }
-  .product { white-space: normal; word-break: break-word; text-align: center; font-size: 10px; line-height: 1.05; } 
-  .price { white-space: nowrap; text-align: center; display: flex; align-items: baseline; justify-content: center; font-size: 18px; line-height: 1; }
-  .unit-price { white-space: nowrap; text-align: center; color: #555; font-size: 8.5px; }
-  .unit { white-space: nowrap; text-align: center; color: #333; font-size: 8.5px; }
-  .fruit-info { white-space: nowrap; text-align: center; color: #084298; font-size: 11px; text-transform: uppercase; font-weight: 800; }
-  .ean-text { font-family: monospace; white-space: nowrap; letter-spacing: 1px; text-align: center; font-size: 7.5px; }
-  .promo-text { white-space: nowrap; text-align: left; font-size: 7.5px; }
-  .print-date { font-size: 5.5px; font-weight: normal; color: #555; white-space: nowrap; text-align: right; }
-
-  /* FRUTA 125x80 */
-  .fruit-label-125x80 {
-    background: #fff; border: 2px solid #222;
-    display: flex; flex-direction: column;
-    padding: 6px 10px; gap: 3px; box-sizing: border-box; 
-    overflow: hidden; position: relative;
-    width: 125mm; height: 80mm;
-    margin: 10px auto;
-  }
-  .f125-header { flex: 0 0 15%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
-  .f125-main { flex: 1 1 auto; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
-  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 2px; }
-  .f125-right { flex: 0.7; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
-  .f125-right img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .f125-product { font-size: 22px; font-weight: bold; text-align: center; line-height: 1.1; word-break: break-word; }
-
-  /* TABULETA A6 */
-  .a6-label {
-    background: #fff; border: 2px solid #222;
-    display: flex; flex-direction: column;
-    padding: 10px 14px; gap: 6px; box-sizing: border-box; 
-    overflow: hidden; position: relative;
-    width: 105mm; height: 148mm;
-    margin: 10px auto;
-  }
-  .a6-header { flex: 0 0 14%; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
-  .a6-main { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 6px; }
-  .a6-product { flex: 0 0 14%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; text-align: center; line-height: 1.1; }
-  .a6-image-box { flex: 0 0 35%; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
-  .a6-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .a6-dual-price { flex: 0 0 26%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
-  .a6-price-normal, .a6-price-bulk { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 6px; padding: 4px; }
-  .a6-price-normal { background: #fff; border: 2px solid #ccc; }
-  .a6-price-bulk { background: #fff5f5; border: 3px solid #c8102e; }
-  .price-label { font-size: 11px; text-transform: uppercase; color: #555; text-align: center; }
-  .price-main { font-size: 28px; font-weight: bold; color: #000; text-align: center; white-space: nowrap; }
-  .price-bulk-main { color: #c8102e; }
-  .a6-fruit { flex: 0 0 10%; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border: 1px solid #b6d4fe; border-radius: 6px; font-size: 13px; font-weight: 800; color: #084298; text-transform: uppercase; }
-  .a6-barcode { flex: 0 0 15%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-  .a6-footer { flex: 0 0 7%; display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px dashed #ccc; padding-top: 4px; font-size: 11px; }
-
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
   
-  @media(max-width:980px){ 
+  @media(max-width:850px){ 
     .top-header { flex-direction: column; align-items: flex-start; }
     .grid { grid-template-columns:1fr; } 
-    .sheet-viewport { padding: 10px; }
   }
   
+  /* REGRAS REAIS DE IMPRESSÃO */
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff; margin: 0; padding: 0; }
     body * { visibility: hidden !important; }
     .print-area, .print-area * { visibility: visible !important; }
     .print-area { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; padding: 0 !important; box-shadow: none !important; }
+    .sheet-badge { display: none !important; }
     
-    .paper-sheet { box-shadow: none !important; margin: 0 !important; }
-    .preview-wrap.amanhecer-grid { 
+    .print-sheet-amanhecer {
+      display: grid !important; 
+      grid-template-columns: repeat(3, 70mm) !important; 
+      grid-template-rows: 38mm repeat(6, 40mm) !important; 
+      justify-content: start !important; align-content: start !important;
+      gap: 0 !important; padding: 0 !important; 
+      background: transparent !important;
+      width: 210mm !important; height: 278mm !important; 
       margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
     }
-    .preview-wrap.amanhecer-grid .label { 
+    .print-sheet-amanhecer .label-card { 
       width: 100% !important; height: 100% !important; 
       border: 1px solid transparent !important; page-break-inside: avoid; margin: 0 !important;
-      padding: 3px 5px !important; 
+      padding: 3px 5px !important; box-shadow: none !important;
     }
-    .preview-wrap.amanhecer-grid .label:nth-child(1),
-    .preview-wrap.amanhecer-grid .label:nth-child(2),
-    .preview-wrap.amanhecer-grid .label:nth-child(3) { padding-top: 3mm !important; }
-    .preview-wrap.amanhecer-grid .label:nth-child(3n + 1) { padding-left: 6.5mm !important; }
-    .preview-wrap.amanhecer-grid .label:nth-child(3n) { padding-right: 6.5mm !important; }
+    .print-sheet-amanhecer .label-card:nth-child(1),
+    .print-sheet-amanhecer .label-card:nth-child(2),
+    .print-sheet-amanhecer .label-card:nth-child(3) { padding-top: 3mm !important; }
+    .print-sheet-amanhecer .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
+    .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
 
-    .preview-wrap:not(.amanhecer-grid) .fruit-label-125x80,
-    .preview-wrap:not(.amanhecer-grid) .a6-label {
-      border: 1px solid #111 !important; page-break-after: always; margin: 0 !important;
+    .preview-wrap:not(.print-sheet-amanhecer) .label-card {
+      border: 1px solid #111 !important; page-break-after: always; margin: 5mm !important; box-shadow: none !important;
     }
   }
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- CABEÇALHO COM LOGOS -->
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
@@ -264,24 +213,51 @@
   </header>
 
   <div class="grid">
-    <!-- PAINEL DE CONTROLO -->
     <section class="panel">
-
-      <label for="presetSizes">Formato / Tipo de Etiqueta</label>
-      <select id="presetSizes" style="margin-bottom: 10px; background-color: #fffbdd; border-color: #f6c23e;">
-        <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas)</option>
-        <option value="125x80">🍎 Fruta 125x80mm (Normal + Imagem)</option>
-        <option value="A6">📄 Tabuleta Fruta A6 (Duplo Preço ≥ 2kg + Imagem)</option>
-        <option value="72x38">Etiqueta Prateleira (72 x 38 mm)</option>
-        <option value="100x70">Grande / Promoção (100 x 70 mm)</option>
-        <option value="50x30">Pequena / Talas (50 x 30 mm)</option>
+      <!-- FORMATO DA ETIQUETA COM TODAS AS MEDIDAS DE RETALHO -->
+      <label for="presetSizes">Medida / Formato da Etiqueta</label>
+      <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
+        <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
+        <option value="125x80">🍎 Fruta e Legumes Suporte (125 x 80 mm)</option>
+        <option value="A6">📄 Tabuleta A6 Fruta / Promoção (148 x 105 mm)</option>
+        <option value="A5">📄 Tabuleta A5 Grande Destaque (210 x 148 mm)</option>
+        <option value="105x38">🏷️ Prateleira Longa / Gôndola (105 x 38 mm)</option>
+        <option value="70x38">🏷️ Prateleira Standard Recheio (70 x 38 mm)</option>
+        <option value="65x38">🏷️ Prateleira Média (65 x 38 mm)</option>
+        <option value="52x30">🏷️ Tala Estreita / Pequena (52 x 30 mm)</option>
+        <option value="100x70">🏷️ Cartaz Médio Promoção (100 x 70 mm)</option>
+        <option value="50x30">🏷️ Fruta Individual / Mini (50 x 30 mm)</option>
+        <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
       </select>
 
-      <label for="store">Loja</label>
-      <select id="store">
-        <option value="PATAIAS" selected>PATAIAS</option>
-        <option value="GARCIA">GARCIA</option>
-      </select>
+      <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px;">
+        <div>
+          <label for="customWidth" style="margin-top:0;">Largura (mm)</label>
+          <input id="customWidth" type="number" value="70">
+        </div>
+        <div>
+          <label for="customHeight" style="margin-top:0;">Altura (mm)</label>
+          <input id="customHeight" type="number" value="38">
+        </div>
+      </div>
+
+      <!-- SELETOR DE ORIENTAÇÃO (HORIZONTAL / VERTICAL) -->
+      <div class="size-row" style="margin-bottom: 8px;">
+        <div>
+          <label for="labelOrientation" style="margin-top:0;">Orientação</label>
+          <select id="labelOrientation">
+            <option value="horizontal" selected>Horizontal (Paisagem)</option>
+            <option value="vertical">Vertical (Retrato)</option>
+          </select>
+        </div>
+        <div>
+          <label for="store" style="margin-top:0;">Loja</label>
+          <select id="store">
+            <option value="PATAIAS" selected>PATAIAS</option>
+            <option value="GARCIA">GARCIA</option>
+          </select>
+        </div>
+      </div>
       
       <label for="internalCode">Código Interno</label>
       <input id="internalCode" type="text" placeholder="Ex.: DR058860">
@@ -289,7 +265,7 @@
       <label for="product">Produto / Variedade</label>
       <input id="product" type="text" placeholder="Ex.: MAÇÃ GALA">
 
-      <!-- DETALHES DE FRUTARIA COM ATALHOS RÁPIDOS -->
+      <!-- DETALHES DE FRUTA E LEGUMES -->
       <div class="fruit-panel" id="fruitPanel">
         <h4>🍎 Detalhes Fruta e Legumes</h4>
         <div class="size-row-3">
@@ -323,7 +299,6 @@
         </div>
       </div>
 
-      <!-- PREÇO E UNIDADE -->
       <div id="standardPricePanel">
         <label for="price">Preço Base (€)</label>
         <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 1,89">
@@ -379,7 +354,7 @@
       <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
 
-      <label for="copiesCount" id="copiesLabel">Número de Cópias</label>
+      <label for="copiesCount">Número de Cópias</label>
       <input id="copiesCount" type="number" min="1" max="100" value="21">
 
       <div class="actions">
@@ -387,18 +362,16 @@
         <button class="secondary" id="clearBtn" type="button">Limpar</button>
       </div>
 
-      <!-- HISTÓRICO DE ARTIGOS -->
       <div class="history-box">
         <div class="history-title">🕒 Últimos Artigos Emitidos</div>
         <div class="history-list" id="historyList"></div>
       </div>
     </section>
 
-    <!-- ÁREA DE PRÉ-VISUALIZAÇÃO DE FOLHA REAL -->
-    <section class="sheet-viewport print-area">
-      <div class="paper-sheet paper-a4" id="paperSheet">
-        <div class="preview-wrap amanhecer-grid" id="previewWrap"></div>
-      </div>
+    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
+    <section class="preview-container print-area">
+      <div id="badgeSheet" class="sheet-badge">⭐ Pré-visualização Proporcional (Folha Oficial: 21 posições)</div>
+      <div class="preview-wrap" id="previewWrap"></div>
     </section>
   </div>
 </div>
@@ -412,13 +385,11 @@ const globalLogoAgricola = "https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8Pj
 const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000";
 let globalPhotoData = "";
 
-// ATALHO RÁPIDO PARA BOTÕES CHIP
 function setField(fieldId, val) {
   $(fieldId).value = val;
   updateLabel();
 }
 
-// CONVERSÃO INTELIGENTE DE PREÇO (ACEITA VÍRGULA E PONTO)
 function parsePrice(valStr) {
   if (!valStr) return null;
   const clean = String(valStr).replace(",", ".").trim();
@@ -441,63 +412,7 @@ function formatPromoDate(startStr, endStr) {
     return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
   } else {
     const d1 = new Date(startStr);
-    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
-  }
-}
-
-function getPrintDateStr() {
-  const now = new Date();
-  return "Impresso a: " + now.toLocaleDateString('pt-PT');
-}
-
-const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
-const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
-const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
-const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
-
-function onlyDigits(value) { return String(value || "").replace(/\D/g, ""); }
-function ean13CheckDigit(first12) {
-  const digits = onlyDigits(first12).slice(0, 12);
-  if (digits.length !== 12) return null;
-  let sum = 0;
-  for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i % 2 === 0 ? 1 : 3); }
-  return String((10 - (sum % 10)) % 10);
-}
-function isValidEAN13(value) {
-  const digits = onlyDigits(value);
-  return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12];
-}
-
-function drawBarcode(svg, value) {
-  if (!svg) return;
-  svg.innerHTML = "";
-  const cleanVal = String(value || "").trim();
-  if (!cleanVal) return;
-
-  if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {
-    drawEAN13(svg, cleanVal);
-  } else {
-    drawCode128(svg, cleanVal);
-  }
-}
-
-function drawEAN13(svg, value) {
-  const digits = onlyDigits(value);
-  const first = Number(digits[0]);
-  const leftDigits = digits.slice(1, 7);
-  const rightDigits = digits.slice(7);
-  const parity = EAN_PARITY[first];
-
-  let bits = "101";
-  for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }
-  bits += "01010"; 
-  for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }
-  bits += "101"; 
-
-  const quietZone = 11;
-  const totalWidth = bits.length + (quietZone * 2);
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+    return `Promoção a partir de ${d1.getDate()} de${months[d1.getMonth()]} de ${d1.getFullYear()}`;   } }  function getPrintDateStr() {   const now = new Date();   return "Impresso a: " + now.toLocaleDateString('pt-PT'); }  const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"]; const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"]; const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"]; const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];  function onlyDigits(value) { return String(value \vert{}\vert{} "").replace(/\D/g, ""); } function ean13CheckDigit(first12) {   const digits = onlyDigits(first12).slice(0, 12);   if (digits.length !== 12) return null;   let sum = 0;   for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i \% 2 === 0 ? 1 : 3); }   return String((10 - (sum \% 10)) \% 10); } function isValidEAN13(value) {   const digits = onlyDigits(value);   return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12]; }  function drawBarcode(svg, value) {   if (!svg) return;   svg.innerHTML = "";   const cleanVal = String(value \vert{}\vert{} "").trim();   if (!cleanVal) return;    if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {     drawEAN13(svg, cleanVal);   } else {     drawCode128(svg, cleanVal);   } }  function drawEAN13(svg, value) {   const digits = onlyDigits(value);   const first = Number(digits[0]);   const leftDigits = digits.slice(1, 7);   const rightDigits = digits.slice(7);   const parity = EAN_PARITY[first];    let bits = "101";   for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }   bits += "01010";    for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }   bits += "101";     const quietZone = 11;   const totalWidth = bits.length + (quietZone * 2);   const ns = "http://www.w3.org/2000/svg";   svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -558,53 +473,138 @@ function drawCode128(svg, text) {
   }
 }
 
-function fitText(textElement, containerElement, startSize) {
-  if (!textElement || !containerElement || !textElement.textContent.trim()) return;
-  let size = startSize;
-  textElement.style.fontSize = size + "px";
-  while ((textElement.scrollHeight > containerElement.clientHeight - 2 || textElement.scrollWidth > containerElement.clientWidth - 4) && size > 4) {
-    size -= 0.5;
-    textElement.style.fontSize = size + "px";
+// RESOLUÇÃO DE DIMENSÕES
+function getDimensions() {
+  const formatVal = $("presetSizes").value;
+  const orientation = $("labelOrientation").value;
+  let w = 70;
+  let h = 38;
+
+  switch(formatVal) {
+    case "amanhecer": w = 70; h = 38; break;
+    case "125x80": w = 125; h = 80; break;
+    case "A6": w = 148; h = 105; break;
+    case "A5": w = 210; h = 148; break;
+    case "105x38": w = 105; h = 38; break;
+    case "70x38": w = 70; h = 38; break;
+    case "65x38": w = 65; h = 38; break;
+    case "52x30": w = 52; h = 30; break;
+    case "100x70": w = 100; h = 70; break;
+    case "50x30": w = 50; h = 30; break;
+    case "custom":
+      w = Number($("customWidth").value) || 70;
+      h = Number($("customHeight").value) || 38;
+      break;
   }
+
+  // Se orientação for vertical, inverte largura e altura
+  if (orientation === "vertical" && w > h && formatVal !== "amanhecer") {
+    const temp = w; w = h; h = temp;
+  }
+  return { width: w, height: h };
 }
 
-function updateLabel() {
+function updateLabel(isPrinting = false) {
   const previewWrap = $("previewWrap");
-  const paperSheet = $("paperSheet");
-  if (!previewWrap || !paperSheet) return;
+  const badgeSheet = $("badgeSheet");
+  if (!previewWrap) return;
 
   const formatVal = $("presetSizes").value;
-  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   const isAmanhecer = formatVal === "amanhecer";
   const isA6 = formatVal === "A6";
   const is125x80 = formatVal === "125x80";
-  
-  // CONFIGURAÇÃO VISUAL DA FOLHA DE PAPEL
-  if (isAmanhecer) {
-    paperSheet.className = "paper-sheet paper-a4";
-    previewWrap.className = "preview-wrap amanhecer-grid";
-  } else {
-    paperSheet.className = "paper-sheet";
-    paperSheet.style.width = "auto";
-    paperSheet.style.height = "auto";
-    previewWrap.className = "preview-wrap";
+  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+  const dims = getDimensions();
+
+  if (badgeSheet) {
+    if (isAmanhecer) {
+      badgeSheet.style.display = "block";
+      badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
+    } else {
+      badgeSheet.style.display = "block";
+      badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
+    }
   }
 
   const storeVal = $("store").value;
-  const productVal = $("product").value.trim().toUpperCase() || "";
+  const productVal = $("product").value.trim().toUpperCase() || "NOME DO PRODUTO";
   const codeVal = $("internalCode").value.trim().toUpperCase();
   const printDateStr = getPrintDateStr();
   const ean = onlyDigits($("ean").value);
-  const barcodeVal = codeVal || ean || "";
+  const barcodeVal = codeVal || ean || "5601227849374";
 
   const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
   const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
 
   previewWrap.innerHTML = "";
 
-  if (isA6) {
+  if (isAmanhecer) {
+    const price = parsePrice($("price").value);
+    let priceStr = (price !== null) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
+    const capacity = Number($("capacity").value);
+    const capacityUnit = $("capacityUnit").value;
+    let unitPriceStr = "";
+    
+    if (price !== null) {
+      if (capacityUnit === "peso") {
+        priceStr = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
+      } else if (capacity > 0) {
+        let unitPrice = (capacityUnit === "g") ? price / (capacity / 1000) : price / capacity;
+        let displayUnit = (capacityUnit === "g") ? "KG" : (capacityUnit === "lt" ? "LT" : "UN");
+        unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+      }
+    }
+
+    const selectVal = $("depositFeeSelect").value;
+    let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
+    const unitVal = $("unit").value.trim();
+    const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
+
+    const totalRender = isPrinting ? 21 : 1;
+    previewWrap.className = isPrinting ? "preview-wrap print-sheet-amanhecer" : "preview-wrap";
+
+    for (let c = 0; c < totalRender; c++) {
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "label-card";
+      labelDiv.style.width = isPrinting ? "100%" : "70mm";
+      labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "38mm";
+      labelDiv.style.padding = "3px 6px";
+
+      labelDiv.innerHTML = `
+        <div class="header">
+          <div class="logo-wrapper-1">${logo1HTML}</div>
+          <div class="logo-wrapper-2">${logo2HTML}</div>
+          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
+        </div>
+        <div class="main-content">
+          <div class="left-column">
+            <div style="font-size:9px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+            <div class="product">${productVal}</div>
+            <div class="price">${priceStr}</div>
+            <div style="font-size:10px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
+            <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
+            <div style="font-size:10px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
+          </div>
+          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
+        </div>
+        <div class="barcode-container">
+          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
+        </div>
+        <div class="footer-container">
+          <div class="promo-container"><div class="promo-text">${promoStr}</div></div>
+          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+        </div>
+      `;
+      previewWrap.appendChild(labelDiv);
+      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+    }
+
+  } else {
+    // TODOS OS OUTROS FORMATOS DE RETALHO (COM MEDIDAS REAIS E ORIENTAÇÃO)
+    previewWrap.className = "preview-wrap";
     const price = parsePrice($("price")?.value);
-    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
     
     const bulkPrice = parsePrice($("bulkPrice").value);
     const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
@@ -619,100 +619,48 @@ function updateLabel() {
     if (calibreVal) fruitParts.push("Cal: " + calibreVal);
     const fruitStr = fruitParts.join(" | ");
 
-    for (let c = 0; c < copies; c++) {
+    const numCards = isPrinting ? copies : 1;
+    for (let c = 0; c < numCards; c++) {
       const labelDiv = document.createElement("div");
-      labelDiv.className = "a6-label";
+      labelDiv.className = "label-card";
+      labelDiv.style.width = dims.width + "mm";
+      labelDiv.style.height = dims.height + "mm";
+      labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "4px 8px";
 
-      let dualPriceHTML = `
-        <div class="a6-price-normal">
-          <div class="price-label">Preço por KG</div>
-          <div class="price-main">${priceFormatted ? priceFormatted + ' <span style="font-size:0.6em; color:#444;">€/KG</span>' : '—'}</div>
-        </div>
-      `;
-
-      if (bulkPriceFormatted) {
-        dualPriceHTML += `
-          <div class="a6-price-bulk">
-            <div class="price-label" style="color:#c8102e; font-weight:900;">${bulkLabelVal}</div>
-            <div class="price-main price-bulk-main">${bulkPriceFormatted} <span style="font-size:0.6em; color:#c8102e;">€/KG</span></div>
+      let dualPriceHTML = "";
+      if (isA6 && bulkPriceFormatted) {
+        dualPriceHTML = `
+          <div class="size-row" style="width:100%; gap:6px; margin: 4px 0;">
+            <div style="border:1px solid #ccc; border-radius:4px; padding:3px; text-align:center;">
+              <div style="font-size:9px; color:#555;">PREÇO KG</div>
+              <div style="font-size:20px; font-weight:bold;">${priceFormatted} €</div>
+            </div>
+            <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:3px; text-align:center;">
+              <div style="font-size:9px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
+              <div style="font-size:20px; font-weight:bold; color:#c8102e;">${bulkPriceFormatted} €</div>
+            </div>
           </div>
         `;
       }
 
       labelDiv.innerHTML = `
-        <div class="a6-header">
+        <div class="header">
           <div class="logo-wrapper-1">${logo1HTML}</div>
           <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container">
-            <div class="store-text">${storeVal}</div>
-          </div>
+          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
         </div>
-        <div class="a6-main">
-          <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;">
-            <div style="font-size:12px; font-weight:bold; color:#444; text-align:center; min-height:14px;">${codeVal}</div>
-            <div class="a6-product">${productVal}</div>
+        <div class="main-content">
+          <div class="left-column">
+            <div style="font-size:10px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+            <div class="product" style="font-size:${dims.height > 60 ? '20px' : '13px'};">${productVal}</div>
+            ${dualPriceHTML ? dualPriceHTML : `<div class="price" style="font-size:${dims.height > 60 ? '34px' : '24px'};">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
+            <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
           </div>
-          <div class="a6-image-box" style="display:${globalPhotoData ? 'flex' : 'none'};">
-            <img src="${globalPhotoData}" alt="Foto">
-          </div>
-          <div class="a6-dual-price">${dualPriceHTML}</div>
-          <div class="a6-fruit" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
-        </div>
-        <div class="a6-barcode">
-          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-container"><div class="ean-text" style="font-size:14px;">${barcodeVal}</div></div>
-        </div>
-        <div class="a6-footer">
-          <div>Preço sujeito às condições comerciais em vigor.</div>
-          <div>${printDateStr}</div>
-        </div>
-      `;
-      previewWrap.appendChild(labelDiv);
-      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
-    }
-
-  } else if (is125x80) {
-    const price = parsePrice($("price")?.value);
-    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
-    
-    const origemVal = $("origem").value.trim().toUpperCase();
-    const categoriaVal = $("categoria").value.trim().toUpperCase();
-    const calibreVal = $("calibre").value.trim().toUpperCase();
-    let fruitParts = [];
-    if (origemVal) fruitParts.push("Origem: " + origemVal);
-    if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
-    if (calibreVal) fruitParts.push("Cal: " + calibreVal);
-    const fruitStr = fruitParts.join(" | ");
-
-    for (let c = 0; c < copies; c++) {
-      const labelDiv = document.createElement("div");
-      labelDiv.className = "fruit-label-125x80";
-      let priceStr = priceFormatted ? priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>' : '—';
-
-      labelDiv.innerHTML = `
-        <div class="f125-header">
-          <div class="logo-wrapper-1">${logo1HTML}</div>
-          <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container">
-            <div class="store-text" style="font-size:14px;">${storeVal}</div>
-          </div>
-        </div>
-        <div class="f125-main">
-          <div class="f125-left">
-            <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-              <div style="font-size:10px; font-weight:bold; color:#444; text-align:center; min-height:12px;">${codeVal}</div>
-              <div class="f125-product">${productVal}</div>
-            </div>
-            <div class="price" style="font-size:32px;">${priceStr}</div>
-            <div class="fruit-info" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
-          </div>
-          <div class="f125-right" style="display:${globalPhotoData ? 'flex' : 'none'};">
-            <img src="${globalPhotoData}" alt="Foto">
-          </div>
+          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
         </div>
         <div class="barcode-container">
           <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-container"><div class="ean-text" style="font-size:11px;">${barcodeVal}</div></div>
+          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
         </div>
         <div class="footer-container">
           <div class="promo-container"><div class="promo-text">Preço sujeito às condições comerciais em vigor.</div></div>
@@ -722,107 +670,23 @@ function updateLabel() {
       previewWrap.appendChild(labelDiv);
       drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
     }
-
-  } else {
-    // MODO FOLHA OFICIAL AMANHECER (21 ETIQUETAS)
-    const price = parsePrice($("price").value);
-    let priceStr = (price !== null) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "";
-
-    const capacity = Number($("capacity").value);
-    const capacityUnit = $("capacityUnit").value;
-    let unitPriceStr = "";
-    
-    if (price !== null) {
-      if (capacityUnit === "peso") {
-        const pFormat = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-        priceStr = pFormat + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
-      } else if (capacity > 0 && price >= 0) {
-        let unitPrice = 0;
-        let displayUnit = "";
-        if (capacityUnit === "g") { unitPrice = price / (capacity / 1000); displayUnit = "KG"; }
-        else if (capacityUnit === "lt") { unitPrice = price / capacity; displayUnit = "LT"; }
-        else if (capacityUnit === "un") { unitPrice = price / capacity; displayUnit = "UN"; }
-        
-        unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
-      }
-    }
-
-    const selectVal = $("depositFeeSelect").value;
-    let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
-    if ($("depositFeeCustom")) $("depositFeeCustom").style.display = selectVal === "custom" ? "block" : "none";
-
-    const unitVal = $("unit").value.trim();
-    const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
-
-    for (let c = 0; c < copies; c++) {
-      const labelDiv = document.createElement("div");
-      labelDiv.className = "label";
-      labelDiv.style.width = "70mm";
-      labelDiv.style.height = (c < 3) ? "38mm" : "40mm"; 
-
-      labelDiv.innerHTML = `
-        <div class="header">
-          <div class="logo-wrapper-1">${logo1HTML}</div>
-          <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container">
-            <div class="store-text">${storeVal}</div>
-          </div>
-        </div>
-        <div class="main-content">
-          <div class="left-column">
-            <div class="code-container" style="display:${codeVal ? 'flex' : 'none'};"><div class="item-code">${codeVal}</div></div>
-            <div class="product-container"><div class="product">${productVal}</div></div>
-            <div class="price-container"><div class="price">${priceStr}</div></div>
-            <div class="unit-price-container" style="display:${unitPriceStr ? 'flex' : 'none'};"><div class="unit-price">${unitPriceStr}</div></div>
-            <div class="deposit-container" style="display:${depositVal ? 'flex' : 'none'};"><div class="deposit-text">${depositVal}</div></div>
-            <div class="unit-container" style="display:${unitVal ? 'flex' : 'none'};"><div class="unit">${unitVal}</div></div>
-          </div>
-          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
-        </div>
-        <div class="barcode-container">
-          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
-        </div>
-        <div class="footer-container">
-          <div class="promo-container"><div class="promo-text">${promoStr}</div></div>
-          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
-        </div>
-      `;
-
-      previewWrap.appendChild(labelDiv);
-      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
-    }
-
-    requestAnimationFrame(() => {
-      previewWrap.querySelectorAll(".label").forEach(lbl => {
-        fitText(lbl.querySelector(".store-text"), lbl.querySelector(".header-store-container"), 25);
-        fitText(lbl.querySelector(".product"), lbl.querySelector(".product-container"), 35);
-        fitText(lbl.querySelector(".price"), lbl.querySelector(".price-container"), 40);
-        fitText(lbl.querySelector(".unit-price"), lbl.querySelector(".unit-price-container"), 20);
-        fitText(lbl.querySelector(".deposit-text"), lbl.querySelector(".deposit-container"), 18);
-        fitText(lbl.querySelector(".unit"), lbl.querySelector(".unit-container"), 18);
-        fitText(lbl.querySelector(".ean-text"), lbl.querySelector(".ean-container"), 25);
-        fitText(lbl.querySelector(".promo-text"), lbl.querySelector(".promo-container"), 14);
-      });
-    });
   }
 }
 
-// GESTÃO DE MODOS DE ETIQUETA
+// ATUALIZAÇÃO DE INTERFACE QUANDO MUDA O FORMATO
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
-  const isFruitMode = (val === "A6" || val === "125x80");
+  const isFruit = (val === "A6" || val === "125x80");
   
-  $("fruitPanel").style.display = isFruitMode ? "block" : "none";
+  $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
+  $("fruitPanel").style.display = isFruit ? "block" : "none";
   $("bulkPriceContainer").style.display = (val === "A6") ? "block" : "none";
-  
-  // NA FRUTA OCULTA CAMPOS DESNECESSÁRIOS
-  $("packagingRow").style.display = (!isFruitMode && val === "amanhecer") ? "none" : "block";
-  $("depositContainer").style.display = isFruitMode ? "none" : "block";
-  $("extraUnitContainer").style.display = isFruitMode ? "none" : "block";
-  $("promoDatesRow").style.display = isFruitMode ? "none" : "grid";
+  $("packagingRow").style.display = (!isFruit && val === "amanhecer") ? "none" : "block";
+  $("depositContainer").style.display = isFruit ? "none" : "block";
+  $("extraUnitContainer").style.display = isFruit ? "none" : "block";
+  $("promoDatesRow").style.display = isFruit ? "none" : "grid";
 
-  if (val === "amanhecer") { 
+  if (val === "amanhecer") {
     $("copiesCount").value = "21";
   } else {
     $("copiesCount").value = "1";
@@ -830,7 +694,10 @@ $("presetSizes").addEventListener("change", function() {
   updateLabel();
 });
 
-// AUTO-MAIÚSCULAS NOS CAMPOS IMPORTANTES
+$("labelOrientation").addEventListener("change", () => updateLabel());
+$("customWidth").addEventListener("input", () => updateLabel());
+$("customHeight").addEventListener("input", () => updateLabel());
+
 ["product","internalCode","origem","categoria","calibre"].forEach(id => {
   const el = $(id);
   if (el) {
@@ -843,14 +710,14 @@ $("presetSizes").addEventListener("change", function() {
 
 ["price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
   const el = $(id);
-  if (el) el.addEventListener("input", updateLabel);
+  if (el) el.addEventListener("input", () => updateLabel());
 });
 
 ["store","capacityUnit","depositFeeSelect","copiesCount","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) {
-    el.addEventListener("change", updateLabel);
-    el.addEventListener("input", updateLabel);
+    el.addEventListener("change", () => updateLabel());
+    el.addEventListener("input", () => updateLabel());
   }
 });
 
@@ -862,7 +729,6 @@ $("photo").addEventListener("change", function(event) {
   reader.readAsDataURL(file);
 });
 
-// ATALHO DE IMPRESSÃO RÁPIDA (F9 ou Ctrl+P)
 window.addEventListener("keydown", e => {
   if (e.key === "F9" || (e.ctrlKey && e.key.toLowerCase() === "p")) {
     e.preventDefault();
@@ -874,11 +740,13 @@ $("printBtn").addEventListener("click", triggerPrint);
 
 function triggerPrint() {
   saveToHistory();
-  updateLabel();
-  window.print();
+  updateLabel(true);
+  setTimeout(() => {
+    window.print();
+    updateLabel(false);
+  }, 100);
 }
 
-// SISTEMA DE HISTÓRICO LOCAL
 function saveToHistory() {
   const item = {
     code: $("internalCode").value.trim(),
@@ -944,6 +812,7 @@ $("clearBtn").addEventListener("click", function() {
   $("categoria").value = ""; 
   $("calibre").value = "";
   $("presetSizes").value = "amanhecer"; 
+  $("labelOrientation").value = "horizontal";
   $("presetSizes").dispatchEvent(new Event("change"));
   globalPhotoData = ""; 
   $("photo").value = "";
