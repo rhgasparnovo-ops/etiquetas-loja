@@ -160,7 +160,10 @@
   }
 
   @media print {
+    /* Esconde a aplicação toda na altura de imprimir */
     .app { display: none !important; }
+    
+    /* Mostra Apenas a zona invisível que gerámos */
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
@@ -185,6 +188,13 @@
 
     #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
   }
+</style>
+
+<style>
+/* Preview físico */
+#previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
+#previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
+@media screen { #previewWrap { contain: layout paint; } }
 </style>
 
 <style>
@@ -361,7 +371,7 @@
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
-        <!-- ESTE É O MOLDE QUE NUNCA MAIS VAI DESAPARECER. TEM TAMANHO MÍNIMO GARANTIDO -->
+        <!-- ESTE É O MOLDE QUE NUNCA MAIS VAI DESAPARECER -->
         <div class="label-card" id="mainLabelCard" style="width: 380px; height: 214px;">
           <div class="header" id="cardHeader">
             <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola"></div>
@@ -417,17 +427,14 @@ let printInProgress = false;
 let photoProcessingToken = 0;
 
 // ==========================================
-// SISTEMA DE GESTÃO DE DADOS (COM PROTEÇÃO ANTI-CRASH)
+// SISTEMA DE GESTÃO DE DADOS 
 // ==========================================
 let printQueue = [];
 let savedProducts = [];
 
-// PROTEÇÃO ATIVA: Se a memória do navegador estiver corrompida, isto evita que a página bloqueie
 try {
     const lsData = localStorage.getItem("balcao_agricola_db");
-    if (lsData) {
-        savedProducts = JSON.parse(lsData);
-    }
+    if (lsData) { savedProducts = JSON.parse(lsData); }
 } catch(e) {
     console.warn("Memória local corrompida. A iniciar base de dados vazia.");
     savedProducts = [];
@@ -628,7 +635,7 @@ $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
 // ==========================================
-// FUNÇÕES BASE DA ETIQUETA
+// FUNÇÕES BASE DA ETIQUETA E CÓDIGOS DE BARRAS
 // ==========================================
 
 function setField(id, val) { const el = $(id); if (el) { el.value = val; updateCard(); } }
@@ -1121,7 +1128,7 @@ function triggerPrint() {
   });
 }
 
-// ARRANQUE SEGURO
+// ARRANQUE SEGURO E PROTEGIDO
 try {
   updateOrientationVisibility();
   updateCard();
