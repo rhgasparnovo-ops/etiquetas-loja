@@ -505,7 +505,6 @@ function setFormData(data) {
   $("ean").value = data.ean || "";
   $("autoRemoveBg").checked = data.autoRemoveBg !== false;
   
-  // Imagens só são repostas se vierem da Fila. Da Base de dados, para poupar memória do PC, não gravamos a imagem.
   globalOriginalPhoto = data.originalPhoto || "";
   globalProcessedPhoto = data.processedPhoto || "";
   $("photo").value = ""; 
@@ -523,7 +522,7 @@ function renderQueue() {
   if (printQueue.length === 0) {
     container.innerHTML = '<div class="empty-msg">A fila está vazia. Adicione etiquetas acima.</div>';
     $("clearQueueBtn").style.display = "none";
-    $("printBtn").textContent = "🖨️ Imprimir Fila Vazia [F9]";
+    $("printBtn").textContent = "🖨️ Imprimir [F9]";
     return;
   }
   
@@ -535,7 +534,6 @@ function renderQueue() {
     totalLabels += item.copies;
     const div = document.createElement("div");
     div.className = "list-item";
-    
     let priceStr = item.data.price ? item.data.price + "€" : "S/ Preço";
     
     div.innerHTML = `
@@ -592,7 +590,6 @@ function renderDb() {
   }
   
   container.innerHTML = "";
-  // Sort by product name alphabetically
   savedProducts.sort((a,b) => (a.product||"").localeCompare(b.product||"")).forEach((data, index) => {
     const div = document.createElement("div");
     div.className = "list-item";
@@ -616,16 +613,14 @@ function saveToDb() {
       setStatus("Preencha um nome ou código para guardar.", "error");
       return;
   }
-  // Limpa a foto para não rebentar o limite de memória do navegador (apenas guarda os textos)
   data.originalPhoto = ""; 
   data.processedPhoto = "";
   
-  // Procura se já existe um com o mesmo código interno (e que tenha código)
   let existingIdx = savedProducts.findIndex(p => p.internalCode === data.internalCode && p.internalCode !== "");
   if(existingIdx >= 0) {
-      savedProducts[existingIdx] = data; // Atualiza
+      savedProducts[existingIdx] = data; 
   } else {
-      savedProducts.push(data); // Adiciona novo
+      savedProducts.push(data); 
   }
   localStorage.setItem("balcao_agricola_db", JSON.stringify(savedProducts));
   renderDb();
@@ -652,7 +647,7 @@ $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
 // ==========================================
-// FUNÇÕES BASE (ANTIGAS MANTIDAS INTACTAS)
+// FUNÇÕES BASE
 // ==========================================
 
 function setField(id, val) { const el = $(id); if (el) { el.value = val; updateCard(); } }
@@ -790,6 +785,7 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
+// A SOLUÇÃO DEFINITIVA DO BUG ESTÁ NESTA FUNÇÃO (usa card.querySelector para ser 100% blindado)
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -807,8 +803,11 @@ function updateCardUnsafe() {
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
 
-  const card = $("mainLabelCard");
-  const header = $("cardHeader");
+  // Garante que usa sempre a referência correta, mesmo que o DOM principal esteja a ser atualizado.
+  const card = $("mainLabelCard") || globalMainCard;
+  if (!card) return;
+
+  const header = card.querySelector("#cardHeader");
   const brandLogos = card.querySelectorAll(".brand-logo");
 
   if (isAmanhecer) {
@@ -830,30 +829,37 @@ function updateCardUnsafe() {
     $("gridStartContainer").style.display = "none";
   }
 
-  $("cardStore").textContent = storeVal;
-  $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
+  card.querySelector("#cardStore").textContent = storeVal;
+  card.querySelector("#cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
-  if (codeVal) { $("cardCode").style.display = "block"; $("cardCode").textContent = codeVal; } 
-  else { $("cardCode").style.display = "none"; }
+  const elCode = card.querySelector("#cardCode");
+  if (codeVal) { elCode.style.display = "block"; elCode.textContent = codeVal; } 
+  else { elCode.style.display = "none"; }
+
+  const elPrice = card.querySelector("#cardPrice");
+  const elPromoTop = card.querySelector("#cardPromoTopRow");
+  const elOldPrice = card.querySelector("#cardOldPrice");
+  const elPromoTag = card.querySelector("#cardPromoTag");
+  const elUnitPrice = card.querySelector("#cardUnitPrice");
 
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
     if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
-      $("cardPromoTopRow").style.display = "flex"; $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
-      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100); $("cardPromoTag").textContent = "-" + discount + "%";
-    } else { $("cardPromoTopRow").style.display = "none"; }
+      elPromoTop.style.display = "flex"; elOldPrice.textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100); elPromoTag.textContent = "-" + discount + "%";
+    } else { elPromoTop.style.display = "none"; }
 
     if (capUnit === "peso") {
-      $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>'; $("cardUnitPrice").style.display = "none";
+      elPrice.innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>'; elUnitPrice.style.display = "none";
     } else {
-      $("cardPrice").textContent = formatted + " €";
-      if (capUnit === "lt" && capacityNum > 0) { const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerLt + " € / LT"; $("cardUnitPrice").style.display = "block"; } 
-      else if (capUnit === "g" && capacityNum > 0) { const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerKg + " € / KG"; $("cardUnitPrice").style.display = "block"; } 
-      else if (capUnit === "un") { $("cardUnitPrice").textContent = formatted + " € / UN"; $("cardUnitPrice").style.display = "block"; } 
-      else { $("cardUnitPrice").style.display = "none"; }
+      elPrice.textContent = formatted + " €";
+      if (capUnit === "lt" && capacityNum > 0) { const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); elUnitPrice.textContent = pPerLt + " € / LT"; elUnitPrice.style.display = "block"; } 
+      else if (capUnit === "g" && capacityNum > 0) { const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); elUnitPrice.textContent = pPerKg + " € / KG"; elUnitPrice.style.display = "block"; } 
+      else if (capUnit === "un") { elUnitPrice.textContent = formatted + " € / UN"; elUnitPrice.style.display = "block"; } 
+      else { elUnitPrice.style.display = "none"; }
     }
   } else {
-    $("cardPrice").textContent = "0,00 €"; $("cardPromoTopRow").style.display = "none"; $("cardUnitPrice").style.display = "none";
+    elPrice.textContent = "0,00 €"; elPromoTop.style.display = "none"; elUnitPrice.style.display = "none";
   }
 
   const org = ($("origem")?.value || "").trim().toUpperCase();
@@ -861,28 +867,34 @@ function updateCardUnsafe() {
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
   let parts = [];
   if (org) parts.push("Origem: " + org); if (cat) parts.push("Cat. " + cat); if (cal) parts.push("Cal. " + cal);
-  if (parts.length > 0) { const fullText = parts.join(" • "); $("cardFruit").style.display = "block"; $("cardFruit").textContent = fullText; } 
-  else { $("cardFruit").style.display = "none"; }
+  
+  const elFruit = card.querySelector("#cardFruit");
+  if (parts.length > 0) { const fullText = parts.join(" • "); elFruit.style.display = "block"; elFruit.textContent = fullText; } 
+  else { elFruit.style.display = "none"; }
 
   const depositSelect = $("depositFeeSelect").value;
   let depositVal = depositSelect === "custom" ? $("customDepositInput").value.trim() : depositSelect;
-  if (depositVal) { $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depositVal; } 
-  else { $("cardDeposit").style.display = "none"; }
+  const elDeposit = card.querySelector("#cardDeposit");
+  if (depositVal) { elDeposit.style.display = "block"; card.querySelector("#cardDepositText").textContent = depositVal; } 
+  else { elDeposit.style.display = "none"; }
 
   const extraUnit = ($("unit").value || "").trim();
-  if (extraUnit) { $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = extraUnit; } 
-  else { $("cardExtraUnit").style.display = "none"; }
+  const elExtraUnit = card.querySelector("#cardExtraUnit");
+  if (extraUnit) { elExtraUnit.style.display = "block"; elExtraUnit.textContent = extraUnit; } 
+  else { elExtraUnit.style.display = "none"; }
 
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  if (activePhoto) { $("cardPhotoBox").style.display = "flex"; $("cardPhotoImg").src = activePhoto; } 
-  else { $("cardPhotoBox").style.display = "none"; }
+  const elPhotoBox = card.querySelector("#cardPhotoBox");
+  if (activePhoto) { elPhotoBox.style.display = "flex"; card.querySelector("#cardPhotoImg").src = activePhoto; } 
+  else { elPhotoBox.style.display = "none"; }
 
-  if (barcodeToDraw) { $("cardBarcodeBox").style.display = "flex"; $("cardBarcodeText").textContent = barcodeToDraw; drawBarcode($("cardBarcodeSvg"), barcodeToDraw); } 
-  else { $("cardBarcodeBox").style.display = "none"; }
+  const elBarcodeBox = card.querySelector("#cardBarcodeBox");
+  if (barcodeToDraw) { elBarcodeBox.style.display = "flex"; card.querySelector("#cardBarcodeText").textContent = barcodeToDraw; drawBarcode(card.querySelector("#cardBarcodeSvg"), barcodeToDraw); } 
+  else { elBarcodeBox.style.display = "none"; }
 
   const pStart = $("promoStart").value; const pEnd = $("promoEnd").value;
-  $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
-  $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
+  card.querySelector("#cardPromoText").textContent = formatPromoDate(pStart, pEnd);
+  card.querySelector("#cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
 function updateCard() {
@@ -982,7 +994,6 @@ function validateBeforePrint() {
       setStatus("Existem erros. Corrija-os antes de imprimir.", "error"); return false;
   }
   
-  // Se a fila estiver vazia, tenta validar e adicionar a etiqueta atual.
   if (printQueue.length === 0) {
       const price = parsePrice($("price").value);
       if (price === null) { setStatus("Introduza um preço válido.", "error"); $("price").focus(); return false; }
@@ -993,15 +1004,12 @@ function validateBeforePrint() {
       if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
         setStatus(`As ${copies} etiquetas ultrapassam o limite da página.`, "error"); return false;
       }
-      
-      // Adiciona o que está no ecrã à fila automaticamente
-      printQueue.push({ data: getFormData(), copies: copies });
-      renderQueue();
   }
   
   return true;
 }
 
+// O PROCESSO DE RESTAURO É AGORA INSTANTÂNEO E NÃO CAUSA ECRÃ BRANCO
 function restorePreview() {
   if (printRestoreTimer) { clearTimeout(printRestoreTimer); printRestoreTimer = null; }
   const previewWrap = $("previewWrap");
@@ -1015,7 +1023,7 @@ function restorePreview() {
   updateCard();
   printInProgress = false;
   $("printBtn").disabled = false;
-  renderQueue(); // Repoem os textos do botão
+  renderQueue(); 
   
   if (window.__PRO) window.__PRO.setPrintEnabled(true);
 }
@@ -1025,7 +1033,7 @@ window.addEventListener("afterprint", restorePreview);
 function triggerPrint() {
   if (printInProgress) return;
   
-  const originalFormDataBackup = getFormData(); // Guarda o estado do editor atual para não o perder
+  const originalFormDataBackup = getFormData(); // Guarda o que está a ser escrito
   
   if (!validateBeforePrint()) return;
 
@@ -1035,27 +1043,30 @@ function triggerPrint() {
 
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
-  const card = $("mainLabelCard");
   
-  globalMainCard = card; // Backup seguro do cartão do DOM
+  // Guardamos com segurança a etiqueta do DOM
+  const card = $("mainLabelCard") || globalMainCard;
+  globalMainCard = card; 
 
   const startPos = parseInt($("startPosition").value, 10) || 1;
   const dims = getDimensions();
 
-  previewWrap.className = "preview-wrap";
-  previewWrap.innerHTML = "";
+  // EM VEZ DE APAGAR O ECRÃ A MEIO, CRIAMOS AS FOLHAS NA MEMÓRIA PRIMEIRO
+  const fragment = document.createDocumentFragment();
 
-  // PREPARA A LISTA TOTAL DE ETIQUETAS COM BASE NA FILA (QUEUE)
   let totalItemsToPrint = [];
-  for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); // Espaços vazios no início
+  for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); 
   
-  printQueue.forEach(qItem => {
-      for(let i=0; i<qItem.copies; i++) totalItemsToPrint.push(qItem.data);
-  });
+  if (printQueue.length === 0) {
+     const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+     for(let i=0; i<copies; i++) totalItemsToPrint.push(getFormData());
+  } else {
+     printQueue.forEach(qItem => {
+         for(let i=0; i<qItem.copies; i++) totalItemsToPrint.push(qItem.data);
+     });
+  }
 
-  // GERAÇÃO DAS FOLHAS REAIS
   if (formatVal === "amanhecer") {
-    // Agrupa de 21 em 21
     for(let i=0; i<totalItemsToPrint.length; i+=21) {
       let chunk = totalItemsToPrint.slice(i, i+21);
       let page = document.createElement("div");
@@ -1070,7 +1081,6 @@ function triggerPrint() {
           emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
           page.appendChild(emptyDiv);
         } else {
-          // Preenche form c/ dados da fila, atualiza e clona
           setFormData(data); 
           updateCardUnsafe();
           
@@ -1086,7 +1096,6 @@ function triggerPrint() {
           page.appendChild(clone);
         }
       });
-      // Preencher o resto da página 21
       for(let j=chunk.length; j<21; j++) {
           let emptyDiv = document.createElement("div");
           emptyDiv.className = "label-card";
@@ -1095,13 +1104,14 @@ function triggerPrint() {
           emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
           page.appendChild(emptyDiv);
       }
-      previewWrap.appendChild(page);
+      fragment.appendChild(page);
     }
   } else {
-    // Restantes formatos
-    previewWrap.style.display = "grid";
-    previewWrap.style.gridTemplateColumns = `repeat(auto-fit, minmax(${Math.max(20, dims.width)}mm, 1fr))`;
-    previewWrap.style.gap = "0";
+    const gridWrap = document.createElement("div");
+    gridWrap.className = "preview-wrap";
+    gridWrap.style.display = "grid";
+    gridWrap.style.gridTemplateColumns = `repeat(auto-fit, minmax(${Math.max(20, dims.width)}mm, 1fr))`;
+    gridWrap.style.gap = "0";
 
     totalItemsToPrint.forEach(data => {
       if(data !== null) {
@@ -1117,12 +1127,22 @@ function triggerPrint() {
           const barcodeSvg = clone.querySelector("#cardBarcodeSvg");
           if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
           
-          previewWrap.appendChild(clone);
+          gridWrap.appendChild(clone);
       }
     });
+    fragment.appendChild(gridWrap);
   }
 
-  // RESTAURA O EDITOR COMO ESTAVA ANTES DA IMPRESSÃO
+  // APAGAMOS O ECRÃ E INSERIMOS AS FOLHAS APENAS QUANDO JÁ ESTÃO TODAS PRONTAS
+  previewWrap.innerHTML = "";
+  if (formatVal === "amanhecer") {
+      previewWrap.className = ""; // Remove conflito CSS do layout interior
+  } else {
+      previewWrap.className = "preview-wrap";
+  }
+  previewWrap.appendChild(fragment);
+
+  // REPOMOS IMEDIATAMENTE O QUE O UTILIZADOR ESTAVA A FAZER
   setFormData(originalFormDataBackup);
   updateCardUnsafe();
 
