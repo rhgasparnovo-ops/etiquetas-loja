@@ -92,11 +92,11 @@
 
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
-    padding: 2px 0; gap: 4px; overflow: hidden; align-items: center;
+    padding: 2px 0 1px; gap: 4px; overflow: hidden; align-items: center;
   }
   .left-column {
     flex: 1.1; min-width: 0; display: flex; flex-direction: column;
-    justify-content: space-between; align-items: center; text-align: center;
+    justify-content: space-around; align-items: center; text-align: center;
     height: 100%; overflow: hidden;
   }
   
@@ -109,6 +109,23 @@
     background: transparent;
   }
 
+  /* BARRA TÉCNICA DE ORIGEM/CAT/CAL EM TODA A LARGURA (NUNCA CORTA) */
+  .fruit-full-bar {
+    width: 100%;
+    display: none;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    line-height: 1.1;
+    font-size: 8px;
+    font-weight: 800;
+    color: #084298;
+    text-transform: uppercase;
+    padding: 1px 0;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
     width: 100%; flex-shrink: 0; height: 18px; overflow: hidden;
@@ -118,7 +135,7 @@
 
   .footer-container {
     display: flex; justify-content: space-between; align-items: flex-end;
-    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; margin-top: auto; flex-shrink: 0;
+    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; margin-top: 1px; flex-shrink: 0;
     height: 12px; overflow: hidden;
   }
 
@@ -155,20 +172,6 @@
   }
   
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
-
-  /* LINHA COMPLETA 100% VISÍVEL (SEM CORTE E SEM RETICÊNCIAS) */
-  .fruit-info { 
-    font-size: 8px; 
-    text-transform: uppercase; 
-    font-weight: 800; 
-    color: #084298; 
-    display: none; 
-    line-height: 1; 
-    white-space: nowrap; 
-    overflow: visible; 
-    width: 100%; 
-    text-align: center;
-  }
 
   .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
@@ -511,6 +514,7 @@
             <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer"></div>
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
+          
           <div class="main-content" id="cardMainContent">
             <div class="left-column" id="cardLeftCol">
               <div class="item-code" id="cardCode" style="display:none;"></div>
@@ -528,16 +532,19 @@
               <div id="cardUnitPrice" style="font-size:8px; color:#555; display:none; font-weight:bold; line-height:1;"></div>
               <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7px; font-weight:900;" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="font-size:8px; color:#333; display:none; line-height:1;"></div>
-              
-              <!-- ORIGEM / CAT / CAL SEMPRE COMPLETO -->
-              <div class="fruit-info" id="cardFruit"></div>
             </div>
+            
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
           </div>
+
+          <!-- BARRA HORIZONTAL COMPLETA DE ORIGEM / CAT / CAL (LARGURA TOTAL 100%) -->
+          <div class="fruit-full-bar" id="cardFruit"></div>
+
           <div class="barcode-container" id="cardBarcodeBox">
             <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
             <div class="ean-text" id="cardBarcodeText"></div>
           </div>
+          
           <div class="footer-container" id="cardFooter">
             <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
             <div class="print-date" id="cardPrintDate"></div>
@@ -891,7 +898,7 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // ORIGEM / CAT / CAL - LINHA ÚNICA NUNCA CORTADA
+  // ORIGEM / CAT / CAL - NA BARRA INFERIOR DE LARGURA TOTAL (NUNCA CORTA)
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
@@ -905,19 +912,18 @@ function updateCard() {
     $("cardFruit").style.display = "block";
     $("cardFruit").textContent = fullText;
     
-    // Auto-escala do tamanho de letra para garantir que cabe 100% sem reticências
     if (isLarge) {
       $("cardFruit").style.fontSize = (formatVal === "A5") ? "15px" : "13px";
     } else {
-      if (fullText.length > 36) {
+      // Ajuste automático de escala para caber sem cortar nada
+      if (fullText.length > 38) {
         $("cardFruit").style.fontSize = "7.2px";
-      } else if (fullText.length > 28) {
+      } else if (fullText.length > 30) {
         $("cardFruit").style.fontSize = "7.8px";
       } else {
         $("cardFruit").style.fontSize = "8.5px";
       }
     }
-    $("cardFruit").style.marginTop = isLarge ? "4px" : "1px";
   } else {
     $("cardFruit").style.display = "none";
   }
