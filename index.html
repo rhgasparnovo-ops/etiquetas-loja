@@ -47,26 +47,20 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
-  /* HISTÓRICO */
-  .history-box { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
-  .history-title { font-size: 11px; font-weight: 700; color: #666; margin-bottom: 8px; text-transform: uppercase; }
-  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
-  .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
-
   /* ÁREA DE PRÉ-VISUALIZAÇÃO */
   .preview-container {
     background: #dfe4ea; border: 1px solid #ced6e0; border-radius: 12px;
     padding: 24px; display: flex; flex-direction: column; align-items: center;
-    justify-content: flex-start; min-height: 580px;
+    justify-content: flex-start; min-height: 580px; overflow: auto;
   }
   .sheet-badge {
     background: #fff; border: 1px solid #b2bec3; padding: 6px 14px;
     border-radius: 20px; font-size: 12px; font-weight: bold; color: #2d3436;
     box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 18px; text-align: center;
   }
-  .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; }
+  .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; }
 
-  /* CARTÃO DE ETIQUETA VISÍVEL */
+  /* CARTÃO DE ETIQUETA COM DIMENSIONAMENTO DINÂMICO */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333 !important;
@@ -74,54 +68,56 @@
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
-    width: 380px;
-    min-height: 220px;
-    padding: 8px 12px;
+    overflow: hidden !important;
+    position: relative !important;
     border-radius: 4px;
+    transition: width 0.2s, height 0.2s;
   }
 
   .header {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #c8102e; padding-bottom: 4px; height: 38px;
+    border-bottom: 2px solid #c8102e; padding-bottom: 4px; flex-shrink: 0;
   }
   .logo-wrapper-1, .logo-wrapper-2 { width: 30%; height: 100%; display: flex; align-items: center; }
   .header-store-container { flex: 1; text-align: right; }
   .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
 
   .main-content {
-    display: flex; flex-direction: row; width: 100%;
-    padding: 6px 0; min-height: 110px; gap: 8px;
+    display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
+    padding: 6px 0; gap: 8px; overflow: hidden; align-items: center;
   }
   .left-column {
     flex: 1.2; display: flex; flex-direction: column;
     justify-content: space-around; align-items: center; text-align: center;
+    height: 100%; overflow: hidden;
   }
   .right-column {
     flex: 0.8; display: none; justify-content: center; align-items: center;
     border: 1px solid #eee; border-radius: 4px; background: #fafafa;
+    height: 100%; overflow: hidden;
   }
   .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; height: 35px; margin-top: 4px;
+    width: 100%; flex-shrink: 0; margin-top: 4px;
   }
-  .svg-container { width: 100%; height: 22px; display: flex; justify-content: center; }
+  .svg-container { width: 100%; height: 26px; display: flex; justify-content: center; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
     display: flex; justify-content: space-between; align-items: flex-end;
-    width: 100%; border-top: 1px dashed #ccc; padding-top: 4px; margin-top: auto;
+    width: 100%; border-top: 1px dashed #ccc; padding-top: 4px; margin-top: auto; flex-shrink: 0;
   }
 
   .store-text { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #000; }
-  .item-code { font-size: 10px; font-weight: bold; color: #444; }
-  .product { font-size: 16px; font-weight: bold; color: #000; word-break: break-word; }
-  .price { font-size: 30px; font-weight: bold; color: #000; line-height: 1; }
-  .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; }
-  .ean-text { font-family: monospace; font-size: 9px; font-weight: bold; }
-  .promo-text { font-size: 8px; color: #555; }
-  .print-date { font-size: 7px; color: #666; }
+  .item-code { font-size: 11px; font-weight: bold; color: #444; }
+  .product { font-size: 16px; font-weight: bold; color: #000; word-break: break-word; line-height: 1.15; }
+  .price { font-size: 32px; font-weight: bold; color: #000; line-height: 1; margin: 4px 0; }
+  .fruit-info { font-size: 12px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; margin-top: 2px; }
+  .ean-text { font-family: monospace; font-size: 10px; font-weight: bold; }
+  .promo-text { font-size: 8.5px; color: #555; }
+  .print-date { font-size: 7.5px; color: #666; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -134,6 +130,7 @@
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+    body > *:not(.app) { display: none !important; }
     .top-header, .panel, .sheet-badge { display: none !important; }
     .grid { display: block !important; }
     .preview-container { background: transparent !important; border: none !important; padding: 0 !important; }
@@ -177,6 +174,7 @@
 
   <div class="grid">
     <section class="panel">
+      <!-- FORMATO DA ETIQUETA -->
       <label for="presetSizes">Medida / Formato da Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
         <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
@@ -302,26 +300,21 @@
         <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
         <button class="secondary" id="clearBtn" type="button">Limpar</button>
       </div>
-
-      <div class="history-box">
-        <div class="history-title">🕒 Últimos Artigos Emitidos</div>
-        <div class="history-list" id="historyList"></div>
-      </div>
     </section>
 
-    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO COM ETIQUETA VISÍVEL NATIVAMENTE -->
+    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO COM REDIMENSIONAMENTO REAL -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
         <div class="label-card" id="mainLabelCard">
-          <div class="header">
+          <div class="header" id="cardHeader">
             <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola"></div>
             <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer"></div>
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
-          <div class="main-content">
-            <div class="left-column">
+          <div class="main-content" id="cardMainContent">
+            <div class="left-column" id="cardLeftCol">
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               <div class="price" id="cardPrice">0,00 €</div>
@@ -336,7 +329,7 @@
             <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
             <div class="ean-text" id="cardBarcodeText"></div>
           </div>
-          <div class="footer-container">
+          <div class="footer-container" id="cardFooter">
             <div class="promo-text">Preço sujeito às condições comerciais em vigor.</div>
             <div class="print-date" id="cardPrintDate"></div>
           </div>
@@ -471,6 +464,33 @@ function drawCode128(svg, text) {
   }
 }
 
+// OBTÉM AS MEDIDAS DE CADA FORMATO
+function getDimensions() {
+  const formatVal = $("presetSizes").value;
+  const orientation = $("labelOrientation").value;
+  let w = 70;
+  let h = 38;
+
+  switch(formatVal) {
+    case "amanhecer": w = 70; h = 38; break;
+    case "125x80": w = 125; h = 80; break;
+    case "A6": w = 148; h = 105; break;
+    case "A5": w = 210; h = 148; break;
+    case "105x38": w = 105; h = 38; break;
+    case "70x38": w = 70; h = 38; break;
+    case "65x38": w = 65; h = 38; break;
+    case "52x30": w = 52; h = 30; break;
+    case "100x70": w = 100; h = 70; break;
+    case "50x30": w = 50; h = 30; break;
+  }
+
+  if (orientation === "vertical" && w > h && formatVal !== "amanhecer") {
+    const temp = w; w = h; h = temp;
+  }
+  return { width: w, height: h };
+}
+
+// ATUALIZAÇÃO VISUAL EM TEMPO REAL
 function updateCard() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -480,6 +500,27 @@ function updateCard() {
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isFruit = (formatVal === "A6" || formatVal === "125x80");
+  const orientation = $("labelOrientation").value;
+  const dims = getDimensions();
+
+  // AJUSTA AS DIMENSÕES DO CARTÃO VISÍVEL NO ECRÃ
+  const card = $("mainLabelCard");
+  if (isAmanhecer) {
+    card.style.width = "380px";
+    card.style.height = "210px";
+    $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
+  } else {
+    // Escala proporcional no ecrã para representar o formato escolhido
+    const scale = 3.2; // Pixels por milímetro no ecrã
+    card.style.width = (dims.width * scale) + "px";
+    card.style.height = (dims.height * scale) + "px";
+    $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+  }
+
+  // Ajuste do tamanho de texto proporcional
+  const isLarge = dims.height > 60 || dims.width > 120;
+  $("cardProduct").style.fontSize = isLarge ? "22px" : "15px";
+  $("cardPrice").style.fontSize = isLarge ? "40px" : "30px";
 
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
@@ -554,6 +595,7 @@ function updateCard() {
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
+// EVENTOS DOS SELETORES
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
@@ -563,21 +605,21 @@ $("presetSizes").addEventListener("change", function() {
   $("extraUnitContainer").style.display = isFruit ? "none" : "block";
   
   if (val === "amanhecer") {
-    $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas)";
     $("copiesCount").value = "21";
   } else {
-    $("badgeSheet").textContent = "📐 Formato: " + val;
     $("copiesCount").value = "1";
   }
   updateCard();
 });
+
+$("labelOrientation").addEventListener("change", updateCard);
 
 ["product","internalCode","origem","categoria","calibre","price","ean","unit","capacity"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("input", updateCard);
 });
 
-["store","capacityUnit","depositFeeSelect","labelOrientation"].forEach(id => {
+["store","capacityUnit","depositFeeSelect"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("change", updateCard);
 });
@@ -613,12 +655,28 @@ function triggerPrint() {
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
   const card = $("mainLabelCard");
+  const dims = getDimensions();
+  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+  const oldWidth = card.style.width;
+  const oldHeight = card.style.height;
   
   if (formatVal === "amanhecer") {
     previewWrap.className = "preview-wrap print-sheet-amanhecer";
     previewWrap.innerHTML = "";
     for (let i = 0; i < 21; i++) {
       const clone = card.cloneNode(true);
+      clone.style.width = "100%";
+      clone.style.height = (i < 3) ? "38mm" : "40mm";
+      previewWrap.appendChild(clone);
+      const eanVal = ($("ean").value || "").trim();
+      if (eanVal) drawBarcode(clone.querySelector("#cardBarcodeSvg"), eanVal);
+    }
+  } else {
+    previewWrap.innerHTML = "";
+    for (let i = 0; i < copies; i++) {
+      const clone = card.cloneNode(true);
+      clone.style.width = dims.width + "mm";
+      clone.style.height = dims.height + "mm";
       previewWrap.appendChild(clone);
       const eanVal = ($("ean").value || "").trim();
       if (eanVal) drawBarcode(clone.querySelector("#cardBarcodeSvg"), eanVal);
@@ -627,14 +685,14 @@ function triggerPrint() {
   
   setTimeout(() => {
     window.print();
-    if (formatVal === "amanhecer") {
-      previewWrap.className = "preview-wrap";
-      previewWrap.innerHTML = "";
-      previewWrap.appendChild(card);
-      const eanVal = ($("ean").value || "").trim();
-      if (eanVal) drawBarcode(card.querySelector("#cardBarcodeSvg"), eanVal);
-    }
-  }, 100);
+    previewWrap.className = "preview-wrap";
+    previewWrap.innerHTML = "";
+    card.style.width = oldWidth;
+    card.style.height = oldHeight;
+    previewWrap.appendChild(card);
+    const eanVal = ($("ean").value || "").trim();
+    if (eanVal) drawBarcode(card.querySelector("#cardBarcodeSvg"), eanVal);
+  }, 120);
 }
 
 // Inicialização imediata
