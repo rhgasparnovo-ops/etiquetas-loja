@@ -64,7 +64,7 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* CARTÃO DE ETIQUETA TOTALMENTE AUTÓNOMO */
+  /* CARTÃO DE ETIQUETA COM MOTOR AUTÓNOMO DE PRECISÃO */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333;
@@ -509,6 +509,7 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               <div class="unit-price-text" id="cardUnitPrice" style="display:none;"></div>
+              <!-- TAXA VOLTA AUTO-ADAPTATIVA -->
               <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-weight:900;" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="color:#333; display:none; line-height:1;"></div>
             </div>
@@ -793,7 +794,7 @@ function autoFitElement(el, maxPx, minPx) {
   if (!el) return;
   let size = maxPx;
   el.style.fontSize = size + "px";
-  // O motor encolhe proporcionalmente o texto de forma autónoma até caber nos limites exactos da caixa
+  // O motor encolhe autonomamente até caber sem estourar o layout
   while (size > minPx && (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)) {
     size -= 0.5;
     el.style.fontSize = size + "px";
@@ -844,21 +845,21 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
-  // LIMITES DE PARTIDA ADAPTATIVOS INTELIGENTES
+  // TAMANHOS DE PARTIDA INTELIGENTES (INCLUINDO A TAXA VOLTA)
   if (isLarge) {
     $("cardProduct").style.fontSize = (formatVal === "A5") ? "34px" : "26px";
     $("cardPrice").style.fontSize = (formatVal === "A5") ? "65px" : "44px";
     $("cardOldPrice").style.fontSize = "16px";
     $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "16px";
     $("cardUnitPrice").style.fontSize = "13px";
-    $("cardFruit").style.fontSize = "16px";
+    $("cardDepositText").style.fontSize = "12px";
   } else {
     $("cardProduct").style.fontSize = isAmanhecer ? "12px" : "14px";
     $("cardPrice").style.fontSize = isAmanhecer ? "22px" : "28px";
     $("cardOldPrice").style.fontSize = "9px";
     $("cardPromoTag").style.fontSize = isAmanhecer ? "10px" : "12px";
     $("cardUnitPrice").style.fontSize = isAmanhecer ? "8px" : "9px";
-    $("cardFruit").style.fontSize = isAmanhecer ? "9px" : "10.5px";
+    $("cardDepositText").style.fontSize = isAmanhecer ? "7.5px" : "8.5px"; // Taxa volta auto-adaptativa
   }
 
   $("cardStore").textContent = storeVal;
@@ -923,6 +924,7 @@ function updateCard() {
     const fullText = parts.join(" • ");
     $("cardFruit").style.display = "block";
     $("cardFruit").textContent = fullText;
+    $("cardFruit").style.fontSize = isLarge ? "16px" : "10px";
   } else {
     $("cardFruit").style.display = "none";
   }
@@ -952,18 +954,16 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
-  // MOTOR INTELIGENTE DE AUTO-DIMENSIONAMENTO DA IMAGEM
+  // AUTO-ADAPTAÇÃO DA IMAGEM
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
   if (activePhoto) {
     $("cardPhotoBox").style.display = "flex";
     $("cardPhotoImg").src = activePhoto;
-    
-    // Auto-ajuste de proporção da imagem conforme o comprimento do nome do produto e do preço
     const pLen = productVal.length;
     if (pLen > 22) {
-      $("cardPhotoBox").style.flex = "0.55"; // Encolhe a imagem autonomamente se o texto for grande
+      $("cardPhotoBox").style.flex = "0.55";
     } else {
-      $("cardPhotoBox").style.flex = "0.85"; // Expande harmoniosamente se houver espaço livre
+      $("cardPhotoBox").style.flex = "0.85";
     }
   } else {
     $("cardPhotoBox").style.display = "none";
@@ -982,11 +982,12 @@ function updateCard() {
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 
-  // DISPARAR MOTOR DE AUTO-ADAPTAÇÃO RECURSIVA TOTAL (ZERO PRECALÇOS)
+  // DISPARAR MOTOR DE AUTO-ADAPTAÇÃO RECURSIVA TOTAL (INCLUINDO TAXA VOLTA)
   setTimeout(() => {
-    autoFitElement($("cardProduct"), isLarge ? (formatVal === "A5" ? 32 : 24) : 13, 7);
-    autoFitElement($("cardPrice"), isLarge ? (formatVal === "A5" ? 65 : 44) : 26, 12);
-    autoFitElement($("cardFruit"), isLarge ? 16 : 10.5, 6);
+    autoFitElement($("cardProduct"), isLarge ? (formatVal === "A5" ? 32 : 24) : 12, 6.5);
+    autoFitElement($("cardPrice"), isLarge ? (formatVal === "A5" ? 65 : 44) : 24, 10);
+    autoFitElement($("cardFruit"), isLarge ? 16 : 10.5, 5);
+    autoFitElement($("cardDepositText"), isLarge ? 12 : 8.5, 5); // Taxa Volta adaptativa autónoma
     autoFitElement($("cardPromoText"), isLarge ? 10 : 7, 4.5);
   }, 10);
 }
