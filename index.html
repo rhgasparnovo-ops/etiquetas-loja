@@ -14,7 +14,7 @@
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
-  .app { max-width:1320px; margin:0 auto; padding:20px; }
+  .app { max-width:1340px; margin:0 auto; padding:20px; }
   
   .top-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -27,7 +27,7 @@
   .top-logos img { height: 36px; max-width: 130px; object-fit: contain; }
   .top-logos .divider { width: 1px; height: 26px; background: #e0e0e0; }
 
-  .grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
+  .grid { display:grid; grid-template-columns:390px 1fr; gap:24px; align-items:start; }
   .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
@@ -77,7 +77,6 @@
     border-radius: 2px;
   }
 
-  /* CABEÇALHO COMPACTO - LOJA PUXADA 6MM PARA A ESQUERDA */
   .header {
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
@@ -86,14 +85,11 @@
   .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { 
-    flex: 1; 
-    text-align: right; 
-    overflow: hidden; 
-    margin-right: 6mm; /* Puxado 6mm para a esquerda */
+    flex: 1; text-align: right; overflow: hidden; 
+    margin-right: 6mm;
   }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
-  /* CONTEÚDO PRINCIPAL */
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
     padding: 2px 0; gap: 4px; overflow: hidden; align-items: center;
@@ -127,31 +123,36 @@
   }
 
   .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
-  
-  /* CÓDIGO INTERNO SEMPRE A NEGRITO */
   .item-code { font-size: 9px; font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
   
   .product {
     font-size: 11px; font-weight: bold; color: #000; word-break: break-word;
     line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
   }
+  
+  /* PREÇO COM DESTAQUE PROMOCIONAL */
+  .price-wrapper { display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .old-price { font-size: 12px; color: #777; text-decoration: line-through; font-weight: bold; }
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
+  .promo-tag { font-size: 8px; font-weight: 900; color: #fff; background: #c8102e; padding: 1px 3px; border-radius: 2px; }
+
   .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1; }
-  
-  /* CÓDIGO DE BARRAS SEM MAIÚSCULAS FORÇADAS */
   .ean-text { font-family: monospace; font-size: 8px; font-weight: bold; line-height: 1; text-transform: none; }
-  
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
+  .promo-panel { background: #fff5f5; border: 1px solid #fed7d7; padding: 10px; border-radius: 8px; margin-top: 8px; }
+  
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
   
-  /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER */
+  /* ============================================================ */
+  /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER INTOCÁVEIS */
+  /* ============================================================ */
   @media print {
     @page { 
       margin: 0 !important; 
@@ -209,6 +210,7 @@
       overflow: hidden !important;
     }
     
+    /* 1.ª LINHA (38mm COM 3mm TOP PADDING) */
     .print-sheet-amanhecer .label-card:nth-child(1),
     .print-sheet-amanhecer .label-card:nth-child(2),
     .print-sheet-amanhecer .label-card:nth-child(3) { 
@@ -216,14 +218,17 @@
       padding-top: 3mm !important; 
     }
     
+    /* LINHAS SEGUINTES (40mm) */
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { 
       height: 40mm !important;
     }
     
+    /* MARGEM LATERAL ESQUERDA (COLUNA 1) */
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { 
       padding-left: 6.5mm !important; 
     }
     
+    /* MARGEM LATERAL DIREITA (COLUNA 3) */
     .print-sheet-amanhecer .label-card:nth-child(3n) { 
       padding-right: 6.5mm !important; 
     }
@@ -308,7 +313,7 @@
         </div>
 
         <details class="quick-drawer">
-          <summary>⚡ Opções rápidas de Origem / Categoria</summary>
+          <summary>⚡ Opções rápidas de Origem / Categoria / Calibre</summary>
           <div class="chips-label">Origens comuns em Portugal:</div>
           <div class="chips-group">
             <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">Portugal</span>
@@ -326,40 +331,59 @@
             <span class="chip-btn" onclick="setField('categoria', 'I')">Cat. I</span>
             <span class="chip-btn" onclick="setField('categoria', 'II')">Cat. II</span>
           </div>
+          <div class="chips-label">Calibres Frequentes:</div>
+          <div class="chips-group">
+            <span class="chip-btn" onclick="setField('calibre', '65/70')">65/70</span>
+            <span class="chip-btn" onclick="setField('calibre', '70/75')">70/75</span>
+            <span class="chip-btn" onclick="setField('calibre', '75/80')">75/80</span>
+            <span class="chip-btn" onclick="setField('calibre', 'M')">M</span>
+            <span class="chip-btn" onclick="setField('calibre', 'G')">G</span>
+          </div>
         </details>
       </div>
 
       <div id="standardPricePanel">
-        <label for="price">Preço Base (€)</label>
-        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
+        <label for="price" id="priceLabel">Preço Base (€)</label>
+        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 3,99">
+
+        <!-- DESTAQUE PROMOCIONAL COM PREÇO ANTERIOR -->
+        <label class="checkbox-label" style="margin-top: 10px;">
+          <input type="checkbox" id="isPromoActive">
+          🔥 Ativar Preço Promocional (Preço anterior riscado)
+        </label>
+        <div id="promoBox" class="promo-panel" style="display:none;">
+          <label for="oldPrice" style="margin-top:0; font-size:11px; color:#c8102e;">Preço Normal Anterior (€)</label>
+          <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
+        </div>
         
-        <!-- OPÇÃO DE EMBALAGEM / UNIDADE SEMPRE VISÍVEL -->
+        <!-- EMBALAGEM / CÁLCULO LEGAL OBRIGATÓRIO (DL 162/99) -->
         <div id="packagingRow" style="display:block; margin-top: 8px;">
           <div class="size-row">
             <div>
-              <label for="capacity">Capacidade / Volume</label>
+              <label for="capacity">Capacidade / Medida</label>
               <input id="capacity" type="number" min="0.001" step="0.001" value="0.75">
             </div>
             <div>
-              <label for="capacityUnit">Tipo de Venda / Unidade</label>
+              <label for="capacityUnit">Unidade de Referência Legal</label>
               <select id="capacityUnit">
+                <option value="lt" selected>Litros (LT) — Garrafas / Bebidas</option>
                 <option value="un">Unidade (UN)</option>
-                <option value="lt" selected>Litros (LT)</option>
-                <option value="peso">Venda ao KG (€/KG)</option>
-                <option value="g">Gramas (g)</option>
+                <option value="peso">Venda a Granel (€/KG)</option>
+                <option value="g">Gramas (g) — Pacotes / Embalados</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- TAXA VOLTA (GARRAFA / VASILHAME) -->
+        <!-- TAXA VOLTA REGULAMENTADA -->
         <div id="depositContainer" style="margin-top: 8px;">
           <label for="depositFeeSelect">Taxa Volta (Garrafa / Vasilhame)</label>
           <select id="depositFeeSelect">
             <option value="" selected>Nenhuma (Sem taxa)</option>
-            <option value="Acresce 0,10 € Taxa Volta">Acresce 0,10 € Taxa Volta</option>
-            <option value="Acresce 0,25 € Taxa Volta">Acresce 0,25 € Taxa Volta</option>
+            <option value="Acresce 0,10 € Taxa Volta">Acresce 0,10 € Taxa Volta (Garrafa vidro regular)</option>
+            <option value="custom">Outro valor (Personalizado)...</option>
           </select>
+          <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,20 € Taxa Volta" style="display:none; margin-top: 6px;">
         </div>
 
         <div id="extraUnitContainer" style="margin-top: 8px;">
@@ -379,7 +403,7 @@
         </div>
       </div>
 
-      <!-- CÓDIGO DE BARRAS (SEM FORÇAR MAIÚSCULAS) -->
+      <!-- CÓDIGO DE BARRAS -->
       <label for="ean">Código de Barras (EAN / Código)</label>
       <input id="ean" type="text" style="text-transform: none;" placeholder="Insira o código (Ex.: 5601234567890 ou cod123)">
 
@@ -391,8 +415,41 @@
         ✨ Remover fundo branco/claro automaticamente
       </label>
 
-      <label for="copiesCount">Número de Cópias</label>
-      <input id="copiesCount" type="number" min="1" max="100" value="21">
+      <!-- GESTÃO INTELIGENTE DE IMPRESSÃO (FOLHA AMANHECER) -->
+      <div id="gridStartContainer" style="margin-top: 10px;">
+        <div class="size-row">
+          <div>
+            <label for="startPosition" style="margin-top:0;">Começar na Posição</label>
+            <select id="startPosition">
+              <option value="1" selected>Posição 1 (Folha nova)</option>
+              <option value="2">Posição 2</option>
+              <option value="3">Posição 3</option>
+              <option value="4">Posição 4 (Linha 2)</option>
+              <option value="5">Posição 5</option>
+              <option value="6">Posição 6</option>
+              <option value="7">Posição 7 (Linha 3)</option>
+              <option value="8">Posição 8</option>
+              <option value="9">Posição 9</option>
+              <option value="10">Posição 10 (Linha 4)</option>
+              <option value="11">Posição 11</option>
+              <option value="12">Posição 12</option>
+              <option value="13">Posição 13 (Linha 5)</option>
+              <option value="14">Posição 14</option>
+              <option value="15">Posição 15</option>
+              <option value="16">Posição 16 (Linha 6)</option>
+              <option value="17">Posição 17</option>
+              <option value="18">Posição 18</option>
+              <option value="19">Posição 19 (Linha 7)</option>
+              <option value="20">Posição 20</option>
+              <option value="21">Posição 21</option>
+            </select>
+          </div>
+          <div>
+            <label for="copiesCount" style="margin-top:0;">Etiquetas a Imprimir</label>
+            <input id="copiesCount" type="number" min="1" max="100" value="21">
+          </div>
+        </div>
+      </div>
 
       <div class="actions">
         <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
@@ -415,8 +472,14 @@
             <div class="left-column" id="cardLeftCol">
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
-              <div class="price" id="cardPrice">0,00 €</div>
-              <div id="cardUnitPrice" style="font-size:8.5px; color:#555; display:none;"></div>
+              
+              <div class="price-wrapper" id="cardPriceWrapper">
+                <span class="old-price" id="cardOldPrice" style="display:none;"></span>
+                <span class="price" id="cardPrice">0,00 €</span>
+                <span class="promo-tag" id="cardPromoTag" style="display:none;"></span>
+              </div>
+
+              <div id="cardUnitPrice" style="font-size:8.5px; color:#555; display:none; font-weight:bold;"></div>
               <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7.5px; font-weight:900;" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="font-size:8.5px; color:#333; display:none;"></div>
               <div class="fruit-info" id="cardFruit"></div>
@@ -590,8 +653,8 @@ function drawEAN13(svg, value) {
     if (bits[i] !== "1") continue;
     const rect = document.createElementNS(ns, "rect");
     rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 0 : 4);
-    rect.setAttribute("width", "1");
+    rect.setAttribute("y", 0);
+    rect.setAttribute("width", 1);
     rect.setAttribute("height", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 64 : 60);
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
@@ -631,7 +694,7 @@ function drawCode128(svg, text) {
     const rect = document.createElementNS(ns, "rect");
     rect.setAttribute("x", i + quietZone);
     rect.setAttribute("y", 0);
-    rect.setAttribute("width", "1");
+    rect.setAttribute("width", 1);
     rect.setAttribute("height", 62);
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
@@ -667,11 +730,10 @@ function updateCard() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
-  
-  // Código de barras preserva minúsculas exatamente como digitado
   const eanVal = ($("ean").value || "").trim();
-  
   const priceNum = parsePrice($("price").value);
+  const oldPriceNum = parsePrice($("oldPrice").value);
+  const isPromo = $("isPromoActive").checked;
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isFruit = (formatVal === "A6" || formatVal === "125x80");
@@ -685,11 +747,13 @@ function updateCard() {
     card.style.width = "380px";
     card.style.height = "214px";
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
+    $("gridStartContainer").style.display = "block";
   } else {
     const scale = 3.2;
     card.style.width = (dims.width * scale) + "px";
     card.style.height = (dims.height * scale) + "px";
     $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+    $("gridStartContainer").style.display = "none";
   }
 
   const isLarge = dims.height > 65 || dims.width > 125;
@@ -699,7 +763,6 @@ function updateCard() {
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
-  // CÓDIGO INTERNO A NEGRITO
   if (codeVal) {
     $("cardCode").style.display = "block";
     $("cardCode").textContent = codeVal;
@@ -707,17 +770,29 @@ function updateCard() {
     $("cardCode").style.display = "none";
   }
 
-  // TRATAMENTO DE PREÇOS (AO QUILO, POR UNIDADE OU POR LITRO)
+  // PREÇOS E PROMOÇÃO
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
     
+    if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
+      $("cardOldPrice").style.display = "inline";
+      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+      
+      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100);
+      $("cardPromoTag").style.display = "inline";
+      $("cardPromoTag").textContent = "-" + discount + "%";
+    } else {
+      $("cardOldPrice").style.display = "none";
+      $("cardPromoTag").style.display = "none";
+    }
+
     if (isFruit || capUnit === "peso") {
       $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.5em; color:#333;">€/KG</span>';
       $("cardUnitPrice").style.display = "none";
     } else {
       $("cardPrice").textContent = formatted + " €";
       
-      // Cálculo do Preço Unitário Legal (ex: Garrafas de Vinho por Litro, etc.)
+      // Cálculo legal obrigatório ASAE / DL 162/99
       if (capUnit === "lt" && capacityNum > 0) {
         const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerLt + " € / LT";
@@ -735,6 +810,8 @@ function updateCard() {
     }
   } else {
     $("cardPrice").textContent = "0,00 €";
+    $("cardOldPrice").style.display = "none";
+    $("cardPromoTag").style.display = "none";
     $("cardUnitPrice").style.display = "none";
   }
 
@@ -758,7 +835,16 @@ function updateCard() {
   }
 
   // TAXA VOLTA
-  const depositVal = $("depositFeeSelect").value;
+  const depositSelect = $("depositFeeSelect").value;
+  let depositVal = "";
+  if (depositSelect === "custom") {
+    depositVal = $("customDepositInput").value.trim();
+    $("customDepositInput").style.display = "block";
+  } else {
+    depositVal = depositSelect;
+    $("customDepositInput").style.display = "none";
+  }
+
   if (depositVal) {
     $("cardDeposit").style.display = "block";
     $("cardDepositText").textContent = depositVal;
@@ -783,7 +869,7 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
-  // CÓDIGO DE BARRAS (EM MINÚSCULAS)
+  // CÓDIGO DE BARRAS
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -805,7 +891,6 @@ $("presetSizes").addEventListener("change", function() {
   const isFruit = (val === "A6" || val === "125x80");
   $("fruitPanel").style.display = isFruit ? "block" : "none";
   
-  // Na fruta o preço é por defeito ao KG; nos restantes permite UN / LT / g
   if (isFruit) {
     $("capacityUnit").value = "peso";
     $("packagingRow").style.display = "none";
@@ -825,9 +910,14 @@ $("presetSizes").addEventListener("change", function() {
   updateCard();
 });
 
+$("isPromoActive").addEventListener("change", function() {
+  $("promoBox").style.display = this.checked ? "block" : "none";
+  updateCard();
+});
+
 $("labelOrientation").addEventListener("change", updateCard);
 
-["product","internalCode","origem","categoria","calibre","price","ean","unit","capacity","promoStart","promoEnd"].forEach(id => {
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("input", updateCard);
 });
@@ -859,14 +949,16 @@ $("photo").addEventListener("change", function(e) {
 });
 
 $("clearBtn").addEventListener("click", function() {
-  $("internalCode").value = ""; $("product").value = ""; $("price").value = "";
-  $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = "";
+  $("internalCode").value = ""; $("product").value = ""; $("price").value = ""; $("oldPrice").value = "";
+  $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = ""; $("customDepositInput").value = "";
   $("promoStart").value = ""; $("promoEnd").value = "";
-  $("capacity").value = "1"; $("capacityUnit").value = "un";
+  $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
+  $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
   if ($("calibre")) $("calibre").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = "";
+  $("startPosition").value = "1";
   updateCard();
 });
 
@@ -879,11 +971,15 @@ window.addEventListener("keydown", e => {
 
 $("printBtn").addEventListener("click", triggerPrint);
 
+/* ============================================================ */
+/* IMPRESSÃO: SUPORTE A POSIÇÃO INICIAL EM FOLHAS AMANHECER     */
+/* ============================================================ */
 function triggerPrint() {
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
   const card = $("mainLabelCard");
   const dims = getDimensions();
+  const startPos = parseInt($("startPosition").value, 10) || 1;
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   const oldWidth = card.style.width;
   const oldHeight = card.style.height;
@@ -892,13 +988,26 @@ function triggerPrint() {
     previewWrap.className = "preview-wrap print-sheet-amanhecer";
     previewWrap.innerHTML = "";
     
-    for (let i = 0; i < 21; i++) {
-      const clone = card.cloneNode(true);
-      clone.style.width = "70mm";
-      clone.style.height = (i < 3) ? "38mm" : "40mm";
-      previewWrap.appendChild(clone);
-      const eanVal = ($("ean").value || "").trim();
-      if (eanVal) drawBarcode(clone.querySelector("#cardBarcodeSvg"), eanVal);
+    // GERA A GRELHA DAS 21 POSIÇÕES
+    for (let slot = 1; slot <= 21; slot++) {
+      const isPrinted = (slot >= startPos && slot < (startPos + copies));
+      
+      if (isPrinted) {
+        const clone = card.cloneNode(true);
+        clone.style.width = "70mm";
+        clone.style.height = (slot <= 3) ? "38mm" : "40mm";
+        previewWrap.appendChild(clone);
+        const eanVal = ($("ean").value || "").trim();
+        if (eanVal) drawBarcode(clone.querySelector("#cardBarcodeSvg"), eanVal);
+      } else {
+        // Posição em branco (para aproveitar folha já começada)
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "label-card";
+        emptyDiv.style.width = "70mm";
+        emptyDiv.style.height = (slot <= 3) ? "38mm" : "40mm";
+        emptyDiv.style.visibility = "hidden";
+        previewWrap.appendChild(emptyDiv);
+      }
     }
   } else {
     previewWrap.innerHTML = "";
