@@ -130,7 +130,6 @@
     line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
   }
   
-  /* BLOCO DE PREÇO COM DESCONTO POTENCIADO */
   .price-wrapper { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     line-height: 1; margin: 1px 0; width: 100%;
@@ -142,7 +141,6 @@
     font-size: 10px; color: #666; text-decoration: line-through; font-weight: 700; line-height: 1; 
   }
   
-  /* CRASH / SELO DE PERCENTAGEM DE DESCONTO BEM VISÍVEL */
   .promo-tag { 
     font-size: 12px; 
     font-weight: 900; 
@@ -291,17 +289,31 @@
         <option value="52x30">🏷️ Tala Estreita / Pequena (52 x 30 mm)</option>
         <option value="100x70">🏷️ Cartaz Médio Promoção (100 x 70 mm)</option>
         <option value="50x30">🏷️ Fruta Individual / Mini (50 x 30 mm)</option>
+        <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
       </select>
 
-      <div class="size-row" style="margin-bottom: 8px;">
+      <!-- CAMPOS DE MEDIDA PERSONALIZADA -->
+      <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px; background: #fff9db; padding: 8px; border-radius: 6px; border: 1px dashed #fab005;">
         <div>
-          <label for="labelOrientation" style="margin-top:0;">Orientação</label>
+          <label for="customWidth" style="margin-top:0; font-size:12px;">Largura (mm)</label>
+          <input id="customWidth" type="number" min="10" max="300" value="70">
+        </div>
+        <div>
+          <label for="customHeight" style="margin-top:0; font-size:12px;">Altura (mm)</label>
+          <input id="customHeight" type="number" min="10" max="300" value="38">
+        </div>
+      </div>
+
+      <!-- LOJA E ORIENTAÇÃO (ORIENTAÇÃO SÓ APARECE EM FORMATOS GRANDES) -->
+      <div class="size-row" id="storeOrientationRow" style="margin-bottom: 8px;">
+        <div id="orientationBox" style="display:none;">
+          <label for="labelOrientation" style="margin-top:0;">Orientação da Folha</label>
           <select id="labelOrientation">
             <option value="horizontal" selected>Horizontal (Paisagem)</option>
             <option value="vertical">Vertical (Retrato)</option>
           </select>
         </div>
-        <div>
+        <div id="storeBox" style="width: 100%;">
           <label for="store" style="margin-top:0;">Loja</label>
           <select id="store">
             <option value="PATAIAS" selected>PATAIAS</option>
@@ -491,7 +503,6 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               
-              <!-- BLOCO DE PREÇO COM DESCONTO MAXIMIZADO -->
               <div class="price-wrapper" id="cardPriceWrapper">
                 <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
                   <span class="old-price" id="cardOldPrice"></span>
@@ -722,9 +733,21 @@ function drawCode128(svg, text) {
   }
 }
 
+// FORMATOS CONSIDERADOS GRANDES ONDE A ORIENTAÇÃO É ÚTIL
+function isLargeFormat(val) {
+  if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70") return true;
+  if (val === "custom") {
+    const w = parseFloat($("customWidth").value) || 0;
+    const h = parseFloat($("customHeight").value) || 0;
+    return (w >= 90 || h >= 65);
+  }
+  return false;
+}
+
 function getDimensions() {
   const formatVal = $("presetSizes").value;
   const orientation = $("labelOrientation").value;
+  const allowOrientation = isLargeFormat(formatVal);
   let w = 70;
   let h = 38;
 
@@ -739,9 +762,14 @@ function getDimensions() {
     case "52x30": w = 52; h = 30; break;
     case "100x70": w = 100; h = 70; break;
     case "50x30": w = 50; h = 30; break;
+    case "custom":
+      w = parseFloat($("customWidth").value) || 70;
+      h = parseFloat($("customHeight").value) || 38;
+      break;
   }
 
-  if (orientation === "vertical" && w > h && formatVal !== "amanhecer") {
+  // Só inverte largura e altura se for um formato grande
+  if (allowOrientation && orientation === "vertical" && w > h) {
     const temp = w; w = h; h = temp;
   }
   return { width: w, height: h };
@@ -762,6 +790,7 @@ function updateCard() {
   const dims = getDimensions();
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
+  const showOrientation = isLargeFormat(formatVal);
 
   const card = $("mainLabelCard");
   if (isAmanhecer) {
@@ -773,15 +802,18 @@ function updateCard() {
     const scale = 3.2;
     card.style.width = (dims.width * scale) + "px";
     card.style.height = (dims.height * scale) + "px";
-    $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+    
+    if (showOrientation) {
+      $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+    } else {
+      $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
+    }
     $("gridStartContainer").style.display = "none";
   }
 
   const isLarge = dims.height > 65 || dims.width > 125;
   $("cardProduct").style.fontSize = isLarge ? "20px" : (isAmanhecer ? "13px" : "14px");
   $("cardPrice").style.fontSize = isLarge ? "38px" : (isAmanhecer ? "26px" : "28px");
-  
-  // Percentagem de desconto com escala proporcional
   $("cardPromoTag").style.fontSize = isLarge ? "18px" : (isAmanhecer ? "11.5px" : "13px");
 
   $("cardStore").textContent = storeVal;
@@ -794,7 +826,7 @@ function updateCard() {
     $("cardCode").style.display = "none";
   }
 
-  // PREÇOS E PROMOÇÃO COM DESTAQUE MÁXIMO
+  // PREÇOS E PROMOÇÃO
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
     
@@ -905,10 +937,30 @@ function updateCard() {
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
+// GESTÃO DE VISIBILIDADE DO SELETOR DE ORIENTAÇÃO
+function updateOrientationVisibility() {
+  const formatVal = $("presetSizes").value;
+  const show = isLargeFormat(formatVal);
+  const orientBox = $("orientationBox");
+  const storeBox = $("storeBox");
+  const row = $("storeOrientationRow");
+
+  if (show) {
+    orientBox.style.display = "block";
+    row.style.gridTemplateColumns = "1fr 1fr";
+  } else {
+    orientBox.style.display = "none";
+    row.style.gridTemplateColumns = "1fr";
+  }
+}
+
 // EVENTOS
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
+  const isCustom = (val === "custom");
+  
+  $("customDimensionsRow").style.display = isCustom ? "grid" : "none";
   $("fruitPanel").style.display = isFruit ? "block" : "none";
   
   if (isFruit) {
@@ -927,6 +979,16 @@ $("presetSizes").addEventListener("change", function() {
   } else {
     $("copiesCount").value = "1";
   }
+  updateOrientationVisibility();
+  updateCard();
+});
+
+$("customWidth").addEventListener("input", function() {
+  updateOrientationVisibility();
+  updateCard();
+});
+$("customHeight").addEventListener("input", function() {
+  updateOrientationVisibility();
   updateCard();
 });
 
@@ -979,6 +1041,9 @@ $("clearBtn").addEventListener("click", function() {
   if ($("calibre")) $("calibre").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = "";
   $("startPosition").value = "1";
+  $("presetSizes").value = "amanhecer";
+  $("customDimensionsRow").style.display = "none";
+  updateOrientationVisibility();
   updateCard();
 });
 
@@ -1049,6 +1114,7 @@ function triggerPrint() {
 }
 
 // Inicialização imediata
+updateOrientationVisibility();
 updateCard();
 </script>
 </body>
