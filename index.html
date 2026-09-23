@@ -14,7 +14,7 @@
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
-  .app { max-width:1340px; margin:0 auto; padding:20px; }
+  .app { max-width:1380px; margin:0 auto; padding:20px; }
   
   .top-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -27,8 +27,9 @@
   .top-logos img { height: 36px; max-width: 130px; object-fit: contain; }
   .top-logos .divider { width: 1px; height: 26px; background: #e0e0e0; }
 
-  .grid { display:grid; grid-template-columns:390px 1fr; gap:24px; align-items:start; }
-  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+  .grid { display:grid; grid-template-columns:420px 1fr; gap:24px; align-items:start; }
+  
+  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px;}
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
   input[type="file"] { padding:6px; }
@@ -40,12 +41,25 @@
   }
   .checkbox-label input { width: auto; margin: 0; cursor: pointer; }
 
-  button { cursor:pointer; font-weight:700; }
+  button { cursor:pointer; font-weight:700; transition: 0.2s; }
+  button:hover { filter: brightness(0.95); }
+  
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
-  .secondary { background:#fff; font-size:15px; }
+  .success-btn { background:#176b3a; color:#fff; border-color:#176b3a; font-size:15px; padding:12px; }
+  .save-btn { background:#084298; color:#fff; border-color:#084298; font-size:14px; padding:10px; }
+  .secondary { background:#f8f9fa; font-size:14px; border:1px solid #ced6e0; color: #2f3542;}
+  
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .actions-full { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
+
   #appStatus[data-type="error"] { display:block; color:#8a1c1c; background:#fff0f0; border:1px solid #f5b5b5; }
-  #appStatus:not([data-type="error"]) { color:#245b35; background:#eef9f0; border:1px solid #b9dfc0; }
+  #appStatus[data-type="success"] { display:block; color:#176b3a; background:#eaf7ef; border:1px solid #9bd5b1; }
+  #appStatus:not([data-type="error"]):not([data-type="success"]) { color:#245b35; background:#eef9f0; border:1px solid #b9dfc0; }
+
+  details.drawer { margin-top: 12px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 8px; font-size: 13px; }
+  details.drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; padding: 12px; background: #f1f2f6; border-radius: 8px; user-select: none; }
+  details.drawer[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid #dcdde1; }
+  .drawer-content { padding: 12px; background: #fff; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}
 
   details.quick-drawer { margin-top: 8px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 6px; padding: 6px 10px; font-size: 12px; }
   details.quick-drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; }
@@ -54,10 +68,20 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
+  /* LISTAS DE FILA E BASE DE DADOS */
+  .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+  .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
+  .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
+  .list-item-actions { display: flex; gap: 6px; }
+  .list-item-actions button { padding: 5px 8px; font-size: 11px; width: auto; border-radius: 4px; }
+  .btn-remove { background: #fff0f0; color: #c0392b; border: 1px solid #fab1a0; }
+  .btn-load { background: #eef9f0; color: #27ae60; border: 1px solid #a3cb38; }
+  .empty-msg { text-align: center; color: #b2bec3; font-style: italic; padding: 10px 0; font-size: 12px; }
+
   .preview-container {
     background: #dfe4ea; border: 1px solid #ced6e0; border-radius: 12px;
     padding: 24px; display: flex; flex-direction: column; align-items: center;
-    justify-content: flex-start; min-height: 580px; overflow: hidden;
+    justify-content: flex-start; min-height: 580px; overflow: hidden; position: sticky; top: 20px;
   }
   .sheet-badge {
     background: #fff; border: 1px solid #b2bec3; padding: 6px 14px;
@@ -130,58 +154,23 @@
   .product { font-size: clamp(8px, 3.2cqw, 18px); font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; overflow: hidden; text-align: left; max-height: 2.2em; }
   .unit-price-text { font-size: clamp(6px, 2cqw, 10px); color: #444; font-weight: 800; line-height: 1.1; margin-top: 2px; }
 
-  .price-wrapper { 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    line-height: 1; width: 100%;
-  }
-  .promo-top-row {
-    display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1; margin-bottom: 1px;
-  }
+  .price-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; width: 100%; }
+  .promo-top-row { display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1; margin-bottom: 1px; }
   .old-price { font-size: clamp(6px, 2cqw, 12px); color: #666; text-decoration: line-through; font-weight: 700; line-height: 1; }
   .promo-tag { font-size: clamp(7px, 2.3cqw, 13px); color: #ffffff; background: #c8102e; border-radius: 3px; font-weight: 900; line-height: 1; padding: 1px 3px; }
   .price { font-size: clamp(14px, 6.5cqw, 36px); font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
   /* TAXA VOLTA FLUIDA E ELEGANTE */
-  .deposit-box {
-    font-size: clamp(5.5px, 1.8cqw, 9.5px);
-    color: #c8102e; 
-    background: #fff5f5; 
-    border: 1px solid #fed7d7; 
-    padding: 0 3px; 
-    font-weight: 900; 
-    line-height: 1.1;
-    margin-top: 1px;
-    display: inline-block;
-  }
+  .deposit-box { font-size: clamp(5.5px, 1.8cqw, 9.5px); color: #c8102e; background: #fff5f5; border: 1px solid #fed7d7; padding: 0 3px; font-weight: 900; line-height: 1.1; margin-top: 1px; display: inline-block; }
 
-  .fruit-full-bar {
-    width: 100%;
-    display: none;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    line-height: 1.1;
-    font-weight: 800;
-    color: #084298;
-    text-transform: uppercase;
-    font-size: clamp(6px, 2.1cqw, 11px);
-    flex-shrink: 0;
-    margin: 1px 0;
-  }
+  .fruit-full-bar { width: 100%; display: none; text-align: center; white-space: nowrap; overflow: hidden; line-height: 1.1; font-weight: 800; color: #084298; text-transform: uppercase; font-size: clamp(6px, 2.1cqw, 11px); flex-shrink: 0; margin: 1px 0; }
 
-  .barcode-container {
-    display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; height: 14%; overflow: hidden;
-  }
+  .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: 14%; overflow: hidden; }
   .svg-container { width: 100%; height: 70%; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
   .ean-text { font-family: monospace; font-size: clamp(5px, 1.5cqw, 8px); font-weight: bold; line-height: 1; text-transform: none; }
 
-  .footer-container {
-    display: flex; justify-content: space-between; align-items: center;
-    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0;
-    height: 10%; overflow: hidden;
-  }
+  .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0; height: 10%; overflow: hidden; }
   .promo-text { font-size: clamp(5px, 1.6cqw, 8px); color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; line-height: 1; flex: 1; margin-right: 4px; }
   .print-date { font-size: clamp(5px, 1.5cqw, 7.5px); color: #666; white-space: nowrap; line-height: 1; flex-shrink: 0; }
 
@@ -192,24 +181,19 @@
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
   
-  @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
+  @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } .preview-container { position: relative; top: 0;} }
   
   /* ============================================================ */
   /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER INTOCÁVEIS */
   /* ============================================================ */
   @media print {
     @page { margin: 0 !important; size: 210mm 297mm !important; }
-    html, body {
-      margin: 0 !important; padding: 0 !important; background: #fff !important;
-      width: 210mm !important; height: 297mm !important; overflow: hidden !important;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-    }
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     ::-webkit-scrollbar { display: none !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
-
-    .top-header, .panel, .sheet-badge { display: none !important; }
-    .grid { display: block !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
-    .preview-container { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; display: block !important; overflow: hidden !important; }
+    .top-header, .left-col, .sheet-badge { display: none !important; }
+    .grid { display: block !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+    .preview-container { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; }
     
     .print-sheet-amanhecer {
       display: grid !important; 
@@ -218,47 +202,24 @@
       justify-content: start !important; align-content: start !important;
       gap: 0 !important; padding: 0 !important; width: 210mm !important; height: 278mm !important; 
       margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
-      page-break-inside: avoid !important; page-break-after: avoid !important; overflow: hidden !important;
+      page-break-inside: avoid !important; page-break-after: always !important; overflow: hidden !important;
     }
-    .print-sheet-amanhecer .label-card { 
-      width: 70mm !important; border: 1px solid transparent !important; box-shadow: none !important;
-      page-break-inside: avoid !important; margin: 0 !important; padding: 2px 4px !important; overflow: hidden !important;
-    }
-    .print-sheet-amanhecer .label-card:nth-child(1),
-    .print-sheet-amanhecer .label-card:nth-child(2),
-    .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
+    .print-sheet-amanhecer .label-card { width: 70mm !important; border: 1px solid transparent !important; box-shadow: none !important; page-break-inside: avoid !important; margin: 0 !important; padding: 2px 4px !important; overflow: hidden !important; }
+    .print-sheet-amanhecer .label-card:nth-child(1), .print-sheet-amanhecer .label-card:nth-child(2), .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { height: 40mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
 
-    .preview-wrap:not(.print-sheet-amanhecer) .label-card {
-      border: 1px solid #222 !important; page-break-after: always !important; 
-      margin: 5mm !important; box-shadow: none !important; overflow: hidden !important;
-    }
+    .preview-wrap:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
   }
 </style>
 
 <style>
-/* Preview físico: a escala de ecrã é calculada, mas as dimensões de impressão
-   continuam a ser controladas em mm. */
-#previewWrap .label-card[data-physical-width-mm] {
-  box-sizing: border-box;
-}
-#previewWrap .label-card {
-  max-width: min(100%, var(--label-w-mm, 70mm));
-}
-@media screen {
-  #previewWrap {
-    contain: layout paint;
-  }
-}
-@media print {
-  html, body { margin:0 !important; padding:0 !important; }
-  #previewWrap .label-card {
-    box-sizing:border-box !important;
-    max-width:none !important;
-  }
-}
+/* Preview físico */
+#previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
+#previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
+@media screen { #previewWrap { contain: layout paint; } }
+@media print { html, body { margin:0 !important; padding:0 !important; } #previewWrap .label-card { box-sizing:border-box !important; max-width:none !important; } }
 </style>
 
 <style>
@@ -278,218 +239,159 @@
   </header>
 
   <div class="grid">
-    <section class="panel">
-      <!-- FORMATO DA ETIQUETA -->
-      <label for="presetSizes">Medida / Formato da Etiqueta</label>
-      <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
-        <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
-        <option value="125x80">🍎 Fruta e Legumes Suporte (125 x 80 mm)</option>
-        <option value="A6">📄 Tabuleta A6 Fruta / Promoção (148 x 105 mm)</option>
-        <option value="A5">📄 Tabuleta A5 Grande Destaque (210 x 148 mm)</option>
-        <option value="105x38">🏷️ Prateleira Longa / Gôndola (105 x 38 mm)</option>
-        <option value="70x38">🏷️ Prateleira Standard Recheio (70 x 38 mm)</option>
-        <option value="65x38">🏷️ Prateleira Média (65 x 38 mm)</option>
-        <option value="52x30">🏷️ Tala Estreita / Pequena (52 x 30 mm)</option>
-        <option value="100x70">🏷️ Cartaz Médio Promoção (100 x 70 mm)</option>
-        <option value="50x30">🏷️ Fruta Individual / Mini (50 x 30 mm)</option>
-        <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
-      </select>
+    <div class="left-col">
+      <section class="panel" style="margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: none;">
+        <!-- FORMATO DA ETIQUETA -->
+        <label for="presetSizes">Medida / Formato da Etiqueta</label>
+        <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
+          <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
+          <option value="125x80">🍎 Fruta e Legumes Suporte (125 x 80 mm)</option>
+          <option value="A6">📄 Tabuleta A6 Fruta / Promoção (148 x 105 mm)</option>
+          <option value="A5">📄 Tabuleta A5 Grande Destaque (210 x 148 mm)</option>
+          <option value="105x38">🏷️ Prateleira Longa / Gôndola (105 x 38 mm)</option>
+          <option value="70x38">🏷️ Prateleira Standard Recheio (70 x 38 mm)</option>
+          <option value="65x38">🏷️ Prateleira Média (65 x 38 mm)</option>
+          <option value="52x30">🏷️ Tala Estreita / Pequena (52 x 30 mm)</option>
+          <option value="100x70">🏷️ Cartaz Médio Promoção (100 x 70 mm)</option>
+          <option value="50x30">🏷️ Fruta Individual / Mini (50 x 30 mm)</option>
+          <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
+        </select>
 
-      <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px; background: #fff9db; padding: 8px; border-radius: 6px; border: 1px dashed #fab005;">
-        <div>
-          <label for="customWidth" style="margin-top:0; font-size:12px;">Largura (mm)</label>
-          <input id="customWidth" type="number" min="10" max="300" value="70">
+        <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px; background: #fff9db; padding: 8px; border-radius: 6px; border: 1px dashed #fab005;">
+          <div><label for="customWidth" style="margin-top:0; font-size:12px;">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
+          <div><label for="customHeight" style="margin-top:0; font-size:12px;">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
         </div>
-        <div>
-          <label for="customHeight" style="margin-top:0; font-size:12px;">Altura (mm)</label>
-          <input id="customHeight" type="number" min="10" max="300" value="38">
-        </div>
-      </div>
 
-      <div class="size-row" id="storeOrientationRow" style="margin-bottom: 8px;">
-        <div id="orientationBox" style="display:none;">
-          <label for="labelOrientation" style="margin-top:0;">Orientação da Folha</label>
-          <select id="labelOrientation">
-            <option value="horizontal" selected>Horizontal (Paisagem)</option>
-            <option value="vertical">Vertical (Retrato)</option>
-          </select>
+        <div class="size-row" id="storeOrientationRow" style="margin-bottom: 8px;">
+          <div id="orientationBox" style="display:none;"><label for="labelOrientation" style="margin-top:0;">Orientação da Folha</label><select id="labelOrientation"><option value="horizontal" selected>Horizontal</option><option value="vertical">Vertical</option></select></div>
+          <div id="storeBox" style="width: 100%;"><label for="store" style="margin-top:0;">Loja</label><select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select></div>
         </div>
-        <div id="storeBox" style="width: 100%;">
-          <label for="store" style="margin-top:0;">Loja</label>
-          <select id="store">
-            <option value="PATAIAS" selected>PATAIAS</option>
-            <option value="GARCIA">GARCIA</option>
-          </select>
+      </section>
+
+      <!-- ACORDEÃO: EDITOR DE ETIQUETA -->
+      <details class="drawer" open>
+        <summary>📝 Editar Dados do Produto</summary>
+        <div class="drawer-content">
+          <label for="internalCode" style="margin-top:0;">Código Interno</label>
+          <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR123456">
+
+          <label for="product">Produto / Variedade</label>
+          <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL">
+
+          <div class="fruit-panel" id="fruitPanel">
+            <h4>🍎 Origem, Categoria e Calibre</h4>
+            <div class="size-row-3">
+              <div><label for="origem" style="font-size:11px; margin-top:0;">Origem</label><input id="origem" type="text" class="uppercase-input" placeholder="PORTUGAL"></div>
+              <div><label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label><input id="categoria" type="text" class="uppercase-input" placeholder="I"></div>
+              <div><label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label><input id="calibre" type="text" class="uppercase-input" placeholder="65/70"></div>
+            </div>
+            <details class="quick-drawer">
+              <summary>⚡ Opções rápidas...</summary>
+              <div class="chips-label">Origens comuns:</div>
+              <div class="chips-group">
+                <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">Portugal</span> <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">Espanha</span> <span class="chip-btn" onclick="setField('origem', 'MARROCOS')">Marrocos</span> <span class="chip-btn" onclick="setField('origem', 'FRANÇA')">França</span> <span class="chip-btn" onclick="setField('origem', 'HOLANDA')">Holanda</span> <span class="chip-btn" onclick="setField('origem', 'BRASIL')">Brasil</span>
+              </div>
+              <div class="chips-label">Categorias:</div>
+              <div class="chips-group"><span class="chip-btn" onclick="setField('categoria', 'EXTRA')">Cat. Extra</span> <span class="chip-btn" onclick="setField('categoria', 'I')">Cat. I</span> <span class="chip-btn" onclick="setField('categoria', 'II')">Cat. II</span></div>
+              <div class="chips-label">Calibres:</div>
+              <div class="chips-group"><span class="chip-btn" onclick="setField('calibre', '65/70')">65/70</span> <span class="chip-btn" onclick="setField('calibre', '70/75')">70/75</span> <span class="chip-btn" onclick="setField('calibre', '75/80')">75/80</span> <span class="chip-btn" onclick="setField('calibre', 'M')">M</span> <span class="chip-btn" onclick="setField('calibre', 'G')">G</span></div>
+            </details>
+          </div>
+
+          <div id="standardPricePanel">
+            <label for="price" id="priceLabel">Preço de Venda / Promoção (€)</label>
+            <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 3,99">
+
+            <label class="checkbox-label" style="margin-top: 10px;"><input type="checkbox" id="isPromoActive"> 🔥 Ativar Preço Promocional (Riscado)</label>
+            <div id="promoBox" class="promo-panel" style="display:none;">
+              <label for="oldPrice" style="margin-top:0; font-size:11px; color:#c8102e;">Preço Normal Anterior (€)</label>
+              <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
+            </div>
+            
+            <div id="packagingRow" style="display:block; margin-top: 8px;">
+              <div class="size-row">
+                <div><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001" value="0.75"></div>
+                <div><label for="capacityUnit">Unidade de Medida</label><select id="capacityUnit"><option value="lt" selected>Litros (LT)</option><option value="peso">Quilos (KG)</option><option value="g">Gramas (g)</option><option value="un">Unidade (UN)</option></select></div>
+              </div>
+            </div>
+
+            <div id="depositContainer" style="margin-top: 8px;">
+              <label for="depositFeeSelect">Taxa Volta</label>
+              <select id="depositFeeSelect"><option value="" selected>Nenhuma</option><option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option><option value="custom">Outro valor...</option></select>
+              <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,10 € Volta" style="display:none; margin-top: 6px;">
+            </div>
+
+            <div id="extraUnitContainer" style="margin-top: 8px;">
+              <label for="unit">Informação Extra (Opcional)</label>
+              <input id="unit" type="text" placeholder="Ex.: Garrafa 75cl">
+            </div>
+
+            <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
+              <div><label for="promoStart">Início Promoção</label><input id="promoStart" type="date"></div>
+              <div><label for="promoEnd">Fim Promoção</label><input id="promoEnd" type="date"></div>
+            </div>
+          </div>
+
+          <label for="ean" style="color: #084298;">Código de Barras (EAN)</label>
+          <input id="ean" type="text" style="text-transform: none; border-color: #b6d4fe; background: #f8fbff;" placeholder="Se vazio, gera código a partir do Cód. Interno">
+
+          <label for="photo">Fotografia (Opcional)</label>
+          <input id="photo" type="file" accept="image/*">
+          <label class="checkbox-label"><input type="checkbox" id="autoRemoveBg" checked> ✨ Remover fundo branco</label>
         </div>
-      </div>
+      </details>
       
-      <label for="internalCode">Código Interno</label>
-      <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR123456">
-
-      <label for="product">Produto / Variedade</label>
-      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL">
-
-      <div class="fruit-panel" id="fruitPanel">
-        <h4>🍎 Origem, Categoria e Calibre</h4>
-        <div class="size-row-3">
-          <div>
-            <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
-            <input id="origem" type="text" class="uppercase-input" placeholder="PORTUGAL">
-          </div>
-          <div>
-            <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
-            <input id="categoria" type="text" class="uppercase-input" placeholder="I">
-          </div>
-          <div>
-            <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
-            <input id="calibre" type="text" class="uppercase-input" placeholder="65/70">
-          </div>
-        </div>
-
-        <details class="quick-drawer">
-          <summary>⚡ Opções rápidas de Origem / Categoria / Calibre</summary>
-          <div class="chips-label">Origens comuns em Portugal:</div>
-          <div class="chips-group">
-            <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">Portugal</span>
-            <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">Espanha</span>
-            <span class="chip-btn" onclick="setField('origem', 'MARROCOS')">Marrocos</span>
-            <span class="chip-btn" onclick="setField('origem', 'FRANÇA')">França</span>
-            <span class="chip-btn" onclick="setField('origem', 'HOLANDA')">Holanda</span>
-            <span class="chip-btn" onclick="setField('origem', 'COSTA RICA')">Costa Rica</span>
-            <span class="chip-btn" onclick="setField('origem', 'BRASIL')">Brasil</span>
-            <span class="chip-btn" onclick="setField('origem', 'ÁFRICA DO SUL')">África do Sul</span>
-          </div>
-          <div class="chips-label">Categorias Oficiais:</div>
-          <div class="chips-group">
-            <span class="chip-btn" onclick="setField('categoria', 'EXTRA')">Cat. Extra</span>
-            <span class="chip-btn" onclick="setField('categoria', 'I')">Cat. I</span>
-            <span class="chip-btn" onclick="setField('categoria', 'II')">Cat. II</span>
-          </div>
-          <div class="chips-label">Calibres Frequentes:</div>
-          <div class="chips-group">
-            <span class="chip-btn" onclick="setField('calibre', '65/70')">65/70</span>
-            <span class="chip-btn" onclick="setField('calibre', '70/75')">70/75</span>
-            <span class="chip-btn" onclick="setField('calibre', '75/80')">75/80</span>
-            <span class="chip-btn" onclick="setField('calibre', 'M')">M</span>
-            <span class="chip-btn" onclick="setField('calibre', 'G')">G</span>
-          </div>
-        </details>
-      </div>
-
-      <div id="standardPricePanel">
-        <label for="price" id="priceLabel">Preço de Venda / Promoção (€)</label>
-        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 3,99">
-
-        <label class="checkbox-label" style="margin-top: 10px;">
-          <input type="checkbox" id="isPromoActive">
-          🔥 Ativar Preço Promocional (Preço anterior riscado)
-        </label>
-        <div id="promoBox" class="promo-panel" style="display:none;">
-          <label for="oldPrice" style="margin-top:0; font-size:11px; color:#c8102e;">Preço Normal Anterior (€)</label>
-          <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
-        </div>
-        
-        <div id="packagingRow" style="display:block; margin-top: 8px;">
+      <section class="panel" style="margin-top: 12px; margin-bottom: 12px;">
+        <div id="gridStartContainer">
           <div class="size-row">
             <div>
-              <label for="capacity">Quantidade / Medida</label>
-              <input id="capacity" type="number" min="0.001" step="0.001" value="0.75">
-            </div>
-            <div>
-              <label for="capacityUnit">Unidade de Medida</label>
-              <select id="capacityUnit">
-                <option value="lt" selected>Litros (LT)</option>
-                <option value="peso">Quilos (KG)</option>
-                <option value="g">Gramas (g)</option>
-                <option value="un">Unidade (UN)</option>
+              <label for="startPosition" style="margin-top:0;">Começar na Posição</label>
+              <select id="startPosition">
+                <option value="1" selected>Posição 1</option><option value="2">Posição 2</option><option value="3">Posição 3</option><option value="4">Posição 4 (Linha 2)</option><option value="5">Posição 5</option><option value="6">Posição 6</option><option value="7">Posição 7 (Linha 3)</option><option value="8">Posição 8</option><option value="9">Posição 9</option><option value="10">Posição 10</option><option value="11">Posição 11</option><option value="12">Posição 12</option><option value="13">Posição 13</option><option value="14">Posição 14</option><option value="15">Posição 15</option><option value="16">Posição 16</option><option value="17">Posição 17</option><option value="18">Posição 18</option><option value="19">Posição 19</option><option value="20">Posição 20</option><option value="21">Posição 21</option>
               </select>
             </div>
+            <div>
+              <label for="copiesCount" style="margin-top:0;">Nº de Etiquetas</label>
+              <input id="copiesCount" type="number" min="1" max="100" value="1">
+            </div>
           </div>
         </div>
-
-        <div id="depositContainer" style="margin-top: 8px;">
-          <label for="depositFeeSelect">Taxa Volta (Plástico / Latas)</label>
-          <select id="depositFeeSelect">
-            <option value="" selected>Nenhuma (Sem taxa)</option>
-            <option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option>
-            <option value="custom">Outro valor (Personalizado)...</option>
-          </select>
-          <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,10 € Volta" style="display:none; margin-top: 6px;">
+        
+        <div id="appStatus" role="status" aria-live="polite" style="display:none;"></div>
+        
+        <div class="actions">
+          <button class="success-btn" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
+          <button class="save-btn" id="saveDbBtn" type="button">💾 Guardar Produto</button>
         </div>
-
-        <div id="extraUnitContainer" style="margin-top: 8px;">
-          <label for="unit">Informação Extra (Opcional)</label>
-          <input id="unit" type="text" placeholder="Ex.: Garrafa 75cl">
+        <div class="actions-full">
+          <button class="primary" id="printBtn" type="button">🖨️ Imprimir Fila [F9]</button>
+          <button class="secondary" id="clearBtn" type="button">Limpar Editor</button>
         </div>
+      </section>
 
-        <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
-          <div>
-            <label for="promoStart">Início Promoção</label>
-            <input id="promoStart" type="date">
+      <!-- ACORDEÃO: FILA DE IMPRESSÃO -->
+      <details class="drawer">
+        <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
+        <div class="drawer-content" style="background:#f1f2f6;">
+          <div id="queueListContainer">
+            <div class="empty-msg">A fila está vazia. Adicione etiquetas acima.</div>
           </div>
-          <div>
-            <label for="promoEnd">Fim Promoção</label>
-            <input id="promoEnd" type="date">
-          </div>
+          <button class="secondary" style="margin-top: 10px; width: 100%; border-color:#e74c3c; color:#c0392b; display:none;" id="clearQueueBtn">🗑️ Limpar Fila</button>
         </div>
-      </div>
+      </details>
 
-      <!-- NOVO COMPORTAMENTO INTELIGENTE -->
-      <label for="ean" style="color: #084298;">Código de Barras (EAN-13, EAN-14)</label>
-      <input id="ean" type="text" style="text-transform: none; border-color: #b6d4fe; background: #f8fbff;" placeholder="Se vazio, gera código de barras a partir do Código Interno">
-
-      <label for="photo">Fotografia do Produto (Opcional)</label>
-      <input id="photo" type="file" accept="image/*">
-      <label class="checkbox-label">
-        <input type="checkbox" id="autoRemoveBg" checked>
-        ✨ Remover fundo branco/claro automaticamente
-      </label>
-
-      <div id="gridStartContainer" style="margin-top: 10px;">
-        <div class="size-row">
-          <div>
-            <label for="startPosition" style="margin-top:0;">Começar na Posição</label>
-            <select id="startPosition">
-              <option value="1" selected>Posição 1 (Folha nova)</option>
-              <option value="2">Posição 2</option>
-              <option value="3">Posição 3</option>
-              <option value="4">Posição 4 (Linha 2)</option>
-              <option value="5">Posição 5</option>
-              <option value="6">Posição 6</option>
-              <option value="7">Posição 7 (Linha 3)</option>
-              <option value="8">Posição 8</option>
-              <option value="9">Posição 9</option>
-              <option value="10">Posição 10 (Linha 4)</option>
-              <option value="11">Posição 11</option>
-              <option value="12">Posição 12</option>
-              <option value="13">Posição 13 (Linha 5)</option>
-              <option value="14">Posição 14</option>
-              <option value="15">Posição 15</option>
-              <option value="16">Posição 16 (Linha 6)</option>
-              <option value="17">Posição 17</option>
-              <option value="18">Posição 18</option>
-              <option value="19">Posição 19 (Linha 7)</option>
-              <option value="20">Posição 20</option>
-              <option value="21">Posição 21</option>
-            </select>
-          </div>
-          <div>
-            <label for="copiesCount" style="margin-top:0;">Etiquetas a Imprimir</label>
-            <input id="copiesCount" type="number" min="1" max="100" value="21">
-          </div>
+      <!-- ACORDEÃO: BASE DE DADOS -->
+      <details class="drawer">
+        <summary>🗃️ Produtos Guardados (<span id="dbBadge">0</span>)</summary>
+        <div class="drawer-content" style="background:#f1f2f6;">
+           <div id="dbListContainer">
+              <div class="empty-msg">Nenhum produto guardado ainda.</div>
+           </div>
         </div>
-      </div>
+      </details>
+    </div>
 
-      <div id="appStatus" role="status" aria-live="polite"
-           style="display:none; margin-top:10px; padding:8px 10px; border-radius:7px; font-size:12px; font-weight:700;"></div>
-
-      <div class="actions">
-        <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
-        <button class="secondary" id="clearBtn" type="button">Limpar</button>
-      </div>
-    </section>
-
-    <!-- PRÉ-VISUALIZAÇÃO -->
+    <!-- PRÉ-VISUALIZAÇÃO (DIREITA) -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
@@ -502,7 +404,6 @@
           </div>
           
           <div class="main-content" id="cardMainContent">
-            
             <div class="col-desc" id="cardColDesc">
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
@@ -510,28 +411,19 @@
               <div id="cardDeposit" style="display:none; line-height:1;"><span class="deposit-box" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="color:#333; display:none; line-height:1;"></div>
             </div>
-
             <div class="col-price" id="cardColPrice">
               <div class="price-wrapper" id="cardPriceWrapper">
-                <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
-                  <span class="old-price" id="cardOldPrice"></span>
-                  <span class="promo-tag" id="cardPromoTag"></span>
-                </div>
+                <div class="promo-top-row" id="cardPromoTopRow" style="display:none;"><span class="old-price" id="cardOldPrice"></span><span class="promo-tag" id="cardPromoTag"></span></div>
                 <div class="price" id="cardPrice">0,00 €</div>
               </div>
             </div>
-
             <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
-
           </div>
-
           <div class="fruit-full-bar" id="cardFruit"></div>
-
           <div class="barcode-container" id="cardBarcodeBox">
             <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
             <div class="ean-text" id="cardBarcodeText"></div>
           </div>
-          
           <div class="footer-container" id="cardFooter">
             <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
             <div class="print-date" id="cardPrintDate"></div>
@@ -552,20 +444,224 @@ let globalProcessedPhoto = "";
 let printInProgress = false;
 let printRestoreTimer = null;
 let photoProcessingToken = 0;
+let globalMainCard = null; 
 
-function setField(id, val) {
-  const el = $(id);
-  if (el) { el.value = val; updateCard(); }
+// ==========================================
+// SISTEMA DE GESTÃO DE DADOS (FILA E DB)
+// ==========================================
+let printQueue = [];
+let savedProducts = JSON.parse(localStorage.getItem("balcao_agricola_db") || "[]");
+
+function getFormData() {
+  return {
+    presetSizes: $("presetSizes").value,
+    customWidth: $("customWidth").value,
+    customHeight: $("customHeight").value,
+    labelOrientation: $("labelOrientation").value,
+    store: $("store").value,
+    internalCode: $("internalCode").value.trim().toUpperCase(),
+    product: $("product").value.trim().toUpperCase(),
+    origem: $("origem") ? $("origem").value.trim().toUpperCase() : "",
+    categoria: $("categoria") ? $("categoria").value.trim().toUpperCase() : "",
+    calibre: $("calibre") ? $("calibre").value.trim().toUpperCase() : "",
+    price: $("price").value,
+    isPromoActive: $("isPromoActive").checked,
+    oldPrice: $("oldPrice").value,
+    capacity: $("capacity").value,
+    capacityUnit: $("capacityUnit").value,
+    depositFeeSelect: $("depositFeeSelect").value,
+    customDepositInput: $("customDepositInput").value,
+    unit: $("unit").value,
+    promoStart: $("promoStart").value,
+    promoEnd: $("promoEnd").value,
+    ean: $("ean").value.trim(),
+    autoRemoveBg: $("autoRemoveBg").checked,
+    originalPhoto: globalOriginalPhoto,
+    processedPhoto: globalProcessedPhoto
+  };
 }
+
+function setFormData(data) {
+  $("presetSizes").value = data.presetSizes || "amanhecer";
+  $("customWidth").value = data.customWidth || "70";
+  $("customHeight").value = data.customHeight || "38";
+  $("labelOrientation").value = data.labelOrientation || "horizontal";
+  $("store").value = data.store || "PATAIAS";
+  $("internalCode").value = data.internalCode || "";
+  $("product").value = data.product || "";
+  if($("origem")) $("origem").value = data.origem || "";
+  if($("categoria")) $("categoria").value = data.categoria || "";
+  if($("calibre")) $("calibre").value = data.calibre || "";
+  $("price").value = data.price || "";
+  $("isPromoActive").checked = data.isPromoActive || false;
+  $("oldPrice").value = data.oldPrice || "";
+  $("capacity").value = data.capacity || "0.75";
+  $("capacityUnit").value = data.capacityUnit || "lt";
+  $("depositFeeSelect").value = data.depositFeeSelect || "";
+  $("customDepositInput").value = data.customDepositInput || "";
+  $("unit").value = data.unit || "";
+  $("promoStart").value = data.promoStart || "";
+  $("promoEnd").value = data.promoEnd || "";
+  $("ean").value = data.ean || "";
+  $("autoRemoveBg").checked = data.autoRemoveBg !== false;
+  
+  // Imagens só são repostas se vierem da Fila. Da Base de dados, para poupar memória do PC, não gravamos a imagem.
+  globalOriginalPhoto = data.originalPhoto || "";
+  globalProcessedPhoto = data.processedPhoto || "";
+  $("photo").value = ""; 
+  
+  updateOrientationVisibility();
+  $("promoBox").style.display = $("isPromoActive").checked ? "block" : "none";
+  $("customDepositInput").style.display = $("depositFeeSelect").value === "custom" ? "block" : "none";
+  updateCard();
+}
+
+function renderQueue() {
+  const container = $("queueListContainer");
+  $("queueBadge").textContent = printQueue.length;
+  
+  if (printQueue.length === 0) {
+    container.innerHTML = '<div class="empty-msg">A fila está vazia. Adicione etiquetas acima.</div>';
+    $("clearQueueBtn").style.display = "none";
+    $("printBtn").textContent = "🖨️ Imprimir Fila Vazia [F9]";
+    return;
+  }
+  
+  $("clearQueueBtn").style.display = "block";
+  let totalLabels = 0;
+  container.innerHTML = "";
+  
+  printQueue.forEach((item, index) => {
+    totalLabels += item.copies;
+    const div = document.createElement("div");
+    div.className = "list-item";
+    
+    let priceStr = item.data.price ? item.data.price + "€" : "S/ Preço";
+    
+    div.innerHTML = `
+      <div class="list-item-info">
+        <strong>${item.copies}x ${item.data.product || 'Sem Nome'}</strong>
+        <span>Ref: ${item.data.internalCode || 'N/A'} | ${priceStr}</span>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn-remove" onclick="removeFromQueue(${index})">❌</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  
+  $("printBtn").innerHTML = `🖨️ Imprimir Fila (${totalLabels} etiq.) [F9]`;
+}
+
+function addToQueue() {
+  setValidationState();
+  if($("appStatus").dataset.type === "error") {
+      setStatus("Existem erros. Corrija-os antes de adicionar à fila.", "error");
+      return;
+  }
+  const copies = parseInt($("copiesCount").value) || 1;
+  const data = getFormData();
+  if(!data.product && !data.price) {
+      setStatus("Preencha os dados do produto primeiro.", "error");
+      return;
+  }
+  printQueue.push({ data: data, copies: copies });
+  renderQueue();
+  setStatus("Adicionado à fila de impressão!", "success");
+}
+
+window.removeFromQueue = function(index) {
+  printQueue.splice(index, 1);
+  renderQueue();
+};
+
+$("clearQueueBtn").addEventListener("click", () => {
+  if(confirm("Tem a certeza que quer limpar a fila de impressão?")) {
+    printQueue = [];
+    renderQueue();
+  }
+});
+
+function renderDb() {
+  const container = $("dbListContainer");
+  $("dbBadge").textContent = savedProducts.length;
+  
+  if (savedProducts.length === 0) {
+    container.innerHTML = '<div class="empty-msg">Nenhum produto guardado.</div>';
+    return;
+  }
+  
+  container.innerHTML = "";
+  // Sort by product name alphabetically
+  savedProducts.sort((a,b) => (a.product||"").localeCompare(b.product||"")).forEach((data, index) => {
+    const div = document.createElement("div");
+    div.className = "list-item";
+    div.innerHTML = `
+      <div class="list-item-info">
+        <strong>${data.product || 'Sem Nome'}</strong>
+        <span>Ref: ${data.internalCode || 'N/A'} | ${data.price ? data.price+'€' : ''}</span>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn-load" onclick="loadFromDb(${index})">Carregar</button>
+        <button class="btn-remove" onclick="removeFromDb(${index})">❌</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function saveToDb() {
+  const data = getFormData();
+  if(!data.product && !data.internalCode) {
+      setStatus("Preencha um nome ou código para guardar.", "error");
+      return;
+  }
+  // Limpa a foto para não rebentar o limite de memória do navegador (apenas guarda os textos)
+  data.originalPhoto = ""; 
+  data.processedPhoto = "";
+  
+  // Procura se já existe um com o mesmo código interno (e que tenha código)
+  let existingIdx = savedProducts.findIndex(p => p.internalCode === data.internalCode && p.internalCode !== "");
+  if(existingIdx >= 0) {
+      savedProducts[existingIdx] = data; // Atualiza
+  } else {
+      savedProducts.push(data); // Adiciona novo
+  }
+  localStorage.setItem("balcao_agricola_db", JSON.stringify(savedProducts));
+  renderDb();
+  setStatus("Produto guardado com sucesso na base de dados!", "success");
+}
+
+window.loadFromDb = function(index) {
+  const data = savedProducts[index];
+  if(data) {
+    setFormData(data);
+    setStatus(`Produto '${data.product}' carregado.`, "success");
+  }
+};
+
+window.removeFromDb = function(index) {
+  if(confirm("Eliminar este produto guardado?")) {
+    savedProducts.splice(index, 1);
+    localStorage.setItem("balcao_agricola_db", JSON.stringify(savedProducts));
+    renderDb();
+  }
+};
+
+$("addToQueueBtn").addEventListener("click", addToQueue);
+$("saveDbBtn").addEventListener("click", saveToDb);
+
+// ==========================================
+// FUNÇÕES BASE (ANTIGAS MANTIDAS INTACTAS)
+// ==========================================
+
+function setField(id, val) { const el = $(id); if (el) { el.value = val; updateCard(); } }
 
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
   let clean = String(valStr).trim().replace(/€|\s/g, "");
-  if (clean.includes(",") && clean.includes(".")) {
-    clean = clean.replace(/\./g, "").replace(",", ".");
-  } else {
-    clean = clean.replace(",", ".");
-  }
+  if (clean.includes(",") && clean.includes(".")) clean = clean.replace(/\./g, "").replace(",", ".");
+  else clean = clean.replace(",", ".");
   const num = Number(clean);
   return Number.isFinite(num) ? num : null;
 }
@@ -575,89 +671,40 @@ function formatPromoDate(startStr, endStr) {
   const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   if (startStr && endStr) {
     const d1 = new Date(startStr); const d2 = new Date(endStr);
-    if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) {
-      return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-    } else {
-      return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-    }
+    if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    else return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
   } else if (endStr) {
-    const d2 = new Date(endStr);
-    return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    const d2 = new Date(endStr); return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
   } else {
-    const d1 = new Date(startStr);
-    return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
+    const d1 = new Date(startStr); return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
   }
 }
 
 function removeBackground(dataUrl, callback) {
-  const token = ++photoProcessingToken;
-  const img = new Image();
-
+  const token = ++photoProcessingToken; const img = new Image();
   img.onload = function() {
     try {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
-
+      const canvas = document.createElement("canvas"); canvas.width = img.naturalWidth || img.width; canvas.height = img.naturalHeight || img.height;
       if (!canvas.width || !canvas.height) throw new Error("Imagem sem dimensões válidas.");
-
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas indisponível.");
-
+      const ctx = canvas.getContext("2d", { willReadFrequently: true }); if (!ctx) throw new Error("Canvas indisponível.");
       ctx.drawImage(img, 0, 0);
-
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-
-      const corners = [
-        0,
-        (canvas.width - 1) * 4,
-        ((canvas.height - 1) * canvas.width) * 4,
-        ((canvas.height - 1) * canvas.width + (canvas.width - 1)) * 4
-      ];
-
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); const data = imgData.data;
+      const corners = [ 0, (canvas.width - 1) * 4, ((canvas.height - 1) * canvas.width) * 4, ((canvas.height - 1) * canvas.width + (canvas.width - 1)) * 4 ];
       let bgR = 0, bgG = 0, bgB = 0;
-      corners.forEach(idx => {
-        bgR += data[idx];
-        bgG += data[idx + 1];
-        bgB += data[idx + 2];
-      });
-
-      bgR = Math.round(bgR / 4);
-      bgG = Math.round(bgG / 4);
-      bgB = Math.round(bgB / 4);
-
+      corners.forEach(idx => { bgR += data[idx]; bgG += data[idx + 1]; bgB += data[idx + 2]; });
+      bgR = Math.round(bgR / 4); bgG = Math.round(bgG / 4); bgB = Math.round(bgB / 4);
       const tolerance = 48;
-
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i], g = data[i + 1], b = data[i + 2];
-        const dist = Math.sqrt(
-          (r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2
-        );
-
-        if (dist < tolerance || (r > 240 && g > 240 && b > 240)) {
-          data[i + 3] = 0;
-        } else if (dist < tolerance + 15) {
-          const alphaFactor = (dist - tolerance) / 15;
-          data[i + 3] = Math.round(data[i + 3] * alphaFactor);
-        }
+        const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+        if (dist < tolerance || (r > 240 && g > 240 && b > 240)) data[i + 3] = 0;
+        else if (dist < tolerance + 15) { const alphaFactor = (dist - tolerance) / 15; data[i + 3] = Math.round(data[i + 3] * alphaFactor); }
       }
-
       ctx.putImageData(imgData, 0, 0);
-
-      if (token === photoProcessingToken) {
-        callback(canvas.toDataURL("image/png"));
-      }
-    } catch (err) {
-      console.warn("Não foi possível remover o fundo:", err);
-      if (token === photoProcessingToken) callback(dataUrl);
-    }
+      if (token === photoProcessingToken) callback(canvas.toDataURL("image/png"));
+    } catch (err) { console.warn(err); if (token === photoProcessingToken) callback(dataUrl); }
   };
-
-  img.onerror = function() {
-    if (token === photoProcessingToken) callback(dataUrl);
-  };
-
+  img.onerror = function() { if (token === photoProcessingToken) callback(dataUrl); };
   img.src = dataUrl;
 }
 
@@ -668,202 +715,78 @@ const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGL
 
 function onlyDigits(v) { return String(v || "").replace(/\D/g, ""); }
 function ean13CheckDigit(f12) {
-  const d = onlyDigits(f12).slice(0, 12);
-  if (d.length !== 12) return null;
-  let sum = 0;
-  for (let i = 0; i < 12; i++) { sum += Number(d[i]) * (i % 2 === 0 ? 1 : 3); }
+  const d = onlyDigits(f12).slice(0, 12); if (d.length !== 12) return null;
+  let sum = 0; for (let i = 0; i < 12; i++) sum += Number(d[i]) * (i % 2 === 0 ? 1 : 3);
   return String((10 - (sum % 10)) % 10);
 }
-function isValidEAN13(v) {
-  const d = onlyDigits(v);
-  return d.length === 13 && ean13CheckDigit(d.slice(0,12)) === d[12];
-}
-
-function normalizeBarcode(value) {
-  return String(value || "").trim().replace(/\s+/g, "");
-}
-
+function isValidEAN13(v) { const d = onlyDigits(v); return d.length === 13 && ean13CheckDigit(d.slice(0,12)) === d[12]; }
+function normalizeBarcode(value) { return String(value || "").trim().replace(/\s+/g, ""); }
 function isValidEAN14(v) {
-  const d = onlyDigits(v);
-  if (d.length !== 14) return false;
-  let sum = 0;
-  for (let i = 13, pos = 0; i >= 0; i--, pos++) {
-    sum += Number(d[i]) * (pos % 2 === 0 ? 3 : 1);
-  }
+  const d = onlyDigits(v); if (d.length !== 14) return false;
+  let sum = 0; for (let i = 13, pos = 0; i >= 0; i--, pos++) sum += Number(d[i]) * (pos % 2 === 0 ? 3 : 1);
   return sum % 10 === 0;
 }
 
 function drawBarcode(svg, value) {
-  if (!svg) return;
-  svg.innerHTML = "";
-
-  const cleanVal = normalizeBarcode(value);
-  if (!cleanVal) return;
-
-  if (/^\d{13}$/.test(cleanVal) && isValidEAN13(cleanVal)) {
-    drawEAN13(svg, cleanVal);
-    return;
-  }
-
-  if (/^\d{14}$/.test(cleanVal) && isValidEAN14(cleanVal)) {
-    drawCode128(svg, cleanVal);
-    return;
-  }
-
-  // Se tem letras, traços ou números (como Códigos Internos DR123456)
-  if (/^[\x20-\x7E]+$/.test(cleanVal)) {
-    drawCode128(svg, cleanVal);
-  }
+  if (!svg) return; svg.innerHTML = "";
+  const cleanVal = normalizeBarcode(value); if (!cleanVal) return;
+  if (/^\d{13}$/.test(cleanVal) && isValidEAN13(cleanVal)) { drawEAN13(svg, cleanVal); return; }
+  if (/^\d{14}$/.test(cleanVal) && isValidEAN14(cleanVal)) { drawCode128(svg, cleanVal); return; }
+  if (/^[\x20-\x7E]+$/.test(cleanVal)) { drawCode128(svg, cleanVal); }
 }
 
 function drawEAN13(svg, value) {
-  const digits = onlyDigits(value);
-  const first = Number(digits[0]);
-  const leftDigits = digits.slice(1, 7);
-  const rightDigits = digits.slice(7);
-  const parity = EAN_PARITY[first];
-
+  const digits = onlyDigits(value); const first = Number(digits[0]); const leftDigits = digits.slice(1, 7); const rightDigits = digits.slice(7); const parity = EAN_PARITY[first];
   let bits = "101";
-  for (let i = 0; i < 6; i++) {
-    bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])];
-  }
+  for (let i = 0; i < 6; i++) bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])];
   bits += "01010";
   for (let i = 0; i < 6; i++) bits += EAN_R[Number(rightDigits[i])];
   bits += "101";
-
-  const quietZone = 11;
-  const totalWidth = bits.length + quietZone * 2;
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
-  svg.setAttribute("preserveAspectRatio", "none");
-
-  const bg = document.createElementNS(ns, "rect");
-  bg.setAttribute("x", "0");
-  bg.setAttribute("y", "0");
-  bg.setAttribute("width", totalWidth);
-  bg.setAttribute("height", "72");
-  bg.setAttribute("fill", "white");
-  svg.appendChild(bg);
-
+  const quietZone = 11; const totalWidth = bits.length + quietZone * 2; const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`); svg.setAttribute("preserveAspectRatio", "none");
+  const bg = document.createElementNS(ns, "rect"); bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white"); svg.appendChild(bg);
   for (let i = 0; i < bits.length; i++) {
     if (bits[i] !== "1") continue;
-    const rect = document.createElementNS(ns, "rect");
-    rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", 0);
-    rect.setAttribute("width", 1);
-    rect.setAttribute("height", 62);
-    rect.setAttribute("fill", "black");
-    svg.appendChild(rect);
+    const rect = document.createElementNS(ns, "rect"); rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0); rect.setAttribute("width", 1); rect.setAttribute("height", 62); rect.setAttribute("fill", "black"); svg.appendChild(rect);
   }
 }
 
 function drawCode128(svg, text) {
-  const clean = String(text || "");
-  if (!/^[\x20-\x7E]+$/.test(clean)) return;
-
-  const codes = [104]; 
-  for (const ch of clean) codes.push(ch.charCodeAt(0) - 32);
-
-  let checksum = codes[0];
-  for (let i = 1; i < codes.length; i++) checksum += codes[i] * i;
-  codes.push(checksum % 103);
-
-  const sequence = [...codes.map(String), "STOP"];
-  let fullBits = "";
-
+  const clean = String(text || ""); if (!/^[\x20-\x7E]+$/.test(clean)) return;
+  const codes = [104]; for (const ch of clean) codes.push(ch.charCodeAt(0) - 32);
+  let checksum = codes[0]; for (let i = 1; i < codes.length; i++) checksum += codes[i] * i; codes.push(checksum % 103);
+  const sequence = [...codes.map(String), "STOP"]; let fullBits = "";
   for (const code of sequence) {
-    const pat = code === "STOP"
-      ? "2331112"
-      : C128_PATTERNS_BY_VALUE[Number(code)];
-
-    if (!pat) return; 
-
-    let isBar = true;
-    for (const digit of pat) {
-      const len = Number(digit);
-      fullBits += (isBar ? "1" : "0").repeat(len);
-      isBar = !isBar;
-    }
+    const pat = code === "STOP" ? "2331112" : C128_PATTERNS_BY_VALUE[Number(code)]; if (!pat) return; 
+    let isBar = true; for (const digit of pat) { const len = Number(digit); fullBits += (isBar ? "1" : "0").repeat(len); isBar = !isBar; }
   }
-
-  const quietZone = 11;
-  const totalWidth = fullBits.length + quietZone * 2;
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
-  svg.setAttribute("preserveAspectRatio", "none");
-
-  const bg = document.createElementNS(ns, "rect");
-  bg.setAttribute("x", "0");
-  bg.setAttribute("y", "0");
-  bg.setAttribute("width", totalWidth);
-  bg.setAttribute("height", "72");
-  bg.setAttribute("fill", "white");
-  svg.appendChild(bg);
-
+  const quietZone = 11; const totalWidth = fullBits.length + quietZone * 2; const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`); svg.setAttribute("preserveAspectRatio", "none");
+  const bg = document.createElementNS(ns, "rect"); bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white"); svg.appendChild(bg);
   for (let i = 0; i < fullBits.length; i++) {
     if (fullBits[i] !== "1") continue;
-    const rect = document.createElementNS(ns, "rect");
-    rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", 0);
-    rect.setAttribute("width", 1);
-    rect.setAttribute("height", 62);
-    rect.setAttribute("fill", "black");
-    svg.appendChild(rect);
+    const rect = document.createElementNS(ns, "rect"); rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0); rect.setAttribute("width", 1); rect.setAttribute("height", 62); rect.setAttribute("fill", "black"); svg.appendChild(rect);
   }
 }
 
-// 107 padrões gráficos do sistema Code 128
 const C128_PATTERNS_BY_VALUE = [
-  "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213",
-  "221312","231212","112232","122132","122231","113222","123122","123221","223211","221132",
-  "221231","213212","223112","312131","311222","321122","321221","312212","322112","322211",
-  "212123","212321","232121","111323","131123","131321","112313","132113","132311","211313",
-  "231113","231311","112133","112331","132131","113123","113321","133121","313121","211331",
-  "231131","213113","213311","213131","311123","311321","331121","312113","312311","332111",
-  "314111","221411","431111","111224","111422","121124","121421","141122","141221","112214",
-  "112412","122114","122411","142112","142211","241211","221114","413111","241112","134111",
-  "111242","121142","121241","114212","124112","124211","411212","421112","421211","212141",
-  "214121","412121","111143","111341","131141","114113","114311","411113","411311","113141",
-  "114131","311141","411131","211412","211214","211232","2331112"
+  "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"
 ];
 
 function isLargeFormat(val) {
   if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70") return true;
-  if (val === "custom") {
-    const w = parseFloat($("customWidth").value) || 0;
-    const h = parseFloat($("customHeight").value) || 0;
-    return (w >= 90 || h >= 65);
-  }
+  if (val === "custom") { const w = parseFloat($("customWidth").value)||0; const h = parseFloat($("customHeight").value)||0; return (w >= 90 || h >= 65); }
   return false;
 }
 
 function getDimensions() {
-  const formatVal = $("presetSizes").value;
-  const orientation = $("labelOrientation").value;
-  const allowOrientation = isLargeFormat(formatVal);
-  let w = 70;
-  let h = 38;
-
+  const formatVal = $("presetSizes").value; const orientation = $("labelOrientation").value; const allowOrientation = isLargeFormat(formatVal);
+  let w = 70; let h = 38;
   switch(formatVal) {
-    case "amanhecer": w = 70; h = 38; break;
-    case "125x80": w = 125; h = 80; break;
-    case "A6": w = 148; h = 105; break;
-    case "A5": w = 210; h = 148; break;
-    case "105x38": w = 105; h = 38; break;
-    case "70x38": w = 70; h = 38; break;
-    case "65x38": w = 65; h = 38; break;
-    case "52x30": w = 52; h = 30; break;
-    case "100x70": w = 100; h = 70; break;
-    case "50x30": w = 50; h = 30; break;
-    case "custom":
-      w = parseFloat($("customWidth").value) || 70;
-      h = parseFloat($("customHeight").value) || 38;
-      break;
+    case "amanhecer": w = 70; h = 38; break; case "125x80": w = 125; h = 80; break; case "A6": w = 148; h = 105; break; case "A5": w = 210; h = 148; break; case "105x38": w = 105; h = 38; break; case "70x38": w = 70; h = 38; break; case "65x38": w = 65; h = 38; break; case "52x30": w = 52; h = 30; break; case "100x70": w = 100; h = 70; break; case "50x30": w = 50; h = 30; break;
+    case "custom": w = parseFloat($("customWidth").value) \vert{}\vert{} 70; h = parseFloat($("customHeight").value) || 38; break;
   }
-
-  if (allowOrientation && orientation === "vertical" && w > h) {
-    const temp = w; w = h; h = temp;
-  }
+  if (allowOrientation && orientation === "vertical" && w > h) { const temp = w; w = h; h = temp; }
   return { width: w, height: h };
 }
 
@@ -871,11 +794,8 @@ function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
-  
-  // A LÓGICA INTELIGENTE: Lê do Código de Barras (EAN). Se estiver vazio, lê do Código Interno!
   const eanInput = ($("ean").value || "").trim();
   const barcodeToDraw = eanInput || codeVal;
-
   const priceNum = parsePrice($("price").value);
   const oldPriceNum = parsePrice($("oldPrice").value);
   const isPromo = $("isPromoActive").checked;
@@ -892,25 +812,20 @@ function updateCardUnsafe() {
   const brandLogos = card.querySelectorAll(".brand-logo");
 
   if (isAmanhecer) {
-    card.style.width = "380px";
-    card.style.height = "214px";
+    card.style.width = "380px"; card.style.height = "214px";
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
     $("gridStartContainer").style.display = "block";
     header.style.height = "18px";
     brandLogos.forEach(logo => logo.style.maxHeight = "16px");
   } else {
-    const scale = 3.2;
-    card.style.width = (dims.width * scale) + "px";
-    card.style.height = (dims.height * scale) + "px";
-    
+    const scale = 3.2; card.style.width = (dims.width * scale) + "px"; card.style.height = (dims.height * scale) + "px";
     if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
       header.style.height = (formatVal === "A5") ? "34px" : "26px";
       brandLogos.forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "28px" : "22px");
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
-      header.style.height = "18px";
-      brandLogos.forEach(logo => logo.style.maxHeight = "16px");
+      header.style.height = "18px"; brandLogos.forEach(logo => logo.style.maxHeight = "16px");
     }
     $("gridStartContainer").style.display = "none";
   }
@@ -918,134 +833,66 @@ function updateCardUnsafe() {
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
-  // Apresenta o código interno no canto superior esquerdo em formato de texto
-  if (codeVal) {
-    $("cardCode").style.display = "block";
-    $("cardCode").textContent = codeVal;
-  } else {
-    $("cardCode").style.display = "none";
-  }
+  if (codeVal) { $("cardCode").style.display = "block"; $("cardCode").textContent = codeVal; } 
+  else { $("cardCode").style.display = "none"; }
 
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-    
     if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
-      $("cardPromoTopRow").style.display = "flex";
-      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
-      
-      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100);
-      $("cardPromoTag").textContent = "-" + discount + "%";
-    } else {
-      $("cardPromoTopRow").style.display = "none";
-    }
+      $("cardPromoTopRow").style.display = "flex"; $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100); $("cardPromoTag").textContent = "-" + discount + "%";
+    } else { $("cardPromoTopRow").style.display = "none"; }
 
     if (capUnit === "peso") {
-      $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>';
-      $("cardUnitPrice").style.display = "none";
+      $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>'; $("cardUnitPrice").style.display = "none";
     } else {
       $("cardPrice").textContent = formatted + " €";
-      
-      if (capUnit === "lt" && capacityNum > 0) {
-        const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-        $("cardUnitPrice").textContent = pPerLt + " € / LT";
-        $("cardUnitPrice").style.display = "block";
-      } else if (capUnit === "g" && capacityNum > 0) {
-        const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-        $("cardUnitPrice").textContent = pPerKg + " € / KG";
-        $("cardUnitPrice").style.display = "block";
-      } else if (capUnit === "un") {
-        $("cardUnitPrice").textContent = formatted + " € / UN";
-        $("cardUnitPrice").style.display = "block";
-      } else {
-        $("cardUnitPrice").style.display = "none";
-      }
+      if (capUnit === "lt" && capacityNum > 0) { const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerLt + " € / LT"; $("cardUnitPrice").style.display = "block"; } 
+      else if (capUnit === "g" && capacityNum > 0) { const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerKg + " € / KG"; $("cardUnitPrice").style.display = "block"; } 
+      else if (capUnit === "un") { $("cardUnitPrice").textContent = formatted + " € / UN"; $("cardUnitPrice").style.display = "block"; } 
+      else { $("cardUnitPrice").style.display = "none"; }
     }
   } else {
-    $("cardPrice").textContent = "0,00 €";
-    $("cardPromoTopRow").style.display = "none";
-    $("cardUnitPrice").style.display = "none";
+    $("cardPrice").textContent = "0,00 €"; $("cardPromoTopRow").style.display = "none"; $("cardUnitPrice").style.display = "none";
   }
 
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
   let parts = [];
-  if (org) parts.push("Origem: " + org);
-  if (cat) parts.push("Cat. " + cat);
-  if (cal) parts.push("Cal. " + cal);
-  
-  if (parts.length > 0) {
-    const fullText = parts.join(" • ");
-    $("cardFruit").style.display = "block";
-    $("cardFruit").textContent = fullText;
-  } else {
-    $("cardFruit").style.display = "none";
-  }
+  if (org) parts.push("Origem: " + org); if (cat) parts.push("Cat. " + cat); if (cal) parts.push("Cal. " + cal);
+  if (parts.length > 0) { const fullText = parts.join(" • "); $("cardFruit").style.display = "block"; $("cardFruit").textContent = fullText; } 
+  else { $("cardFruit").style.display = "none"; }
 
   const depositSelect = $("depositFeeSelect").value;
-  let depositVal = "";
-  if (depositSelect === "custom") {
-    depositVal = $("customDepositInput").value.trim();
-    $("customDepositInput").style.display = "block";
-  } else {
-    depositVal = depositSelect;
-    $("customDepositInput").style.display = "none";
-  }
-
-  if (depositVal) {
-    $("cardDeposit").style.display = "block";
-    $("cardDepositText").textContent = depositVal;
-  } else {
-    $("cardDeposit").style.display = "none";
-  }
+  let depositVal = depositSelect === "custom" ? $("customDepositInput").value.trim() : depositSelect;
+  if (depositVal) { $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depositVal; } 
+  else { $("cardDeposit").style.display = "none"; }
 
   const extraUnit = ($("unit").value || "").trim();
-  if (extraUnit) {
-    $("cardExtraUnit").style.display = "block";
-    $("cardExtraUnit").textContent = extraUnit;
-  } else {
-    $("cardExtraUnit").style.display = "none";
-  }
+  if (extraUnit) { $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = extraUnit; } 
+  else { $("cardExtraUnit").style.display = "none"; }
 
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  if (activePhoto) {
-    $("cardPhotoBox").style.display = "flex";
-    $("cardPhotoImg").src = activePhoto;
-  } else {
-    $("cardPhotoBox").style.display = "none";
-  }
+  if (activePhoto) { $("cardPhotoBox").style.display = "flex"; $("cardPhotoImg").src = activePhoto; } 
+  else { $("cardPhotoBox").style.display = "none"; }
 
-  // GERAÇÃO DA IMAGEM DE LEITURA ÓTICA NA BASE DA ETIQUETA
-  if (barcodeToDraw) {
-    $("cardBarcodeBox").style.display = "flex";
-    $("cardBarcodeText").textContent = barcodeToDraw;
-    drawBarcode($("cardBarcodeSvg"), barcodeToDraw);
-  } else {
-    $("cardBarcodeBox").style.display = "none";
-  }
+  if (barcodeToDraw) { $("cardBarcodeBox").style.display = "flex"; $("cardBarcodeText").textContent = barcodeToDraw; drawBarcode($("cardBarcodeSvg"), barcodeToDraw); } 
+  else { $("cardBarcodeBox").style.display = "none"; }
 
-  const pStart = $("promoStart").value;
-  const pEnd = $("promoEnd").value;
+  const pStart = $("promoStart").value; const pEnd = $("promoEnd").value;
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
 function updateCard() {
-  try {
-    updateCardUnsafe();
-    setValidationState();
-  } catch (err) {
-    console.error("Erro ao atualizar a etiqueta:", err);
-    setStatus("Não foi possível atualizar a etiqueta. Verifique os campos.", "error");
-  }
+  try { updateCardUnsafe(); setValidationState(); } catch (err) { console.error(err); setStatus("Erro na etiqueta.", "error"); }
 }
 
 function setStatus(message, type = "info") {
-  let el = $("appStatus");
-  if (!el) return;
-  el.textContent = message || "";
-  el.dataset.type = type;
-  el.style.display = message ? "block" : "none";
+  let el = $("appStatus"); if (!el) return;
+  el.textContent = message || ""; el.dataset.type = type; el.style.display = message ? "block" : "none";
+  if(type === "success") setTimeout(() => el.style.display="none", 3000);
 }
 
 function setValidationState() {
@@ -1055,212 +902,111 @@ function setValidationState() {
   const errors = [];
 
   if ($("price").value.trim() && price === null) errors.push("Preço inválido.");
-  if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) {
-    errors.push("Preço anterior inválido.");
-  }
-  if ($("isPromoActive").checked && price !== null && oldPrice !== null && oldPrice <= price) {
-    errors.push("O preço anterior deve ser superior ao preço promocional.");
-  }
+  if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) errors.push("Preço anterior inválido.");
+  if ($("isPromoActive").checked && price !== null && oldPrice !== null && oldPrice <= price) errors.push("O preço anterior deve ser superior ao preço promocional.");
   if (ean) {
-    // Permite formato EAN-13, EAN-14 ou Código Interno Alfanumérico Livre
-    const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) ||
-                 (/^\d{14}$/.test(ean) && isValidEAN14(ean)) ||
-                 /^[\x20-\x7E]+$/.test(ean);
+    const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) \vert{}\vert{} /^[\x20-\x7E]+$/.test(ean);
     if (!valid) errors.push("Código inválido (verifique os dígitos).");
   }
-  if ($("promoStart").value && $("promoEnd").value &&
-      $("promoStart").value > $("promoEnd").value) {
-    errors.push("A data final da promoção não pode ser anterior à inicial.");
-  }
+  if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) errors.push("A data final da promoção não pode ser anterior à inicial.");
 
   setStatus(errors.join(" "), errors.length ? "error" : "");
 }
 
-
 function updateOrientationVisibility() {
-  const formatVal = $("presetSizes").value;
-  const show = isLargeFormat(formatVal);
-  const orientBox = $("orientationBox");
-  const row = $("storeOrientationRow");
-
-  if (show) {
-    orientBox.style.display = "block";
-    row.style.gridTemplateColumns = "1fr 1fr";
-    $("fruitPanel").style.display = "block";
-  } else {
-    orientBox.style.display = "none";
-    row.style.gridTemplateColumns = "1fr";
-    $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none";
-  }
+  const formatVal = $("presetSizes").value; const show = isLargeFormat(formatVal);
+  const orientBox = $("orientationBox"); const row = $("storeOrientationRow");
+  if (show) { orientBox.style.display = "block"; row.style.gridTemplateColumns = "1fr 1fr"; $("fruitPanel").style.display = "block"; } 
+  else { orientBox.style.display = "none"; row.style.gridTemplateColumns = "1fr"; $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none"; }
 }
 
 $("presetSizes").addEventListener("change", function() {
-  const val = this.value;
-  const isCustom = (val === "custom");
-  $("customDimensionsRow").style.display = isCustom ? "grid" : "none";
-  
-  if (val === "amanhecer") {
-    $("copiesCount").value = "21";
-  } else {
-    $("copiesCount").value = "1";
-  }
-  updateOrientationVisibility();
-  updateCard();
+  const val = this.value; $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
+  $("copiesCount").value = (val === "amanhecer") ? "21" : "1";
+  updateOrientationVisibility(); updateCard();
 });
 
-$("customWidth").addEventListener("input", function() {
-  updateOrientationVisibility();
-  updateCard();
-});
-$("customHeight").addEventListener("input", function() {
-  updateOrientationVisibility();
-  updateCard();
-});
-
-$("isPromoActive").addEventListener("change", function() {
-  $("promoBox").style.display = this.checked ? "block" : "none";
-  updateCard();
-});
-
+$("customWidth").addEventListener("input", function() { updateOrientationVisibility(); updateCard(); });
+$("customHeight").addEventListener("input", function() { updateOrientationVisibility(); updateCard(); });
+$("isPromoActive").addEventListener("change", function() { $("promoBox").style.display = this.checked ? "block" : "none"; updateCard(); });
 $("labelOrientation").addEventListener("change", updateCard);
 
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput"].forEach(id => {
-  const el = $(id);
-  if (el) el.addEventListener("input", updateCard);
+  const el = $(id); if (el) el.addEventListener("input", updateCard);
 });
 
 ["store","capacityUnit","depositFeeSelect","promoStart","promoEnd"].forEach(id => {
-  const el = $(id);
-  if (el) el.addEventListener("change", updateCard);
+  const el = $(id); if (el) el.addEventListener("change", updateCard);
 });
 
 $("autoRemoveBg").addEventListener("change", updateCard);
 
 $("photo").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-
-  photoProcessingToken++;
-  globalOriginalPhoto = "";
-  globalProcessedPhoto = "";
-
-  if (!file) {
-    updateCard();
-    return;
-  }
-
-  if (!file.type.startsWith("image/")) {
-    setStatus("Selecione um ficheiro de imagem válido.", "error");
-    e.target.value = "";
-    updateCard();
-    return;
-  }
-
-  if (file.size > 12 * 1024 * 1024) {
-    setStatus("A imagem é demasiado grande. Limite recomendado: 12 MB.", "error");
-    e.target.value = "";
-    updateCard();
-    return;
-  }
+  const file = e.target.files[0]; photoProcessingToken++; globalOriginalPhoto = ""; globalProcessedPhoto = "";
+  if (!file) { updateCard(); return; }
+  if (!file.type.startsWith("image/")) { setStatus("Selecione uma imagem válida.", "error"); e.target.value = ""; updateCard(); return; }
+  if (file.size > 12 * 1024 * 1024) { setStatus("Imagem muito grande (Max: 12MB).", "error"); e.target.value = ""; updateCard(); return; }
 
   const reader = new FileReader();
-  reader.onerror = () => setStatus("Não foi possível ler a imagem.", "error");
+  reader.onerror = () => setStatus("Erro ao ler imagem.", "error");
   reader.onload = evt => {
-    globalOriginalPhoto = evt.target.result;
-    updateCard();
-
-    removeBackground(globalOriginalPhoto, processed => {
-      globalProcessedPhoto = processed || globalOriginalPhoto;
-      updateCard();
-    });
+    globalOriginalPhoto = evt.target.result; updateCard();
+    removeBackground(globalOriginalPhoto, processed => { globalProcessedPhoto = processed || globalOriginalPhoto; updateCard(); });
   };
   reader.readAsDataURL(file);
 });
 
 $("clearBtn").addEventListener("click", function() {
+  if(!confirm("Limpar o editor? Isto apagará o que está a escrever agora.")) return;
   $("internalCode").value = ""; $("product").value = ""; $("price").value = ""; $("oldPrice").value = "";
   $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = ""; $("customDepositInput").value = "";
-  $("promoStart").value = ""; $("promoEnd").value = "";
-  $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
+  $("promoStart").value = ""; $("promoEnd").value = ""; $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
-  if ($("origem")) $("origem").value = "";
-  if ($("categoria")) $("categoria").value = "";
-  if ($("calibre")) $("calibre").value = "";
-  photoProcessingToken++;
-  globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = "";
-  $("autoRemoveBg").checked = true;
-  $("store").value = "PATAIAS";
-  $("labelOrientation").value = "horizontal";
-  $("customWidth").value = "70";
-  $("customHeight").value = "38";
-  $("startPosition").value = "1";
-  $("presetSizes").value = "amanhecer";
-  $("customDimensionsRow").style.display = "none";
-  updateOrientationVisibility();
-  updateCard();
+  if ($("origem")) $("origem").value = ""; if ($("categoria")) $("categoria").value = ""; if ($("calibre")) $("calibre").value = "";
+  photoProcessingToken++; globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = ""; $("autoRemoveBg").checked = true;
+  $("store").value = "PATAIAS"; $("labelOrientation").value = "horizontal"; $("customWidth").value = "70"; $("customHeight").value = "38";
+  $("startPosition").value = "1"; $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
+  $("copiesCount").value = "21";
+  updateOrientationVisibility(); updateCard();
 });
 
 window.addEventListener("keydown", e => {
-  if (e.key === "F9" || (e.ctrlKey && e.key.toLowerCase() === "p")) {
-    e.preventDefault();
-    triggerPrint();
-  }
+  if (e.key === "F9" || (e.ctrlKey && e.key.toLowerCase() === "p")) { e.preventDefault(); triggerPrint(); }
 });
 
 $("printBtn").addEventListener("click", triggerPrint);
 
 function validateBeforePrint() {
   setValidationState();
-
-  const price = parsePrice($("price").value);
-  if (price === null) {
-    setStatus("Introduza um preço válido antes de imprimir.", "error");
-    $("price").focus();
-    return false;
+  if($("appStatus").dataset.type === "error") {
+      setStatus("Existem erros. Corrija-os antes de imprimir.", "error"); return false;
   }
-
-  const formatVal = $("presetSizes").value;
-  const startPos = parseInt($("startPosition").value, 10) || 1;
-  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-
-  if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
-    setStatus(`As ${copies} etiquetas ultrapassam as 21 posições da folha. Reduza o número de cópias ou altere a posição inicial.`, "error");
-    return false;
+  
+  // Se a fila estiver vazia, tenta validar e adicionar a etiqueta atual.
+  if (printQueue.length === 0) {
+      const price = parsePrice($("price").value);
+      if (price === null) { setStatus("Introduza um preço válido.", "error"); $("price").focus(); return false; }
+      
+      const formatVal = $("presetSizes").value;
+      const startPos = parseInt($("startPosition").value, 10) || 1;
+      const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+      if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
+        setStatus(`As ${copies} etiquetas ultrapassam o limite da página.`, "error"); return false;
+      }
+      
+      // Adiciona o que está no ecrã à fila automaticamente
+      printQueue.push({ data: getFormData(), copies: copies });
+      renderQueue();
   }
-
-  if ($("isPromoActive").checked) {
-    const oldPrice = parsePrice($("oldPrice").value);
-    if (oldPrice === null || oldPrice <= price) {
-      setStatus("Para uma promoção, o preço anterior tem de ser válido e superior ao preço atual.", "error");
-      $("oldPrice").focus();
-      return false;
-    }
-  }
-
-  // Verifica os códigos 
-  const ean = normalizeBarcode($("ean").value);
-  if (ean && /^\d{13}$/.test(ean) && !isValidEAN13(ean)) {
-    setStatus("O EAN-13 introduzido não é válido. Verifique o dígito de controlo.", "error");
-    $("ean").focus();
-    return false;
-  }
-  if (ean && /^\d{14}$/.test(ean) && !isValidEAN14(ean)) {
-    setStatus("O EAN-14 introduzido não é válido. Verifique o dígito de controlo.", "error");
-    $("ean").focus();
-    return false;
-  }
-
+  
   return true;
 }
 
 function restorePreview() {
-  if (printRestoreTimer) {
-    clearTimeout(printRestoreTimer);
-    printRestoreTimer = null;
-  }
-
+  if (printRestoreTimer) { clearTimeout(printRestoreTimer); printRestoreTimer = null; }
   const previewWrap = $("previewWrap");
-  const card = $("mainLabelCard");
-  if (!previewWrap || !card) return;
+  const card = globalMainCard; 
+  if (!previewWrap || !card) { window.location.reload(); return; }
 
   previewWrap.className = "preview-wrap";
   previewWrap.innerHTML = "";
@@ -1269,102 +1015,140 @@ function restorePreview() {
   updateCard();
   printInProgress = false;
   $("printBtn").disabled = false;
-  $("printBtn").textContent = "🖨️ Imprimir [F9]";
+  renderQueue(); // Repoem os textos do botão
+  
+  if (window.__PRO) window.__PRO.setPrintEnabled(true);
 }
 
 window.addEventListener("afterprint", restorePreview);
 
 function triggerPrint() {
   if (printInProgress) return;
+  
+  const originalFormDataBackup = getFormData(); // Guarda o estado do editor atual para não o perder
+  
   if (!validateBeforePrint()) return;
 
   printInProgress = true;
   $("printBtn").disabled = true;
-  $("printBtn").textContent = "⏳ A preparar impressão...";
+  $("printBtn").textContent = "⏳ A preparar folhas...";
 
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
   const card = $("mainLabelCard");
-  const dims = getDimensions();
-  const startPos = parseInt($("startPosition").value, 10) || 1;
-  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   
-  // Na impressão, tal como na visualização, usa o EAN se existir, senão usa o Código Interno.
-  const codeVal = ($("internalCode").value || "").trim().toUpperCase();
-  const eanInput = ($("ean").value || "").trim();
-  const eanVal = normalizeBarcode(eanInput || codeVal);
+  globalMainCard = card; // Backup seguro do cartão do DOM
 
-  // Remover o cartão original apenas depois de o termos clonado.
+  const startPos = parseInt($("startPosition").value, 10) || 1;
+  const dims = getDimensions();
+
   previewWrap.className = "preview-wrap";
   previewWrap.innerHTML = "";
 
+  // PREPARA A LISTA TOTAL DE ETIQUETAS COM BASE NA FILA (QUEUE)
+  let totalItemsToPrint = [];
+  for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); // Espaços vazios no início
+  
+  printQueue.forEach(qItem => {
+      for(let i=0; i<qItem.copies; i++) totalItemsToPrint.push(qItem.data);
+  });
+
+  // GERAÇÃO DAS FOLHAS REAIS
   if (formatVal === "amanhecer") {
-    previewWrap.className = "preview-wrap print-sheet-amanhecer";
-
-    for (let slot = 1; slot <= 21; slot++) {
-      const isPrinted = slot >= startPos && slot < startPos + copies;
-      const height = slot <= 3 ? "38mm" : "40mm";
-
-      if (isPrinted) {
-        const clone = card.cloneNode(true);
-        clone.removeAttribute("id");
-        clone.style.width = "70mm";
-        clone.style.height = height;
-
-        const barcodeSvg = clone.querySelector("#cardBarcodeSvg");
-        if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
-
-        previewWrap.appendChild(clone);
-      } else {
-        const emptyDiv = document.createElement("div");
-        emptyDiv.className = "label-card";
-        emptyDiv.style.width = "70mm";
-        emptyDiv.style.height = height;
-        emptyDiv.style.visibility = "hidden";
-        previewWrap.appendChild(emptyDiv);
+    // Agrupa de 21 em 21
+    for(let i=0; i<totalItemsToPrint.length; i+=21) {
+      let chunk = totalItemsToPrint.slice(i, i+21);
+      let page = document.createElement("div");
+      page.className = "preview-wrap print-sheet-amanhecer";
+      
+      chunk.forEach((data, index) => {
+        if(data === null) {
+          let emptyDiv = document.createElement("div");
+          emptyDiv.className = "label-card";
+          emptyDiv.style.visibility = "hidden";
+          emptyDiv.style.width = "70mm";
+          emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
+          page.appendChild(emptyDiv);
+        } else {
+          // Preenche form c/ dados da fila, atualiza e clona
+          setFormData(data); 
+          updateCardUnsafe();
+          
+          let clone = card.cloneNode(true);
+          clone.removeAttribute("id");
+          clone.style.width = "70mm";
+          clone.style.height = index < 3 ? "38mm" : "40mm";
+          
+          const eanVal = normalizeBarcode(data.ean || data.internalCode);
+          const barcodeSvg = clone.querySelector("#cardBarcodeSvg");
+          if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
+          
+          page.appendChild(clone);
+        }
+      });
+      // Preencher o resto da página 21
+      for(let j=chunk.length; j<21; j++) {
+          let emptyDiv = document.createElement("div");
+          emptyDiv.className = "label-card";
+          emptyDiv.style.visibility = "hidden";
+          emptyDiv.style.width = "70mm";
+          emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
+          page.appendChild(emptyDiv);
       }
+      previewWrap.appendChild(page);
     }
   } else {
-    previewWrap.className = "preview-wrap";
+    // Restantes formatos
     previewWrap.style.display = "grid";
     previewWrap.style.gridTemplateColumns = `repeat(auto-fit, minmax(${Math.max(20, dims.width)}mm, 1fr))`;
     previewWrap.style.gap = "0";
 
-    for (let i = 0; i < copies; i++) {
-      const clone = card.cloneNode(true);
-      clone.removeAttribute("id");
-      clone.style.width = dims.width + "mm";
-      clone.style.height = dims.height + "mm";
-
-      const barcodeSvg = clone.querySelector("#cardBarcodeSvg");
-      if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
-
-      previewWrap.appendChild(clone);
-    }
+    totalItemsToPrint.forEach(data => {
+      if(data !== null) {
+          setFormData(data);
+          updateCardUnsafe();
+          
+          let clone = card.cloneNode(true);
+          clone.removeAttribute("id");
+          clone.style.width = dims.width + "mm";
+          clone.style.height = dims.height + "mm";
+          
+          const eanVal = normalizeBarcode(data.ean || data.internalCode);
+          const barcodeSvg = clone.querySelector("#cardBarcodeSvg");
+          if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
+          
+          previewWrap.appendChild(clone);
+      }
+    });
   }
 
-  // Dá tempo ao browser para recalcular layout/fontes/imagens antes de abrir o diálogo.
+  // RESTAURA O EDITOR COMO ESTAVA ANTES DA IMPRESSÃO
+  setFormData(originalFormDataBackup);
+  updateCardUnsafe();
+
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       window.print();
-      // Fallback para browsers que não disparam afterprint.
-      printRestoreTimer = setTimeout(restorePreview, 2000);
+      printRestoreTimer = setTimeout(restorePreview, 2500);
     });
   });
 }
 
-// Inicialização imediata
+// INICIALIZAÇÃO
 updateOrientationVisibility();
 updateCard();
+renderDb();
+renderQueue();
+
 </script>
 
-<!-- ====== MODO PROFISSIONAL: ESTADO, VALIDAÇÃO E PREVIEW FÍSICO ====== -->
+<!-- ====== MODO PROFISSIONAL: ESTADO E VALIDAÇÃO ====== -->
 <div id="proToast" class="pro-toast" role="status" aria-live="polite"></div>
 <div id="proPrintOverlay" class="pro-print-overlay" aria-hidden="true">
   <div class="pro-print-box">
     <div class="pro-spinner"></div>
     <strong>Preparando impressão…</strong>
-    <span id="proPrintText">A validar a etiqueta e a folha.</span>
+    <span id="proPrintText">A construir folhas...</span>
   </div>
 </div>
 <script>
@@ -1372,32 +1156,13 @@ updateCard();
   "use strict";
 
   const PRO = {
-    state: {
-      dirty: false,
-      valid: false,
-      printing: false,
-      lastError: "",
-      photoToken: 0,
-      lastSnapshot: ""
-    },
+    state: { dirty: false, valid: false, printing: false },
     els: {},
     init() {
-      this.els.status = document.getElementById("appStatus");
       this.els.toast = document.getElementById("proToast");
       this.els.overlay = document.getElementById("proPrintOverlay");
       this.els.printText = document.getElementById("proPrintText");
-      this.els.card = document.getElementById("mainLabelCard");
-      this.els.wrap = document.getElementById("previewWrap");
-      this.els.printBtn = document.getElementById("printBtn") || document.querySelector('[onclick*="triggerPrint"]');
-      this.installVisualValidation();
       this.installStateTracking();
-      this.installPhysicalPreview();
-      this.refresh();
-    },
-    msg(text, type) {
-      if (!this.els.status) return;
-      this.els.status.textContent = text || "";
-      this.els.status.className = "app-status " + (type || "info");
     },
     toast(text, type) {
       if (!this.els.toast) return;
@@ -1406,172 +1171,24 @@ updateCard();
       clearTimeout(this._toastTimer);
       this._toastTimer = setTimeout(() => this.els.toast.classList.remove("show"), 3200);
     },
-    field(id) {
-      return document.getElementById(id);
-    },
-    value(id) {
-      const e = this.field(id);
-      return e ? String(e.value ?? "").trim() : "";
-    },
-    installVisualValidation() {
-      const ids = [
-        "productName","price","promoPrice","promoOldPrice","promoStart","promoEnd",
-        "ean","copiesCount","startPosition","storeName","presetSizes"
-      ];
-      ids.forEach(id => {
-        const e = this.field(id);
-        if (!e) return;
-        e.addEventListener("input", () => this.validateField(e));
-        e.addEventListener("change", () => this.validateField(e));
-        e.addEventListener("blur", () => this.validateField(e));
-      });
-    },
     installStateTracking() {
-      document.addEventListener("input", () => { this.state.dirty = true; this.refresh(false); }, true);
-      document.addEventListener("change", () => { this.state.dirty = true; this.refresh(false); }, true);
       window.addEventListener("afterprint", () => {
         this.state.printing = false;
         this.hideOverlay();
         this.setPrintEnabled(true);
-        this.refresh();
       });
       window.addEventListener("beforeunload", (ev) => {
-        if (!this.state.dirty) return;
-        ev.preventDefault();
-        ev.returnValue = "";
+        if (!this.state.dirty) return; ev.preventDefault(); ev.returnValue = "";
       });
-    },
-    installPhysicalPreview() {
-      const wrap = this.els.wrap;
-      if (!wrap) return;
-      const observer = new MutationObserver(() => {
-        if (this.state.printing) return;
-        this.syncPreviewMetrics();
-      });
-      observer.observe(wrap, { childList: true, subtree: true });
-      window.addEventListener("resize", () => this.syncPreviewMetrics());
-    },
-    parseMoney(raw) {
-      let s = String(raw || "").replace(/[€\s]/g, "");
-      if (!s) return null;
-      if (s.includes(",") && s.includes(".")) s = s.replace(/\./g, "").replace(",", ".");
-      else s = s.replace(",", ".");
-      const n = Number(s);
-      return Number.isFinite(n) ? n : null;
-    },
-    validEan(code) {
-      const s = String(code || "").trim().replace(/\s+/g, "");
-      if (!s) return true;
-      if (/^\d{13}$/.test(s) \vert{}\vert{} /^\d{14}$/.test(s)) {
-        const body = s.slice(0,-1);
-        const check = Number(s.slice(-1));
-        let sum = 0;
-        for (let i = body.length - 1, pos = 0; i >= 0; i--, pos++) {
-          sum += Number(body[i]) * (pos % 2 === 0 ? 3 : 1);
-        }
-        return ((10 - (sum % 10)) % 10) === check;
-      }
-      return /^[\x20-\x7E]+$/.test(s);
-    },
-    setInvalid(el, message) {
-      if (!el) return false;
-      el.classList.add("pro-invalid");
-      el.setAttribute("aria-invalid","true");
-      el.title = message || "Valor inválido";
-      return false;
-    },
-    setValid(el) {
-      if (!el) return true;
-      el.classList.remove("pro-invalid");
-      el.removeAttribute("aria-invalid");
-      el.removeAttribute("title");
-      return true;
-    },
-    validateField(el) {
-      if (!el) return true;
-      const id = el.id;
-      const v = String(el.value ?? "").trim();
-      let ok = true, message = "";
-
-      if (["price","promoPrice","promoOldPrice"].includes(id) && v) {
-        ok = this.parseMoney(v) !== null;
-        message = "Introduza um preço válido, por exemplo 2,49.";
-      }
-      if (id === "promoPrice" && v && this.value("price")) {
-        const p = this.parseMoney(v), normal = this.parseMoney(this.value("price"));
-        if (p !== null && normal !== null && p >= normal) {
-          ok = false; message = "O preço promocional deve ser inferior ao preço normal.";
-        }
-      }
-      if (id === "promoOldPrice" && v && this.value("promoPrice")) {
-        const old = this.parseMoney(v), promo = this.parseMoney(this.value("promoPrice"));
-        if (old !== null && promo !== null && old <= promo) {
-          ok = false; message = "O preço antigo deve ser superior ao preço promocional.";
-        }
-      }
-      if (id === "ean" && v) {
-        ok = this.validEan(v);
-        message = "Código EAN inválido ou checksum incorreto.";
-      }
-      if (["copiesCount","startPosition"].includes(id) && v) {
-        const n = Number(v);
-        ok = Number.isInteger(n) && n >= 1;
-        message = "Introduza um número inteiro maior ou igual a 1.";
-      }
-      if (id === "promoStart" && v && this.value("promoEnd")) {
-        ok = v <= this.value("promoEnd");
-        message = "A data inicial não pode ser posterior à final.";
-      }
-      if (id === "promoEnd" && v && this.value("promoStart")) {
-        ok = this.value("promoStart") <= v;
-        message = "A data final não pode ser anterior à inicial.";
-      }
-
-      return ok ? this.setValid(el) : this.setInvalid(el, message);
-    },
-    validateAll() {
-      let ok = true;
-      document.querySelectorAll("input,select,textarea").forEach(el => {
-        if (!this.validateField(el)) ok = false;
-      });
-
-      const copies = Math.max(1, Number(this.value("copiesCount")) || 1);
-      const start = Math.max(1, Number(this.value("startPosition")) || 1);
-      const preset = this.value("presetSizes");
-      if (preset === "amanhecer" && start + copies - 1 > 21) {
-        ok = false;
-        this.msg("Impressão bloqueada: a quantidade ultrapassa as 21 posições da folha Amanhecer.", "error");
-      }
-      this.state.valid = ok;
-      if (ok) this.msg("Tudo pronto para impressão.", "success");
-      return ok;
-    },
-    refresh(showToast = false) {
-      const ok = this.validateAll();
-      this.syncPreviewMetrics();
-      if (showToast) this.toast(ok ? "Etiqueta válida." : "Corrija os campos assinalados.", ok ? "success" : "error");
-      return ok;
-    },
-    syncPreviewMetrics() {
-      const card = this.els.card;
-      if (!card) return;
-      const mmW = parseFloat(card.style.width) || parseFloat(getComputedStyle(card).width) * 25.4 / 96;
-      const mmH = parseFloat(card.style.height) || parseFloat(getComputedStyle(card).height) * 25.4 / 96;
-      card.dataset.physicalWidthMm = Number.isFinite(mmW) ? mmW.toFixed(2) : "";
-      card.dataset.physicalHeightMm = Number.isFinite(mmH) ? mmH.toFixed(2) : "";
-      card.style.setProperty("--label-w-mm", (Number.isFinite(mmW) ? mmW : 70) + "mm");
-      card.style.setProperty("--label-h-mm", (Number.isFinite(mmH) ? mmH : 40) + "mm");
     },
     setPrintEnabled(enabled) {
-      document.querySelectorAll("button, input[type=button], input[type=submit]").forEach(b => {
-        if ((b.textContent || "").toLowerCase().includes("imprimir") || b.id === "printBtn") {
-          b.disabled = !enabled;
-        }
+      document.querySelectorAll("button").forEach(b => {
+        if ((b.textContent || "").toLowerCase().includes("imprimir") || b.id === "printBtn") b.disabled = !enabled;
       });
     },
     showOverlay(text) {
       if (!this.els.overlay) return;
-      this.els.printText.textContent = text || "A validar a etiqueta e a folha.";
+      this.els.printText.textContent = text || "A preparar as etiquetas...";
       this.els.overlay.classList.add("show");
       this.els.overlay.setAttribute("aria-hidden","false");
     },
@@ -1580,36 +1197,17 @@ updateCard();
       this.els.overlay.classList.remove("show");
       this.els.overlay.setAttribute("aria-hidden","true");
     },
-    snapshot() {
-      const ids = ["productName","price","promoPrice","promoOldPrice","promoStart","promoEnd","ean","copiesCount","startPosition","storeName","presetSizes"];
-      return JSON.stringify(ids.map(id => [id, this.value(id)]));
-    },
     safePrint() {
       if (this.state.printing) return;
-      if (!this.validateAll()) {
-        this.toast("Não é possível imprimir: existem campos inválidos.", "error");
-        const first = document.querySelector(".pro-invalid");
-        if (first) first.focus();
-        return;
-      }
       this.state.printing = true;
       this.state.dirty = false;
       this.setPrintEnabled(false);
-      this.showOverlay("A preparar a folha no tamanho físico correto…");
+      this.showOverlay("A processar toda a fila de impressão...");
       try {
-        if (typeof window.__originalTriggerPrint === "function") {
-          window.__originalTriggerPrint();
-        } else if (typeof window.triggerPrint === "function" && window.triggerPrint !== this.safePrint) {
-          window.triggerPrint();
-        } else {
-          throw new Error("Motor de impressão não encontrado.");
-        }
+        if (typeof window.triggerPrint === "function") window.triggerPrint();
       } catch (err) {
-        this.state.printing = false;
-        this.setPrintEnabled(true);
-        this.hideOverlay();
-        this.msg("Erro ao preparar impressão: " + err.message, "error");
-        this.toast("A impressão foi interrompida para evitar uma folha incorreta.", "error");
+        this.state.printing = false; this.setPrintEnabled(true); this.hideOverlay();
+        this.toast("Erro ao iniciar impressão.", "error");
       }
     }
   };
@@ -1620,10 +1218,6 @@ updateCard();
 </script>
 <style>
 /* ====== CAMADA PROFISSIONAL ====== */
-.app-status.success { color:#176b3a; background:#eaf7ef; border-color:#9bd5b1; }
-.app-status.error { color:#9d1c1c; background:#fff0f0; border-color:#e2a1a1; }
-.app-status.info { color:#3d4b59; background:#f4f6f8; border-color:#d8dee4; }
-.pro-invalid { border-color:#c62828 !important; box-shadow:0 0 0 3px rgba(198,40,40,.12) !important; background:#fff7f7 !important; }
 .pro-toast { position:fixed; right:18px; bottom:18px; z-index:99999; opacity:0; transform:translateY(10px); pointer-events:none; transition:.2s; padding:12px 16px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.18); background:#fff; border:1px solid #d7dce2; max-width:380px; font:600 14px/1.4 system-ui,sans-serif; }
 .pro-toast.show { opacity:1; transform:translateY(0); }
 .pro-toast.error { border-color:#e2a1a1; color:#9d1c1c; }
@@ -1633,20 +1227,13 @@ updateCard();
 .pro-print-box { min-width:300px; max-width:420px; padding:24px; border-radius:16px; background:#fff; box-shadow:0 20px 60px rgba(0,0,0,.3); display:grid; gap:10px; text-align:center; font:14px system-ui,sans-serif; }
 .pro-spinner { width:28px; height:28px; margin:auto; border:3px solid #dfe4e8; border-top-color:#333; border-radius:50%; animation:prospin .7s linear infinite; }
 @keyframes prospin { to { transform:rotate(360deg); } }
-@media print {
-  .pro-toast,.pro-print-overlay { display:none !important; }
-  .app-status { display:none !important; }
-}
+@media print { .pro-toast,.pro-print-overlay { display:none !important; } }
 </style>
-
 
 <script>
 (function(){
   document.addEventListener("keydown", function(ev){
-    if (ev.key === "F9") {
-      ev.preventDefault();
-      if (window.__PRO) window.__PRO.safePrint();
-    }
+    if (ev.key === "F9") { ev.preventDefault(); if (window.__PRO) window.__PRO.safePrint(); }
   }, true);
 })();
 </script>
