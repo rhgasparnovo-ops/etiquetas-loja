@@ -765,7 +765,7 @@ function getDimensions() {
   let w = 70; let h = 38;
   switch(formatVal) {
     case "amanhecer": w = 70; h = 38; break; case "125x80": w = 125; h = 80; break; case "A6": w = 148; h = 105; break; case "A5": w = 210; h = 148; break; case "105x38": w = 105; h = 38; break; case "70x38": w = 70; h = 38; break; case "65x38": w = 65; h = 38; break; case "52x30": w = 52; h = 30; break; case "100x70": w = 100; h = 70; break; case "50x30": w = 50; h = 30; break;
-    case "custom": w = parseFloat($("customWidth").value) \vert{}\vert{} 70; h = parseFloat($("customHeight").value) || 38; break;
+    case "custom": w = parseFloat($("customWidth").value) || 70; h = parseFloat($("customHeight").value) || 38; break;
   }
   if (allowOrientation && orientation === "vertical" && w > h) { const temp = w; w = h; h = temp; }
   return { width: w, height: h };
@@ -775,6 +775,7 @@ function setField(id, val) {
     const el = $(id); 
     if (el) { el.value = val; updateCard(); } 
 }
+window.setField = setField;
 
 // ==========================================
 // RENDERIZAÇÃO DIRETA NO ECRÃ (100% ORIGINAL E SEGURO)
@@ -906,7 +907,7 @@ function setValidationState() {
   if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) errors.push("Preço anterior inválido.");
   if ($("isPromoActive").checked && price !== null && oldPrice !== null && oldPrice <= price) errors.push("O preço anterior deve ser superior ao preço promocional.");
   if (ean) {
-    const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) \vert{}\vert{} /^[\x20-\x7E]+$/.test(ean);
+    const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
     if (!valid) errors.push("Código inválido (verifique os dígitos).");
   }
   if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) errors.push("A data final da promoção não pode ser anterior à inicial.");
@@ -972,11 +973,13 @@ $("clearBtn").addEventListener("click", function() {
   updateOrientationVisibility(); updateCard();
 });
 
-window.addEventListener("keydown", e => {
-  if (e.key === "F9" || (e.ctrlKey && e.key.toLowerCase() === "p")) { e.preventDefault(); triggerPrint(); }
+$("printBtn").addEventListener("click", function() {
+  if (window.__PRO && typeof window.__PRO.safePrint === "function") {
+    window.__PRO.safePrint();
+  } else {
+    triggerPrint();
+  }
 });
-
-$("printBtn").addEventListener("click", triggerPrint);
 
 function validateBeforePrint() {
   setValidationState();
@@ -1015,7 +1018,12 @@ function triggerPrint() {
   
   const originalFormDataBackup = getFormData(); 
   
-  if (!validateBeforePrint()) return;
+  if (!validateBeforePrint()) {
+    // Se falhar validação, garantir que o overlay sai
+    if (window.__PRO && typeof window.__PRO.hideOverlay === "function") window.__PRO.hideOverlay();
+    if (window.__PRO) window.__PRO.state.printing = false;
+    return;
+  }
 
   printInProgress = true;
   $("printBtn").disabled = true;
@@ -1127,12 +1135,17 @@ function triggerPrint() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       window.print();
-      
-      // Limpeza forçada caso o evento afterprint não dispare
-      setTimeout(cleanupAfterPrint, 2500);
+      // Fallback: se afterprint não disparar em 3s, força cleanup
+      setTimeout(() => {
+        if (printInProgress) cleanupAfterPrint();
+      }, 3000);
     });
   });
 }
+
+// ✅ EXPOR GLOBALMENTE para o __PRO e para o botão
+window.triggerPrint = triggerPrint;
+window.cleanupAfterPrint = cleanupAfterPrint;
 
 // ARRANQUE SEGURO
 try {
@@ -1143,7 +1156,6 @@ try {
 } catch (error) {
   console.error("Erro crítico ao arrancar:", error);
 }
-
 </script>
 
 <!-- ====== MODO PROFISSIONAL: ESTADO E VALIDAÇÃO ====== -->
@@ -1167,6 +1179,7 @@ try {
       this.els.overlay = document.getElementById("proPrintOverlay");
       this.els.printText = document.getElementById("proPrintText");
       this.installStateTracking();
+      this.installHotkeys();
     },
     toast(text, type) {
       if (!this.els.toast) return;
@@ -1180,26 +1193,44 @@ try {
         this.state.printing = false;
         this.hideOverlay();
         this.setPrintEnabled(true);
+        // Reset de segurança
+        setTimeout(() => {
+          if (typeof window.cleanupAfterPrint === "function") {
+            try { window.cleanupAfterPrint(); } catch (e) { console.warn(e); }
+          }
+        }, 500);
       });
       window.addEventListener("beforeunload", (ev) => {
-        if (!this.state.dirty) return; ev.preventDefault(); ev.returnValue = "";
+        if (!this.state.dirty) return;
+        ev.preventDefault(); ev.returnValue = "";
       });
     },
+    installHotkeys() {
+      // ÚNICO listener de F9 / Ctrl+P — evita conflitos com o script principal
+      document.addEventListener("keydown", (ev) => {
+        const isF9 = ev.key === "F9";
+        const isCtrlP = ev.ctrlKey && ev.key && ev.key.toLowerCase() === "p";
+        if (isF9 || isCtrlP) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          this.safePrint();
+        }
+      }, true);
+    },
     setPrintEnabled(enabled) {
-      document.querySelectorAll("button").forEach(b => {
-        if ((b.textContent || "").toLowerCase().includes("imprimir") || b.id === "printBtn") b.disabled = !enabled;
-      });
+      const btn = document.getElementById("printBtn");
+      if (btn) btn.disabled = !enabled;
     },
     showOverlay(text) {
       if (!this.els.overlay) return;
       this.els.printText.textContent = text || "A preparar as etiquetas...";
       this.els.overlay.classList.add("show");
-      this.els.overlay.setAttribute("aria-hidden","false");
+      this.els.overlay.setAttribute("aria-hidden", "false");
     },
     hideOverlay() {
       if (!this.els.overlay) return;
       this.els.overlay.classList.remove("show");
-      this.els.overlay.setAttribute("aria-hidden","true");
+      this.els.overlay.setAttribute("aria-hidden", "true");
     },
     safePrint() {
       if (this.state.printing) return;
@@ -1208,9 +1239,16 @@ try {
       this.setPrintEnabled(false);
       this.showOverlay("A processar toda a fila de impressão...");
       try {
-        if (typeof window.triggerPrint === "function") window.triggerPrint();
+        if (typeof window.triggerPrint === "function") {
+          window.triggerPrint();
+        } else {
+          throw new Error("triggerPrint não disponível");
+        }
       } catch (err) {
-        this.state.printing = false; this.setPrintEnabled(true); this.hideOverlay();
+        console.error(err);
+        this.state.printing = false;
+        this.setPrintEnabled(true);
+        this.hideOverlay();
         this.toast("Erro ao iniciar impressão.", "error");
       }
     }
@@ -1233,14 +1271,6 @@ try {
 @keyframes prospin { to { transform:rotate(360deg); } }
 @media print { .pro-toast,.pro-print-overlay { display:none !important; } }
 </style>
-
-<script>
-(function(){
-  document.addEventListener("keydown", function(ev){
-    if (ev.key === "F9") { ev.preventDefault(); if (window.__PRO) window.__PRO.safePrint(); }
-  }, true);
-})();
-</script>
 
 </body>
 </html>
