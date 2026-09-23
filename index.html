@@ -1,1 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Etiquetas de Preço Profissional - Mestre Definitivo</title>
+<style>
+  :root { 
+    --red:#c8102e; 
+    --dark:#222; 
+    --light:#f5f5f5; 
+    --border:#d7d7d7; 
+    --offset-x: -6mm; 
+    --offset-y: -6mm; 
+  }
+  * { box-sizing:border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f2f3f5; color:var(--dark); }
+  .app { max-width:1200px; margin:0 auto; padding:24px; }
+  h1 { margin:0 0 6px; font-size:28px; }
+  .subtitle { margin:0 0 22px; color:#666; }
+  .grid { display:grid; grid-template-columns:360px 1fr; gap:24px; align-items:start; }
+  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 3px 12px #0000000d; }
+  label { display:block; font-weight:700; margin:14px 0 6px; }
+  input, button, select { width:100%; padding:11px 12px; border:1px solid #bbb; border-radius:7px; font-size:15px; }
+  input[type="file"] { padding:8px; }
+  button { cursor:pointer; font-weight:700; }
+  .primary { background:var(--red); color:#fff; border-color:var(--red); }
+  .secondary { background:#fff; }
+  .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
+  .status { min-height:18px; margin-top:8px; font-size:13px; }
+  .preview-wrap { min-height:560px; display:flex; justify-content:center; align-items:flex-start; padding:24px; background:#e9eaec; border-radius:10px; flex-wrap: wrap; gap: 10px; }
+  
+  /* ESTILOS DE CONFIGURAÇÃO */
+  #setupPanel { background: #e6f4ea; border: 2px dashed #1e8e3e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+  #setupPanel h3 { margin: 0 0 10px 0; color: #1e8e3e; font-size: 16px; }
+  #btnGenerateDefinitive { background: #1e8e3e; color: #fff; border: none; margin-top: 10px; }
+  
+  .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 14px; display: none; }
+  .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 14px; }
 
+  /* ========================================================
+     ESTRUTURA DA ETIQUETA PADRÃO
+     ======================================================== */
+  .label {
+    background: #fff; border: 1px solid #ccc;
+    display: flex; flex-direction: column;
+    padding: 3px 5px; gap: 0px; box-sizing: border-box; 
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; overflow: hidden; gap: 4px; }
+  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; justify-content: flex-start; align-items: center; overflow: hidden; }
+  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; padding-left: 2px; padding-right: 2px; }
+  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+  
+  .main-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; overflow: hidden; padding: 1px 0; gap: 4px; }
+  .left-column { flex: 1.1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; overflow: hidden; padding: 1px 0; }
+  .right-column { flex: 0.9; min-width: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+  .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .code-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .product-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .price-container { flex: 0 0 28%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .unit-price-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .deposit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .unit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .fruit-container { flex: 0 0 12%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; padding: 2px; }
+
+  .deposit-text { white-space: nowrap; text-align: center; font-size: 8px; font-weight: 900; color: #c8102e; background: #fff5f5; padding: 0 3px; border-radius: 2px; border: 1px solid #fed7d7; line-height: 1; }
+
+  .barcode-container { flex: 0 0 17%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; }
+  .svg-container svg { width: 88%; height: 100%; display: block; margin: 0 auto; }
+  .ean-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+
+  .footer-container { flex: 0 0 10%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; overflow: hidden; width: 100%; border-top: 1px dashed #ccc; padding-top: 1px; }
+  .promo-container { flex: 1; min-width: 0; display: flex; justify-content: flex-start; align-items: flex-end; overflow: hidden; height: 100%; }
+  .print-container { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: flex-end; padding-left: 4px; height: 100%; }
+
+  .store-text, .item-code, .product, .price, .unit-price, .unit, .fruit-info, .ean-text, .promo-text, .print-date { margin: 0; padding: 0; font-weight: bold; color: #000; }
+  
+  .store-text { white-space: nowrap; text-align: right; text-transform: uppercase; font-size: 11px; line-height: 1; }
+  .item-code { white-space: nowrap; text-align: center; font-size: 8px; color: #333; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; }
+  .product { white-space: normal; word-break: break-word; text-align: center; font-size: 10px; line-height: 1.05; } 
+  .price { white-space: nowrap; text-align: center; display: flex; align-items: baseline; justify-content: center; font-size: 18px; line-height: 1; }
+  .unit-price { white-space: nowrap; text-align: center; color: #555; font-size: 8.5px; line-height: 1; }
+  .unit { white-space: nowrap; text-align: center; color: #333; font-size: 8.5px; line-height: 1; }
+  .fruit-info { white-space: nowrap; text-align: center; color: #084298; font-size: 11px; line-height: 1; text-transform: uppercase; font-weight: 800; }
+  
+  .ean-text { font-family: monospace; white-space: nowrap; letter-spacing: 1px; text-align: center; line-height: 1; font-size: 7.5px; }
+  .promo-text { white-space: nowrap; text-align: left; line-height: 1; font-size: 7.5px; }
+  .print-date { font-size: 5.5px; font-weight: normal; color: #555; white-space: nowrap; text-align: right; line-height: 1; }
+
+  /* ESTILOS FRUTA 125x80 (NORMAL COM IMAGEM) */
+  .fruit-label-125x80 {
+    background: #fff; border: 2px solid #222;
+    display: flex; flex-direction: column;
+    padding: 6px 10px; gap: 3px; box-sizing: border-box; 
+    overflow: hidden; position: relative;
+    width: 125mm; height: 80mm;
+  }
+  .f125-header { flex: 0 0 15%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
+  .f125-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
+  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; overflow: hidden; }
+  .f125-right { flex: 0.7; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
+  .f125-right img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .f125-product { font-size: 22px; font-weight: bold; text-align: center; line-height: 1.1; word-break: break-word; }
+
+  /* ESTILOS TABULETA A6 (COM IMAGEM MAIOR E DUPLO PREÇO) */
+  .a6-label {
+    background: #fff; border: 2px solid #222;
+    display: flex; flex-direction: column;
+    padding: 10px 14px; gap: 6px; box-sizing: border-box; 
+    overflow: hidden; position: relative;
+    width: 105mm; height: 148mm;
+  }
+  .a6-header { flex: 0 0 14%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
+  .a6-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 8px; }
+  .a6-product { flex: 0 0 15%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; text-align: center; line-height: 1.1; }
+  .a6-image-box { flex: 0 0 35%; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+  .a6-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .a6-dual-price { flex: 0 0 26%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
+  .a6-price-normal, .a6-price-bulk { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 6px; padding: 4px; }
+  .a6-price-normal { background: #fff; border: 2px solid #ccc; }
+  .a6-price-bulk { background: #fff5f5; border: 3px solid #c8102e; }
+  .a6-fruit { flex: 0 0 10%; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border: 1px solid #b6d4fe; border-radius: 6px; font-size: 13px; font-weight: 800; color: #084298; text-transform: uppercase; }
+  .a6-barcode { flex: 0 0 15%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+  .a6-footer { flex: 0 0 7%; display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px dashed #ccc; padding-top: 4px; font-size: 11px; }
+
+  .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+  @media(max-width:850px){ .grid{grid-template-columns:1fr;} .preview-wrap{min-height:400px;} }
+  
+  /* ========================================================
+     REGRAS DE IMPRESSÃO
+     ======================================================== */
+  @media print {
+    @page { margin: 0; size: auto; }
+    body { background: #fff; margin: 0; padding: 0; }
+    body * { visibility: hidden !important; }
+    .print-area, .print-area * { visibility: visible !important; }
+    .print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    
+    .preview-wrap.amanhecer-sheet { 
+      display: grid !important; 
+      grid-template-columns: repeat(3, 70mm) !important; 
+      grid-template-rows: 38mm repeat(6, 40mm) !important; 
+      justify-content: start !important;
+      align-content: start !important;
+      gap: 0 !important; 
+      padding: 0 !important; 
+      background: transparent !important;
+      width: 210mm !important; 
+      height: 278mm !important; 
+      transform: none !important;
+      margin-left: var(--offset-x) !important;
+      margin-top: var(--offset-y) !important;
+    }
+    
+    .preview-wrap.amanhecer-sheet .label { 
+      width: 100% !important; 
+      height: 100% !important; 
+      border: 1px solid transparent !important; 
+      box-shadow: none !important; 
+      page-break-inside: avoid; 
+      margin: 0 !important;
+      -webkit-print-color-adjust: exact; 
+      print-color-adjust: exact; 
+      padding: 3px 5px !important; 
+    }
+
+    .preview-wrap.amanhecer-sheet .label:nth-child(1),
+    .preview-wrap.amanhecer-sheet .label:nth-child(2),
+    .preview-wrap.amanhecer-sheet .label:nth-child(3) {
+      padding-top: 3mm !important; 
+    }
+
+    .preview-wrap.amanhecer-sheet .label:nth-child(3n + 1) {
+      padding-left: 6.5mm !important;
+    }
+
+    .preview-wrap.amanhecer-sheet .label:nth-child(3n) {
+      padding-right: 6.5mm !important;
+    }
+
+    .preview-wrap:not(.amanhecer-sheet) {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 5mm !important;
+      padding: 5mm !important;
+      justify-content: center !important;
+      align-content: center !important;
+      width: 100% !important;
+    }
+    .preview-wrap:not(.amanhecer-sheet) .label,
+    .preview-wrap:not(.amanhecer-sheet) .fruit-label-125x80,
+    .preview-wrap:not(.amanhecer-sheet) .a6-label {
+      border: 1px solid #111 !important;
+      page-break-after: always;
+    }
+    
+    img { -webkit-print-color-adjust: exact; print-color-adjust: exact; display: block !important; visibility: visible !important; opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Gerador de Etiquetas de Preço</h1>
+  <p class="subtitle">Sistema Completo Mestre (Amanhecer + Fruta 125x80 + Tabuleta A6 com Imagem Grande)</p>
+
+  <div class="grid">
+    <section class="panel">
+
+      <!-- PAINEL DE AUTOGERAÇÃO -->
+      <div id="setupPanel" style="display:block;">
+        <h3>⚙️ Fundir Logótipos no Ficheiro</h3>
+        <p style="font-size:12px; margin-top:0;">Faça isto apenas uma vez para gravar as imagens para sempre.</p>
+        <label for="setupLogo1" style="font-size:12px;">1. Logótipo Balcão Agrícola:</label>
+        <input id="setupLogo1" type="file" accept="image/*">
+        <label for="setupLogo2" style="font-size:12px;">2. Logótipo Amanhecer:</label>
+        <input id="setupLogo2" type="file" accept="image/*">
+        <button id="btnGenerateDefinitive">3. Transferir Ficheiro Definitivo</button>
+      </div>
+
+      <label for="presetSizes">Formato / Tipo de Etiqueta</label>
+      <select id="presetSizes" style="margin-bottom: 10px; background-color: #fffbdd; border-color: #f6c23e;">
+        <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas)</option>
+        <option value="125x80">🍎 Fruta 125x80mm (Normal + Imagem + Código)</option>
+        <option value="A6">📄 Tabuleta Fruta A6 (Duplo Preço a partir de 2 kg + Imagem Grande)</option>
+        <option value="72x38">Etiqueta Prateleira (72 x 38 mm)</option>
+        <option value="100x70">Grande / Promoção (100 x 70 mm)</option>
+        <option value="50x30">Pequena / Talas (50 x 30 mm)</option>
+        <option value="custom">Outro tamanho (personalizado)</option>
+      </select>
+
+      <label for="store">Loja</label>
+      <select id="store">
+        <option value="PATAIAS" selected>PATAIAS</option>
+        <option value="GARCIA">GARCIA</option>
+      </select>
+      
+      <label for="internalCode">Código Interno (ART.)</label>
+      <input id="internalCode" type="text" value="DR058860" placeholder="Ex.: DR058860">
+
+      <label for="product">Produto</label>
+      <input id="product" type="text" value="Maçã Gala" placeholder="Ex.: Maçã Gala">
+
+      <!-- SECÇÃO EXCLUSIVA DE FRUTARIA -->
+      <div class="fruit-panel" id="fruitPanel">
+        <h4>🍎 Detalhes Fruta / Legumes</h4>
+        <div class="size-row-3">
+          <div>
+            <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
+            <input id="origem" type="text" value="PORTUGAL">
+          </div>
+          <div>
+            <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
+            <input id="categoria" type="text" value="I">
+          </div>
+          <div>
+            <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
+            <input id="calibre" type="text" value="65/70">
+          </div>
+        </div>
+        <div id="bulkPriceContainer" style="display:none;">
+          <label for="bulkPrice" style="font-size:11px; margin-top:8px;">Preço Promocional p/ Quantidade (€) (A partir de 2 kg)</label>
+          <input id="bulkPrice" type="number" min="0" step="0.01" value="1.59" placeholder="Ex: 1.59">
+          <label for="bulkLabel" style="font-size:11px; margin-top:8px;">Descrição da Quantidade</label>
+          <input id="bulkLabel" type="text" value="A partir de 2 KG">
+        </div>
+      </div>
+
+      <div id="standardPricePanel">
+        <label for="price">Preço da Embalagem / KG (€)</label>
+        <input id="price" type="number" min="0" step="0.01" value="1.89">
+        
+        <div class="size-row">
+          <div>
+            <label for="capacity">Quantidade Exata</label>
+            <input id="capacity" type="number" min="0.001" step="0.001" value="1">
+          </div>
+          <div>
+            <label for="capacityUnit">Unidade</label>
+            <select id="capacityUnit">
+              <option value="g">Gramas (g) -> €/KG</option>
+              <option value="kg" selected>Quilos (KG) -> €/KG</option>
+              <option value="ml">Mililitros (ml) -> €/LT</option>
+              <option value="lt">Litros (LT) -> €/LT</option>
+              <option value="un">Unidades (UN) -> €/UN</option>
+              <option value="peso">⚖️ Venda ao Peso (Só €/KG)</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="depositFeeSelect">Taxa de Garrafa / Vasilhame</label>
+        <select id="depositFeeSelect" style="margin-bottom: 6px;">
+          <option value="" selected>Nenhuma (Sem taxa)</option>
+          <option value="+0,10 € (Inclui tara)">+0,10 € (Inclui tara)</option>
+          <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
+          <option value="custom">Outro valor (escrever abaixo)...</option>
+        </select>
+        <input id="depositFeeCustom" type="text" placeholder="Escreva se escolheu 'Outro valor'..." style="display:none;">
+
+        <label for="unit">Informação Extra (Opcional)</label>
+        <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
+        
+        <div class="size-row">
+          <div>
+            <label for="promoStart">Início Promoção</label>
+            <input id="promoStart" type="date">
+          </div>
+          <div>
+            <label for="promoEnd">Fim Promoção</label>
+            <input id="promoEnd" type="date">
+          </div>
+        </div>
+      </div>
+
+      <label for="ean">EAN-13 (Opcional se usar Código Interno)</label>
+      <input id="ean" type="text" inputmode="numeric" maxlength="13" placeholder="5601234567890">
+      <div id="eanStatus" class="status"></div>
+
+      <label for="photo">Imagem adicional do produto (opcional)</label>
+      <input id="photo" type="file" accept="image/*">
+
+      <div class="size-row" id="customSizeRow" style="display:none;">
+        <div>
+          <label for="labelWidth">Largura (mm)</label>
+          <input id="labelWidth" type="number" value="70">
+        </div>
+        <div>
+          <label for="labelHeight">Altura (mm)</label>
+          <input id="labelHeight" type="number" value="40">
+        </div>
+      </div>
+
+      <label for="copiesCount">Número de Cópias Iguais</label>
+      <input id="copiesCount" type="number" min="1" max="100" value="21">
+
+      <div class="actions">
+        <button class="primary" id="printBtn" type="button">🖨️ Imprimir etiqueta(s)</button>
+        <button class="secondary" id="clearBtn" type="button">Limpar</button>
+      </div>
+    </section>
+
+    <section class="panel print-area">
+      <div class="preview-wrap amanhecer-sheet" id="previewWrap"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+let globalLogoAgricola = "/*B64_AGRICOLA*/";
+let globalLogoAmanhecer = "/*B64_AMANHECER*/";
+
+let tempLogoAgricola = "";
+let tempLogoAmanhecer = "";
+let globalPhotoData = "";
+
+if (globalLogoAgricola.length > 50 && globalLogoAmanhecer.length > 50) {
+  $("setupPanel").style.display = "none";
+}
+
+$("setupLogo1").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => { tempLogoAgricola = evt.target.result; updateLabel(); };
+  reader.readAsDataURL(file);
+});
+
+$("setupLogo2").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => { tempLogoAmanhecer = evt.target.result; updateLabel(); };
+  reader.readAsDataURL(file);
+});
+
+$("btnGenerateDefinitive").addEventListener("click", () => {
+  if (!tempLogoAgricola || !tempLogoAmanhecer) {
+    alert("Por favor, carregue os dois logótipos antes de transferir o ficheiro definitivo.");
+    return;
+  }
+  let htmlContent = document.documentElement.outerHTML;
+  htmlContent = htmlContent.replace('"/*B64_AGRICOLA*/"', '`' + tempLogoAgricola + '`');
+  htmlContent = htmlContent.replace('"/*B64_AMANHECER*/"', '`' + tempLogoAmanhecer + '`');
+  const blob = new Blob(["<!DOCTYPE html>\n" + htmlContent], {type: "text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Etiquetas_Amanhecer_Mestre_Definitivo.html";
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("Ficheiro Mestre transferido com sucesso!");
+});
+
+function getLogo1() { return globalLogoAgricola.length > 50 ? globalLogoAgricola : tempLogoAgricola; }
+function getLogo2() { return globalLogoAmanhecer.length > 50 ? globalLogoAmanhecer : tempLogoAmanhecer; }
+
+function formatPromoDate(startStr, endStr) {
+  if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
+  const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  if (startStr && endStr) {
+    const d1 = new Date(startStr); const d2 = new Date(endStr);
+    if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) {
+      return `Promoção de ${d1.getDate()} a${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+    } else {
+      return `Promoção de ${d1.getDate()} de ${months[d1.getMonth()]} a${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+    }
+  } else if (endStr) {
+    const d2 = new Date(endStr);
+    return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+  } else {
+    const d1 = new Date(startStr);
+    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
+  }
+}
+
+function getPrintDateStr() {
+  const now = new Date();
+  return "Impresso a: " + now.toLocaleDateString('pt-PT');
+}
+
+const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+
+function onlyDigits(value) { return String(value || "").replace(/\D/g, ""); }
+function ean13CheckDigit(first12) {
+  const digits = onlyDigits(first12).slice(0, 12);
+  if (digits.length !== 12) return null;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i % 2 === 0 ? 1 : 3); }
+  return String((10 - (sum % 10)) % 10);
+}
+function isValidEAN13(value) {
+  const digits = onlyDigits(value);
+  return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12];
+}
+
+function drawBarcode(svg, value) {
+  svg.innerHTML = "";
+  const cleanVal = String(value || "").trim();
+  if (!cleanVal) return;
+
+  const isEAN = (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal));
+
+  if (isEAN) {
+    drawEAN13(svg, cleanVal);
+  } else {
+    drawCode128(svg, cleanVal);
+  }
+}
+
+function drawEAN13(svg, value) {
+  const digits = onlyDigits(value);
+  const first = Number(digits[0]);
+  const leftDigits = digits.slice(1, 7);
+  const rightDigits = digits.slice(7);
+  const parity = EAN_PARITY[first];
+
+  let bits = "101";
+  for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }
+  bits += "01010"; 
+  for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }
+  bits += "101"; 
+
+  const quietZone = 11;
+  const totalWidth = bits.length + (quietZone * 2);
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("shape-rendering", "crispEdges");
+
+  const bg = document.createElementNS(ns, "rect");
+  bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white");
+  svg.appendChild(bg);
+
+  for (let i = 0; i < bits.length; i++) {
+    if (bits[i] !== "1") continue;
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", i + quietZone);
+    rect.setAttribute("y", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 0 : 4);
+    rect.setAttribute("width", "1");
+    rect.setAttribute("height", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 64 : 60);
+    rect.setAttribute("fill", "black");
+    svg.appendChild(rect);
+  }
+}
+
+const C128_PATTERNS = {
+  ' ': '212222', '!': '222122', '"': '222221', '#': '121223', '$': '121322', '%': '131222', '&': '122213', '\'': '122312', '(': '132212', ')': '221213', '*': '221312', '+': '231212', ',': '112232', '-': '122132', '.': '122231', '/': '113222', '0': '123122', '1': '123221', '2': '223211', '3': '221132', '4': '221231', '5': '213212', '6': '223112', '7': '312131', '8': '311222', '9': '321122', ':': '321221', ';': '312212', '<': '322112', '=': '322211', '>': '212123', '?': '212321', '@': '232121', 'A': '111323', 'B': '131123', 'C': '131321', 'D': '112313', 'E': '132113', 'F': '132311', 'G': '211313', 'H': '231113', 'I': '231311', 'J': '112133', 'K': '112331', 'L': '132131', 'M': '113123', 'N': '113321', 'O': '133121', 'P': '313121', 'Q': '211331', 'R': '231131', 'S': '213113', 'T': '213311', 'U': '213131', 'V': '311123', 'W': '311321', 'X': '331121', 'Y': '312113', 'Z': '312311', '[': '332111', '\\': '314111', ']': '221411', '^': '431111', '_': '111224', '`': '112412', 'a': '121124', 'b': '121411', 'c': '141112', 'd': '141211', 'e': '112214', 'f': '112422', 'g': '122114', 'h': '122411', 'i': '142112', 'j': '142211', 'k': '241211', 'l': '221114', 'm': '413111', 'n': '241112', 'o': '134111', 'p': '111242', 'q': '121241', 'r': '124112', 's': '124211', 't': '141221', 'u': '142121', 'v': '241121', 'w': '221241', 'x': '224112', 'y': '224211', 'z': '411212', '{': '421112', '|': '421211', '}': '212141', '~': '214121', 'STARTB': '113511', 'STOP': '2331112'
+};
+
+function drawCode128(svg, text) {
+  let sequence = "STARTB" + text + "STOP";
+  let fullBits = "";
+  for (let i = 0; i < sequence.length; i++) {
+    let char = sequence[i];
+    let pat = C128_PATTERNS[char] || "212222";
+    let isBar = true;
+    for (let p = 0; p < pat.length; p++) {
+      let len = Number(pat[p]);
+      fullBits += (isBar ? "1" : "0").repeat(len);
+      isBar = !isBar;
+    }
+  }
+
+  const quietZone = 11;
+  const totalWidth = fullBits.length + (quietZone * 2);
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("shape-rendering", "crispEdges");
+
+  const bg = document.createElementNS(ns, "rect");
+  bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white");
+  svg.appendChild(bg);
+
+  for (let i = 0; i < fullBits.length; i++) {
+    if (fullBits[i] !== "1") continue;
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", i + quietZone);
+    rect.setAttribute("y", "0");
+    rect.setAttribute("width", "1");
+    rect.setAttribute("height", "62");
+    rect.setAttribute("fill", "black");
+    svg.appendChild(rect);
+  }
+}
+
+function fitText(textElement, containerElement, startSize) {
+  if (!textElement.textContent.trim()) return;
+  let size = startSize;
+  textElement.style.fontSize = size + "px";
+  while ((textElement.scrollHeight > containerElement.clientHeight - 2 || textElement.scrollWidth > containerElement.clientWidth - 4) && size > 4) {
+    size -= 0.5;
+    textElement.style.fontSize = size + "px";
+  }
+}
+
+$("presetSizes").addEventListener("change", function() {
+  const val = this.value;
+  const wrap = $("previewWrap");
+  
+  const isFruitMode = (val === "A6" || val === "125x80");
+  $("fruitPanel").style.display = isFruitMode ? "block" : "none";
+  $("bulkPriceContainer").style.display = (val === "A6") ? "block" : "none";
+  $("customSizeRow").style.display = (val === "custom") ? "grid" : "none";
+
+  if (val === "amanhecer") { 
+    $("labelWidth").value = "70"; $("labelHeight").value = "40"; 
+    $("copiesCount").value = "21";
+    document.documentElement.style.setProperty('--offset-x', "-6mm"); 
+    document.documentElement.style.setProperty('--offset-y', "-6mm");
+    wrap.className = "preview-wrap amanhecer-sheet";
+  } else if (isFruitMode) {
+    $("copiesCount").value = "1";
+    wrap.className = "preview-wrap";
+  } else {
+    wrap.className = "preview-wrap";
+    document.documentElement.style.setProperty('--offset-x', "0mm");
+    document.documentElement.style.setProperty('--offset-y', "0mm");
+    if (val === "72x38") { $("labelWidth").value = "72"; $("labelHeight").value = "38"; } 
+    else if (val === "100x70") { $("labelWidth").value = "100"; $("labelHeight").value = "70"; } 
+    else if (val === "50x30") { $("labelWidth").value = "50"; $("labelHeight").value = "30"; } 
+  }
+  updateLabel();
+});
+
+let debounceTimer;
+function updateLabelDebounced() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(updateLabel, 300); 
+}
+
+function updateLabel() {
+  const previewWrap = $("previewWrap");
+  const formatVal = $("presetSizes").value;
+  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+  const isAmanhecer = formatVal === "amanhecer";
+  const isA6 = formatVal === "A6";
+  const is125x80 = formatVal === "125x80";
+  
+  const storeVal = $("store").value;
+  const productVal = $("product").value.trim() || "Nome do produto";
+  const codeVal = $("internalCode").value.trim() ? "ART. " + $("internalCode").value.trim() : "";
+  const codeRaw = $("internalCode").value.trim();
+  const printDateStr = getPrintDateStr();
+  const ean = onlyDigits($("ean").value);
+  const barcodeVal = codeRaw || ean || "5601227849374";
+
+  const finalLogo1 = getLogo1();
+  const finalLogo2 = getLogo2();
+  const logo1HTML = finalLogo1 ? `<img class="brand-logo" src="${finalLogo1}" alt="Balcão Agrícola">` : `<span style="font-size:7px; color:#ccc;">(Logo 1)</span>`;
+  const logo2HTML = finalLogo2 ? `<img class="brand-logo" src="${finalLogo2}" alt="Amanhecer">` : `<span style="font-size:7px; color:#ccc;">(Logo 2)</span>`;
+
+  previewWrap.innerHTML = "";
+
+  if (isA6) {
+    const price = Number($("price")?.value || 1.89);
+    const priceFormatted = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+    const bulkPrice = Number($("bulkPrice").value);
+    const bulkPriceFormatted = Number.isFinite(bulkPrice) && bulkPrice > 0 ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
+
+    const origemVal = $("origem").value.trim();
+    const categoriaVal = $("categoria").value.trim();
+    const calibreVal = $("calibre").value.trim();
+    let fruitParts = [];
+    if (origemVal) fruitParts.push("Origem: " + origemVal);
+    if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
+    if (calibreVal) fruitParts.push("Cal: " + calibreVal);
+    const fruitStr = fruitParts.join(" | ");
+
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "a6-label";
+
+    let dualPriceHTML = `
+      <div class="a6-price-normal">
+        <div class="price-label">Preço por KG</div>
+        <div class="price-main">${priceFormatted} <span style="font-size:0.6em; color:#444;">€/KG</span></div>
+      </div>
+    `;
+
+    if (bulkPriceFormatted) {
+      dualPriceHTML += `
+        <div class="a6-price-bulk">
+          <div class="price-label" style="color:#c8102e; font-weight:900;">${bulkLabelVal}</div>
+          <div class="price-main price-bulk-main">${bulkPriceFormatted} <span style="font-size:0.6em; color:#c8102e;">€/KG</span></div>
+        </div>
+      `;
+    }
+
+    labelDiv.innerHTML = `
+      <div class="a6-header">
+        <div class="logo-wrapper-1">${logo1HTML}</div>
+        <div class="logo-wrapper-2">${logo2HTML}</div>
+        <div class="header-store-container">
+          <div style="display:flex; flex-direction:column; align-items:flex-end;">
+            <div style="font-size:11px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
+            <div class="store-text">${storeVal}</div>
+          </div>
+        </div>
+      </div>
+      <div class="a6-main">
+        <div class="a6-product">${productVal}</div>
+        <div class="a6-image-box" style="display:${globalPhotoData ? 'flex' : 'none'};">
+          <img src="${globalPhotoData}" alt="Foto">
+        </div>
+        <div class="a6-dual-price">${dualPriceHTML}</div>
+        <div class="a6-fruit" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
+      </div>
+      <div class="a6-barcode">
+        <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+        <div class="ean-container"><div class="ean-text" style="font-size:14px;">${barcodeVal}</div></div>
+      </div>
+      <div class="a6-footer">
+        <div>Preço sujeito às condições comerciais em vigor.</div>
+        <div>${printDateStr}</div>
+      </div>
+    `;
+    previewWrap.appendChild(labelDiv);
+    drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+
+  } else if (is125x80) {
+    const price = Number($("price")?.value || 1.89);
+    const priceFormatted = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+    const origemVal = $("origem").value.trim();
+    const categoriaVal = $("categoria").value.trim();
+    const calibreVal = $("calibre").value.trim();
+    let fruitParts = [];
+    if (origemVal) fruitParts.push("Origem: " + origemVal);
+    if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
+    if (calibreVal) fruitParts.push("Cal: " + calibreVal);
+    const fruitStr = fruitParts.join(" | ");
+
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "fruit-label-125x80";
+    let priceStr = priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>';
+
+    labelDiv.innerHTML = `
+      <div class="f125-header">
+        <div class="logo-wrapper-1">${logo1HTML}</div>
+        <div class="logo-wrapper-2">${logo2HTML}</div>
+        <div class="header-store-container">
+          <div style="display:flex; flex-direction:column; align-items:flex-end;">
+            <div style="font-size:9px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
+            <div class="store-text" style="font-size:14px;">${storeVal}</div>
+          </div>
+        </div>
+      </div>
+      <div class="f125-main">
+        <div class="f125-left">
+          <div class="f125-product">${productVal}</div>
+          <div class="price" style="font-size:32px;">${priceStr}</div>
+          <div class="fruit-info" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
+        </div>
+        <div class="f125-right" style="display:${globalPhotoData ? 'flex' : 'none'};">
+          <img src="${globalPhotoData}" alt="Foto">
+        </div>
+      </div>
+      <div class="barcode-container">
+        <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+        <div class="ean-container"><div class="ean-text" style="font-size:11px;">${barcodeVal}</div></div>
+      </div>
+      <div class="footer-container">
+        <div class="promo-container"><div class="promo-text">Preço sujeito às condições comerciais em vigor.</div></div>
+        <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+      </div>
+    `;
+    previewWrap.appendChild(labelDiv);
+    drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+
+  } else {
+    // MODO PADRÃO (AMANHECER / ETIQUETAS SOLTAS)
+    const price = Number($("price").value);
+    let priceStr = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
+
+    const capacity = Number($("capacity").value);
+    const capacityUnit = $("capacityUnit").value;
+    let unitPriceStr = "";
+    
+    if (capacityUnit === "peso") {
+      const pFormat = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+      priceStr = pFormat + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
+    } else if (capacity > 0 && price >= 0) {
+      let unitPrice = 0;
+      let displayUnit = "";
+      if (capacityUnit === "g") { unitPrice = price / (capacity / 1000); displayUnit = "KG"; }
+      else if (capacityUnit === "kg") { unitPrice = price / capacity; displayUnit = "KG"; }
+      else if (capacityUnit === "ml") { unitPrice = price / (capacity / 1000); displayUnit = "LT"; }
+      else if (capacityUnit === "lt") { unitPrice = price / capacity; displayUnit = "LT"; }
+      else if (capacityUnit === "un") { unitPrice = price / capacity; displayUnit = "UN"; }
+      
+      if (capacity === 1 && (capacityUnit === "kg" || capacityUnit === "lt")) {
+         const pFormat = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+         priceStr = pFormat + ` <span style="font-size:0.55em; margin-left:3px; color:#333;">€/${displayUnit}</span>`;
+      } else {
+         unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+      }
+    }
+
+    const selectVal = $("depositFeeSelect").value;
+    let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
+    $("depositFeeCustom").style.display = selectVal === "custom" ? "block" : "none";
+
+    const unitVal = $("unit").value.trim();
+    const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
+    const baseWidth = Number($("labelWidth").value) || 70;
+    const baseHeight = Number($("labelHeight").value) || 40;
+
+    for (let c = 0; c < copies; c++) {
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "label";
+      
+      if (isAmanhecer) {
+        labelDiv.style.width = "70mm";
+        labelDiv.style.height = (c < 3) ? "38mm" : "40mm"; 
+      } else {
+        labelDiv.style.width = baseWidth + "mm";
+        labelDiv.style.height = baseHeight + "mm";
+      }
+
+      labelDiv.innerHTML = `
+        <div class="header">
+          <div class="logo-wrapper-1">${logo1HTML}</div>
+          <div class="logo-wrapper-2">${logo2HTML}</div>
+          <div class="header-store-container">
+            <div style="display:flex; flex-direction:column; align-items:flex-end;">
+              <div style="font-size:7.5px; font-weight:bold; color:#333; text-transform:uppercase;">${codeVal}</div>
+              <div class="store-text">${storeVal}</div>
+            </div>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="left-column">
+            <div class="code-container" style="display:none;"><div class="item-code"></div></div>
+            <div class="product-container"><div class="product">${productVal}</div></div>
+            <div class="price-container"><div class="price">${priceStr}</div></div>
+            <div class="unit-price-container" style="display:${unitPriceStr ? 'flex' : 'none'};"><div class="unit-price">${unitPriceStr}</div></div>
+            <div class="deposit-container" style="display:${depositVal ? 'flex' : 'none'};"><div class="deposit-text">${depositVal}</div></div>
+            <div class="unit-container" style="display:${unitVal ? 'flex' : 'none'};"><div class="unit">${unitVal}</div></div>
+          </div>
+          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
+        </div>
+        <div class="barcode-container">
+          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
+        </div>
+        <div class="footer-container">
+          <div class="promo-container"><div class="promo-text">${promoStr}</div></div>
+          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+        </div>
+      `;
+
+      previewWrap.appendChild(labelDiv);
+      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+    }
+
+    requestAnimationFrame(() => {
+      previewWrap.querySelectorAll(".label").forEach(lbl => {
+        fitText(lbl.querySelector(".store-text"), lbl.querySelector(".header-store-container"), 25);
+        fitText(lbl.querySelector(".product"), lbl.querySelector(".product-container"), 35);
+        fitText(lbl.querySelector(".price"), lbl.querySelector(".price-container"), 40);
+        fitText(lbl.querySelector(".unit-price"), lbl.querySelector(".unit-price-container"), 20);
+        fitText(lbl.querySelector(".deposit-text"), lbl.querySelector(".deposit-container"), 18);
+        fitText(lbl.querySelector(".unit"), lbl.querySelector(".unit-container"), 18);
+        fitText(lbl.querySelector(".ean-text"), lbl.querySelector(".ean-container"), 25);
+        fitText(lbl.querySelector(".promo-text"), lbl.querySelector(".promo-container"), 14);
+      });
+    });
+  }
+}
+
+["internalCode","product","unit","ean","depositFeeCustom","origem","categoria","calibre","bulkPrice","bulkLabel"].forEach(id => {
+  $(id).addEventListener("input", updateLabelDebounced);
+});
+["store","price","capacity","capacityUnit","depositFeeSelect","labelWidth","labelHeight","copiesCount","promoStart","promoEnd"].forEach(id => {
+  $(id).addEventListener("change", updateLabel);
+  $(id).addEventListener("input", updateLabelDebounced);
+});
+
+$("photo").addEventListener("change", function(event) {
+  const file = event.target.files[0];
+  if (!file || !file.type.startsWith("image/")) { globalPhotoData = ""; updateLabel(); return; }
+  const reader = new FileReader();
+  reader.onload = evt => { globalPhotoData = evt.target.result; updateLabel(); };
+  reader.readAsDataURL(file);
+});
+
+$("printBtn").addEventListener("click", function() {
+  updateLabel();
+  window.print();
+});
+
+$("clearBtn").addEventListener("click", function() {
+  $("store").value = "PATAIAS"; $("internalCode").value = "DR058860"; $("product").value = "Maçã Gala";
+  $("price").value = "1.89"; $("bulkPrice").value = "1.59"; $("bulkLabel").value = "A partir de 2 KG";
+  $("ean").value = ""; $("copiesCount").value = "21";
+  $("origem").value = "PORTUGAL"; $("categoria").value = "I"; $("calibre").value = "65/70";
+  $("presetSizes").value = "amanhecer"; $("labelWidth").value = "70"; $("labelHeight").value = "40";
+  $("fruitPanel").style.display = "none";
+  document.documentElement.style.setProperty('--offset-x', "-6mm");
+  document.documentElement.style.setProperty('--offset-y', "-6mm");
+  $("previewWrap").className = "preview-wrap amanhecer-sheet";
+  globalPhotoData = ""; $("photo").value = "";
+  updateLabel();
+});
+
+window.onload = function() { 
+  $("fruitPanel").style.display = "none";
+  updateLabel(); 
+};
+</script>
+</body>
+</html>
