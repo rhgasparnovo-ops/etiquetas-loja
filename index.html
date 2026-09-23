@@ -10,7 +10,7 @@
     --dark:#222; 
     --border:#d7d7d7; 
     --offset-x: -6mm; 
-    --offset-y: 0mm; /* Descido 6mm (passou de -6mm para 0mm) para não comer a parte de cima */
+    --offset-y: 0mm; 
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
@@ -77,6 +77,7 @@
     border-radius: 2px;
   }
 
+  /* CABEÇALHO COMPACTO - LOJA PUXADA 6MM PARA A ESQUERDA */
   .header {
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
@@ -84,9 +85,15 @@
   }
   .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
-  .header-store-container { flex: 1; text-align: right; overflow: hidden; }
+  .header-store-container { 
+    flex: 1; 
+    text-align: right; 
+    overflow: hidden; 
+    margin-right: 6mm; /* Puxado 6mm para a esquerda */
+  }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
+  /* CONTEÚDO PRINCIPAL */
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
     padding: 2px 0; gap: 4px; overflow: hidden; align-items: center;
@@ -120,14 +127,20 @@
   }
 
   .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
-  .item-code { font-size: 8.5px; font-weight: bold; color: #555; line-height: 1; }
+  
+  /* CÓDIGO INTERNO SEMPRE A NEGRITO */
+  .item-code { font-size: 9px; font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
+  
   .product {
     font-size: 11px; font-weight: bold; color: #000; word-break: break-word;
     line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
   }
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
   .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1; }
-  .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; }
+  
+  /* CÓDIGO DE BARRAS SEM MAIÚSCULAS FORÇADAS */
+  .ean-text { font-family: monospace; font-size: 8px; font-weight: bold; line-height: 1; text-transform: none; }
+  
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
 
@@ -138,7 +151,7 @@
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
   
-  /* IMPRESSÃO: REGRAS MILIMÉTRICAS COM AJUSTE DE 6MM */
+  /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER */
   @media print {
     @page { 
       margin: 0 !important; 
@@ -180,7 +193,7 @@
       width: 210mm !important; 
       height: 278mm !important; 
       margin-left: var(--offset-x) !important; 
-      margin-top: var(--offset-y) !important; /* Descido 6mm */
+      margin-top: var(--offset-y) !important;
       page-break-inside: avoid !important;
       page-break-after: avoid !important;
       overflow: hidden !important;
@@ -196,7 +209,6 @@
       overflow: hidden !important;
     }
     
-    /* 1.ª LINHA (38mm COM 3mm TOP PADDING) */
     .print-sheet-amanhecer .label-card:nth-child(1),
     .print-sheet-amanhecer .label-card:nth-child(2),
     .print-sheet-amanhecer .label-card:nth-child(3) { 
@@ -204,17 +216,14 @@
       padding-top: 3mm !important; 
     }
     
-    /* LINHAS SEGUINTES (40mm) */
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { 
       height: 40mm !important;
     }
     
-    /* MARGEM LATERAL ESQUERDA (COLUNA 1) */
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { 
       padding-left: 6.5mm !important; 
     }
     
-    /* MARGEM LATERAL DIREITA (COLUNA 3) */
     .print-sheet-amanhecer .label-card:nth-child(3n) { 
       padding-right: 6.5mm !important; 
     }
@@ -242,6 +251,7 @@
 
   <div class="grid">
     <section class="panel">
+      <!-- FORMATO DA ETIQUETA -->
       <label for="presetSizes">Medida / Formato da Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
         <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
@@ -277,8 +287,9 @@
       <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: DR058860">
 
       <label for="product">Produto / Variedade</label>
-      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA">
+      <input id="product" type="text" class="uppercase-input" placeholder="Ex.: VINHO TINTO ALENTEJANO">
 
+      <!-- DETALHES DE FRUTA E LEGUMES -->
       <div class="fruit-panel" id="fruitPanel">
         <h4>🍎 Detalhes Fruta e Legumes</h4>
         <div class="size-row-3">
@@ -320,37 +331,40 @@
 
       <div id="standardPricePanel">
         <label for="price">Preço Base (€)</label>
-        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 1,89">
+        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
         
-        <div id="packagingRow" style="display:none; margin-top: 8px;">
+        <!-- OPÇÃO DE EMBALAGEM / UNIDADE SEMPRE VISÍVEL -->
+        <div id="packagingRow" style="display:block; margin-top: 8px;">
           <div class="size-row">
             <div>
-              <label for="capacity">Quantidade Embalagem</label>
-              <input id="capacity" type="number" min="0.001" step="0.001" value="1">
+              <label for="capacity">Capacidade / Volume</label>
+              <input id="capacity" type="number" min="0.001" step="0.001" value="0.75">
             </div>
             <div>
               <label for="capacityUnit">Tipo de Venda / Unidade</label>
               <select id="capacityUnit">
-                <option value="peso" selected>Venda ao KG (€/KG)</option>
-                <option value="g">Embalado em Gramas (g)</option>
-                <option value="lt">Litros (LT)</option>
-                <option value="un">Unidades (UN)</option>
+                <option value="un">Unidade (UN)</option>
+                <option value="lt" selected>Litros (LT)</option>
+                <option value="peso">Venda ao KG (€/KG)</option>
+                <option value="g">Gramas (g)</option>
               </select>
             </div>
           </div>
         </div>
 
+        <!-- TAXA VOLTA (GARRAFA / VASILHAME) -->
         <div id="depositContainer" style="margin-top: 8px;">
-          <label for="depositFeeSelect">Taxa de Garrafa / Vasilhame</label>
+          <label for="depositFeeSelect">Taxa Volta (Garrafa / Vasilhame)</label>
           <select id="depositFeeSelect">
             <option value="" selected>Nenhuma (Sem taxa)</option>
-            <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
+            <option value="Acresce 0,10 € Taxa Volta">Acresce 0,10 € Taxa Volta</option>
+            <option value="Acresce 0,25 € Taxa Volta">Acresce 0,25 € Taxa Volta</option>
           </select>
         </div>
 
         <div id="extraUnitContainer" style="margin-top: 8px;">
           <label for="unit">Informação Extra (Opcional)</label>
-          <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
+          <input id="unit" type="text" placeholder="Ex.: Garrafa 75cl">
         </div>
 
         <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
@@ -365,9 +379,11 @@
         </div>
       </div>
 
-      <label for="ean">Código de Barras (EAN / Leitura ótica - Opcional)</label>
-      <input id="ean" type="text" placeholder="Insira só se quiser barras (Ex.: 5601234567890)">
+      <!-- CÓDIGO DE BARRAS (SEM FORÇAR MAIÚSCULAS) -->
+      <label for="ean">Código de Barras (EAN / Código)</label>
+      <input id="ean" type="text" style="text-transform: none;" placeholder="Insira o código (Ex.: 5601234567890 ou cod123)">
 
+      <!-- FOTOGRAFIA -->
       <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
       <label class="checkbox-label">
@@ -384,6 +400,7 @@
       </div>
     </section>
 
+    <!-- PRÉ-VISUALIZAÇÃO -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
@@ -613,9 +630,9 @@ function drawCode128(svg, text) {
     if (fullBits[i] !== "1") continue;
     const rect = document.createElementNS(ns, "rect");
     rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", "0");
+    rect.setAttribute("y", 0);
     rect.setAttribute("width", "1");
-    rect.setAttribute("height", "62");
+    rect.setAttribute("height", 62);
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
   }
@@ -650,13 +667,18 @@ function updateCard() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
+  
+  // Código de barras preserva minúsculas exatamente como digitado
   const eanVal = ($("ean").value || "").trim();
+  
   const priceNum = parsePrice($("price").value);
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isFruit = (formatVal === "A6" || formatVal === "125x80");
   const orientation = $("labelOrientation").value;
   const dims = getDimensions();
+  const capUnit = $("capacityUnit").value;
+  const capacityNum = parseFloat($("capacity").value) || 1;
 
   const card = $("mainLabelCard");
   if (isAmanhecer) {
@@ -677,6 +699,7 @@ function updateCard() {
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
+  // CÓDIGO INTERNO A NEGRITO
   if (codeVal) {
     $("cardCode").style.display = "block";
     $("cardCode").textContent = codeVal;
@@ -684,17 +707,38 @@ function updateCard() {
     $("cardCode").style.display = "none";
   }
 
+  // TRATAMENTO DE PREÇOS (AO QUILO, POR UNIDADE OU POR LITRO)
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-    if (isFruit || $("capacityUnit").value === "peso") {
+    
+    if (isFruit || capUnit === "peso") {
       $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.5em; color:#333;">€/KG</span>';
+      $("cardUnitPrice").style.display = "none";
     } else {
       $("cardPrice").textContent = formatted + " €";
+      
+      // Cálculo do Preço Unitário Legal (ex: Garrafas de Vinho por Litro, etc.)
+      if (capUnit === "lt" && capacityNum > 0) {
+        const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
+        $("cardUnitPrice").textContent = pPerLt + " € / LT";
+        $("cardUnitPrice").style.display = "block";
+      } else if (capUnit === "g" && capacityNum > 0) {
+        const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
+        $("cardUnitPrice").textContent = pPerKg + " € / KG";
+        $("cardUnitPrice").style.display = "block";
+      } else if (capUnit === "un") {
+        $("cardUnitPrice").textContent = formatted + " € / UN";
+        $("cardUnitPrice").style.display = "block";
+      } else {
+        $("cardUnitPrice").style.display = "none";
+      }
     }
   } else {
     $("cardPrice").textContent = "0,00 €";
+    $("cardUnitPrice").style.display = "none";
   }
 
+  // FRUTA / LEGUMES
   if (isFruit) {
     const org = ($("origem")?.value || "").trim().toUpperCase();
     const cat = ($("categoria")?.value || "").trim().toUpperCase();
@@ -713,6 +757,7 @@ function updateCard() {
     $("cardFruit").style.display = "none";
   }
 
+  // TAXA VOLTA
   const depositVal = $("depositFeeSelect").value;
   if (depositVal) {
     $("cardDeposit").style.display = "block";
@@ -729,6 +774,7 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
+  // FOTOGRAFIA
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
   if (activePhoto) {
     $("cardPhotoBox").style.display = "flex";
@@ -737,6 +783,7 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
+  // CÓDIGO DE BARRAS (EM MINÚSCULAS)
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -752,13 +799,23 @@ function updateCard() {
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
+// EVENTOS
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
   $("fruitPanel").style.display = isFruit ? "block" : "none";
-  $("packagingRow").style.display = (!isFruit && val === "amanhecer") ? "none" : "block";
-  $("depositContainer").style.display = isFruit ? "none" : "block";
-  $("extraUnitContainer").style.display = isFruit ? "none" : "block";
+  
+  // Na fruta o preço é por defeito ao KG; nos restantes permite UN / LT / g
+  if (isFruit) {
+    $("capacityUnit").value = "peso";
+    $("packagingRow").style.display = "none";
+    $("depositContainer").style.display = "none";
+    $("extraUnitContainer").style.display = "none";
+  } else {
+    $("packagingRow").style.display = "block";
+    $("depositContainer").style.display = "block";
+    $("extraUnitContainer").style.display = "block";
+  }
   
   if (val === "amanhecer") {
     $("copiesCount").value = "21";
@@ -805,6 +862,7 @@ $("clearBtn").addEventListener("click", function() {
   $("internalCode").value = ""; $("product").value = ""; $("price").value = "";
   $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = "";
   $("promoStart").value = ""; $("promoEnd").value = "";
+  $("capacity").value = "1"; $("capacityUnit").value = "un";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
   if ($("calibre")) $("calibre").value = "";
