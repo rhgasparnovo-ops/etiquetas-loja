@@ -94,17 +94,17 @@
   .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
   .history-item:hover { background: #ffeaa7; }
 
-  /* ÁREA DE PRÉ-VISUALIZAÇÃO GARANTIDA */
+  /* ÁREA DE PRÉ-VISUALIZAÇÃO NÍTIDA */
   .preview-container {
     background: #dfe4ea;
     border: 1px solid #ced6e0;
     border-radius: 12px;
-    padding: 30px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 600px;
+    min-height: 580px;
     overflow-x: auto;
   }
   .sheet-badge {
@@ -127,10 +127,10 @@
     width: 100%;
   }
 
-  /* CARTÃO DE ETIQUETA VISÍVEL E PROPORCIONAL */
+  /* CARTÃO DE ETIQUETA VISÍVEL */
   .label-card {
     background: #ffffff !important;
-    border: 1px solid #555 !important;
+    border: 1px solid #444 !important;
     box-shadow: 0 10px 25px rgba(0,0,0,0.18) !important;
     display: flex !important;
     flex-direction: column !important;
@@ -141,8 +141,8 @@
   }
 
   .header {
-    flex: 0 0 17%;
-    min-height: 28px;
+    flex: 0 0 18%;
+    min-height: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -155,11 +155,10 @@
   .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
   .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
-  .fallback-logo { font-size: 10px; font-weight: bold; color: #c8102e; }
 
   .main-content {
     flex: 1 1 auto;
-    min-height: 50px;
+    min-height: 60px;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -196,7 +195,7 @@
   }
 
   .barcode-container {
-    flex: 0 0 20%;
+    flex: 0 0 18%;
     min-height: 24px;
     display: flex;
     flex-direction: column;
@@ -210,7 +209,7 @@
 
   .footer-container {
     flex: 0 0 10%;
-    min-height: 14px;
+    min-height: 16px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -242,7 +241,7 @@
     font-size: 8.5px;
   }
 
-  .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+  .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
 
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -253,10 +252,11 @@
     .grid { grid-template-columns:1fr; } 
   }
   
-  /* REGRAS REAIS DE IMPRESSÃO */
+  /* IMPRESSÃO */
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+    body > *:not(.app) { display: none !important; }
     .top-header, .panel, .sheet-badge { display: none !important; }
     .grid { display: block !important; }
     .preview-container { background: transparent !important; border: none !important; padding: 0 !important; }
@@ -292,9 +292,9 @@
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
-      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.outerHTML='<span class=\'fallback-logo\'>BALCÃO AGRÍCOLA</span>'">
+      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola">
       <div class="divider"></div>
-      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.outerHTML='<span class=\'fallback-logo\'>AMANHECER</span>'">
+      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer">
     </div>
   </header>
 
@@ -470,7 +470,7 @@
 
     <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
     <section class="preview-container">
-      <div id="badgeSheet" class="sheet-badge">⭐ Pré-visualização Proporcional</div>
+      <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap"></div>
     </section>
   </div>
@@ -662,172 +662,173 @@ function getDimensions() {
 }
 
 function updateLabel(isPrinting = false) {
-  const previewWrap = $("previewWrap");
-  const badgeSheet = $("badgeSheet");
-  if (!previewWrap) return;
+  try {
+    const previewWrap = $("previewWrap");
+    const badgeSheet = $("badgeSheet");
+    if (!previewWrap) return;
 
-  const formatVal = $("presetSizes").value;
-  const isAmanhecer = formatVal === "amanhecer";
-  const isA6 = formatVal === "A6";
-  const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-  const dims = getDimensions();
+    const formatVal = $("presetSizes").value;
+    const isAmanhecer = formatVal === "amanhecer";
+    const isA6 = formatVal === "A6";
+    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+    const dims = getDimensions();
 
-  if (badgeSheet) {
-    if (isAmanhecer) {
-      badgeSheet.style.display = "block";
-      badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
-    } else {
-      badgeSheet.style.display = "block";
-      badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
-    }
-  }
-
-  const storeVal = $("store").value;
-  const productVal = ($("product").value || "").trim().toUpperCase();
-  const codeVal = ($("internalCode").value || "").trim().toUpperCase();
-  const printDateStr = getPrintDateStr();
-  
-  const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
-
-  const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola" onerror="this.outerHTML='<span class=\\'fallback-logo\\'>BALCÃO AGRÍCOLA</span>'">`;
-  const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer" onerror="this.outerHTML='<span class=\\'fallback-logo\\'>AMANHECER</span>'">`;
-
-  previewWrap.innerHTML = "";
-
-  if (isAmanhecer) {
-    const price = parsePrice($("price").value);
-    let priceStr = (price !== null) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
-    const capacity = Number($("capacity").value);
-    const capacityUnit = $("capacityUnit").value;
-    let unitPriceStr = "";
-    
-    if (price !== null) {
-      if (capacityUnit === "peso") {
-        priceStr = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:0.55em; margin-left:2px; color:#333;">€/KG</span>';
-      } else if (capacity > 0) {
-        let unitPrice = (capacityUnit === "g") ? price / (capacity / 1000) : price / capacity;
-        let displayUnit = (capacityUnit === "g") ? "KG" : (capacityUnit === "lt" ? "LT" : "UN");
-        unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+    if (badgeSheet) {
+      if (isAmanhecer) {
+        badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
+      } else {
+        badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
       }
     }
 
-    const selectVal = $("depositFeeSelect").value;
-    let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
-    const unitVal = $("unit").value.trim();
-    const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
-
-    const totalRender = isPrinting ? 21 : 1;
-    previewWrap.className = isPrinting ? "preview-wrap print-sheet-amanhecer" : "preview-wrap";
-
-    for (let c = 0; c < totalRender; c++) {
-      const labelDiv = document.createElement("div");
-      labelDiv.className = "label-card";
-      
-      // No ecrã mantém dimensão estável bem visível
-      labelDiv.style.width = isPrinting ? "100%" : "85mm";
-      labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "48mm";
-      labelDiv.style.padding = "3px 6px";
-
-      labelDiv.innerHTML = `
-        <div class="header">
-          <div class="logo-wrapper-1">${logo1HTML}</div>
-          <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
-        </div>
-        <div class="main-content">
-          <div class="left-column">
-            <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
-            <div class="price">${priceStr}</div>
-            <div style="font-size:9.5px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
-            <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
-            <div style="font-size:9.5px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
-          </div>
-          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
-        </div>
-        <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
-          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-text">${barcodeVal}</div>
-        </div>
-        <div class="footer-container">
-          <div class="promo-text">${promoStr}</div>
-          <div class="print-date">${printDateStr}</div>
-        </div>
-      `;
-      previewWrap.appendChild(labelDiv);
-      if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
-    }
-
-  } else {
-    // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL
-    previewWrap.className = "preview-wrap";
-    const price = parsePrice($("price")?.value);
-    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+    const storeVal = $("store").value || "PATAIAS";
+    const productVal = ($("product").value || "").trim().toUpperCase();
+    const codeVal = ($("internalCode").value || "").trim().toUpperCase();
+    const printDateStr = getPrintDateStr();
     
-    const bulkPrice = parsePrice($("bulkPrice").value);
-    const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
-    const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
+    const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
 
-    const origemVal = ($("origem").value || "").trim().toUpperCase();
-    const categoriaVal = ($("categoria").value || "").trim().toUpperCase();
-    const calibreVal = ($("calibre").value || "").trim().toUpperCase();
-    let fruitParts = [];
-    if (origemVal) fruitParts.push("Origem: " + origemVal);
-    if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
-    if (calibreVal) fruitParts.push("Cal: " + calibreVal);
-    const fruitStr = fruitParts.join(" | ");
+    const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
+    const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
 
-    const numCards = isPrinting ? copies : 1;
-    for (let c = 0; c < numCards; c++) {
-      const labelDiv = document.createElement("div");
-      labelDiv.className = "label-card";
-      labelDiv.style.width = dims.width + "mm";
-      labelDiv.style.height = dims.height + "mm";
-      labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "3px 6px";
+    previewWrap.innerHTML = "";
 
-      let dualPriceHTML = "";
-      if (isA6 && bulkPriceFormatted) {
-        dualPriceHTML = `
-          <div class="size-row" style="width:100%; gap:4px; margin: 2px 0;">
-            <div style="border:1px solid #ccc; border-radius:4px; padding:2px; text-align:center;">
-              <div style="font-size:8px; color:#555;">PREÇO KG</div>
-              <div class="price" style="font-size:18px;">${priceFormatted} €</div>
+    if (isAmanhecer) {
+      const price = parsePrice($("price").value);
+      let priceStr = (price !== null) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
+      const capacity = Number($("capacity").value) || 1;
+      const capacityUnit = $("capacityUnit").value || "peso";
+      let unitPriceStr = "";
+      
+      if (price !== null) {
+        if (capacityUnit === "peso") {
+          priceStr = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:0.55em; margin-left:2px; color:#333;">€/KG</span>';
+        } else if (capacity > 0) {
+          let unitPrice = (capacityUnit === "g") ? price / (capacity / 1000) : price / capacity;
+          let displayUnit = (capacityUnit === "g") ? "KG" : (capacityUnit === "lt" ? "LT" : "UN");
+          unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
+        }
+      }
+
+      const selectVal = $("depositFeeSelect").value;
+      let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
+      const unitVal = $("unit").value.trim();
+      const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
+
+      const totalRender = isPrinting ? 21 : 1;
+      previewWrap.className = isPrinting ? "preview-wrap print-sheet-amanhecer" : "preview-wrap";
+
+      for (let c = 0; c < totalRender; c++) {
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "label-card";
+        
+        labelDiv.style.width = isPrinting ? "100%" : "90mm";
+        labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "52mm";
+        labelDiv.style.padding = "3px 8px";
+
+        labelDiv.innerHTML = `
+          <div class="header">
+            <div class="logo-wrapper-1">${logo1HTML}</div>
+            <div class="logo-wrapper-2">${logo2HTML}</div>
+            <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
+          </div>
+          <div class="main-content">
+            <div class="left-column">
+              <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+              <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
+              <div class="price">${priceStr}</div>
+              <div style="font-size:9.5px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
+              <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
+              <div style="font-size:9.5px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
             </div>
-            <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:2px; text-align:center;">
-              <div style="font-size:8px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
-              <div class="price" style="font-size:18px; color:#c8102e;">${bulkPriceFormatted} €</div>
-            </div>
+            <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
+          </div>
+          <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
+            <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+            <div class="ean-text">${barcodeVal}</div>
+          </div>
+          <div class="footer-container">
+            <div class="promo-text">${promoStr}</div>
+            <div class="print-date">${printDateStr}</div>
           </div>
         `;
+        previewWrap.appendChild(labelDiv);
+        if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
       }
 
-      labelDiv.innerHTML = `
-        <div class="header">
-          <div class="logo-wrapper-1">${logo1HTML}</div>
-          <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
-        </div>
-        <div class="main-content">
-          <div class="left-column">
-            <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
-            ${dualPriceHTML ? dualPriceHTML : `<div class="price">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
-            <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
+    } else {
+      // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL
+      previewWrap.className = "preview-wrap";
+      const price = parsePrice($("price")?.value);
+      const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
+      
+      const bulkPrice = parsePrice($("bulkPrice").value);
+      const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+      const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
+
+      const origemVal = ($("origem").value || "").trim().toUpperCase();
+      const categoriaVal = ($("categoria").value || "").trim().toUpperCase();
+      const calibreVal = ($("calibre").value || "").trim().toUpperCase();
+      let fruitParts = [];
+      if (origemVal) fruitParts.push("Origem: " + origemVal);
+      if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
+      if (calibreVal) fruitParts.push("Cal: " + calibreVal);
+      const fruitStr = fruitParts.join(" | ");
+
+      const numCards = isPrinting ? copies : 1;
+      for (let c = 0; c < numCards; c++) {
+        const labelDiv = document.createElement("div");
+        labelDiv.className = "label-card";
+        labelDiv.style.width = dims.width + "mm";
+        labelDiv.style.height = dims.height + "mm";
+        labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "4px 8px";
+
+        let dualPriceHTML = "";
+        if (isA6 && bulkPriceFormatted) {
+          dualPriceHTML = `
+            <div class="size-row" style="width:100%; gap:4px; margin: 2px 0;">
+              <div style="border:1px solid #ccc; border-radius:4px; padding:2px; text-align:center;">
+                <div style="font-size:8px; color:#555;">PREÇO KG</div>
+                <div class="price" style="font-size:18px;">${priceFormatted} €</div>
+              </div>
+              <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:2px; text-align:center;">
+                <div style="font-size:8px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
+                <div class="price" style="font-size:18px; color:#c8102e;">${bulkPriceFormatted} €</div>
+              </div>
+            </div>
+          `;
+        }
+
+        labelDiv.innerHTML = `
+          <div class="header">
+            <div class="logo-wrapper-1">${logo1HTML}</div>
+            <div class="logo-wrapper-2">${logo2HTML}</div>
+            <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
           </div>
-          <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
-        </div>
-        <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
-          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-text">${barcodeVal}</div>
-        </div>
-        <div class="footer-container">
-          <div class="promo-text">Preço sujeito às condições comerciais em vigor.</div>
-          <div class="print-date">${printDateStr}</div>
-        </div>
-      `;
-      previewWrap.appendChild(labelDiv);
-      if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+          <div class="main-content">
+            <div class="left-column">
+              <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+              <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
+              ${dualPriceHTML ? dualPriceHTML : `<div class="price">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
+              <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
+            </div>
+            <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
+          </div>
+          <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
+            <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+            <div class="ean-text">${barcodeVal}</div>
+          </div>
+          <div class="footer-container">
+            <div class="promo-text">Preço sujeito às condições comerciais em vigor.</div>
+            <div class="print-date">${printDateStr}</div>
+          </div>
+        `;
+        previewWrap.appendChild(labelDiv);
+        if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+      }
     }
+  } catch (err) {
+    console.error("Erro ao desenhar etiqueta:", err);
   }
 }
 
@@ -897,48 +898,56 @@ function triggerPrint() {
 }
 
 function saveToHistory() {
-  const item = {
-    code: $("internalCode").value.trim(),
-    product: $("product").value.trim(),
-    price: $("price").value.trim(),
-    bulkPrice: $("bulkPrice").value.trim(),
-    origem: $("origem").value.trim(),
-    categoria: $("categoria").value.trim(),
-    calibre: $("calibre").value.trim(),
-    format: $("presetSizes").value
-  };
-  if (!item.product) return;
+  try {
+    const item = {
+      code: $("internalCode").value.trim(),
+      product: $("product").value.trim(),
+      price: $("price").value.trim(),
+      bulkPrice: $("bulkPrice").value.trim(),
+      origem: $("origem").value.trim(),
+      categoria: $("categoria").value.trim(),
+      calibre: $("calibre").value.trim(),
+      format: $("presetSizes").value
+    };
+    if (!item.product) return;
 
-  let history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
-  history = history.filter(h => h.product !== item.product);
-  history.unshift(item);
-  if (history.length > 10) history.pop();
-  localStorage.setItem("etiquetas_history", JSON.stringify(history));
-  renderHistory();
+    let history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+    history = history.filter(h => h.product !== item.product);
+    history.unshift(item);
+    if (history.length > 10) history.pop();
+    localStorage.setItem("etiquetas_history", JSON.stringify(history));
+    renderHistory();
+  } catch (e) {
+    console.warn("Histórico não disponível", e);
+  }
 }
 
 function renderHistory() {
-  const list = $("historyList");
-  if (!list) return;
-  const history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
-  list.innerHTML = "";
-  history.forEach(item => {
-    const btn = document.createElement("div");
-    btn.className = "history-item";
-    btn.textContent = item.product + (item.price ? ` (${item.price}€)` : "");
-    btn.onclick = () => {
-      $("internalCode").value = item.code || "";
-      $("product").value = item.product || "";
-      $("price").value = item.price || "";
-      $("bulkPrice").value = item.bulkPrice || "";
-      $("origem").value = item.origem || "";
-      $("categoria").value = item.categoria || "";
-      $("calibre").value = item.calibre || "";
-      $("presetSizes").value = item.format || "amanhecer";
-      $("presetSizes").dispatchEvent(new Event("change"));
-    };
-    list.appendChild(btn);
-  });
+  try {
+    const list = $("historyList");
+    if (!list) return;
+    const history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+    list.innerHTML = "";
+    history.forEach(item => {
+      const btn = document.createElement("div");
+      btn.className = "history-item";
+      btn.textContent = item.product + (item.price ? ` (${item.price}€)` : "");
+      btn.onclick = () => {
+        $("internalCode").value = item.code || "";
+        $("product").value = item.product || "";
+        $("price").value = item.price || "";
+        $("bulkPrice").value = item.bulkPrice || "";
+        $("origem").value = item.origem || "";
+        $("categoria").value = item.categoria || "";
+        $("calibre").value = item.calibre || "";
+        $("presetSizes").value = item.format || "amanhecer";
+        $("presetSizes").dispatchEvent(new Event("change"));
+      };
+      list.appendChild(btn);
+    });
+  } catch (e) {
+    console.warn("Erro ao ler histórico", e);
+  }
 }
 
 $("clearBtn").addEventListener("click", function() {
@@ -968,11 +977,11 @@ $("clearBtn").addEventListener("click", function() {
   updateLabel();
 });
 
-// DESENHA A ETIQUETA IMEDIATAMENTE AO ABRIR
-window.addEventListener("DOMContentLoaded", () => {
+// Execução imediata e segura
+try {
   renderHistory();
-  updateLabel();
-});
+} catch(e){}
+updateLabel();
 </script>
 </body>
 </html>
