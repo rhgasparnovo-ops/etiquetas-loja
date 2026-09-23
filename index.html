@@ -68,6 +68,7 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
+  /* LISTAS DE FILA E BASE DE DADOS */
   .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
   .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
@@ -90,7 +91,7 @@
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
   /* ============================================================ */
-  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE                         */
+  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE (SEM CORTES OU EXAGEROS) */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -159,10 +160,7 @@
   }
 
   @media print {
-    /* Esconde a aplicação toda na altura de imprimir */
     .app { display: none !important; }
-    
-    /* Mostra Apenas a zona invisível que gerámos */
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
@@ -187,13 +185,6 @@
 
     #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
   }
-</style>
-
-<style>
-/* Preview físico */
-#previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
-#previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
-@media screen { #previewWrap { contain: layout paint; } }
 </style>
 
 <style>
@@ -370,8 +361,8 @@
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
-        <!-- ESTE É O MOLDE QUE NUNCA MAIS VAI DESAPARECER -->
-        <div class="label-card" id="mainLabelCard">
+        <!-- ESTE É O MOLDE QUE NUNCA MAIS VAI DESAPARECER. TEM TAMANHO MÍNIMO GARANTIDO -->
+        <div class="label-card" id="mainLabelCard" style="width: 380px; height: 214px;">
           <div class="header" id="cardHeader">
             <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola"></div>
             <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer"></div>
@@ -426,10 +417,21 @@ let printInProgress = false;
 let photoProcessingToken = 0;
 
 // ==========================================
-// SISTEMA DE GESTÃO DE DADOS (FILA E DB)
+// SISTEMA DE GESTÃO DE DADOS (COM PROTEÇÃO ANTI-CRASH)
 // ==========================================
 let printQueue = [];
-let savedProducts = JSON.parse(localStorage.getItem("balcao_agricola_db") || "[]");
+let savedProducts = [];
+
+// PROTEÇÃO ATIVA: Se a memória do navegador estiver corrompida, isto evita que a página bloqueie
+try {
+    const lsData = localStorage.getItem("balcao_agricola_db");
+    if (lsData) {
+        savedProducts = JSON.parse(lsData);
+    }
+} catch(e) {
+    console.warn("Memória local corrompida. A iniciar base de dados vazia.");
+    savedProducts = [];
+}
 
 function getFormData() {
   return {
@@ -538,8 +540,8 @@ function addToQueue() {
   }
   const copies = parseInt($("copiesCount").value) || 1;
   const data = getFormData();
-  if(!data.product && !data.price) {
-      setStatus("Preencha os dados do produto primeiro.", "error");
+  if(!data.product && !data.price && !data.internalCode) {
+      setStatus("Preencha os dados da etiqueta primeiro.", "error");
       return;
   }
   printQueue.push({ data: data, copies: copies });
@@ -784,7 +786,6 @@ function updateCardUnsafe() {
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
 
-  // Usa EXCLUSIVAMENTE a etiqueta de pré-visualização (mainLabelCard)
   const card = $("mainLabelCard");
   if (!card) return;
 
@@ -1114,17 +1115,21 @@ function triggerPrint() {
     requestAnimationFrame(() => {
       window.print();
       
-      // Limpeza forçada caso o evento afterprint não dispare (em alguns browsers)
+      // Limpeza forçada caso o evento afterprint não dispare
       setTimeout(cleanupAfterPrint, 2500);
     });
   });
 }
 
-// INICIALIZAÇÃO
-updateOrientationVisibility();
-updateCard();
-renderDb();
-renderQueue();
+// ARRANQUE SEGURO
+try {
+  updateOrientationVisibility();
+  updateCard();
+  renderDb();
+  renderQueue();
+} catch (error) {
+  console.error("Erro crítico ao arrancar:", error);
+}
 
 </script>
 
