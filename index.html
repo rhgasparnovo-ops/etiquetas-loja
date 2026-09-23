@@ -39,7 +39,6 @@
   .secondary { background:#fff; font-size:15px; }
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
 
-  /* GAVETA DE ATALHOS */
   details.quick-drawer { margin-top: 8px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 6px; padding: 6px 10px; font-size: 12px; }
   details.quick-drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; }
   .chips-group { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
@@ -47,13 +46,6 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
-  /* HISTÓRICO */
-  .history-box { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
-  .history-title { font-size: 11px; font-weight: 700; color: #666; margin-bottom: 8px; text-transform: uppercase; }
-  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
-  .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
-
-  /* ÁREA DE PRÉ-VISUALIZAÇÃO */
   .preview-container {
     background: #dfe4ea; border: 1px solid #ced6e0; border-radius: 12px;
     padding: 24px; display: flex; flex-direction: column; align-items: center;
@@ -66,76 +58,74 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; }
 
-  /* CARTÃO DE ETIQUETA UNIVERSAL BALANCEADO */
+  /* CARTÃO DE ETIQUETA */
   .label-card {
     background: #ffffff !important;
-    border: 1px solid #333 !important;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.18) !important;
+    border: 1px solid #333;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
     position: relative !important;
-    border-radius: 4px;
-    transition: width 0.15s, height 0.15s;
+    border-radius: 2px;
   }
 
-  /* CABEÇALHO COMPACTO: NÃO ROUBA ESPAÇO AO CONTEÚDO */
+  /* CABEÇALHO COMPACTO */
   .header {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #c8102e; padding-bottom: 2px;
-    height: 22px; flex-shrink: 0; overflow: hidden;
+    border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
+    height: 18px; flex-shrink: 0; overflow: hidden;
   }
-  .logo-wrapper-1, .logo-wrapper-2 { width: 26%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
+  .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { flex: 1; text-align: right; overflow: hidden; }
-  .brand-logo { max-width: 100%; max-height: 18px; object-fit: contain; }
+  .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
-  /* ÁREA PRINCIPAL: ESPAÇOSA E INTEGRADA */
+  /* CONTEÚDO PRINCIPAL */
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
-    padding: 3px 0; gap: 8px; overflow: hidden; align-items: center;
+    padding: 2px 0; gap: 4px; overflow: hidden; align-items: center;
   }
   .left-column {
     flex: 1.1; min-width: 0; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    height: 100%; overflow: hidden; gap: 2px;
+    justify-content: space-around; align-items: center; text-align: center;
+    height: 100%; overflow: hidden;
   }
   
-  /* CAIXA DE FOTO AMPLA E AUTO-ADAPTADA */
   .right-column {
     flex: 0.9; min-width: 0; display: none; justify-content: center; align-items: center;
-    border: 1px solid #e2e8f0; border-radius: 5px; background: #ffffff;
-    height: 96%; overflow: hidden; padding: 2px;
+    border: 1px solid #eee; border-radius: 4px; background: #ffffff;
+    height: 96%; overflow: hidden; padding: 1px;
   }
   .right-column img {
-    max-width: 100%; max-height: 100%; width: auto; height: auto;
-    object-fit: contain; display: block; margin: auto;
+    max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto;
   }
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; margin-top: 2px; height: 26px;
+    width: 100%; flex-shrink: 0; height: 20px;
   }
-  .svg-container { width: 100%; height: 18px; display: flex; justify-content: center; }
+  .svg-container { width: 100%; height: 14px; display: flex; justify-content: center; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
     display: flex; justify-content: space-between; align-items: flex-end;
-    width: 100%; border-top: 1px dashed #ccc; padding-top: 2px; margin-top: auto; flex-shrink: 0;
+    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; margin-top: auto; flex-shrink: 0;
+    height: 12px; overflow: hidden;
   }
 
-  .store-text { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #000; }
-  .item-code { font-size: 9.5px; font-weight: bold; color: #555; line-height: 1; }
+  .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
+  .item-code { font-size: 8.5px; font-weight: bold; color: #555; line-height: 1; }
   .product {
-    font-size: 14px; font-weight: bold; color: #000; word-break: break-word;
-    line-height: 1.1; max-height: 2.3em; overflow: hidden; text-align: center;
+    font-size: 11px; font-weight: bold; color: #000; word-break: break-word;
+    line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
   }
-  .price { font-size: 28px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
-  .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1.1; }
-  .ean-text { font-family: monospace; font-size: 8.5px; font-weight: bold; line-height: 1; }
-  .promo-text { font-size: 8px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%; }
-  .print-date { font-size: 7px; color: #666; white-space: nowrap; }
+  .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
+  .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1; }
+  .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; }
+  .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
+  .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -144,37 +134,88 @@
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
   
-  /* IMPRESSÃO: REGRAS MILIMÉTRICAS BLINDADAS */
+  /* ============================================================ */
+  /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER INTOCÁVEIS */
+  /* ============================================================ */
   @media print {
-    @page { margin: 0; size: auto; }
-    body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-    body > *:not(.app) { display: none !important; }
+    @page { 
+      margin: 0 !important; 
+      size: 210mm 297mm !important; 
+    }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
     .top-header, .panel, .sheet-badge { display: none !important; }
-    .grid { display: block !important; }
-    .preview-container { background: transparent !important; border: none !important; padding: 0 !important; }
+    .grid { display: block !important; margin: 0 !important; padding: 0 !important; }
+    .preview-container { 
+      background: transparent !important; 
+      border: none !important; 
+      padding: 0 !important; 
+      margin: 0 !important;
+      display: block !important;
+    }
     
     .print-sheet-amanhecer {
       display: grid !important; 
-      grid-template-columns: repeat(3, 70mm) !important; 
-      grid-template-rows: 38mm repeat(6, 40mm) !important; 
-      justify-content: start !important; align-content: start !important;
-      gap: 0 !important; padding: 0 !important; 
-      width: 210mm !important; height: 278mm !important; 
-      margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
+      grid-template-columns: 70mm 70mm 70mm !important; 
+      grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; 
+      justify-content: start !important; 
+      align-content: start !important;
+      gap: 0 !important; 
+      padding: 0 !important; 
+      width: 210mm !important; 
+      height: 278mm !important; 
+      margin-left: var(--offset-x) !important; 
+      margin-top: var(--offset-y) !important;
+      page-break-inside: avoid !important;
+      page-break-after: avoid !important;
     }
+    
     .print-sheet-amanhecer .label-card { 
-      width: 100% !important; height: 100% !important; min-height: 0 !important;
-      border: 1px solid transparent !important; page-break-inside: avoid; margin: 0 !important;
-      padding: 3px 5px !important; box-shadow: none !important;
+      width: 70mm !important; 
+      border: 1px solid transparent !important; 
+      box-shadow: none !important;
+      page-break-inside: avoid !important; 
+      margin: 0 !important;
+      padding: 2px 4px !important;
+      overflow: hidden !important;
     }
+    
+    /* 1.ª LINHA (38mm COM 3mm TOP PADDING) */
     .print-sheet-amanhecer .label-card:nth-child(1),
     .print-sheet-amanhecer .label-card:nth-child(2),
-    .print-sheet-amanhecer .label-card:nth-child(3) { padding-top: 3mm !important; }
-    .print-sheet-amanhecer .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
-    .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
+    .print-sheet-amanhecer .label-card:nth-child(3) { 
+      height: 38mm !important;
+      padding-top: 3mm !important; 
+    }
+    
+    /* LINHAS SEGUINTES (40mm) */
+    .print-sheet-amanhecer .label-card:nth-child(n + 4) { 
+      height: 40mm !important;
+    }
+    
+    /* MARGEM LATERAL ESQUERDA (COLUNA 1) */
+    .print-sheet-amanhecer .label-card:nth-child(3n + 1) { 
+      padding-left: 6.5mm !important; 
+    }
+    
+    /* MARGEM LATERAL DIREITA (COLUNA 3) */
+    .print-sheet-amanhecer .label-card:nth-child(3n) { 
+      padding-right: 6.5mm !important; 
+    }
 
+    /* OUTROS FORMATOS SOLTOS */
     .preview-wrap:not(.print-sheet-amanhecer) .label-card {
-      border: 1px solid #111 !important; page-break-after: always; margin: 5mm !important; box-shadow: none !important;
+      border: 1px solid #222 !important; 
+      page-break-after: always !important; 
+      margin: 5mm !important; 
+      box-shadow: none !important;
     }
   }
 </style>
@@ -332,11 +373,6 @@
         <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
         <button class="secondary" id="clearBtn" type="button">Limpar</button>
       </div>
-
-      <div class="history-box">
-        <div class="history-title">🕒 Últimos Artigos Emitidos</div>
-        <div class="history-list" id="historyList"></div>
-      </div>
     </section>
 
     <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
@@ -355,9 +391,9 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               <div class="price" id="cardPrice">0,00 €</div>
-              <div id="cardUnitPrice" style="font-size:9px; color:#555; display:none;"></div>
-              <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:8px; font-weight:900;" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="font-size:9px; color:#333; display:none;"></div>
+              <div id="cardUnitPrice" style="font-size:8.5px; color:#555; display:none;"></div>
+              <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7.5px; font-weight:900;" id="cardDepositText"></span></div>
+              <div id="cardExtraUnit" style="font-size:8.5px; color:#333; display:none;"></div>
               <div class="fruit-info" id="cardFruit"></div>
             </div>
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
@@ -512,9 +548,9 @@ function drawCode128(svg, text) {
     if (fullBits[i] !== "1") continue;
     const rect = document.createElementNS(ns, "rect");
     rect.setAttribute("x", i + quietZone);
-    rect.setAttribute("y", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 0 : 4);
+    rect.setAttribute("y", "0");
     rect.setAttribute("width", "1");
-    rect.setAttribute("height", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 64 : 60);
+    rect.setAttribute("height", "62");
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
   }
@@ -570,8 +606,8 @@ function updateCard() {
   }
 
   const isLarge = dims.height > 65 || dims.width > 125;
-  $("cardProduct").style.fontSize = isLarge ? "22px" : "14px";
-  $("cardPrice").style.fontSize = isLarge ? "38px" : "28px";
+  $("cardProduct").style.fontSize = isLarge ? "20px" : (isAmanhecer ? "13.5px" : "15px");
+  $("cardPrice").style.fontSize = isLarge ? "38px" : (isAmanhecer ? "26px" : "30px");
 
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
@@ -628,7 +664,6 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
-  // FOTOGRAFIA VISÍVEL E PROPORCIONAL
   if (globalPhotoData) {
     $("cardPhotoBox").style.display = "flex";
     $("cardPhotoImg").src = globalPhotoData;
@@ -636,7 +671,6 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
-  // CÓDIGO DE BARRAS
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -645,7 +679,6 @@ function updateCard() {
     $("cardBarcodeBox").style.display = "none";
   }
 
-  // PROMOÇÃO E VALIDADE "DE X A X"
   const pStart = $("promoStart").value;
   const pEnd = $("promoEnd").value;
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
@@ -653,7 +686,6 @@ function updateCard() {
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
-// EVENTOS DOS SELETORES
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
@@ -710,8 +742,10 @@ window.addEventListener("keydown", e => {
 
 $("printBtn").addEventListener("click", triggerPrint);
 
+/* ============================================================ */
+/* IMPRESSÃO RIGOROSA: INJEÇÃO DINÂMICA DAS MEDIDAS OFICIAIS    */
+/* ============================================================ */
 function triggerPrint() {
-  saveToHistory();
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
   const card = $("mainLabelCard");
@@ -723,9 +757,12 @@ function triggerPrint() {
   if (formatVal === "amanhecer") {
     previewWrap.className = "preview-wrap print-sheet-amanhecer";
     previewWrap.innerHTML = "";
+    
+    // GERA EXATAMENTE AS 21 ETIQUETAS OFICIAIS AMANHECER (3 COLUNAS X 7 LINHAS)
     for (let i = 0; i < 21; i++) {
       const clone = card.cloneNode(true);
-      clone.style.width = "100%";
+      clone.style.width = "70mm";
+      // 1.ª LINHA = 38mm; LINHAS SEGUINTES = 40mm
       clone.style.height = (i < 3) ? "38mm" : "40mm";
       previewWrap.appendChild(clone);
       const eanVal = ($("ean").value || "").trim();
@@ -745,6 +782,7 @@ function triggerPrint() {
   
   setTimeout(() => {
     window.print();
+    // RESTAURA O ECRÃ PARA O MODO NORMAL
     previewWrap.className = "preview-wrap";
     previewWrap.innerHTML = "";
     card.style.width = oldWidth;
@@ -752,51 +790,10 @@ function triggerPrint() {
     previewWrap.appendChild(card);
     const eanVal = ($("ean").value || "").trim();
     if (eanVal) drawBarcode(card.querySelector("#cardBarcodeSvg"), eanVal);
-  }, 120);
-}
-
-function saveToHistory() {
-  try {
-    const item = {
-      code: $("internalCode").value.trim(),
-      product: $("product").value.trim(),
-      price: $("price").value.trim(),
-      format: $("presetSizes").value
-    };
-    if (!item.product) return;
-    let history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
-    history = history.filter(h => h.product !== item.product);
-    history.unshift(item);
-    if (history.length > 8) history.pop();
-    localStorage.setItem("etiquetas_history", JSON.stringify(history));
-    renderHistory();
-  } catch(e){}
-}
-
-function renderHistory() {
-  try {
-    const list = $("historyList");
-    if (!list) return;
-    const history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
-    list.innerHTML = "";
-    history.forEach(item => {
-      const btn = document.createElement("div");
-      btn.className = "history-item";
-      btn.textContent = item.product + (item.price ? ` (${item.price}€)` : "");
-      btn.onclick = () => {
-        $("internalCode").value = item.code || "";
-        $("product").value = item.product || "";
-        $("price").value = item.price || "";
-        $("presetSizes").value = item.format || "amanhecer";
-        $("presetSizes").dispatchEvent(new Event("change"));
-      };
-      list.appendChild(btn);
-    });
-  } catch(e){}
+  }, 150);
 }
 
 // Inicialização imediata
-renderHistory();
 updateCard();
 </script>
 </body>
