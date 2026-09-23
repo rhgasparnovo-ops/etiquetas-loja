@@ -142,7 +142,7 @@
 
   .header {
     flex: 0 0 18%;
-    min-height: 30px;
+    min-height: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -506,16 +506,16 @@ function formatPromoDate(startStr, endStr) {
   if (startStr && endStr) {
     const d1 = new Date(startStr); const d2 = new Date(endStr);
     if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) {
-      return `Promoção de ${d1.getDate()} a${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+      return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
     } else {
-      return `Promoção de ${d1.getDate()} de ${months[d1.getMonth()]} a${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+      return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
     }
   } else if (endStr) {
     const d2 = new Date(endStr);
-    return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
+    return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
   } else {
     const d1 = new Date(startStr);
-    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
+    return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
   }
 }
 
@@ -571,7 +571,7 @@ function drawEAN13(svg, value) {
   const quietZone = 11;
   const totalWidth = bits.length + (quietZone * 2);
   const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("viewBox", "0 0 " + totalWidth + " 72");
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -612,7 +612,7 @@ function drawCode128(svg, text) {
   const quietZone = 11;
   const totalWidth = fullBits.length + (quietZone * 2);
   const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("viewBox", "0 0 " + totalWidth + " 72");
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -661,7 +661,7 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
-function updateLabel(isPrinting = false) {
+function updateLabel(isPrinting) {
   try {
     const previewWrap = $("previewWrap");
     const badgeSheet = $("badgeSheet");
@@ -677,7 +677,7 @@ function updateLabel(isPrinting = false) {
       if (isAmanhecer) {
         badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
       } else {
-        badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
+        badgeSheet.textContent = "📐 Dimensões: " + dims.width + " mm × " + dims.height + " mm (" + ($("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical") + ")";
       }
     }
 
@@ -688,8 +688,8 @@ function updateLabel(isPrinting = false) {
     
     const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
 
-    const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
-    const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
+    const logo1HTML = '<img class="brand-logo" src="' + globalLogoAgricola + '" alt="Balcão Agrícola">';
+    const logo2HTML = '<img class="brand-logo" src="' + globalLogoAmanhecer + '" alt="Amanhecer">';
 
     previewWrap.innerHTML = "";
 
@@ -781,7 +781,7 @@ function updateLabel(isPrinting = false) {
         labelDiv.className = "label-card";
         labelDiv.style.width = dims.width + "mm";
         labelDiv.style.height = dims.height + "mm";
-        labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "4px 8px";
+        labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "3px 6px";
 
         let dualPriceHTML = "";
         if (isA6 && bulkPriceFormatted) {
@@ -850,32 +850,32 @@ $("presetSizes").addEventListener("change", function() {
   } else {
     $("copiesCount").value = "1";
   }
-  updateLabel();
+  updateLabel(false);
 });
 
-$("labelOrientation").addEventListener("change", () => updateLabel());
-$("customWidth").addEventListener("input", () => updateLabel());
-$("customHeight").addEventListener("input", () => updateLabel());
+$("labelOrientation").addEventListener("change", () => updateLabel(false));
+$("customWidth").addEventListener("input", () => updateLabel(false));
+$("customHeight").addEventListener("input", () => updateLabel(false));
 
 ["product","internalCode","origem","categoria","calibre","price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
   const el = $(id);
   if (el) {
-    el.addEventListener("input", () => updateLabel());
+    el.addEventListener("input", () => updateLabel(false));
   }
 });
 
 ["store","capacityUnit","depositFeeSelect","copiesCount","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) {
-    el.addEventListener("change", () => updateLabel());
+    el.addEventListener("change", () => updateLabel(false));
   }
 });
 
 $("photo").addEventListener("change", function(event) {
   const file = event.target.files[0];
-  if (!file || !file.type.startsWith("image/")) { globalPhotoData = ""; updateLabel(); return; }
+  if (!file || !file.type.startsWith("image/")) { globalPhotoData = ""; updateLabel(false); return; }
   const reader = new FileReader();
-  reader.onload = evt => { globalPhotoData = evt.target.result; updateLabel(); };
+  reader.onload = evt => { globalPhotoData = evt.target.result; updateLabel(false); };
   reader.readAsDataURL(file);
 });
 
@@ -974,14 +974,14 @@ $("clearBtn").addEventListener("click", function() {
   $("presetSizes").dispatchEvent(new Event("change"));
   globalPhotoData = ""; 
   $("photo").value = "";
-  updateLabel();
+  updateLabel(false);
 });
 
-// Execução imediata e segura
+// Execução imediata
 try {
   renderHistory();
 } catch(e){}
-updateLabel();
+updateLabel(false);
 </script>
 </body>
 </html>
