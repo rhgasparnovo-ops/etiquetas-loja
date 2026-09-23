@@ -86,7 +86,7 @@
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { 
     flex: 1; text-align: right; overflow: hidden; 
-    margin-right: 6mm;
+    margin-right: 6mm; 
   }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
@@ -96,7 +96,7 @@
   }
   .left-column {
     flex: 1.1; min-width: 0; display: flex; flex-direction: column;
-    justify-content: space-around; align-items: center; text-align: center;
+    justify-content: space-between; align-items: center; text-align: center;
     height: 100%; overflow: hidden;
   }
   
@@ -111,9 +111,9 @@
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; height: 20px; overflow: hidden;
+    width: 100%; flex-shrink: 0; height: 18px; overflow: hidden;
   }
-  .svg-container { width: 100%; height: 14px; display: flex; justify-content: center; overflow: hidden; }
+  .svg-container { width: 100%; height: 12px; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
@@ -130,14 +130,20 @@
     line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center;
   }
   
-  /* PREÇO COM DESTAQUE PROMOCIONAL */
-  .price-wrapper { display: flex; align-items: baseline; justify-content: center; gap: 6px; }
-  .old-price { font-size: 12px; color: #777; text-decoration: line-through; font-weight: bold; }
+  /* BLOCO DE PREÇO COM DESCONTO VERTICALIZADO (NUNCA CORTA) */
+  .price-wrapper { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    line-height: 1; margin: 1px 0; width: 100%;
+  }
+  .promo-top-row {
+    display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1; margin-bottom: 1px;
+  }
+  .old-price { font-size: 9.5px; color: #666; text-decoration: line-through; font-weight: bold; line-height: 1; }
+  .promo-tag { font-size: 7.5px; font-weight: 900; color: #fff; background: #c8102e; padding: 0 3px; border-radius: 2px; line-height: 1.1; }
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
-  .promo-tag { font-size: 8px; font-weight: 900; color: #fff; background: #c8102e; padding: 1px 3px; border-radius: 2px; }
 
   .fruit-info { font-size: 9.5px; text-transform: uppercase; font-weight: 800; color: #084298; display: none; line-height: 1; }
-  .ean-text { font-family: monospace; font-size: 8px; font-weight: bold; line-height: 1; text-transform: none; }
+  .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
 
@@ -343,10 +349,9 @@
       </div>
 
       <div id="standardPricePanel">
-        <label for="price" id="priceLabel">Preço Base (€)</label>
+        <label for="price" id="priceLabel">Preço de Venda / Promoção (€)</label>
         <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 3,99">
 
-        <!-- DESTAQUE PROMOCIONAL COM PREÇO ANTERIOR -->
         <label class="checkbox-label" style="margin-top: 10px;">
           <input type="checkbox" id="isPromoActive">
           🔥 Ativar Preço Promocional (Preço anterior riscado)
@@ -356,7 +361,6 @@
           <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
         </div>
         
-        <!-- EMBALAGEM / CÁLCULO LEGAL OBRIGATÓRIO (DL 162/99) -->
         <div id="packagingRow" style="display:block; margin-top: 8px;">
           <div class="size-row">
             <div>
@@ -375,7 +379,6 @@
           </div>
         </div>
 
-        <!-- TAXA VOLTA REGULAMENTADA -->
         <div id="depositContainer" style="margin-top: 8px;">
           <label for="depositFeeSelect">Taxa Volta (Garrafa / Vasilhame)</label>
           <select id="depositFeeSelect">
@@ -415,7 +418,6 @@
         ✨ Remover fundo branco/claro automaticamente
       </label>
 
-      <!-- GESTÃO INTELIGENTE DE IMPRESSÃO (FOLHA AMANHECER) -->
       <div id="gridStartContainer" style="margin-top: 10px;">
         <div class="size-row">
           <div>
@@ -473,15 +475,18 @@
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
               
+              <!-- BLOCO DE PREÇO COM DESCONTO VERTICALIZADO (NÃO CORTA) -->
               <div class="price-wrapper" id="cardPriceWrapper">
-                <span class="old-price" id="cardOldPrice" style="display:none;"></span>
-                <span class="price" id="cardPrice">0,00 €</span>
-                <span class="promo-tag" id="cardPromoTag" style="display:none;"></span>
+                <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
+                  <span class="old-price" id="cardOldPrice"></span>
+                  <span class="promo-tag" id="cardPromoTag"></span>
+                </div>
+                <div class="price" id="cardPrice">0,00 €</div>
               </div>
 
-              <div id="cardUnitPrice" style="font-size:8.5px; color:#555; display:none; font-weight:bold;"></div>
-              <div id="cardDeposit" style="display:none;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7.5px; font-weight:900;" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="font-size:8.5px; color:#333; display:none;"></div>
+              <div id="cardUnitPrice" style="font-size:8px; color:#555; display:none; font-weight:bold; line-height:1;"></div>
+              <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7px; font-weight:900;" id="cardDepositText"></span></div>
+              <div id="cardExtraUnit" style="font-size:8px; color:#333; display:none; line-height:1;"></div>
               <div class="fruit-info" id="cardFruit"></div>
             </div>
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
@@ -763,6 +768,7 @@ function updateCard() {
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
+  // CÓDIGO INTERNO NEGRITO REALÇADO
   if (codeVal) {
     $("cardCode").style.display = "block";
     $("cardCode").textContent = codeVal;
@@ -770,20 +776,18 @@ function updateCard() {
     $("cardCode").style.display = "none";
   }
 
-  // PREÇOS E PROMOÇÃO
+  // PREÇOS E PROMOÇÃO EM DUAS LINHAS (NUNCA CORTA)
   if (priceNum !== null) {
     const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
     
     if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
-      $("cardOldPrice").style.display = "inline";
+      $("cardPromoTopRow").style.display = "flex";
       $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
       
       const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100);
-      $("cardPromoTag").style.display = "inline";
       $("cardPromoTag").textContent = "-" + discount + "%";
     } else {
-      $("cardOldPrice").style.display = "none";
-      $("cardPromoTag").style.display = "none";
+      $("cardPromoTopRow").style.display = "none";
     }
 
     if (isFruit || capUnit === "peso") {
@@ -792,7 +796,6 @@ function updateCard() {
     } else {
       $("cardPrice").textContent = formatted + " €";
       
-      // Cálculo legal obrigatório ASAE / DL 162/99
       if (capUnit === "lt" && capacityNum > 0) {
         const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerLt + " € / LT";
@@ -810,8 +813,7 @@ function updateCard() {
     }
   } else {
     $("cardPrice").textContent = "0,00 €";
-    $("cardOldPrice").style.display = "none";
-    $("cardPromoTag").style.display = "none";
+    $("cardPromoTopRow").style.display = "none";
     $("cardUnitPrice").style.display = "none";
   }
 
@@ -869,7 +871,7 @@ function updateCard() {
     $("cardPhotoBox").style.display = "none";
   }
 
-  // CÓDIGO DE BARRAS
+  // CÓDIGO DE BARRAS (EM MINÚSCULAS)
   if (eanVal) {
     $("cardBarcodeBox").style.display = "flex";
     $("cardBarcodeText").textContent = eanVal;
@@ -988,7 +990,6 @@ function triggerPrint() {
     previewWrap.className = "preview-wrap print-sheet-amanhecer";
     previewWrap.innerHTML = "";
     
-    // GERA A GRELHA DAS 21 POSIÇÕES
     for (let slot = 1; slot <= 21; slot++) {
       const isPrinted = (slot >= startPos && slot < (startPos + copies));
       
@@ -1000,7 +1001,6 @@ function triggerPrint() {
         const eanVal = ($("ean").value || "").trim();
         if (eanVal) drawBarcode(clone.querySelector("#cardBarcodeSvg"), eanVal);
       } else {
-        // Posição em branco (para aproveitar folha já começada)
         const emptyDiv = document.createElement("div");
         emptyDiv.className = "label-card";
         emptyDiv.style.width = "70mm";
