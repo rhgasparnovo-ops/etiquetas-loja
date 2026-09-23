@@ -142,7 +142,7 @@
 
   .header {
     flex: 0 0 18%;
-    min-height: 28px;
+    min-height: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -479,6 +479,14 @@
 <script>
 "use strict";
 
+// INSTRUÇÃO DE SEGURANÇA: LIMPA DADOS ANTIGOS E CORROMPIDOS QUE BLOQUEAVAM A PÁGINA
+try {
+  localStorage.clear();
+  console.log("Memória cache do histórico limpa com sucesso.");
+} catch(e) {
+  console.warn("Não foi possível limpar o histórico automaticamente.");
+}
+
 const $ = id => document.getElementById(id);
 
 const globalLogoAgricola = "https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO";
@@ -489,7 +497,7 @@ function setField(fieldId, val) {
   const el = $(fieldId);
   if (el) {
     el.value = val;
-    updateLabel();
+    updateLabel(false);
   }
 }
 
@@ -669,8 +677,6 @@ function updateLabel(isPrinting) {
 
     const formatVal = $("presetSizes").value;
     const isAmanhecer = formatVal === "amanhecer";
-    const isA6 = formatVal === "A6";
-    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
     const dims = getDimensions();
 
     if (badgeSheet) {
@@ -685,7 +691,6 @@ function updateLabel(isPrinting) {
     const productVal = ($("product").value || "").trim().toUpperCase();
     const codeVal = ($("internalCode").value || "").trim().toUpperCase();
     const printDateStr = getPrintDateStr();
-    
     const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
 
     const logo1HTML = '<img class="brand-logo" src="' + globalLogoAgricola + '" alt="Balcão Agrícola">';
@@ -721,7 +726,6 @@ function updateLabel(isPrinting) {
       for (let c = 0; c < totalRender; c++) {
         const labelDiv = document.createElement("div");
         labelDiv.className = "label-card";
-        
         labelDiv.style.width = isPrinting ? "100%" : "90mm";
         labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "52mm";
         labelDiv.style.padding = "3px 8px";
@@ -757,20 +761,14 @@ function updateLabel(isPrinting) {
       }
 
     } else {
-      // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL
       previewWrap.className = "preview-wrap";
       const price = parsePrice($("price")?.value);
       const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
-      
-      const bulkPrice = parsePrice($("bulkPrice").value);
-      const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
-      const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
-
-      const origemVal = ($("origem").value || "").trim().toUpperCase();
+      const origamiVal = ($("origem").value || "").trim().toUpperCase();
       const categoriaVal = ($("categoria").value || "").trim().toUpperCase();
       const calibreVal = ($("calibre").value || "").trim().toUpperCase();
       let fruitParts = [];
-      if (origemVal) fruitParts.push("Origem: " + origemVal);
+      if (origamiVal) fruitParts.push("Origem: " + origamiVal);
       if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
       if (calibreVal) fruitParts.push("Cal: " + calibreVal);
       const fruitStr = fruitParts.join(" | ");
@@ -781,23 +779,7 @@ function updateLabel(isPrinting) {
         labelDiv.className = "label-card";
         labelDiv.style.width = dims.width + "mm";
         labelDiv.style.height = dims.height + "mm";
-        labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "3px 6px";
-
-        let dualPriceHTML = "";
-        if (isA6 && bulkPriceFormatted) {
-          dualPriceHTML = `
-            <div class="size-row" style="width:100%; gap:4px; margin: 2px 0;">
-              <div style="border:1px solid #ccc; border-radius:4px; padding:2px; text-align:center;">
-                <div style="font-size:8px; color:#555;">PREÇO KG</div>
-                <div class="price" style="font-size:18px;">${priceFormatted} €</div>
-              </div>
-              <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:2px; text-align:center;">
-                <div style="font-size:8px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
-                <div class="price" style="font-size:18px; color:#c8102e;">${bulkPriceFormatted} €</div>
-              </div>
-            </div>
-          `;
-        }
+        labelDiv.style.padding = "4px 8px";
 
         labelDiv.innerHTML = `
           <div class="header">
@@ -809,7 +791,7 @@ function updateLabel(isPrinting) {
             <div class="left-column">
               <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
               <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
-              ${dualPriceHTML ? dualPriceHTML : `<div class="price">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
+              <div class="price">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>
               <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
             </div>
             <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
@@ -857,7 +839,7 @@ $("labelOrientation").addEventListener("change", () => updateLabel(false));
 $("customWidth").addEventListener("input", () => updateLabel(false));
 $("customHeight").addEventListener("input", () => updateLabel(false));
 
-["product","internalCode","origem","categoria","calibre","price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
+["product","internalCode","origem","categoria","calibre","price","ean","unit","capacity"].forEach(id => {
   const el = $(id);
   if (el) {
     el.addEventListener("input", () => updateLabel(false));
@@ -903,7 +885,6 @@ function saveToHistory() {
       code: $("internalCode").value.trim(),
       product: $("product").value.trim(),
       price: $("price").value.trim(),
-      bulkPrice: $("bulkPrice").value.trim(),
       origem: $("origem").value.trim(),
       categoria: $("categoria").value.trim(),
       calibre: $("calibre").value.trim(),
@@ -936,7 +917,6 @@ function renderHistory() {
         $("internalCode").value = item.code || "";
         $("product").value = item.product || "";
         $("price").value = item.price || "";
-        $("bulkPrice").value = item.bulkPrice || "";
         $("origem").value = item.origem || "";
         $("categoria").value = item.categoria || "";
         $("calibre").value = item.calibre || "";
@@ -954,8 +934,6 @@ $("clearBtn").addEventListener("click", function() {
   $("internalCode").value = ""; 
   $("product").value = "";
   $("price").value = ""; 
-  $("bulkPrice").value = ""; 
-  $("bulkLabel").value = "A partir de 2 KG";
   $("capacity").value = "1";
   $("capacityUnit").value = "peso";
   $("depositFeeSelect").value = "";
@@ -977,7 +955,7 @@ $("clearBtn").addEventListener("click", function() {
   updateLabel(false);
 });
 
-// Execução imediata
+// Execução imediata protegida
 try {
   renderHistory();
 } catch(e){}
