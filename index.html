@@ -64,7 +64,7 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* CARTÃO DE ETIQUETA */
+  /* CARTÃO DE ETIQUETA COM MOTOR INTELIGENTE */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333;
@@ -90,30 +90,30 @@
   }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
-  /* LAYOUT FLEXÍVEL EM 3 COLUNAS INTELIGENTES COM PROTEÇÃO ANTI-COLISÃO */
+  /* ARQUITETURA DE 3 COLUNAS AUTÓNOMAS E ISOLADAS (SEM COLISÕES) */
   .main-content {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     width: 100%; flex: 1 1 auto;
-    padding: 2px 4px; gap: 4px; overflow: hidden;
+    padding: 2px 4px; gap: 6px; overflow: hidden;
   }
   
   .col-desc {
-    flex: 1.2; min-width: 0; display: flex; flex-direction: column;
+    flex: 1.3; min-width: 0; display: flex; flex-direction: column;
     justify-content: center; align-items: flex-start; text-align: left;
     height: 100%; overflow: hidden; gap: 1px;
   }
 
   .col-price {
-    flex: 1.1; min-width: 0; display: flex; flex-direction: column;
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
     justify-content: center; align-items: center; text-align: center;
     height: 100%; overflow: hidden; white-space: nowrap;
   }
 
   .col-image {
-    flex: 0.9; min-width: 0; display: none; justify-content: center; align-items: center;
+    flex: 0.8; min-width: 0; display: none; justify-content: center; align-items: center;
     height: 96%; overflow: hidden; background: transparent; padding: 1px;
   }
   .col-image img {
@@ -502,7 +502,7 @@
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
           
-          <!-- LAYOUT EM 3 COLUNAS COM AJUSTE INTELIGENTE AUTOMÁTICO -->
+          <!-- LAYOUT EM 3 COLUNAS AUTÓNOMAS -->
           <div class="main-content" id="cardMainContent">
             
             <div class="col-desc" id="cardColDesc">
@@ -700,7 +700,7 @@ function drawEAN13(svg, value) {
     rect.setAttribute("x", i + quietZone);
     rect.setAttribute("y", 0);
     rect.setAttribute("width", 1);
-    rect.setAttribute("height", 62);
+    rect.setAttribute("height", (i < 3 || (i >= 45 && i < 50) || i >= 92) ? 64 : 60);
     rect.setAttribute("fill", "black");
     svg.appendChild(rect);
   }
@@ -787,16 +787,16 @@ function getDimensions() {
 }
 
 /* ============================================================ */
-/* MOTOR INTELIGENTE DE AUTO-ADAPTAÇÃO DE TAMANHO (AUTO-FIT)     */
+/* MOTOR AUTÓNOMO DE AUTO-ADAPTAÇÃO (AUTO-FIT INTELIGENTE)       */
 /* ============================================================ */
-function autoFitText(el, maxPx, minPx, step = 0.5) {
+function autoFitElement(el, maxPx, minPx) {
   if (!el) return;
-  let currentSize = maxPx;
-  el.style.fontSize = currentSize + "px";
-  // Reduz automaticamente o tamanho se o texto estiver a transbordar ou a quebrar
-  while (currentSize > minPx && (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)) {
-    currentSize -= step;
-    el.style.fontSize = currentSize + "px";
+  let size = maxPx;
+  el.style.fontSize = size + "px";
+  // Reduz automaticamente o tamanho da letra se o conteúdo exceder a caixa atribuída
+  while (size > minPx && (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
   }
 }
 
@@ -842,19 +842,6 @@ function updateCard() {
       brandLogos.forEach(logo => logo.style.maxHeight = "16px");
     }
     $("gridStartContainer").style.display = "none";
-  }
-
-  // DEFINIR TAMANHO INICIAL MÁXIMO E DEIXAR O AUTO-FIT FAZER O RESTO
-  if (isLarge) {
-    $("cardProduct").style.fontSize = (formatVal === "A5") ? "34px" : "26px";
-    $("cardPrice").style.fontSize = (formatVal === "A5") ? "65px" : "44px";
-    $("cardOldPrice").style.fontSize = "16px";
-    $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "16px";
-  } else {
-    $("cardProduct").style.fontSize = isAmanhecer ? "12px" : "13.5px";
-    $("cardPrice").style.fontSize = isAmanhecer ? "22px" : "26px";
-    $("cardOldPrice").style.fontSize = "9px";
-    $("cardPromoTag").style.fontSize = isAmanhecer ? "10px" : "11.5px";
   }
 
   $("cardStore").textContent = storeVal;
@@ -919,7 +906,6 @@ function updateCard() {
     const fullText = parts.join(" • ");
     $("cardFruit").style.display = "block";
     $("cardFruit").textContent = fullText;
-    $("cardFruit").style.fontSize = isLarge ? "13px" : "7.5px";
   } else {
     $("cardFruit").style.display = "none";
   }
@@ -970,11 +956,11 @@ function updateCard() {
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 
-  // EXECUTAR AUTO-ADAPTAÇÃO INTELIGENTE (EVITA QUALQUER CORTE OU COLISÃO)
+  // ACIONAR O MOTOR DE AUTO-ADAPTAÇÃO EM TEMPO REAL (GARANTE ZERO COLISÕES)
   setTimeout(() => {
-    autoFitText($("cardProduct"), isLarge ? 34 : 13, 8, 0.5);
-    autoFitText($("cardPrice"), isLarge ? 65 : 26, 14, 0.5);
-    autoFitText($("cardFruit"), isLarge ? 15 : 8, 5, 0.2);
+    autoFitElement($("cardProduct"), isLarge ? (formatVal === "A5" ? 36 : 28) : 12, 7);
+    autoFitElement($("cardPrice"), isLarge ? (formatVal === "A5" ? 70 : 50) : 22, 12);
+    autoFitElement($("cardFruit"), isLarge ? 16 : 8, 5);
   }, 10);
 }
 
