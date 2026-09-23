@@ -388,29 +388,30 @@
           <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
         </div>
         
+        <!-- SEÇÃO SIMPLIFICADA DE MEDIDA E CÁLCULO LEGAL -->
         <div id="packagingRow" style="display:block; margin-top: 8px;">
           <div class="size-row">
             <div>
-              <label for="capacity">Capacidade / Medida</label>
+              <label for="capacity">Quantidade / Medida</label>
               <input id="capacity" type="number" min="0.001" step="0.001" value="0.75">
             </div>
             <div>
-              <label for="capacityUnit">Unidade de Referência Legal</label>
+              <label for="capacityUnit">Unidade de Medida</label>
               <select id="capacityUnit">
-                <option value="lt">Litros (LT) — Garrafas / Bebidas</option>
+                <option value="lt" selected>Litros (LT)</option>
+                <option value="peso">Quilos (KG)</option>
+                <option value="g">Gramas (g)</option>
                 <option value="un">Unidade (UN)</option>
-                <option value="peso" selected>Venda a Granel (€/KG)</option>
-                <option value="g">Gramas (g) — Pacotes / Embalados</option>
               </select>
             </div>
           </div>
         </div>
 
         <div id="depositContainer" style="margin-top: 8px;">
-          <label for="depositFeeSelect">Taxa Volta (Garrafas de Plástico / Latas)</label>
+          <label for="depositFeeSelect">Taxa Volta (Plástico / Latas)</label>
           <select id="depositFeeSelect">
             <option value="" selected>Nenhuma (Sem taxa)</option>
-            <option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta (Plástico PET / Lata)</option>
+            <option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option>
             <option value="custom">Outro valor (Personalizado)...</option>
           </select>
           <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,10 € Volta" style="display:none; margin-top: 6px;">
@@ -498,7 +499,7 @@
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
           
-          <!-- LAYOUT EM 3 COLUNAS: ESQ (DESCRIÇÃO), CENTRO (PREÇO), DIR (IMAGEM) -->
+          <!-- LAYOUT EM 3 COLUNAS EQUILIBRADAS COM AUTO-ADAPTAÇÃO -->
           <div class="main-content" id="cardMainContent">
             
             <div class="col-desc" id="cardColDesc">
@@ -816,7 +817,6 @@ function updateCard() {
     
     if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
-      // AUMENTAR LOGÓTIPOS EM ETIQUETAS GRANDES
       header.style.height = (formatVal === "A5") ? "34px" : "26px";
       brandLogos.forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "28px" : "22px");
     } else {
@@ -827,16 +827,15 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
-  // AUTO-ADAPTAÇÃO DE TAMANHO DE LETRA (SCALE-TO-FIT DINÂMICO)
+  // AUTO-ADAPTAÇÃO DINÂMICA DE TAMANHO DE LETRA (SCALE-TO-FIT)
   if (isLarge) {
     const pLen = productVal.length;
-    let prodSize = 32;
-    if (pLen > 25) prodSize = 22;
-    if (pLen > 45) prodSize = 16;
-    $("cardProduct.style.fontSize") // auxiliar
+    let prodSize = 34;
+    if (pLen > 25) prodSize = 24;
+    if (pLen > 45) prodSize = 18;
     $("cardProduct").style.fontSize = (formatVal === "A5") ? prodSize + "px" : Math.max(14, prodSize - 6) + "px";
     
-    $("cardPrice").style.fontSize = (formatVal === "A5") ? "62px" : "44px";
+    $("cardPrice").style.fontSize = (formatVal === "A5") ? "65px" : "48px";
     $("cardOldPrice").style.fontSize = "16px";
     $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "16px";
     $("cardCode").style.fontSize = "12px";
@@ -846,7 +845,7 @@ function updateCard() {
   } else {
     const pLen = productVal.length;
     let prodSize = isAmanhecer ? 11 : 12.5;
-    if (pLen > 25) prodSize = 9.5;
+    if (pLen > 25) prodSize = 9;
     $("cardProduct").style.fontSize = prodSize + "px";
     
     $("cardPrice").style.fontSize = isAmanhecer ? "20px" : "24px";
@@ -887,12 +886,17 @@ function updateCard() {
     } else {
       $("cardPrice").textContent = formatted + " €";
       
+      // Cálculo legal simples e automático
       if (capUnit === "lt" && capacityNum > 0) {
         const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerLt + " € / LT";
         $("cardUnitPrice").style.display = "block";
       } else if (capUnit === "g" && capacityNum > 0) {
         const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
+        $("cardUnitPrice").textContent = pPerKg + " € / KG";
+        $("cardUnitPrice").style.display = "block";
+      } else if (capUnit === "peso" && capacityNum > 0 && capacityNum !== 1) {
+        const pPerKg = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         $("cardUnitPrice").textContent = pPerKg + " € / KG";
         $("cardUnitPrice").style.display = "block";
       } else if (capUnit === "un") {
@@ -1067,7 +1071,7 @@ $("clearBtn").addEventListener("click", function() {
   $("internalCode").value = ""; $("product").value = ""; $("price").value = ""; $("oldPrice").value = "";
   $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = ""; $("customDepositInput").value = "";
   $("promoStart").value = ""; $("promoEnd").value = "";
-  $("capacity").value = "0.75"; $("capacityUnit").value = "peso";
+  $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
