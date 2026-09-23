@@ -3,72 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Etiquetas de Preço — Balcão Agrícola</title>
+<title>Gerador de Etiquetas de Preço — Balcão Agrícola v3.0</title>
+<!-- Versão: 3.0 | Data: 2026-09-23 -->
 <style>
-  :root { 
-    --red:#c8102e; 
-    --dark:#222; 
-    --border:#d7d7d7; 
+  :root {
+    --red:#c8102e;
+    --dark:#222;
+    --border:#d7d7d7;
+    --bg:#f0f2f5;
+    --panel:#fff;
+    --panel-soft:#f8f9fa;
+    --text:#222;
+    --text-soft:#666;
     --offset-x: 0mm;
     --offset-y: 6mm;
   }
+  html[data-theme="dark"] {
+    --dark:#eee;
+    --border:#3a3f47;
+    --bg:#181a1e;
+    --panel:#23262b;
+    --panel-soft:#2b2f36;
+    --text:#e6e8eb;
+    --text-soft:#a3a9b3;
+  }
   * { box-sizing:border-box; }
-  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--text); transition: background .2s, color .2s; }
   .app { max-width:1380px; margin:0 auto; padding:20px; }
-  
+
   .top-header {
     display: flex; justify-content: space-between; align-items: center;
-    background: #fff; padding: 12px 24px; border-radius: 12px;
+    background: var(--panel); padding: 12px 24px; border-radius: 12px;
     border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    margin-bottom: 20px; gap: 16px;
+    margin-bottom: 20px; gap: 16px; flex-wrap: wrap;
   }
-  .top-header h1 { margin: 0; font-size: 20px; color: var(--dark); font-weight: 800; }
+  .top-header h1 { margin: 0; font-size: 20px; color: var(--text); font-weight: 800; }
   .top-logos { display: flex; align-items: center; gap: 14px; }
   .top-logos img { height: 36px; max-width: 130px; object-fit: contain; }
   .top-logos .divider { width: 1px; height: 26px; background: #e0e0e0; }
+  .top-actions { display: flex; gap: 8px; }
+  .icon-btn { background: var(--panel-soft); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; width: auto; }
+  .icon-btn:hover { filter: brightness(0.95); }
 
-  .grid { display:grid; grid-template-columns:420px 1fr; gap:24px; align-items:start; }
-  
-  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px;}
+  .grid { display:grid; grid-template-columns:440px 1fr; gap:24px; align-items:start; }
+
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; color: var(--text);}
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
-  input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
+  input, button, select, textarea { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; background: var(--panel); color: var(--text); font-family: inherit; }
+  html[data-theme="dark"] input,
+  html[data-theme="dark"] select,
+  html[data-theme="dark"] textarea { border-color: var(--border); }
   input[type="file"] { padding:6px; }
   input[type="range"] { padding: 0; height: 6px; }
   .uppercase-input { text-transform: uppercase; }
-  
+
+  /* Estado de erro nos campos */
+  input.input-error, select.input-error {
+    border-color: #e74c3c !important;
+    background: #fff5f5 !important;
+    box-shadow: 0 0 0 2px rgba(231,76,60,0.15) !important;
+  }
+  html[data-theme="dark"] input.input-error,
+  html[data-theme="dark"] select.input-error { background: #3a1e1e !important; }
+
   .checkbox-label {
     display: flex; align-items: center; gap: 8px; margin: 8px 0 0;
-    font-weight: 600; font-size: 12px; cursor: pointer; color: #2d3436;
+    font-weight: 600; font-size: 12px; cursor: pointer; color: var(--text);
   }
   .checkbox-label input { width: auto; margin: 0; cursor: pointer; }
 
   button { cursor:pointer; font-weight:700; transition: 0.2s; }
   button:hover { filter: brightness(0.95); }
   button:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
-  
+
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
   .success-btn { background:#176b3a; color:#fff; border-color:#176b3a; font-size:15px; padding:12px; }
   .save-btn { background:#084298; color:#fff; border-color:#084298; font-size:14px; padding:10px; }
-  .secondary { background:#f8f9fa; font-size:14px; border:1px solid #ced6e0; color: #2f3542;}
+  .secondary { background:var(--panel-soft); font-size:14px; border:1px solid #ced6e0; color: var(--text);}
   .warn-btn { background:#fff3cd; color:#664d03; border:1px solid #ffe69c; font-size:13px; padding:9px; }
-  
+
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
   .actions-full { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
+  .actions-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
 
+  #appStatus { margin:8px 0; padding:9px 12px; border:1px solid #d8dee4; border-radius:8px; font:600 13px/1.35 system-ui,sans-serif; display: none; }
   #appStatus[data-type="error"] { display:block; color:#8a1c1c; background:#fff0f0; border:1px solid #f5b5b5; }
   #appStatus[data-type="success"] { display:block; color:#176b3a; background:#eaf7ef; border:1px solid #9bd5b1; }
   #appStatus:not([data-type="error"]):not([data-type="success"]) { color:#245b35; background:#eef9f0; border:1px solid #b9dfc0; }
 
-  details.drawer { margin-top: 12px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 8px; font-size: 13px; }
-  details.drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; padding: 12px; background: #f1f2f6; border-radius: 8px; user-select: none; }
-  details.drawer[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid #dcdde1; }
-  .drawer-content { padding: 12px; background: #fff; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}
+  details.drawer { margin-top: 12px; background: var(--panel-soft); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+  details.drawer summary { cursor: pointer; font-weight: 700; color: var(--text); outline: none; padding: 12px; background: var(--panel-soft); border-radius: 8px; user-select: none; list-style: none; }
+  details.drawer summary::-webkit-details-marker { display: none; }
+  details.drawer summary::before { content: "▸ "; display: inline-block; transition: transform 0.2s; }
+  details.drawer[open] summary::before { transform: rotate(90deg); }
+  details.drawer[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid var(--border); }
+  .drawer-content { padding: 12px; background: var(--panel); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}
 
-  details.quick-drawer { margin-top: 8px; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 6px; padding: 6px 10px; font-size: 12px; }
-  details.quick-drawer summary { cursor: pointer; font-weight: 700; color: #2f3542; outline: none; }
-  .chips-group { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; transition: all 0.2s ease; }
-  .chips-label { width: 100%; font-size: 11px; color: #747d8c; font-weight: 800; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .chip-btn { padding: 4px 9px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 5px; cursor: pointer; display: inline-block; user-select: none; transition: transform 0.1s, background 0.15s; }
+  details.quick-drawer { margin-top: 8px; background: var(--panel-soft); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 12px; }
+  details.quick-drawer summary { cursor: pointer; font-weight: 700; color: var(--text); outline: none; }
+  .chips-group { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .chips-label { width: 100%; font-size: 11px; color: var(--text-soft); font-weight: 800; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .chip-btn { padding: 4px 9px; font-size: 11px; font-weight: 600; background: var(--panel); border: 1px solid #ced6e0; border-radius: 5px; cursor: pointer; display: inline-block; user-select: none; transition: transform 0.1s, background 0.15s; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
   .chip-btn[data-field="origem"] { background: #e8f4ff; border-color: #a4c8e8; color: #084298; }
   .chip-btn[data-field="origem"]:hover { background: #cfe4f7; border-color: #5a9bd4; }
@@ -77,32 +112,95 @@
   .chip-btn[data-field="calibre"] { background: #eefbe9; border-color: #b5d99f; color: #2d6b1f; }
   .chip-btn[data-field="calibre"]:hover { background: #dcf5d1; border-color: #7bbf5a; }
 
-  .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-  .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
-  .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
-  .list-item-actions { display: flex; gap: 6px; }
-  .list-item-actions button { padding: 5px 8px; font-size: 11px; width: auto; border-radius: 4px; }
+  /* Lista de itens (fila e db) */
+  .list-item { background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: opacity 0.15s; }
+  .list-item[draggable="true"] { cursor: grab; }
+  .list-item.dragging { opacity: 0.4; cursor: grabbing; }
+  .list-item.drag-over { border-color: #c8102e; border-style: dashed; background: #fff5f5; }
+  .list-item-info { flex: 1; min-width: 0; }
+  .list-item-info strong { display: block; color: var(--text); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .list-item-info span { color: var(--text-soft); font-size: 11px; display: block; margin-top: 2px;}
+  .list-item-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center;}
+  .list-item-actions button { padding: 4px 7px; font-size: 11px; width: auto; border-radius: 4px; font-weight: 700; }
+  .copies-input { width: 50px; padding: 4px 6px; font-size: 12px; text-align: center; font-weight: 700; }
   .btn-remove { background: #fff0f0; color: #c0392b; border: 1px solid #fab1a0; }
   .btn-load { background: #eef9f0; color: #27ae60; border: 1px solid #a3cb38; }
+  .btn-dup { background: #eef1ff; color: #4c5fd5; border: 1px solid #a5b0e8; }
   .empty-msg { text-align: center; color: #b2bec3; font-style: italic; padding: 10px 0; font-size: 12px; }
+  .chip-mini { display: inline-block; background: var(--panel-soft); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 700; color: var(--text-soft); margin-left: 4px; }
 
+  /* Preview */
   .preview-container {
     background: #dfe4ea; border: 1px solid #ced6e0; border-radius: 12px;
     padding: 24px; display: flex; flex-direction: column; align-items: center;
     justify-content: flex-start; min-height: 580px; overflow: hidden; position: sticky; top: 20px;
   }
+  html[data-theme="dark"] .preview-container { background: #1c1f24; border-color: #2a2f36; }
   .sheet-badge {
-    background: #fff; border: 1px solid #b2bec3; padding: 6px 14px;
-    border-radius: 20px; font-size: 12px; font-weight: bold; color: #2d3436;
+    background: var(--panel); border: 1px solid #b2bec3; padding: 6px 14px;
+    border-radius: 20px; font-size: 12px; font-weight: bold; color: var(--text);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06); margin-bottom: 18px; text-align: center;
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  .offset-panel { background: #fff9db; border: 1px solid #ffe066; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  /* Preview da folha completa */
+  .sheet-preview {
+    display: none;
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(20,24,28,0.85);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .sheet-preview.show { display: flex; }
+  .sheet-preview-inner {
+    background: var(--panel); border-radius: 12px;
+    padding: 20px; max-width: 95vw; max-height: 95vh;
+    overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .sheet-preview-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; gap: 12px;
+  }
+  .sheet-preview-header h3 { margin: 0; color: var(--text); font-size: 16px; }
+  .sheet-preview-grid {
+    display: grid;
+    grid-template-columns: 70mm 70mm 70mm;
+    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #999;
+    padding: 0;
+    transform-origin: top left;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .sheet-preview-grid .label-card {
+    width: 70mm !important;
+    height: auto !important;
+    box-shadow: none !important;
+    border: 1px dashed #ccc !important;
+    transform: scale(1);
+  }
+  .sheet-preview-grid .label-card:nth-child(1),
+  .sheet-preview-grid .label-card:nth-child(2),
+  .sheet-preview-grid .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
+  .sheet-preview-grid .label-card:nth-child(n + 4) { height: 40mm !important; }
+  .sheet-preview-grid .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
+  .sheet-preview-grid .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
+  .sheet-preview-grid .label-card.empty { visibility: hidden; }
+
+  /* Offset panel */
+  .offset-panel { background: #fff9db; border: 1px solid #ffe066; border-radius: 8px; padding: 12px; margin-bottom: 12px; color: #222; }
+  html[data-theme="dark"] .offset-panel { background: #3a3420; border-color: #5a5020; color: #eee; }
   .offset-row { display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; margin-bottom: 6px; }
   .offset-row label { margin: 0; font-size: 12px; }
   .offset-value { text-align: center; font-family: monospace; font-size: 12px; font-weight: 800; color: #664d03; }
+  html[data-theme="dark"] .offset-value { color: #ffd966; }
   .offset-hint { font-size: 11px; color: #856404; margin-top: 6px; line-height: 1.4; }
+  html[data-theme="dark"] .offset-hint { color: #c9b966; }
+
+  /* Logos panel */
+  .logo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .logo-preview { max-width: 100%; max-height: 40px; object-fit: contain; margin-top: 4px; display: block; background: #fff; border-radius: 4px; padding: 3px; }
 
   /* ============================================================ */
   /* CARTÃO                                                       */
@@ -121,13 +219,8 @@
     padding: 2px 4px !important;
     container-type: inline-size;
     --header-h: 12%;
-    --img-flex: 0.7;
-    --barcode-h: 14%;
-    --footer-h: 10%;
     --img-pad: 1px;
     --gap-main: 4px;
-    --desc-flex: 1.3;
-    --price-flex: 1;
   }
 
   .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #c8102e; padding-bottom: 1px; height: var(--header-h); flex-shrink: 0; overflow: hidden; width: 100%; }
@@ -136,12 +229,43 @@
   .header-store-container { flex: 1; text-align: right; overflow: hidden; margin-right: 4mm; }
   .brand-logo { max-width: 100%; max-height: 85%; object-fit: contain; }
 
-  .main-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; width: 100%; flex: 1 1 auto; gap: var(--gap-main); overflow: hidden; margin: 1px 0; }
-  .col-desc { flex: var(--desc-flex); min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: 100%; overflow: hidden; gap: 1px; }
-  .col-price { flex: var(--price-flex); min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; overflow: hidden; white-space: nowrap; }
-  .col-image { flex: var(--img-flex); min-width: 0; display: none; justify-content: center; align-items: center; height: 98%; overflow: hidden; background: transparent; padding: var(--img-pad); }
+  /* ==== MAIN CONTENT — Grid com imagem prioritária ==== */
+  .main-content {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: center !important;
+    width: 100%;
+    flex: 1 1 auto;
+    gap: var(--gap-main);
+    overflow: hidden;
+    margin: 1px 0;
+  }
+  .label-card.has-image:not(.size-tiny) .main-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1.7fr);
+  }
+  .label-card.has-image.size-large:not(.size-tiny) .main-content {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(0, 2fr);
+  }
+  .label-card.has-image.size-xl:not(.size-tiny) .main-content {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 0.75fr) minmax(0, 2.3fr);
+  }
+  .label-card.has-image.layout-fruit-promo .main-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1.4fr);
+  }
+
+  .col-desc { min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: 100%; overflow: hidden; gap: 1px; }
+  .col-price { min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; overflow: hidden; white-space: nowrap; }
+  .col-image { display: none; justify-content: center; align-items: center; height: 100%; min-width: 0; overflow: hidden; background: transparent; padding: var(--img-pad); }
   .col-image.show { display: flex !important; }
-  .col-image img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; background: transparent; }
+  .col-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    margin: auto;
+    background: transparent;
+  }
 
   .store-text { font-size: clamp(7px, 2.2cqw, 11px); font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
   .item-code { font-size: clamp(6px, 1.9cqw, 10px); font-weight: 900; color: #111; line-height: 1; margin-bottom: 2px; }
@@ -157,19 +281,17 @@
   .deposit-box { font-size: clamp(5.5px, 1.8cqw, 9.5px); color: #c8102e; background: #fff5f5; border: 1px solid #fed7d7; padding: 0 3px; font-weight: 900; line-height: 1.1; margin-top: 1px; display: inline-block; }
   .fruit-full-bar { width: 100%; display: none; text-align: center; white-space: nowrap; overflow: hidden; line-height: 1.1; font-weight: 800; color: #084298; text-transform: uppercase; font-size: clamp(6px, 2.1cqw, 11px); flex-shrink: 0; margin: 1px 0; }
 
-  .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: var(--barcode-h); overflow: hidden; }
+  .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: 14%; overflow: hidden; }
   .barcode-container.show { display: flex !important; }
   .svg-container { width: 100%; height: 70%; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
   .ean-text { font-family: monospace; font-size: clamp(5px, 1.5cqw, 8px); font-weight: bold; line-height: 1; text-transform: none; }
 
-  .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0; height: var(--footer-h); overflow: hidden; }
+  .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0; height: 10%; overflow: hidden; }
   .promo-text { font-size: clamp(5px, 1.6cqw, 8px); color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; line-height: 1; flex: 1; margin-right: 4px; }
   .print-date { font-size: clamp(5px, 1.5cqw, 7.5px); color: #666; white-space: nowrap; line-height: 1; flex-shrink: 0; }
 
-  /* ============================================================ */
-  /* LAYOUT OPORTUNIDADE "LEVE 2+" (Fruta/Legumes)                */
-  /* ============================================================ */
+  /* Fruit promo split */
   .fruit-promo-prices {
     display: none;
     flex-direction: row;
@@ -184,74 +306,21 @@
   .label-card.layout-fruit-promo .fruit-promo-prices { display: flex !important; }
 
   .fp-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 7px;
-    border-radius: 6px;
-    text-align: center;
-    line-height: 1;
-    min-width: 0;
-    overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 5px 7px; border-radius: 6px; text-align: center; line-height: 1;
+    min-width: 0; overflow: hidden;
   }
-  .fp-box.fp-normal {
-    flex: 1;
-    background: #fff;
-    border: 2px solid #222;
-    color: #222;
-  }
-  .fp-box.fp-promo {
-    flex: 1.4;
-    background: #c8102e;
-    border: 2px solid #c8102e;
-    color: #fff;
-    position: relative;
-  }
-  .fp-box.fp-promo::before {
-    content: "💡";
-    position: absolute;
-    top: 3px;
-    right: 5px;
-    font-size: clamp(10px, 2.8cqw, 18px);
-    line-height: 1;
-  }
-  .fp-label {
-    font-size: clamp(7px, 2cqw, 13px);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-bottom: 3px;
-    line-height: 1.05;
-  }
-  .fp-price {
-    font-size: clamp(18px, 6.5cqw, 44px);
-    font-weight: 900;
-    line-height: 1;
-    white-space: nowrap;
-  }
+  .fp-box.fp-normal { flex: 1; background: #fff; border: 2px solid #222; color: #222; }
+  .fp-box.fp-promo { flex: 1.4; background: #c8102e; border: 2px solid #c8102e; color: #fff; position: relative; }
+  .fp-box.fp-promo::before { content: "💡"; position: absolute; top: 3px; right: 5px; font-size: clamp(10px, 2.8cqw, 18px); line-height: 1; }
+  .fp-label { font-size: clamp(7px, 2cqw, 13px); font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; line-height: 1.05; }
+  .fp-price { font-size: clamp(18px, 6.5cqw, 44px); font-weight: 900; line-height: 1; white-space: nowrap; }
   .fp-box.fp-promo .fp-price { font-size: clamp(22px, 8cqw, 54px); }
-  .fp-unit {
-    font-size: clamp(7px, 1.9cqw, 12px);
-    font-weight: 700;
-    margin-top: 2px;
-    opacity: 0.85;
-  }
-
-  .label-card.layout-fruit-promo.size-large { --img-flex: 0.8; --barcode-h: 12%; --footer-h: 9%; }
-  .label-card.layout-fruit-promo.size-large .fruit-promo-prices { padding: 3px 0; gap: 6px; }
-  .label-card.layout-fruit-promo.size-large .fp-box { padding: 6px 9px; border-radius: 7px; }
-
+  .fp-unit { font-size: clamp(7px, 1.9cqw, 12px); font-weight: 700; margin-top: 2px; opacity: 0.85; }
   .label-card.layout-fruit-promo .product { font-size: clamp(12px, 3.6cqw, 26px) !important; max-height: 2.4em; }
-  .label-card.layout-fruit-promo .item-code { font-size: clamp(9px, 2.2cqw, 14px) !important; }
 
-  /* ============================================================ */
-  /* CLASSES DE TAMANHO — Auto-escala                              */
-  /* ============================================================ */
-  .label-card.size-tiny {
-    --header-h: 18%; --img-flex: 0; --barcode-h: 0; --footer-h: 0;
-    --gap-main: 1px; --desc-flex: 1.6; --price-flex: 1.4;
-  }
+  /* Classes de tamanho */
+  .label-card.size-tiny { --header-h: 18%; }
   .label-card.size-tiny .col-image,
   .label-card.size-tiny .barcode-container,
   .label-card.size-tiny .footer-container,
@@ -260,20 +329,14 @@
   .label-card.size-tiny .price { font-size: clamp(11px, 9cqw, 20px) !important; }
   .label-card.size-tiny .item-code { font-size: clamp(5px, 2.6cqw, 9px) !important; }
   .label-card.size-tiny .store-text { font-size: clamp(5px, 2.8cqw, 9px) !important; }
-  .label-card.size-tiny .unit-price-text { font-size: clamp(4px, 2.2cqw, 7px) !important; }
-  .label-card.size-tiny .promo-tag { font-size: clamp(5px, 3cqw, 10px) !important; padding: 0 2px; }
-  .label-card.size-tiny .old-price { font-size: clamp(4px, 2.5cqw, 8px) !important; }
   .label-card.size-tiny .brand-logo { max-height: 95%; }
 
-  .label-card.size-small { --header-h: 12%; --img-flex: 0.7; --barcode-h: 12%; --footer-h: 9%; }
-
-  .label-card.size-medium { --header-h: 12%; --img-flex: 1; --barcode-h: 13%; --footer-h: 10%; }
   .label-card.size-medium .product { font-size: clamp(10px, 3.5cqw, 22px) !important; }
   .label-card.size-medium .price { font-size: clamp(18px, 7cqw, 42px) !important; }
   .label-card.size-medium .store-text { font-size: clamp(8px, 2.3cqw, 14px) !important; }
   .label-card.size-medium .item-code { font-size: clamp(7px, 2cqw, 12px) !important; }
 
-  .label-card.size-large { --header-h: 14%; --img-flex: 1.2; --barcode-h: 12%; --footer-h: 10%; --gap-main: 6px; --img-pad: 2px; }
+  .label-card.size-large { --header-h: 14%; --gap-main: 6px; --img-pad: 2px; }
   .label-card.size-large .product { font-size: clamp(14px, 4cqw, 30px) !important; max-height: 3em; }
   .label-card.size-large .price { font-size: clamp(24px, 8cqw, 62px) !important; }
   .label-card.size-large .store-text { font-size: clamp(10px, 2.6cqw, 18px) !important; }
@@ -284,7 +347,7 @@
   .label-card.size-large .fruit-full-bar { font-size: clamp(9px, 2.2cqw, 15px) !important; }
   .label-card.size-large .deposit-box { font-size: clamp(8px, 2cqw, 14px) !important; }
 
-  .label-card.size-xl { --header-h: 12%; --img-flex: 1.4; --barcode-h: 12%; --footer-h: 10%; --gap-main: 10px; --img-pad: 3px; --desc-flex: 1.2; --price-flex: 1.1; }
+  .label-card.size-xl { --header-h: 12%; --gap-main: 10px; --img-pad: 3px; }
   .label-card.size-xl .product { font-size: clamp(20px, 4.5cqw, 48px) !important; max-height: 3em; }
   .label-card.size-xl .price { font-size: clamp(36px, 9cqw, 96px) !important; }
   .label-card.size-xl .store-text { font-size: clamp(14px, 2.7cqw, 26px) !important; }
@@ -304,44 +367,76 @@
   .promo-panel { background: #fff5f5; border: 1px solid #fed7d7; padding: 10px; border-radius: 8px; margin-top: 8px; }
   .fruit-promo-panel { background: #fff5f5; border: 2px solid #c8102e; padding: 12px; border-radius: 8px; margin-top: 10px; display: none; }
   .fruit-promo-panel h4 { margin: 0 0 8px 0; color: #c8102e; font-size: 13px; font-weight: 800; }
-  .fruit-promo-panel .size-row { gap: 8px; }
-  
+
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  
-  @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } .preview-container { position: relative; top: 0;} }
-  
+
+  /* Barcode type badge */
+  .bc-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
+  .bc-badge.ok { background: #eaf7ef; color: #176b3a; }
+  .bc-badge.warn { background: #fff5e6; color: #8a4b00; }
+  .bc-badge.err { background: #fff0f0; color: #9d1c1c; }
+
+  /* Shortcuts panel */
+  .shortcuts-panel { position: fixed; bottom: 18px; left: 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 9000; max-width: 260px; display: none; }
+  .shortcuts-panel.show { display: block; }
+  .shortcuts-panel h4 { margin: 0 0 6px 0; font-size: 12px; color: var(--text); }
+  .shortcuts-panel kbd { display: inline-block; padding: 1px 6px; background: var(--panel-soft); border: 1px solid var(--border); border-radius: 4px; font-family: monospace; font-size: 10px; margin-right: 4px; }
+  .shortcuts-panel .row { display: flex; justify-content: space-between; padding: 2px 0; color: var(--text-soft); }
+
+  @media(max-width:900px){
+    .top-header { flex-direction: column; align-items: flex-start; }
+    .grid { grid-template-columns:1fr; }
+    .preview-container { position: relative; top: 0; }
+  }
+
   @media screen { #printZone { display: none !important; } }
 
+  /* ============================================================ */
+  /* IMPRESSÃO                                                    */
+  /* ============================================================ */
   @media print {
     .app { display: none !important; }
-    .pro-toast, .pro-print-overlay { display: none !important; }
+    .pro-toast, .pro-print-overlay, .shortcuts-panel, .sheet-preview { display: none !important; }
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
-    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: visible !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: visible !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: #000 !important; }
     ::-webkit-scrollbar { display: none !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    
+
+    /* Folha Amanhecer */
     .print-sheet-amanhecer {
-      display: grid !important; 
-      grid-template-columns: 70mm 70mm 70mm !important; 
-      grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; 
+      display: grid !important;
+      grid-template-columns: 70mm 70mm 70mm !important;
+      grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
       justify-content: start !important; align-content: start !important;
-      gap: 0 !important; padding: 0 !important; width: 210mm !important; height: 278mm !important; 
-      margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
+      gap: 0 !important; padding: 0 !important;
+      width: 210mm !important; height: 278mm !important;
+      margin-left: var(--offset-x) !important;
+      margin-top: var(--offset-y) !important;
       page-break-inside: avoid !important; overflow: hidden !important;
     }
     .print-sheet-amanhecer:not(:last-child) { page-break-after: always !important; break-after: page !important; }
     .print-sheet-amanhecer:last-child { page-break-after: avoid !important; break-after: avoid !important; }
     .print-sheet-amanhecer .label-card { width: 70mm !important; border: 1px solid transparent !important; box-shadow: none !important; page-break-inside: avoid !important; margin: 0 !important; padding: 2px 4px !important; overflow: hidden !important; }
-    .print-sheet-amanhecer .label-card:nth-child(1), .print-sheet-amanhecer .label-card:nth-child(2), .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
+    .print-sheet-amanhecer .label-card:nth-child(1),
+    .print-sheet-amanhecer .label-card:nth-child(2),
+    .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { height: 40mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
 
-    #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
+    /* Outras folhas — aplica offset global */
+    .print-wrap-generic {
+      margin-left: var(--offset-x) !important;
+      margin-top: var(--offset-y) !important;
+      page-break-after: always !important;
+    }
+    .print-wrap-generic:last-child { page-break-after: avoid !important; }
+    .print-wrap-generic .label-card { border: 1px solid #222 !important; box-shadow: none !important; overflow: hidden !important; }
 
+    /* Calibração */
     .calib-sheet {
       display: grid !important;
       grid-template-columns: 70mm 70mm 70mm !important;
@@ -358,26 +453,20 @@
     .calib-cell:nth-child(3n) { padding-right: 6.5mm !important; }
   }
 </style>
-
-<style>
-#previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
-#previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
-@media screen { #previewWrap { contain: layout paint; } }
-</style>
-
-<style>
-#appStatus { margin:8px 0; padding:9px 12px; border:1px solid #d8dee4; border-radius:8px; font:600 13px/1.35 system-ui,sans-serif; }
-</style>
-
 </head>
 <body>
 <div class="app">
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
-      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=0.3">
+      <img id="topLogo1" src="" alt="Balcão Agrícola" style="display:none">
       <div class="divider"></div>
-      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=0.3">
+      <img id="topLogo2" src="" alt="Amanhecer" style="display:none">
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" title="Modo escuro">🌙</button>
+      <button class="icon-btn" id="shortcutsToggle" title="Atalhos">⌨️</button>
+      <button class="icon-btn" id="undoBtn" title="Desfazer (Ctrl+Z)">↩️</button>
     </div>
   </header>
 
@@ -385,7 +474,7 @@
     <div class="left-col">
       <section class="panel" style="margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: none;">
         <label for="presetSizes">Medida / Formato da Etiqueta</label>
-        <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
+        <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e; color:#222;">
           <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
           <option value="125x80">🍎 Fruta e Legumes Suporte (125 x 80 mm)</option>
           <option value="A6">📄 Tabuleta A6 Fruta (148 x 105 mm)</option>
@@ -401,7 +490,7 @@
           <option value="custom">⚙️ Outro Tamanho Personalizado (mm)...</option>
         </select>
 
-        <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px; background: #fff9db; padding: 8px; border-radius: 6px; border: 1px dashed #fab005;">
+        <div class="size-row" id="customDimensionsRow" style="display:none; margin-bottom: 8px; background: #fff9db; padding: 8px; border-radius: 6px; border: 1px dashed #fab005; color:#222;">
           <div><label for="customWidth" style="margin-top:0; font-size:12px;">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
           <div><label for="customHeight" style="margin-top:0; font-size:12px;">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
         </div>
@@ -430,8 +519,7 @@
             </div>
 
             <details class="quick-drawer" open>
-              <summary>⚡ Códigos rápidos (origens, categorias e calibres)</summary>
-
+              <summary>⚡ Códigos rápidos</summary>
               <div class="chips-label" style="margin-top:8px;">🌍 Europa</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="origem" data-val="PORTUGAL">Portugal</span>
@@ -443,11 +531,9 @@
                 <span class="chip-btn" data-field="origem" data-val="BÉLGICA">Bélgica</span>
                 <span class="chip-btn" data-field="origem" data-val="GRÉCIA">Grécia</span>
                 <span class="chip-btn" data-field="origem" data-val="POLÓNIA">Polónia</span>
-                <span class="chip-btn" data-field="origem" data-val="REINO UNIDO">Reino Unido</span>
                 <span class="chip-btn" data-field="origem" data-val="ROMÉNIA">Roménia</span>
                 <span class="chip-btn" data-field="origem" data-val="TURQUIA">Turquia</span>
               </div>
-
               <div class="chips-label">🌍 África</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="origem" data-val="MARROCOS">Marrocos</span>
@@ -458,7 +544,6 @@
                 <span class="chip-btn" data-field="origem" data-val="COSTA DO MARFIM">Costa do Marfim</span>
                 <span class="chip-btn" data-field="origem" data-val="TUNÍSIA">Tunísia</span>
               </div>
-
               <div class="chips-label">🌎 América</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="origem" data-val="BRASIL">Brasil</span>
@@ -472,7 +557,6 @@
                 <span class="chip-btn" data-field="origem" data-val="EUA">EUA</span>
                 <span class="chip-btn" data-field="origem" data-val="CANADÁ">Canadá</span>
               </div>
-
               <div class="chips-label">🌏 Ásia / Oceânia</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="origem" data-val="ÍNDIA">Índia</span>
@@ -483,7 +567,6 @@
                 <span class="chip-btn" data-field="origem" data-val="NOVA ZELÂNDIA">Nova Zelândia</span>
                 <span class="chip-btn" data-field="origem" data-val="AUSTRÁLIA">Austrália</span>
               </div>
-
               <div class="chips-label" style="margin-top:14px;">🏅 Categorias (norma UE)</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="categoria" data-val="EXTRA">EXTRA</span>
@@ -495,8 +578,7 @@
                 <span class="chip-btn" data-field="categoria" data-val="COMERCIAL">COMERCIAL</span>
                 <span class="chip-btn" data-field="categoria" data-val="INDUSTRIAL">INDUSTRIAL</span>
               </div>
-
-              <div class="chips-label" style="margin-top:14px;">📏 Calibre — Frutos de caroço / pomo</div>
+              <div class="chips-label" style="margin-top:14px;">📏 Calibre — Frutos caroço / pomo</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="calibre" data-val="55/60">55/60</span>
                 <span class="chip-btn" data-field="calibre" data-val="60/65">60/65</span>
@@ -511,8 +593,7 @@
                 <span class="chip-btn" data-field="calibre" data-val="110/120">110/120</span>
                 <span class="chip-btn" data-field="calibre" data-val="120/135">120/135</span>
               </div>
-
-              <div class="chips-label">📏 Calibre — Citrinos (numérico)</div>
+              <div class="chips-label">📏 Calibre — Citrinos</div>
               <div class="chips-group">
                 <span class="chip-btn" data-field="calibre" data-val="1X">1X</span>
                 <span class="chip-btn" data-field="calibre" data-val="1">1</span>
@@ -529,34 +610,18 @@
                 <span class="chip-btn" data-field="calibre" data-val="12">12</span>
                 <span class="chip-btn" data-field="calibre" data-val="13">13</span>
               </div>
-
-              <div class="chips-label">📏 Calibre — Letras (batata, cebola, alho, etc.)</div>
+              <div class="chips-label">📏 Calibre — Letras</div>
               <div class="chips-group">
-                <span class="chip-btn" data-field="calibre" data-val="P">P (Pequeno)</span>
-                <span class="chip-btn" data-field="calibre" data-val="M">M (Médio)</span>
-                <span class="chip-btn" data-field="calibre" data-val="G">G (Grande)</span>
-                <span class="chip-btn" data-field="calibre" data-val="GG">GG (Extra Grande)</span>
-                <span class="chip-btn" data-field="calibre" data-val="PP">PP (Muito Pequeno)</span>
+                <span class="chip-btn" data-field="calibre" data-val="P">P</span>
+                <span class="chip-btn" data-field="calibre" data-val="M">M</span>
+                <span class="chip-btn" data-field="calibre" data-val="G">G</span>
+                <span class="chip-btn" data-field="calibre" data-val="GG">GG</span>
+                <span class="chip-btn" data-field="calibre" data-val="PP">PP</span>
                 <span class="chip-btn" data-field="calibre" data-val="XXL">XXL</span>
-              </div>
-
-              <div class="chips-label">📏 Calibre — Diâmetro (mm) — Melão, melancia, abóbora</div>
-              <div class="chips-group">
-                <span class="chip-btn" data-field="calibre" data-val="60/80">60/80</span>
-                <span class="chip-btn" data-field="calibre" data-val="80/100">80/100</span>
-                <span class="chip-btn" data-field="calibre" data-val="100/120">100/120</span>
-                <span class="chip-btn" data-field="calibre" data-val="120/140">120/140</span>
-                <span class="chip-btn" data-field="calibre" data-val="140/160">140/160</span>
-                <span class="chip-btn" data-field="calibre" data-val=">160">&gt; 160</span>
-              </div>
-
-              <div style="margin-top:10px; font-size:11px; color:#666; font-style:italic;">
-                💡 Clica para preencher. Podes sempre escrever valores personalizados nos campos acima.
               </div>
             </details>
           </div>
 
-          <!-- PAINEL OPORTUNIDADE FRUTA (LEVE 2+) -->
           <div class="fruit-promo-panel" id="fruitPromoPanel">
             <h4>💡 Oportunidade "Leve 2 ou mais"</h4>
             <div class="size-row">
@@ -573,10 +638,7 @@
               </div>
             </div>
             <label for="promoPrice" style="margin-top:8px; font-size:11px;">Preço Especial (€)</label>
-            <input id="promoPrice" type="text" inputmode="decimal" placeholder="Ex.: 1,49" style="border-color:#c8102e; background:#fff9fb;">
-            <div style="font-size:10.5px; color:#666; margin-top:6px; line-height:1.35;">
-              💡 O preço <strong>normal</strong> vai no campo "Preço de Venda" acima. Este é o preço <strong>especial</strong> quando o cliente leva <strong>2+</strong> unidades.
-            </div>
+            <input id="promoPrice" type="text" inputmode="decimal" placeholder="Ex.: 1,49" style="border-color:#c8102e; background:#fff9fb; color:#222;">
           </div>
 
           <div id="standardPricePanel">
@@ -588,7 +650,7 @@
               <label for="oldPrice" style="margin-top:0; font-size:11px; color:#c8102e;">Preço Normal Anterior (€)</label>
               <input id="oldPrice" type="text" inputmode="decimal" placeholder="Ex.: 4,99">
             </div>
-            
+
             <div id="packagingRow" style="display:block; margin-top: 8px;">
               <div class="size-row">
                 <div><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001" value="0.75"></div>
@@ -613,12 +675,32 @@
             </div>
           </div>
 
-          <label for="ean" style="color: #084298;">Código de Barras (EAN)</label>
-          <input id="ean" type="text" style="text-transform: none; border-color: #b6d4fe; background: #f8fbff;" placeholder="Se vazio, gera código a partir do Cód. Interno">
+          <label for="ean" style="color: #084298;">Código de Barras (EAN) <span id="eanBadge" class="bc-badge" style="display:none;"></span></label>
+          <input id="ean" type="text" style="text-transform: none; border-color: #b6d4fe; background: #f8fbff; color:#222;" placeholder="Escreva o EAN (13 ou 14 dígitos) para aparecer na etiqueta">
 
           <label for="photo">Fotografia (Opcional)</label>
           <input id="photo" type="file" accept="image/*">
           <label class="checkbox-label"><input type="checkbox" id="autoRemoveBg" checked> ✨ Remover fundo branco</label>
+        </div>
+      </details>
+
+      <details class="drawer" id="logoDrawer">
+        <summary>🖼️ Logos da Empresa</summary>
+        <div class="drawer-content">
+          <p style="font-size:12px; color:#666; margin:0 0 8px 0;">Carregue os 2 logótipos (Balcão Agrícola e Amanhecer). Ficam guardados no browser.</p>
+          <div class="logo-row">
+            <div>
+              <label for="logo1File" style="font-size:11px; margin-top:0;">Logo 1 (Balcão)</label>
+              <input id="logo1File" type="file" accept="image/*">
+              <img id="logo1Preview" class="logo-preview" alt="">
+            </div>
+            <div>
+              <label for="logo2File" style="font-size:11px; margin-top:0;">Logo 2 (Amanhecer)</label>
+              <input id="logo2File" type="file" accept="image/*">
+              <img id="logo2Preview" class="logo-preview" alt="">
+            </div>
+          </div>
+          <button class="secondary" id="resetLogosBtn" type="button" style="margin-top:8px;">↺ Repor Logos Padrão</button>
         </div>
       </details>
 
@@ -637,7 +719,7 @@
               <span class="offset-value" id="offsetYVal">6 mm</span>
             </div>
             <div class="offset-hint">
-              💡 <strong>Como calibrar:</strong> imprime primeiro a grelha de calibração sobre a folha Amanhecer. Se os retângulos ficarem deslocados, mexe nestes sliders até baterem ao certo. Os valores ficam guardados automaticamente.
+              💡 <strong>Como calibrar:</strong> imprime a grelha de calibração e coloca sobre a folha Amanhecer. Ajusta os sliders até bater certo. Valores guardados automaticamente. <strong>Aplica-se a todos os formatos.</strong>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
               <button class="warn-btn" id="printCalibBtn" type="button">📏 Grelha Calibração</button>
@@ -646,14 +728,14 @@
           </div>
         </div>
       </details>
-      
+
       <section class="panel" style="margin-top: 12px; margin-bottom: 12px;">
         <div id="gridStartContainer">
           <div class="size-row">
             <div>
               <label for="startPosition" style="margin-top:0;">Começar na Posição</label>
               <select id="startPosition">
-                <option value="1" selected>Posição 1</option><option value="2">Posição 2</option><option value="3">Posição 3</option><option value="4">Posição 4 (Linha 2)</option><option value="5">Posição 5</option><option value="6">Posição 6</option><option value="7">Posição 7 (Linha 3)</option><option value="8">Posição 8</option><option value="9">Posição 9</option><option value="10">Posição 10</option><option value="11">Posição 11</option><option value="12">Posição 12</option><option value="13">Posição 13</option><option value="14">Posição 14</option><option value="15">Posição 15</option><option value="16">Posição 16</option><option value="17">Posição 17</option><option value="18">Posição 18</option><option value="19">Posição 19</option><option value="20">Posição 20</option><option value="21">Posição 21</option>
+                <option value="1" selected>Posição 1</option><option value="2">Posição 2</option><option value="3">Posição 3</option><option value="4">Posição 4</option><option value="5">Posição 5</option><option value="6">Posição 6</option><option value="7">Posição 7</option><option value="8">Posição 8</option><option value="9">Posição 9</option><option value="10">Posição 10</option><option value="11">Posição 11</option><option value="12">Posição 12</option><option value="13">Posição 13</option><option value="14">Posição 14</option><option value="15">Posição 15</option><option value="16">Posição 16</option><option value="17">Posição 17</option><option value="18">Posição 18</option><option value="19">Posição 19</option><option value="20">Posição 20</option><option value="21">Posição 21</option>
               </select>
             </div>
             <div>
@@ -662,24 +744,28 @@
             </div>
           </div>
         </div>
-        
-        <div id="appStatus" role="status" aria-live="polite" style="display:none;"></div>
-        
+
+        <div id="appStatus" role="status" aria-live="polite"></div>
+
         <div class="actions">
           <button class="success-btn" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
           <button class="save-btn" id="saveDbBtn" type="button">💾 Guardar Produto</button>
         </div>
         <div class="actions-full">
           <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
-          <button class="secondary" id="clearBtn" type="button">Limpar Editor</button>
+        </div>
+        <div class="actions-3">
+          <button class="secondary" id="previewSheetBtn" type="button" style="font-size:12px;">👁️ Ver Folha</button>
+          <button class="secondary" id="printDbBtn" type="button" style="font-size:12px;">🗃️ Imprimir BD</button>
+          <button class="secondary" id="clearBtn" type="button" style="font-size:12px;">🗑️ Limpar</button>
         </div>
       </section>
 
       <details class="drawer">
         <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
-        <div class="drawer-content" style="background:#f1f2f6;">
+        <div class="drawer-content" style="background:var(--panel-soft);">
           <div id="queueListContainer">
-            <div class="empty-msg">A fila está vazia. Adicione etiquetas acima.</div>
+            <div class="empty-msg">A fila está vazia.</div>
           </div>
           <button class="secondary" style="margin-top: 10px; width: 100%; border-color:#e74c3c; color:#c0392b; display:none;" id="clearQueueBtn">🗑️ Limpar Fila</button>
         </div>
@@ -687,7 +773,7 @@
 
       <details class="drawer">
         <summary>🗃️ Produtos Guardados (<span id="dbBadge">0</span>)</summary>
-        <div class="drawer-content" style="background:#f1f2f6;">
+        <div class="drawer-content" style="background:var(--panel-soft);">
            <div id="dbListContainer">
               <div class="empty-msg">Nenhum produto guardado ainda.</div>
            </div>
@@ -698,14 +784,13 @@
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
-        
         <div class="label-card size-small" id="mainLabelCard" style="width: 380px; height: 214px;">
           <div class="header" id="cardHeader">
-            <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=0.3"></div>
-            <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=0.3"></div>
+            <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="" alt="Balcão Agrícola"></div>
+            <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="" alt="Amanhecer"></div>
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
-          
+
           <div class="main-content" id="cardMainContent">
             <div class="col-desc" id="cardColDesc">
               <div class="item-code" id="cardCode" style="display:none;"></div>
@@ -746,13 +831,43 @@
             <div class="print-date" id="cardPrintDate"></div>
           </div>
         </div>
-
       </div>
     </section>
   </div>
 </div>
 
 <div id="printZone"></div>
+
+<!-- Painel de atalhos -->
+<div class="shortcuts-panel" id="shortcutsPanel">
+  <h4>⌨️ Atalhos</h4>
+  <div class="row"><span><kbd>F9</kbd> Imprimir</span></div>
+  <div class="row"><span><kbd>Ctrl</kbd>+<kbd>P</kbd> Imprimir</span></div>
+  <div class="row"><span><kbd>Ctrl</kbd>+<kbd>S</kbd> Guardar</span></div>
+  <div class="row"><span><kbd>Ctrl</kbd>+<kbd>Z</kbd> Desfazer</span></div>
+  <div class="row"><span><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> Ver Folha</span></div>
+  <div class="row"><span><kbd>Esc</kbd> Fechar janelas</span></div>
+</div>
+
+<!-- Preview da folha completa -->
+<div class="sheet-preview" id="sheetPreview">
+  <div class="sheet-preview-inner">
+    <div class="sheet-preview-header">
+      <h3 id="sheetPreviewTitle">👁️ Pré-visualização da Folha</h3>
+      <button class="secondary" id="sheetPreviewClose" type="button" style="width:auto; padding:8px 14px;">✕ Fechar</button>
+    </div>
+    <div id="sheetPreviewGrid" class="sheet-preview-grid"></div>
+  </div>
+</div>
+
+<div id="proToast" class="pro-toast" role="status" aria-live="polite"></div>
+<div id="proPrintOverlay" class="pro-print-overlay" aria-hidden="true">
+  <div class="pro-print-box">
+    <div class="pro-spinner"></div>
+    <strong>Preparando impressão…</strong>
+    <span id="proPrintText">A construir folhas...</span>
+  </div>
+</div>
 
 <script>
 "use strict";
@@ -763,6 +878,9 @@ let globalProcessedPhoto = "";
 let printInProgress = false;
 let photoProcessingToken = 0;
 
+// ==========================================
+// UTILITÁRIOS
+// ==========================================
 function escapeHTML(str) {
   return String(str || "").replace(/[&<>"']/g, m => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -772,14 +890,89 @@ function escapeHTML(str) {
 const Storage = {
   get(key, fallback) {
     try { const v = localStorage.getItem(key); return v === null ? fallback : v; }
-    catch (e) { console.warn("localStorage indisponível:", e); return fallback; }
+    catch (e) { return fallback; }
   },
   set(key, value) {
     try { localStorage.setItem(key, value); return true; }
-    catch (e) { console.warn("Não foi possível guardar:", e); return false; }
+    catch (e) { console.warn("Storage cheio:", e); return false; }
   }
 };
 
+// ==========================================
+// TEMA ESCURO
+// ==========================================
+(function initTheme() {
+  const saved = Storage.get("balcao_theme", "light");
+  document.documentElement.dataset.theme = saved;
+  const btn = $("themeToggle");
+  if (btn) btn.textContent = saved === "dark" ? "☀️" : "🌙";
+})();
+
+$("themeToggle").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme;
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  Storage.set("balcao_theme", next);
+  $("themeToggle").textContent = next === "dark" ? "☀️" : "🌙";
+});
+
+// ==========================================
+// LOGOS CARREGÁVEIS
+// ==========================================
+const DEFAULT_LOGO_1 = "https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO";
+const DEFAULT_LOGO_2 = "https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb";
+
+let logo1Src = Storage.get("balcao_logo_1", DEFAULT_LOGO_1);
+let logo2Src = Storage.get("balcao_logo_2", DEFAULT_LOGO_2);
+
+function applyLogos() {
+  document.querySelectorAll(".logo-1").forEach(img => img.src = logo1Src);
+  document.querySelectorAll(".logo-2").forEach(img => img.src = logo2Src);
+  const t1 = $("topLogo1"), t2 = $("topLogo2");
+  if (t1 && logo1Src) { t1.src = logo1Src; t1.style.display = "block"; }
+  if (t2 && logo2Src) { t2.src = logo2Src; t2.style.display = "block"; }
+  const p1 = $("logo1Preview"), p2 = $("logo2Preview");
+  if (p1) { p1.src = logo1Src; p1.style.display = logo1Src ? "block" : "none"; }
+  if (p2) { p2.src = logo2Src; p2.style.display = logo2Src ? "block" : "none"; }
+}
+
+function bindLogoUploader(fileInputId, storageKey, targetVar) {
+  const input = $(fileInputId);
+  if (!input) return;
+  input.addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      const dataUrl = evt.target.result;
+      if (dataUrl.length > 500 * 1024) {
+        alert("Imagem muito grande para guardar (max 500KB). Reduza a resolução.");
+        return;
+      }
+      Storage.set(storageKey, dataUrl);
+      if (storageKey === "balcao_logo_1") logo1Src = dataUrl;
+      if (storageKey === "balcao_logo_2") logo2Src = dataUrl;
+      applyLogos();
+      updateCard();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+bindLogoUploader("logo1File", "balcao_logo_1");
+bindLogoUploader("logo2File", "balcao_logo_2");
+
+$("resetLogosBtn").addEventListener("click", () => {
+  Storage.set("balcao_logo_1", DEFAULT_LOGO_1);
+  Storage.set("balcao_logo_2", DEFAULT_LOGO_2);
+  logo1Src = DEFAULT_LOGO_1;
+  logo2Src = DEFAULT_LOGO_2;
+  applyLogos();
+  updateCard();
+});
+
+// ==========================================
+// OFFSETS
+// ==========================================
 let offsetX = parseFloat(Storage.get("balcao_offset_x", "0"));
 let offsetY = parseFloat(Storage.get("balcao_offset_y", "6"));
 if (!Number.isFinite(offsetX)) offsetX = 0;
@@ -796,18 +989,53 @@ function applyOffsets() {
   if (yVal) yVal.textContent = offsetY + " mm";
 }
 
+// ==========================================
+// DADOS
+// ==========================================
 let printQueue = [];
 let savedProducts = [];
+let undoStack = [];
+const MAX_UNDO = 20;
 
 try {
   const lsData = Storage.get("balcao_agricola_db", null);
   if (lsData) savedProducts = JSON.parse(lsData);
   if (!Array.isArray(savedProducts)) savedProducts = [];
 } catch (e) {
-  console.warn("Base de dados corrompida. A reiniciar.");
   savedProducts = [];
 }
 
+function snapshotForm() {
+  return JSON.stringify(getFormData());
+}
+
+function pushUndo() {
+  try {
+    undoStack.push(snapshotForm());
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+  } catch (e) {}
+}
+
+function undo() {
+  if (undoStack.length === 0) {
+    setStatus("Nada para desfazer.", "info");
+    return;
+  }
+  const prev = undoStack.pop();
+  try {
+    const data = JSON.parse(prev);
+    setFormData(data);
+    setStatus("Ação desfeita.", "success");
+  } catch (e) {
+    setStatus("Erro ao desfazer.", "error");
+  }
+}
+
+$("undoBtn").addEventListener("click", undo);
+
+// ==========================================
+// FORM DATA
+// ==========================================
 function getFormData() {
   return {
     presetSizes: $("presetSizes").value,
@@ -867,59 +1095,138 @@ function setFormData(data) {
   if($("promoMinQty")) $("promoMinQty").value = data.promoMinQty || "2";
   if($("promoUnit")) $("promoUnit").value = data.promoUnit || "KG";
   if($("promoPrice")) $("promoPrice").value = data.promoPrice || "";
-  
+
   globalOriginalPhoto = data.originalPhoto || "";
   globalProcessedPhoto = data.processedPhoto || "";
-  $("photo").value = ""; 
-  
+  $("photo").value = "";
+
   updateOrientationVisibility();
   $("promoBox").style.display = $("isPromoActive").checked ? "block" : "none";
   $("customDepositInput").style.display = $("depositFeeSelect").value === "custom" ? "block" : "none";
   updateCard();
 }
 
+// ==========================================
+// VALIDAÇÃO VISUAL
+// ==========================================
+function markFieldError(id, hasError) {
+  const el = $(id);
+  if (!el) return;
+  if (hasError) el.classList.add("input-error");
+  else el.classList.remove("input-error");
+}
+
+function clearAllFieldErrors() {
+  document.querySelectorAll(".input-error").forEach(el => el.classList.remove("input-error"));
+}
+
+// ==========================================
+// EAN TYPE BADGE
+// ==========================================
+function updateEanBadge() {
+  const badge = $("eanBadge");
+  if (!badge) return;
+  const raw = $("ean").value.trim();
+  if (!raw) { badge.style.display = "none"; return; }
+  const clean = normalizeBarcode(raw);
+  badge.style.display = "inline-block";
+  if (/^\d{13}$/.test(clean) && isValidEAN13(clean)) {
+    badge.textContent = "EAN-13 ✓"; badge.className = "bc-badge ok";
+  } else if (/^\d{14}$/.test(clean) && isValidEAN14(clean)) {
+    badge.textContent = "EAN-14 ✓"; badge.className = "bc-badge ok";
+  } else if (/^[\x20-\x7E]+$/.test(clean)) {
+    badge.textContent = "Code128 (texto)"; badge.className = "bc-badge warn";
+  } else {
+    badge.textContent = "Inválido"; badge.className = "bc-badge err";
+  }
+}
+
+// ==========================================
+// FILA
+// ==========================================
 function renderQueue() {
   const container = $("queueListContainer");
   $("queueBadge").textContent = printQueue.length;
-  
+
   if (printQueue.length === 0) {
-    container.innerHTML = '<div class="empty-msg">A fila está vazia. Adicione etiquetas acima.</div>';
+    container.innerHTML = '<div class="empty-msg">A fila está vazia.</div>';
     $("clearQueueBtn").style.display = "none";
     $("printBtn").textContent = "🖨️ Imprimir [F9]";
     return;
   }
-  
+
   $("clearQueueBtn").style.display = "block";
   let totalLabels = 0;
   container.innerHTML = "";
-  
+
   printQueue.forEach((item, index) => {
     totalLabels += item.copies;
     const div = document.createElement("div");
     div.className = "list-item";
+    div.setAttribute("draggable", "true");
+    div.setAttribute("data-index", index);
+
     const priceStr = item.data.price ? escapeHTML(item.data.price) + "€" : "S/ Preço";
     const name = escapeHTML(item.data.product || "Sem Nome");
     const ref = escapeHTML(item.data.internalCode || "N/A");
-    
+    const fmtLabel = (item.data.presetSizes === "amanhecer") ? "Amanhecer" : item.data.presetSizes;
+
     div.innerHTML = `
       <div class="list-item-info">
-        <strong>${item.copies}x ${name}</strong>
+        <strong>${name} <span class="chip-mini">${fmtLabel}</span></strong>
         <span>Ref: ${ref} | ${priceStr}</span>
       </div>
       <div class="list-item-actions">
-        <button class="btn-remove" data-action="remove-queue" data-index="${index}">❌</button>
+        <input type="number" class="copies-input" value="${item.copies}" min="1" max="500" data-action="copies" data-index="${index}" title="Nº etiquetas">
+        <button class="btn-dup" data-action="dup-queue" data-index="${index}" title="Duplicar">📋</button>
+        <button class="btn-remove" data-action="remove-queue" data-index="${index}" title="Remover">❌</button>
       </div>
     `;
     container.appendChild(div);
   });
-  
+
   $("printBtn").innerHTML = `🖨️ Imprimir Fila (${totalLabels} etiq.) [F9]`;
+  attachDragHandlers();
+}
+
+function attachDragHandlers() {
+  const container = $("queueListContainer");
+  let dragged = null;
+  container.querySelectorAll('.list-item[draggable="true"]').forEach(el => {
+    el.addEventListener("dragstart", e => {
+      dragged = el;
+      el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+    });
+    el.addEventListener("dragend", () => {
+      el.classList.remove("dragging");
+      container.querySelectorAll(".list-item").forEach(i => i.classList.remove("drag-over"));
+      dragged = null;
+    });
+    el.addEventListener("dragover", e => {
+      e.preventDefault();
+      if (!dragged || dragged === el) return;
+      el.classList.add("drag-over");
+    });
+    el.addEventListener("dragleave", () => el.classList.remove("drag-over"));
+    el.addEventListener("drop", e => {
+      e.preventDefault();
+      if (!dragged || dragged === el) return;
+      const fromIdx = parseInt(dragged.dataset.index, 10);
+      const toIdx = parseInt(el.dataset.index, 10);
+      if (isNaN(fromIdx) || isNaN(toIdx)) return;
+      const item = printQueue.splice(fromIdx, 1)[0];
+      printQueue.splice(toIdx, 0, item);
+      renderQueue();
+    });
+  });
 }
 
 function addToQueue() {
+  pushUndo();
   setValidationState();
   if ($("appStatus").dataset.type === "error") {
-    setStatus("Existem erros. Corrija-os antes de adicionar à fila.", "error");
+    setStatus("Corrija os erros antes de adicionar à fila.", "error");
     return;
   }
   const copies = Math.max(1, Math.min(500, parseInt($("copiesCount").value) || 1));
@@ -930,30 +1237,43 @@ function addToQueue() {
   }
   printQueue.push({ data, copies });
   renderQueue();
-  setStatus("Adicionado à fila de impressão!", "success");
+  setStatus("Adicionado à fila!", "success");
 }
 
 window.removeFromQueue = function(index) {
+  pushUndo();
   printQueue.splice(index, 1);
   renderQueue();
 };
 
+window.duplicateQueue = function(index) {
+  const item = printQueue[index];
+  if (!item) return;
+  printQueue.splice(index + 1, 0, { data: JSON.parse(JSON.stringify(item.data)), copies: item.copies });
+  renderQueue();
+  setStatus("Item duplicado.", "success");
+};
+
 $("clearQueueBtn").addEventListener("click", () => {
-  if (confirm("Tem a certeza que quer limpar a fila de impressão?")) {
+  if (confirm("Limpar a fila?")) {
+    pushUndo();
     printQueue = [];
     renderQueue();
   }
 });
 
+// ==========================================
+// BASE DE DADOS
+// ==========================================
 function renderDb() {
   const container = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
-  
+
   if (savedProducts.length === 0) {
     container.innerHTML = '<div class="empty-msg">Nenhum produto guardado.</div>';
     return;
   }
-  
+
   container.innerHTML = "";
   savedProducts
     .map((p, i) => ({ p, i }))
@@ -964,15 +1284,17 @@ function renderDb() {
       const name = escapeHTML(data.product || "Sem Nome");
       const ref = escapeHTML(data.internalCode || "N/A");
       const priceStr = data.price ? escapeHTML(data.price) + "€" : "";
-      
+      const code = escapeHTML(data.internalCode || "");
+
       div.innerHTML = `
         <div class="list-item-info">
           <strong>${name}</strong>
           <span>Ref: ${ref} | ${priceStr}</span>
         </div>
         <div class="list-item-actions">
-          <button class="btn-load" data-action="load-db" data-code="${escapeHTML(data.internalCode || "")}">Carregar</button>
-          <button class="btn-remove" data-action="remove-db" data-code="${escapeHTML(data.internalCode || "")}">❌</button>
+          <button class="btn-load" data-action="load-db" data-code="${code}" title="Carregar">📥</button>
+          <button class="btn-dup" data-action="queue-db" data-code="${code}" title="Adicionar à fila">➕</button>
+          <button class="btn-remove" data-action="remove-db" data-code="${code}" title="Remover">❌</button>
         </div>
       `;
       container.appendChild(div);
@@ -980,26 +1302,27 @@ function renderDb() {
 }
 
 function saveToDb() {
+  pushUndo();
   const data = getFormData();
   if (!data.product && !data.internalCode) {
-    setStatus("Preencha um nome ou código para guardar.", "error");
+    setStatus("Preencha um nome ou código.", "error");
     return;
   }
-  data.originalPhoto = ""; 
+  data.originalPhoto = "";
   data.processedPhoto = "";
-  
   const existingIdx = savedProducts.findIndex(p => p.internalCode === data.internalCode && p.internalCode !== "");
-  if (existingIdx >= 0) {
-    savedProducts[existingIdx] = data; 
-  } else {
-    savedProducts.push(data); 
+  if (existingIdx >= 0) savedProducts[existingIdx] = data;
+  else savedProducts.push(data);
+  if (!Storage.set("balcao_agricola_db", JSON.stringify(savedProducts))) {
+    setStatus("Base de dados cheia. Elimine produtos antigos.", "error");
+    return;
   }
-  Storage.set("balcao_agricola_db", JSON.stringify(savedProducts));
   renderDb();
-  setStatus("Produto guardado com sucesso!", "success");
+  setStatus("Produto guardado!", "success");
 }
 
 window.loadFromDb = function(index) {
+  pushUndo();
   const data = savedProducts[index];
   if (data) {
     setFormData(data);
@@ -1008,36 +1331,55 @@ window.loadFromDb = function(index) {
 };
 
 window.removeFromDb = function(index) {
-  if (confirm("Eliminar este produto guardado?")) {
+  if (confirm("Eliminar este produto?")) {
+    pushUndo();
     savedProducts.splice(index, 1);
     Storage.set("balcao_agricola_db", JSON.stringify(savedProducts));
     renderDb();
   }
 };
 
+window.queueFromDb = function(index) {
+  const data = savedProducts[index];
+  if (!data) return;
+  const copies = Math.max(1, Math.min(500, parseInt($("copiesCount").value) || 1));
+  printQueue.push({ data: JSON.parse(JSON.stringify(data)), copies });
+  renderQueue();
+  setStatus(`'${escapeHTML(data.product || "")}' adicionado à fila.`, "success");
+};
+
+// ==========================================
+// DELEGAÇÃO DE EVENTOS
+// ==========================================
 document.addEventListener("click", (e) => {
   const chip = e.target.closest(".chip-btn[data-field]");
   if (chip) {
     const field = chip.dataset.field;
     const val = chip.dataset.val;
     if (field && val !== undefined) {
+      pushUndo();
       setField(field, val);
       chip.style.transform = "scale(0.9)";
       setTimeout(() => { chip.style.transform = ""; }, 120);
     }
     return;
   }
-  
+
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
   const action = btn.dataset.action;
   const code = btn.dataset.code;
   const idx = parseInt(btn.dataset.index, 10);
-  
+
   if (action === "remove-queue" && Number.isFinite(idx)) window.removeFromQueue(idx);
+  if (action === "dup-queue" && Number.isFinite(idx)) window.duplicateQueue(idx);
   if (action === "load-db") {
     const i = savedProducts.findIndex(p => (p.internalCode || "") === code);
     if (i >= 0) window.loadFromDb(i);
+  }
+  if (action === "queue-db") {
+    const i = savedProducts.findIndex(p => (p.internalCode || "") === code);
+    if (i >= 0) window.queueFromDb(i);
   }
   if (action === "remove-db") {
     const i = savedProducts.findIndex(p => (p.internalCode || "") === code);
@@ -1045,9 +1387,25 @@ document.addEventListener("click", (e) => {
   }
 });
 
+document.addEventListener("change", (e) => {
+  const inp = e.target.closest('input[data-action="copies"]');
+  if (!inp) return;
+  const idx = parseInt(inp.dataset.index, 10);
+  if (!Number.isFinite(idx)) return;
+  const val = Math.max(1, Math.min(500, parseInt(inp.value) || 1));
+  if (printQueue[idx]) {
+    printQueue[idx].copies = val;
+    inp.value = val;
+    renderQueue();
+  }
+});
+
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
+// ==========================================
+// PARSING
+// ==========================================
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
   let clean = String(valStr).trim().replace(/€|\s/g, "");
@@ -1059,7 +1417,7 @@ function parsePrice(valStr) {
 
 function formatPromoDate(startStr, endStr) {
   if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
-  const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
   try {
     if (startStr && endStr) {
       const d1 = new Date(startStr), d2 = new Date(endStr);
@@ -1078,6 +1436,9 @@ function formatPromoDate(startStr, endStr) {
   }
 }
 
+// ==========================================
+// REMOÇÃO DE FUNDO
+// ==========================================
 function removeBackground(dataUrl, callback) {
   const token = ++photoProcessingToken;
   const img = new Image();
@@ -1086,9 +1447,9 @@ function removeBackground(dataUrl, callback) {
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth || img.width;
       canvas.height = img.naturalHeight || img.height;
-      if (!canvas.width || !canvas.height) throw new Error("Imagem sem dimensões válidas.");
+      if (!canvas.width || !canvas.height) throw new Error("Sem dimensões.");
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas indisponível.");
+      if (!ctx) throw new Error("Sem canvas.");
       ctx.drawImage(img, 0, 0);
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imgData.data;
@@ -1109,7 +1470,6 @@ function removeBackground(dataUrl, callback) {
       ctx.putImageData(imgData, 0, 0);
       if (token === photoProcessingToken) callback(canvas.toDataURL("image/png"));
     } catch (err) {
-      console.warn("Remoção de fundo falhou:", err);
       if (token === photoProcessingToken) callback(dataUrl);
     }
   };
@@ -1117,6 +1477,9 @@ function removeBackground(dataUrl, callback) {
   img.src = dataUrl;
 }
 
+// ==========================================
+// CÓDIGO DE BARRAS
+// ==========================================
 const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
 const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
 const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
@@ -1228,6 +1591,9 @@ function drawCode128(svg, text) {
   }
 }
 
+// ==========================================
+// DIMENSÕES
+// ==========================================
 function isLargeFormat(val) {
   if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70" || val === "frutaPromo125x80" || val === "frutaPromoA6") return true;
   if (val === "custom") {
@@ -1242,8 +1608,7 @@ function isFruitPromoFormat(val) {
   return val === "frutaPromo125x80" || val === "frutaPromoA6";
 }
 
-function getDimensions() {
-  const formatVal = $("presetSizes").value;
+function getDimensionsFor(formatVal, cw, ch) {
   const orientation = $("labelOrientation").value;
   const allowOrientation = isLargeFormat(formatVal);
   let w = 70, h = 38;
@@ -1261,14 +1626,18 @@ function getDimensions() {
     case "frutaPromo125x80": w = 125; h = 80; break;
     case "frutaPromoA6": w = 148; h = 105; break;
     case "custom":
-      w = parseFloat($("customWidth").value) || 70;
-      h = parseFloat($("customHeight").value) || 38;
+      w = parseFloat(cw) || 70;
+      h = parseFloat(ch) || 38;
       break;
   }
   if (allowOrientation && orientation === "vertical" && w > h) {
     const temp = w; w = h; h = temp;
   }
   return { width: w, height: h };
+}
+
+function getDimensions() {
+  return getDimensionsFor($("presetSizes").value, $("customWidth").value, $("customHeight").value);
 }
 
 function getSizeClass(w, h) {
@@ -1295,12 +1664,35 @@ function setField(id, val) {
 }
 window.setField = setField;
 
+// ==========================================
+// AUTOFIT SINCRONO
+// ==========================================
+function autoFitTextSync(el) {
+  if (!el) return;
+  el.style.fontSize = "";
+  let iter = 0;
+  const maxIter = 12;
+  // Força reflow para garantir medições corretas
+  void el.offsetHeight;
+  while (el.scrollHeight > el.clientHeight + 1 && iter < maxIter) {
+    const cur = parseFloat(getComputedStyle(el).fontSize);
+    if (!cur || cur < 4) break;
+    el.style.fontSize = (cur * 0.92) + "px";
+    iter++;
+    void el.offsetHeight;
+  }
+}
+
+// ==========================================
+// RENDERIZAÇÃO
+// ==========================================
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
   const eanInput = ($("ean").value || "").trim();
-  const barcodeToDraw = eanInput || codeVal;
+  // ✅ APENAS o EAN desenha barcode — não usa o código interno
+  const barcodeToDraw = eanInput;
   const priceNum = parsePrice($("price").value);
   const oldPriceNum = parsePrice($("oldPrice").value);
   const promoPriceNum = parsePrice($("promoPrice") ? $("promoPrice").value : "");
@@ -1334,10 +1726,10 @@ function updateCardUnsafe() {
     if (isLarge) {
       let badgePrefix = "📐 Formato";
       if (isFruitPromo) badgePrefix = "💡 Fruta/Legumes Oportunidade";
-      $("badgeSheet").textContent = `${badgePrefix}: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
-      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "40px" : (formatVal === "A6" || formatVal === "frutaPromoA6") ? "32px" : "26px");
+      $("badgeSheet").textContent = `${badgePrefix}: ${dims.width} × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "40px" : "32px");
     } else {
-      $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
+      $("badgeSheet").textContent = `📐 Formato: ${dims.width} × ${dims.height} mm`;
       document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "18px");
     }
     $("gridStartContainer").style.display = "none";
@@ -1345,7 +1737,7 @@ function updateCardUnsafe() {
 
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
-  
+
   if (codeVal) {
     $("cardCode").style.display = "block";
     $("cardCode").textContent = codeVal;
@@ -1393,30 +1785,22 @@ function updateCardUnsafe() {
   if (isFruitPromo) {
     const promoUnitVal = ($("promoUnit") ? $("promoUnit").value : "KG") || "KG";
     const promoMinVal = ($("promoMinQty") ? $("promoMinQty").value : "2") || "2";
-    
+
     if (priceNum !== null) {
       const formatted = priceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       $("cardFpNormalPrice").textContent = formatted + " €";
-    } else {
-      $("cardFpNormalPrice").textContent = "0,00 €";
-    }
+    } else $("cardFpNormalPrice").textContent = "0,00 €";
     $("cardFpNormalUnit").textContent = "/ " + promoUnitVal;
 
     if (promoPriceNum !== null) {
       const formatted = promoPriceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       $("cardFpPromoPrice").textContent = formatted + " €";
-    } else {
-      $("cardFpPromoPrice").textContent = "0,00 €";
-    }
+    } else $("cardFpPromoPrice").textContent = "0,00 €";
     $("cardFpPromoUnit").textContent = "/ " + promoUnitVal;
 
-    let promoLabel = "";
-    if (promoUnitVal === "KG") {
-      promoLabel = "LEVE " + promoMinVal + " KG OU MAIS";
-    } else {
-      promoLabel = "LEVE " + promoMinVal + " UN OU MAIS";
-    }
-    $("cardFpPromoLabel").textContent = promoLabel;
+    $("cardFpPromoLabel").textContent = (promoUnitVal === "KG")
+      ? "LEVE " + promoMinVal + " KG OU MAIS"
+      : "LEVE " + promoMinVal + " UN OU MAIS";
   }
 
   const org = ($("origem") ? $("origem").value : "").trim().toUpperCase();
@@ -1426,37 +1810,33 @@ function updateCardUnsafe() {
   if (org) parts.push("Origem: " + org);
   if (cat) parts.push("Cat. " + cat);
   if (cal) parts.push("Cal. " + cal);
-  
+
   if (parts.length > 0) {
     $("cardFruit").style.display = "block";
     $("cardFruit").textContent = parts.join(" • ");
-  } else {
-    $("cardFruit").style.display = "none";
-  }
+  } else $("cardFruit").style.display = "none";
 
   const depositSelect = $("depositFeeSelect").value;
   const depositVal = depositSelect === "custom" ? $("customDepositInput").value.trim() : depositSelect;
   if (depositVal) {
     $("cardDeposit").style.display = "block";
     $("cardDepositText").textContent = depositVal;
-  } else {
-    $("cardDeposit").style.display = "none";
-  }
+  } else $("cardDeposit").style.display = "none";
 
   const extraUnit = ($("unit").value || "").trim();
   if (extraUnit) {
     $("cardExtraUnit").style.display = "block";
     $("cardExtraUnit").textContent = extraUnit;
-  } else {
-    $("cardExtraUnit").style.display = "none";
-  }
+  } else $("cardExtraUnit").style.display = "none";
 
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
   const photoBox = $("cardPhotoBox");
   if (activePhoto && !card.classList.contains("size-tiny")) {
+    card.classList.add("has-image");
     photoBox.classList.add("show");
     $("cardPhotoImg").src = activePhoto;
   } else {
+    card.classList.remove("has-image");
     photoBox.classList.remove("show");
   }
 
@@ -1472,20 +1852,8 @@ function updateCardUnsafe() {
   $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 
-  requestAnimationFrame(() => autoFitText($("cardProduct")));
-}
-
-function autoFitText(el) {
-  if (!el) return;
-  el.style.fontSize = "";
-  let iter = 0;
-  const maxIter = 10;
-  while (el.scrollHeight > el.clientHeight + 1 && iter < maxIter) {
-    const cur = parseFloat(getComputedStyle(el).fontSize);
-    if (!cur || cur < 4) break;
-    el.style.fontSize = (cur * 0.92) + "px";
-    iter++;
-  }
+  // Autofit sincrono do produto
+  autoFitTextSync($("cardProduct"));
 }
 
 let _updateCardTimer = null;
@@ -1495,6 +1863,7 @@ function updateCard() {
     try {
       updateCardUnsafe();
       setValidationState();
+      updateEanBadge();
     } catch (err) {
       console.error("Erro ao atualizar cartão:", err);
     }
@@ -1507,10 +1876,14 @@ function setStatus(message, type = "info") {
   el.textContent = message || "";
   el.dataset.type = type;
   el.style.display = message ? "block" : "none";
-  if (type === "success") setTimeout(() => el.style.display = "none", 3000);
+  if (type === "success") setTimeout(() => { if (el.textContent === message) el.style.display = "none"; }, 3000);
 }
 
+// ==========================================
+// VALIDAÇÃO
+// ==========================================
 function setValidationState() {
+  clearAllFieldErrors();
   const price = parsePrice($("price").value);
   const oldPrice = parsePrice($("oldPrice").value);
   const promoPrice = parsePrice($("promoPrice") ? $("promoPrice").value : "");
@@ -1519,33 +1892,57 @@ function setValidationState() {
   const formatVal = $("presetSizes").value;
   const isFruitPromo = isFruitPromoFormat(formatVal);
 
-  if ($("price").value.trim() && price === null) errors.push("Preço inválido.");
-  if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) errors.push("Preço anterior inválido.");
-  if ($("isPromoActive").checked && !isFruitPromo && price !== null && oldPrice !== null && oldPrice <= price) errors.push("O preço anterior deve ser superior ao preço especial.");
-  
-  if (isFruitPromo) {
-    if ($("promoPrice").value.trim() && promoPrice === null) errors.push("Preço especial inválido.");
-    if (price !== null && promoPrice !== null && promoPrice >= price) errors.push("O preço especial deve ser inferior ao preço normal.");
+  if ($("price").value.trim() && price === null) { errors.push("Preço inválido."); markFieldError("price", true); }
+  if ($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null) { errors.push("Preço anterior inválido."); markFieldError("oldPrice", true); }
+  if ($("isPromoActive").checked && !isFruitPromo && price !== null && oldPrice !== null && oldPrice <= price) {
+    errors.push("O preço anterior deve ser superior ao preço especial.");
+    markFieldError("oldPrice", true);
   }
-  
+
+  if (isFruitPromo) {
+    if ($("promoPrice").value.trim() && promoPrice === null) { errors.push("Preço especial inválido."); markFieldError("promoPrice", true); }
+    if (price !== null && promoPrice !== null && promoPrice >= price) {
+      errors.push("O preço especial deve ser inferior ao preço normal.");
+      markFieldError("promoPrice", true);
+    }
+  }
+
   if (ean) {
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
-    if (!valid) errors.push("Código inválido (verifique os dígitos).");
+    if (!valid) { errors.push("Código de barras inválido."); markFieldError("ean", true); }
   }
+
   if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) {
-    errors.push("A data final da oportunidade não pode ser anterior à inicial.");
+    errors.push("A data final não pode ser anterior à inicial.");
+    markFieldError("promoEnd", true);
+  }
+
+  // Lei PT: oportunidade deve ter histórico ≥ 30 dias
+  if ($("promoStart").value && $("promoEnd").value && $("isPromoActive").checked) {
+    const d1 = new Date($("promoStart").value);
+    const d2 = new Date($("promoEnd").value);
+    const diffDays = (d2 - d1) / (1000 * 60 * 60 * 24);
+    if (diffDays < 0) {
+      // já apanhado acima
+    } else if (diffDays > 60) {
+      // Aviso suave
+      errors.push("⚠️ Oportunidade superior a 60 dias — confirme se cumpre a lei.");
+    }
   }
 
   setStatus(errors.join(" "), errors.length ? "error" : "");
 }
 
+// ==========================================
+// ORIENTAÇÃO / VISIBILIDADE
+// ==========================================
 function updateOrientationVisibility() {
   const formatVal = $("presetSizes").value;
   const show = isLargeFormat(formatVal);
   const orientBox = $("orientationBox");
   const row = $("storeOrientationRow");
   const isFruitPromo = isFruitPromoFormat(formatVal);
-  
+
   if (show) {
     orientBox.style.display = "block";
     row.style.gridTemplateColumns = "1fr 1fr";
@@ -1557,17 +1954,26 @@ function updateOrientationVisibility() {
   }
 
   const fruitPromoPanel = $("fruitPromoPanel");
-  if (fruitPromoPanel) {
-    fruitPromoPanel.style.display = isFruitPromo ? "block" : "none";
-  }
+  if (fruitPromoPanel) fruitPromoPanel.style.display = isFruitPromo ? "block" : "none";
 
   const promoLabelEl = $("isPromoActive") ? $("isPromoActive").closest("label") : null;
   if (promoLabelEl) promoLabelEl.style.display = isFruitPromo ? "none" : "flex";
   if (isFruitPromo && $("promoBox")) $("promoBox").style.display = "none";
 }
 
+// ==========================================
+// EVENTOS
+// ==========================================
 $("presetSizes").addEventListener("change", function () {
   const val = this.value;
+  // Aviso se mudar formato com fila cheia
+  if (printQueue.length > 0) {
+    if (!confirm("Tem " + printQueue.length + " item(ns) na fila com formatos específicos. A fila respeita o formato guardado de cada item. Continuar a mudar o formato do editor?")) {
+      // volta atrás — restaura
+      return;
+    }
+  }
+  pushUndo();
   $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
   $("copiesCount").value = (val === "amanhecer") ? "21" : "1";
   updateOrientationVisibility();
@@ -1607,423 +2013,4 @@ $("photo").addEventListener("change", function (e) {
     return;
   }
   if (file.size > 12 * 1024 * 1024) {
-    setStatus("Imagem muito grande (Max: 12MB).", "error");
-    e.target.value = "";
-    updateCard();
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onerror = () => setStatus("Erro ao ler imagem.", "error");
-  reader.onload = evt => {
-    globalOriginalPhoto = evt.target.result;
-    updateCard();
-    removeBackground(globalOriginalPhoto, processed => {
-      globalProcessedPhoto = processed || globalOriginalPhoto;
-      updateCard();
-    });
-  };
-  reader.readAsDataURL(file);
-});
-
-$("clearBtn").addEventListener("click", function () {
-  if (!confirm("Limpar o editor? Isto apagará o que está a escrever agora.")) return;
-  $("internalCode").value = "";
-  $("product").value = "";
-  $("price").value = "";
-  $("oldPrice").value = "";
-  $("ean").value = "";
-  $("unit").value = "";
-  $("depositFeeSelect").value = "";
-  $("customDepositInput").value = "";
-  $("promoStart").value = "";
-  $("promoEnd").value = "";
-  $("capacity").value = "0.75";
-  $("capacityUnit").value = "peso";
-  $("isPromoActive").checked = false;
-  $("promoBox").style.display = "none";
-  if ($("promoMinQty")) $("promoMinQty").value = "2";
-  if ($("promoUnit")) $("promoUnit").value = "KG";
-  if ($("promoPrice")) $("promoPrice").value = "";
-  if ($("origem")) $("origem").value = "";
-  if ($("categoria")) $("categoria").value = "";
-  if ($("calibre")) $("calibre").value = "";
-  photoProcessingToken++;
-  globalOriginalPhoto = "";
-  globalProcessedPhoto = "";
-  $("photo").value = "";
-  $("autoRemoveBg").checked = true;
-  $("store").value = "PATAIAS";
-  $("labelOrientation").value = "horizontal";
-  $("customWidth").value = "70";
-  $("customHeight").value = "38";
-  $("startPosition").value = "1";
-  $("presetSizes").value = "amanhecer";
-  $("customDimensionsRow").style.display = "none";
-  $("copiesCount").value = "21";
-  updateOrientationVisibility();
-  updateCard();
-});
-
-$("offsetXRange").addEventListener("input", function () {
-  offsetX = parseFloat(this.value) || 0;
-  $("offsetXVal").textContent = offsetX + " mm";
-  applyOffsets();
-  Storage.set("balcao_offset_x", String(offsetX));
-});
-
-$("offsetYRange").addEventListener("input", function () {
-  offsetY = parseFloat(this.value) || 0;
-  $("offsetYVal").textContent = offsetY + " mm";
-  applyOffsets();
-  Storage.set("balcao_offset_y", String(offsetY));
-});
-
-$("resetOffsetBtn").addEventListener("click", function () {
-  offsetX = 0; offsetY = 6;
-  applyOffsets();
-  Storage.set("balcao_offset_x", "0");
-  Storage.set("balcao_offset_y", "6");
-  setStatus("Ajustes de impressão restaurados (X=0mm, Y=6mm).", "success");
-});
-
-$("printCalibBtn").addEventListener("click", function () {
-  const printZone = $("printZone");
-  printZone.innerHTML = "";
-  
-  const page = document.createElement("div");
-  page.className = "calib-sheet";
-  for (let i = 1; i <= 21; i++) {
-    const cell = document.createElement("div");
-    cell.className = "calib-cell";
-    cell.textContent = "• " + i + " •";
-    page.appendChild(cell);
-  }
-  printZone.appendChild(page);
-  
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => { printZone.innerHTML = ""; }, 800);
-  }, 80);
-});
-
-$("printBtn").addEventListener("click", function () {
-  if (window.__PRO && typeof window.__PRO.safePrint === "function") {
-    window.__PRO.safePrint();
-  } else {
-    window.triggerPrint();
-  }
-});
-
-function validateBeforePrint() {
-  setValidationState();
-  if ($("appStatus").dataset.type === "error") {
-    setStatus("Existem erros. Corrija-os antes de imprimir.", "error");
-    return false;
-  }
-  
-  if (printQueue.length === 0) {
-    const price = parsePrice($("price").value);
-    if (price === null) {
-      setStatus("Introduza um preço válido.", "error");
-      $("price").focus();
-      return false;
-    }
-    
-    const formatVal = $("presetSizes").value;
-    if (isFruitPromoFormat(formatVal)) {
-      const promoPrice = parsePrice($("promoPrice") ? $("promoPrice").value : "");
-      if (promoPrice === null) {
-        setStatus("Introduza o preço especial.", "error");
-        $("promoPrice").focus();
-        return false;
-      }
-    }
-    
-    const startPos = parseInt($("startPosition").value, 10) || 1;
-    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-    if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
-      setStatus(`As ${copies} etiquetas ultrapassam o limite da página.`, "error");
-      return false;
-    }
-  }
-  
-  return true;
-}
-
-function cleanupAfterPrint() {
-  printInProgress = false;
-  $("printBtn").disabled = false;
-  $("printBtn").innerHTML = printQueue.length > 0
-    ? `🖨️ Imprimir Fila (${printQueue.reduce((a, b) => a + b.copies, 0)} etiq.) [F9]`
-    : "🖨️ Imprimir [F9]";
-  $("printZone").innerHTML = "";
-  if (window.__PRO) window.__PRO.setPrintEnabled(true);
-}
-
-function triggerPrint() {
-  if (printInProgress) return;
-  
-  const originalFormDataBackup = getFormData();
-  
-  if (!validateBeforePrint()) {
-    if (window.__PRO) {
-      if (typeof window.__PRO.hideOverlay === "function") window.__PRO.hideOverlay();
-      window.__PRO.state.printing = false;
-      window.__PRO.setPrintEnabled(true);
-    }
-    return;
-  }
-
-  printInProgress = true;
-  $("printBtn").disabled = true;
-  $("printBtn").textContent = "⏳ A preparar folhas...";
-
-  const formatVal = $("presetSizes").value;
-  const printZone = $("printZone");
-  const card = $("mainLabelCard");
-  const startPos = parseInt($("startPosition").value, 10) || 1;
-  const dims = getDimensions();
-
-  printZone.innerHTML = "";
-
-  const totalItemsToPrint = [];
-  for (let i = 1; i < startPos; i++) totalItemsToPrint.push(null);
-
-  if (printQueue.length === 0) {
-    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-    for (let i = 0; i < copies; i++) totalItemsToPrint.push(getFormData());
-  } else {
-    printQueue.forEach(qItem => {
-      for (let i = 0; i < qItem.copies; i++) totalItemsToPrint.push(qItem.data);
-    });
-  }
-
-  if (formatVal === "amanhecer") {
-    for (let i = 0; i < totalItemsToPrint.length; i += 21) {
-      const chunk = totalItemsToPrint.slice(i, i + 21);
-      const page = document.createElement("div");
-      page.className = "print-sheet-amanhecer";
-      
-      chunk.forEach((data, index) => {
-        if (data === null) {
-          const emptyDiv = document.createElement("div");
-          emptyDiv.className = "label-card size-small";
-          emptyDiv.style.visibility = "hidden";
-          emptyDiv.style.width = "70mm";
-          emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
-          page.appendChild(emptyDiv);
-        } else {
-          setFormData(data);
-          updateCardUnsafe();
-          
-          const clone = card.cloneNode(true);
-          clone.removeAttribute("id");
-          const ids = clone.querySelectorAll("[id]");
-          for (let k = 0; k < ids.length; k++) ids[k].removeAttribute("id");
-          
-          clone.style.width = "70mm";
-          clone.style.height = index < 3 ? "38mm" : "40mm";
-          applySizeClass(clone, 70, index < 3 ? 38 : 40);
-          
-          const eanVal = normalizeBarcode(data.ean || data.internalCode);
-          const barcodeSvg = clone.querySelector("svg");
-          if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
-          
-          const prodEl = clone.querySelector(".product");
-          if (prodEl) requestAnimationFrame(() => autoFitText(prodEl));
-          
-          page.appendChild(clone);
-        }
-      });
-      
-      for (let j = chunk.length; j < 21; j++) {
-        const emptyDiv = document.createElement("div");
-        emptyDiv.className = "label-card size-small";
-        emptyDiv.style.visibility = "hidden";
-        emptyDiv.style.width = "70mm";
-        emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
-        page.appendChild(emptyDiv);
-      }
-      printZone.appendChild(page);
-    }
-  } else {
-    const gridWrap = document.createElement("div");
-    gridWrap.style.display = "grid";
-    gridWrap.style.gridTemplateColumns = `repeat(auto-fit, minmax(${Math.max(20, dims.width)}mm, 1fr))`;
-    gridWrap.style.gap = "0";
-
-    totalItemsToPrint.forEach(data => {
-      if (data !== null) {
-        setFormData(data);
-        updateCardUnsafe();
-        
-        const clone = card.cloneNode(true);
-        clone.removeAttribute("id");
-        const ids = clone.querySelectorAll("[id]");
-        for (let k = 0; k < ids.length; k++) ids[k].removeAttribute("id");
-        
-        clone.style.width = dims.width + "mm";
-        clone.style.height = dims.height + "mm";
-        applySizeClass(clone, dims.width, dims.height);
-        
-        const eanVal = normalizeBarcode(data.ean || data.internalCode);
-        const barcodeSvg = clone.querySelector("svg");
-        if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
-        
-        const prodEl = clone.querySelector(".product");
-        if (prodEl) requestAnimationFrame(() => autoFitText(prodEl));
-        
-        gridWrap.appendChild(clone);
-      }
-    });
-    printZone.appendChild(gridWrap);
-  }
-
-  setFormData(originalFormDataBackup);
-  updateCardUnsafe();
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.print();
-      setTimeout(() => {
-        if (printInProgress) cleanupAfterPrint();
-      }, 3000);
-    });
-  });
-}
-
-window.triggerPrint = triggerPrint;
-window.cleanupAfterPrint = cleanupAfterPrint;
-window.addEventListener("afterprint", cleanupAfterPrint);
-
-window.addEventListener("beforeunload", (ev) => {
-  if (printQueue.length > 0) {
-    ev.preventDefault();
-    ev.returnValue = "";
-  }
-});
-
-(function boot() {
-  try {
-    applyOffsets();
-    updateOrientationVisibility();
-    updateCard();
-    renderDb();
-    renderQueue();
-    console.log("%c✅ Gerador de Etiquetas pronto.", "color:#176b3a;font-weight:bold;");
-  } catch (error) {
-    console.error("Erro crítico ao arrancar:", error);
-    const st = $("appStatus");
-    if (st) { st.textContent = "Erro ao iniciar. Recarregue a página."; st.dataset.type = "error"; st.style.display = "block"; }
-  }
-})();
-</script>
-
-<div id="proToast" class="pro-toast" role="status" aria-live="polite"></div>
-<div id="proPrintOverlay" class="pro-print-overlay" aria-hidden="true">
-  <div class="pro-print-box">
-    <div class="pro-spinner"></div>
-    <strong>Preparando impressão…</strong>
-    <span id="proPrintText">A construir folhas...</span>
-  </div>
-</div>
-<script>
-(function () {
-  "use strict";
-
-  const PRO = {
-    state: { printing: false },
-    els: {},
-    init() {
-      this.els.toast = document.getElementById("proToast");
-      this.els.overlay = document.getElementById("proPrintOverlay");
-      this.els.printText = document.getElementById("proPrintText");
-      this.installAfterprint();
-      this.installHotkeys();
-    },
-    toast(text, type) {
-      if (!this.els.toast) return;
-      this.els.toast.textContent = text;
-      this.els.toast.className = "pro-toast show " + (type || "info");
-      clearTimeout(this._toastTimer);
-      this._toastTimer = setTimeout(() => this.els.toast.classList.remove("show"), 3200);
-    },
-    installAfterprint() {
-      window.addEventListener("afterprint", () => {
-        this.state.printing = false;
-        this.hideOverlay();
-        this.setPrintEnabled(true);
-        setTimeout(() => {
-          if (typeof window.cleanupAfterPrint === "function") {
-            try { window.cleanupAfterPrint(); } catch (e) { console.warn(e); }
-          }
-        }, 500);
-      });
-    },
-    installHotkeys() {
-      document.addEventListener("keydown", (ev) => {
-        const isF9 = ev.key === "F9";
-        const isCtrlP = ev.ctrlKey && ev.key && ev.key.toLowerCase() === "p";
-        if (isF9 || isCtrlP) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          this.safePrint();
-        }
-      }, true);
-    },
-    setPrintEnabled(enabled) {
-      const btn = document.getElementById("printBtn");
-      if (btn) btn.disabled = !enabled;
-    },
-    showOverlay(text) {
-      if (!this.els.overlay) return;
-      this.els.printText.textContent = text || "A preparar as etiquetas...";
-      this.els.overlay.classList.add("show");
-      this.els.overlay.setAttribute("aria-hidden", "false");
-    },
-    hideOverlay() {
-      if (!this.els.overlay) return;
-      this.els.overlay.classList.remove("show");
-      this.els.overlay.setAttribute("aria-hidden", "true");
-    },
-    safePrint() {
-      if (this.state.printing) return;
-      this.state.printing = true;
-      this.setPrintEnabled(false);
-      this.showOverlay("A processar toda a fila de impressão...");
-      try {
-        if (typeof window.triggerPrint === "function") {
-          window.triggerPrint();
-        } else {
-          throw new Error("triggerPrint não disponível");
-        }
-      } catch (err) {
-        console.error(err);
-        this.state.printing = false;
-        this.setPrintEnabled(true);
-        this.hideOverlay();
-        this.toast("Erro ao iniciar impressão.", "error");
-      }
-    }
-  };
-
-  window.__PRO = PRO;
-  window.addEventListener("load", () => PRO.init());
-})();
-</script>
-<style>
-.pro-toast { position:fixed; right:18px; bottom:18px; z-index:99999; opacity:0; transform:translateY(10px); pointer-events:none; transition:.2s; padding:12px 16px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.18); background:#fff; border:1px solid #d7dce2; max-width:380px; font:600 14px/1.4 system-ui,sans-serif; }
-.pro-toast.show { opacity:1; transform:translateY(0); }
-.pro-toast.error { border-color:#e2a1a1; color:#9d1c1c; }
-.pro-toast.success { border-color:#9bd5b1; color:#176b3a; }
-.pro-print-overlay { display:none; position:fixed; inset:0; z-index:99998; background:rgba(20,24,28,.58); align-items:center; justify-content:center; }
-.pro-print-overlay.show { display:flex; }
-.pro-print-box { min-width:300px; max-width:420px; padding:24px; border-radius:16px; background:#fff; box-shadow:0 20px 60px rgba(0,0,0,.3); display:grid; gap:10px; text-align:center; font:14px system-ui,sans-serif; }
-.pro-spinner { width:28px; height:28px; margin:auto; border:3px solid #dfe4e8; border-top-color:#333; border-radius:50%; animation:prospin .7s linear infinite; }
-@keyframes prospin { to { transform:rotate(360deg); } }
-@media print { .pro-toast,.pro-print-overlay { display:none !important; } }
-</style>
-
-</body>
-</html>
+    setStatus("Imagem muito
