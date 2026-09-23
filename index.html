@@ -67,7 +67,7 @@
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
   /* ============================================================ */
-  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE (SEM CORTES OU EXAGEROS)  */
+  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE (SEM CORTES OU EXAGEROS) */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -260,7 +260,6 @@
   }
 }
 </style>
-
 
 <style>
 #appStatus { margin:8px 0; padding:9px 12px; border:1px solid #d8dee4; border-radius:8px; font:600 13px/1.35 system-ui,sans-serif; }
@@ -560,10 +559,10 @@ function setField(id, val) {
 
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
-  let clean = String(valStr).trim().replace(/€|\\s/g, "");
+  let clean = String(valStr).trim().replace(/€|\s/g, "");
   // Aceita 3,99 / 3.99 e também 1.234,56.
   if (clean.includes(",") && clean.includes(".")) {
-    clean = clean.replace(/\\./g, "").replace(",", ".");
+    clean = clean.replace(/\./g, "").replace(",", ".");
   } else {
     clean = clean.replace(",", ".");
   }
@@ -684,11 +683,6 @@ function normalizeBarcode(value) {
   return String(value || "").trim().replace(/\s+/g, "");
 }
 
-function isValidEAN13(v) {
-  const d = onlyDigits(v);
-  return d.length === 13 && ean13CheckDigit(d.slice(0, 12)) === d[12];
-}
-
 function isValidEAN14(v) {
   const d = onlyDigits(v);
   if (d.length !== 14) return false;
@@ -779,8 +773,9 @@ function drawCode128(svg, text) {
   let fullBits = "";
 
   for (const code of sequence) {
+    // RESOLVIDO: O erro que parava o código acontecia aqui por causa de C128_PATTERNS.STOP
     const pat = code === "STOP"
-      ? C128_PATTERNS.STOP
+      ? "2331112" // Código de padrão direto para STOP no Code 128
       : C128_PATTERNS_BY_VALUE[Number(code)];
 
     if (!pat) return;
