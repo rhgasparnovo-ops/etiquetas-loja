@@ -10,7 +10,7 @@
     --dark:#222; 
     --border:#d7d7d7; 
     --offset-x: -6mm; 
-    --offset-y: -6mm; 
+    --offset-y: 0mm; /* Descido 6mm (passou de -6mm para 0mm) para não comer a parte de cima */
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
@@ -34,6 +34,12 @@
   input[type="file"] { padding:6px; }
   .uppercase-input { text-transform: uppercase; }
   
+  .checkbox-label {
+    display: flex; align-items: center; gap: 8px; margin: 8px 0 0;
+    font-weight: 600; font-size: 12px; cursor: pointer; color: #2d3436;
+  }
+  .checkbox-label input { width: auto; margin: 0; cursor: pointer; }
+
   button { cursor:pointer; font-weight:700; }
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
   .secondary { background:#fff; font-size:15px; }
@@ -71,7 +77,6 @@
     border-radius: 2px;
   }
 
-  /* CABEÇALHO COMPACTO */
   .header {
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
@@ -82,7 +87,6 @@
   .header-store-container { flex: 1; text-align: right; overflow: hidden; }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
-  /* CONTEÚDO PRINCIPAL */
   .main-content {
     display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
     padding: 2px 0; gap: 4px; overflow: hidden; align-items: center;
@@ -95,11 +99,11 @@
   
   .right-column {
     flex: 0.9; min-width: 0; display: none; justify-content: center; align-items: center;
-    border: 1px solid #eee; border-radius: 4px; background: #ffffff;
-    height: 96%; overflow: hidden; padding: 1px;
+    height: 96%; overflow: hidden; padding: 1px; background: transparent;
   }
   .right-column img {
     max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto;
+    background: transparent;
   }
 
   .barcode-container {
@@ -134,9 +138,7 @@
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } }
   
-  /* ============================================================ */
-  /* IMPRESSÃO: SEM BARRAS DE SCROLL E MEDIDAS REAIS INTOCÁVEIS   */
-  /* ============================================================ */
+  /* IMPRESSÃO: REGRAS MILIMÉTRICAS COM AJUSTE DE 6MM */
   @media print {
     @page { 
       margin: 0 !important; 
@@ -153,7 +155,6 @@
       print-color-adjust: exact !important;
     }
     
-    /* ESCONDE COMPLETAMENTE TODAS AS SCROLLBARS */
     ::-webkit-scrollbar { display: none !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
 
@@ -179,7 +180,7 @@
       width: 210mm !important; 
       height: 278mm !important; 
       margin-left: var(--offset-x) !important; 
-      margin-top: var(--offset-y) !important;
+      margin-top: var(--offset-y) !important; /* Descido 6mm */
       page-break-inside: avoid !important;
       page-break-after: avoid !important;
       overflow: hidden !important;
@@ -218,7 +219,6 @@
       padding-right: 6.5mm !important; 
     }
 
-    /* OUTROS FORMATOS SOLTOS */
     .preview-wrap:not(.print-sheet-amanhecer) .label-card {
       border: 1px solid #222 !important; 
       page-break-after: always !important; 
@@ -242,7 +242,6 @@
 
   <div class="grid">
     <section class="panel">
-      <!-- FORMATO DA ETIQUETA -->
       <label for="presetSizes">Medida / Formato da Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
         <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
@@ -280,7 +279,6 @@
       <label for="product">Produto / Variedade</label>
       <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA">
 
-      <!-- DETALHES DE FRUTA E LEGUMES -->
       <div class="fruit-panel" id="fruitPanel">
         <h4>🍎 Detalhes Fruta e Legumes</h4>
         <div class="size-row-3">
@@ -355,7 +353,6 @@
           <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
         </div>
 
-        <!-- VALIDADE DE PROMOÇÃO COMPLETA: DE X A X -->
         <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
           <div>
             <label for="promoStart">Início Promoção</label>
@@ -368,12 +365,15 @@
         </div>
       </div>
 
-      <!-- CÓDIGO DE BARRAS -->
       <label for="ean">Código de Barras (EAN / Leitura ótica - Opcional)</label>
       <input id="ean" type="text" placeholder="Insira só se quiser barras (Ex.: 5601234567890)">
 
       <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
+      <label class="checkbox-label">
+        <input type="checkbox" id="autoRemoveBg" checked>
+        ✨ Remover fundo branco/claro automaticamente
+      </label>
 
       <label for="copiesCount">Número de Cópias</label>
       <input id="copiesCount" type="number" min="1" max="100" value="21">
@@ -384,7 +384,6 @@
       </div>
     </section>
 
-    <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
@@ -426,7 +425,8 @@
 "use strict";
 
 const $ = id => document.getElementById(id);
-let globalPhotoData = "";
+let globalOriginalPhoto = "";
+let globalProcessedPhoto = "";
 
 function setField(id, val) {
   const el = $(id);
@@ -457,6 +457,62 @@ function formatPromoDate(startStr, endStr) {
     const d1 = new Date(startStr);
     return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
   }
+}
+
+function removeBackground(dataUrl, callback) {
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+
+    const corners = [
+      0,
+      (canvas.width - 1) * 4,
+      ((canvas.height - 1) * canvas.width) * 4,
+      ((canvas.height - 1) * canvas.width + (canvas.width - 1)) * 4
+    ];
+
+    let bgR = 0, bgG = 0, bgB = 0;
+    corners.forEach(idx => {
+      bgR += data[idx];
+      bgG += data[idx + 1];
+      bgB += data[idx + 2];
+    });
+    bgR = Math.round(bgR / 4);
+    bgG = Math.round(bgG / 4);
+    bgB = Math.round(bgB / 4);
+
+    const tolerance = 48;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      
+      const dist = Math.sqrt(
+        (r - bgR) * (r - bgR) +
+        (g - bgG) * (g - bgG) +
+        (b - bgB) * (b - bgB)
+      );
+
+      if (dist < tolerance || (r > 240 && g > 240 && b > 240)) {
+        data[i + 3] = 0;
+      } else if (dist < tolerance + 15) {
+        const alphaFactor = (dist - tolerance) / 15;
+        data[i + 3] = Math.round(data[i + 3] * alphaFactor);
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    callback(canvas.toDataURL("image/png"));
+  };
+  img.src = dataUrl;
 }
 
 const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
@@ -673,9 +729,10 @@ function updateCard() {
     $("cardExtraUnit").style.display = "none";
   }
 
-  if (globalPhotoData) {
+  const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
+  if (activePhoto) {
     $("cardPhotoBox").style.display = "flex";
-    $("cardPhotoImg").src = globalPhotoData;
+    $("cardPhotoImg").src = activePhoto;
   } else {
     $("cardPhotoBox").style.display = "none";
   }
@@ -723,11 +780,24 @@ $("labelOrientation").addEventListener("change", updateCard);
   if (el) el.addEventListener("change", updateCard);
 });
 
+$("autoRemoveBg").addEventListener("change", updateCard);
+
 $("photo").addEventListener("change", function(e) {
   const file = e.target.files[0];
-  if (!file || !file.type.startsWith("image/")) { globalPhotoData = ""; updateCard(); return; }
+  if (!file || !file.type.startsWith("image/")) { 
+    globalOriginalPhoto = ""; 
+    globalProcessedPhoto = ""; 
+    updateCard(); 
+    return; 
+  }
   const reader = new FileReader();
-  reader.onload = evt => { globalPhotoData = evt.target.result; updateCard(); };
+  reader.onload = evt => { 
+    globalOriginalPhoto = evt.target.result;
+    removeBackground(globalOriginalPhoto, transparentDataUrl => {
+      globalProcessedPhoto = transparentDataUrl;
+      updateCard();
+    });
+  };
   reader.readAsDataURL(file);
 });
 
@@ -738,7 +808,7 @@ $("clearBtn").addEventListener("click", function() {
   if ($("origem")) $("origem").value = "";
   if ($("categoria")) $("categoria").value = "";
   if ($("calibre")) $("calibre").value = "";
-  globalPhotoData = ""; $("photo").value = "";
+  globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = "";
   updateCard();
 });
 
@@ -751,9 +821,6 @@ window.addEventListener("keydown", e => {
 
 $("printBtn").addEventListener("click", triggerPrint);
 
-/* ============================================================ */
-/* IMPRESSÃO RIGOROSA: INJEÇÃO DINÂMICA DAS MEDIDAS OFICIAIS    */
-/* ============================================================ */
 function triggerPrint() {
   const formatVal = $("presetSizes").value;
   const previewWrap = $("previewWrap");
@@ -767,7 +834,6 @@ function triggerPrint() {
     previewWrap.className = "preview-wrap print-sheet-amanhecer";
     previewWrap.innerHTML = "";
     
-    // GERA EXATAMENTE AS 21 ETIQUETAS OFICIAIS AMANHECER (3 COLUNAS X 7 LINHAS)
     for (let i = 0; i < 21; i++) {
       const clone = card.cloneNode(true);
       clone.style.width = "70mm";
