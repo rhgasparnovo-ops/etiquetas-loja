@@ -68,7 +68,6 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
-  /* LISTAS DE FILA E BASE DE DADOS */
   .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
   .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
@@ -91,7 +90,7 @@
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
   /* ============================================================ */
-  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE (SEM CORTES OU EXAGEROS) */
+  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE                         */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -108,47 +107,18 @@
     container-type: inline-size;
   }
 
-  .header {
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
-    height: 12%; flex-shrink: 0; overflow: hidden; width: 100%;
-  }
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #c8102e; padding-bottom: 1px; height: 12%; flex-shrink: 0; overflow: hidden; width: 100%; }
   .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { flex: 1; text-align: right; overflow: hidden; margin-right: 4mm; }
   .brand-logo { max-width: 100%; max-height: 85%; object-fit: contain; }
 
-  .main-content {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100%; flex: 1 1 auto;
-    gap: 4px; overflow: hidden; margin: 1px 0;
-  }
-  
-  .col-desc {
-    flex: 1.3; min-width: 0; display: flex; flex-direction: column;
-    justify-content: center; align-items: flex-start; text-align: left;
-    height: 100%; overflow: hidden; gap: 1px;
-  }
+  .main-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; width: 100%; flex: 1 1 auto; gap: 4px; overflow: hidden; margin: 1px 0; }
+  .col-desc { flex: 1.3; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: 100%; overflow: hidden; gap: 1px; }
+  .col-price { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; overflow: hidden; white-space: nowrap; }
+  .col-image { flex: 0.7; min-width: 0; display: none; justify-content: center; align-items: center; height: 98%; overflow: hidden; background: transparent; padding: 1px; }
+  .col-image img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; background: transparent; }
 
-  .col-price {
-    flex: 1; min-width: 0; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    height: 100%; overflow: hidden; white-space: nowrap;
-  }
-
-  .col-image {
-    flex: 0.7; min-width: 0; display: none; justify-content: center; align-items: center;
-    height: 98%; overflow: hidden; background: transparent; padding: 1px;
-  }
-  .col-image img {
-    max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto;
-    background: transparent;
-  }
-
-  /* TIPOGRAFIA FLUIDA INTELIGENTE BASEADA NA LARGURA DO CARTÃO */
   .store-text { font-size: clamp(7px, 2.2cqw, 11px); font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
   .item-code { font-size: clamp(6px, 1.9cqw, 10px); font-weight: 900; color: #111; line-height: 1; margin-bottom: 2px; }
   .product { font-size: clamp(8px, 3.2cqw, 18px); font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; overflow: hidden; text-align: left; max-height: 2.2em; }
@@ -160,9 +130,7 @@
   .promo-tag { font-size: clamp(7px, 2.3cqw, 13px); color: #ffffff; background: #c8102e; border-radius: 3px; font-weight: 900; line-height: 1; padding: 1px 3px; }
   .price { font-size: clamp(14px, 6.5cqw, 36px); font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  /* TAXA VOLTA FLUIDA E ELEGANTE */
   .deposit-box { font-size: clamp(5.5px, 1.8cqw, 9.5px); color: #c8102e; background: #fff5f5; border: 1px solid #fed7d7; padding: 0 3px; font-weight: 900; line-height: 1.1; margin-top: 1px; display: inline-block; }
-
   .fruit-full-bar { width: 100%; display: none; text-align: center; white-space: nowrap; overflow: hidden; line-height: 1.1; font-weight: 800; color: #084298; text-transform: uppercase; font-size: clamp(6px, 2.1cqw, 11px); flex-shrink: 0; margin: 1px 0; }
 
   .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: 14%; overflow: hidden; }
@@ -194,7 +162,7 @@
     /* Esconde a aplicação toda na altura de imprimir */
     .app { display: none !important; }
     
-    /* Mostra a zona invisível que gerámos */
+    /* Mostra Apenas a zona invisível que gerámos */
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
@@ -402,6 +370,7 @@
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
+        <!-- ESTE É O MOLDE QUE NUNCA MAIS VAI DESAPARECER -->
         <div class="label-card" id="mainLabelCard">
           <div class="header" id="cardHeader">
             <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola"></div>
@@ -435,6 +404,7 @@
             <div class="print-date" id="cardPrintDate"></div>
           </div>
         </div>
+        <!-- FIM DO MOLDE -->
 
       </div>
     </section>
@@ -794,7 +764,9 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
-// A SOLUÇÃO DEFINITIVA
+// ==========================================
+// RENDERIZAÇÃO DA ETIQUETA NO ECRÃ
+// ==========================================
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -812,7 +784,7 @@ function updateCardUnsafe() {
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
 
-  // Usa apenas a etiqueta do ecra principal, que nunca é apagada.
+  // Usa EXCLUSIVAMENTE a etiqueta de pré-visualização (mainLabelCard)
   const card = $("mainLabelCard");
   if (!card) return;
 
@@ -1018,19 +990,15 @@ function validateBeforePrint() {
   return true;
 }
 
-
+// Limpeza após imprimir (apaga a zona invisível)
 function cleanupAfterPrint() {
   printInProgress = false;
   $("printBtn").disabled = false;
-  
-  // Esvaziamos a zona invisível para libertar memória do PC
-  $("printZone").innerHTML = ""; 
-  
-  renderQueue(); 
+  $("printBtn").innerHTML = printQueue.length > 0 ? `🖨️ Imprimir Fila (${printQueue.reduce((a,b)=>a+b.copies,0)} etiq.) [F9]` : "🖨️ Imprimir [F9]";
+  $("printZone").innerHTML = ""; // Esvazia a memória invisível
   if (window.__PRO) window.__PRO.setPrintEnabled(true);
 }
 
-// Opcional, para navegadores que suportam este evento.
 window.addEventListener("afterprint", cleanupAfterPrint);
 
 function triggerPrint() {
@@ -1046,15 +1014,18 @@ function triggerPrint() {
 
   const formatVal = $("presetSizes").value;
   const printZone = $("printZone");
+  
+  // NUNCA MUDAMOS A ETIQUETA DO ECRÃ. USAMOS O SEU MOLDE PARA CLONAR.
   const card = $("mainLabelCard");
   
   const startPos = parseInt($("startPosition").value, 10) || 1;
   const dims = getDimensions();
 
-  // Limpa a zona invisível antiga por precaução
-  printZone.innerHTML = "";
+  // Limpa a zona invisível de impressões anteriores
+  printZone.innerHTML = ""; 
 
   let totalItemsToPrint = [];
+  // Adiciona espaços vazios se começar noutra posição
   for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); 
   
   if (printQueue.length === 0) {
@@ -1066,7 +1037,7 @@ function triggerPrint() {
      });
   }
 
-  // CRIA AS FOLHAS DIRETAMENTE NA ZONA INVISÍVEL (#printZone)
+  // DESENHA TUDO NA ZONA INVISÍVEL
   if (formatVal === "amanhecer") {
     for(let i=0; i<totalItemsToPrint.length; i+=21) {
       let chunk = totalItemsToPrint.slice(i, i+21);
@@ -1082,9 +1053,11 @@ function triggerPrint() {
           emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
           page.appendChild(emptyDiv);
         } else {
+          // Preenche a etiqueta principal (temporariamente)
           setFormData(data); 
           updateCardUnsafe();
           
+          // E AGORA CLONA ESSA ETIQUETA PARA A FOLHA INVISÍVEL
           let clone = card.cloneNode(true);
           clone.removeAttribute("id");
           clone.style.width = "70mm";
@@ -1133,7 +1106,7 @@ function triggerPrint() {
     printZone.appendChild(gridWrap);
   }
 
-  // COMO O ECRÃ PRINCIPAL NUNCA FOI APAGADO, BASTA REPOR OS DADOS NORMAIS
+  // DEVOLVE AO ECRÃ PRINCIPAL EXATAMENTE O QUE O UTILIZADOR TINHA ESCRITO
   setFormData(originalFormDataBackup);
   updateCardUnsafe();
 
@@ -1141,8 +1114,8 @@ function triggerPrint() {
     requestAnimationFrame(() => {
       window.print();
       
-      // Quando a janela de impressão fecha, limpamos os bastidores.
-      cleanupAfterPrint();
+      // Limpeza forçada caso o evento afterprint não dispare (em alguns browsers)
+      setTimeout(cleanupAfterPrint, 2500);
     });
   });
 }
