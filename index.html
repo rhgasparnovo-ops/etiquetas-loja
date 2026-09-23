@@ -58,7 +58,6 @@
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
   input[type="file"] { padding:6px; }
   
-  /* MAIÚSCULAS VISUAIS NATIVAS SEM TRAVAR O CURSOR */
   .uppercase-input { text-transform: uppercase; }
   
   button { cursor:pointer; font-weight:700; }
@@ -66,14 +65,50 @@
   .secondary { background:#fff; font-size:15px; }
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
 
-  /* ATALHOS RÁPIDOS */
-  .quick-chips { display: flex; gap: 6px; margin-top: 5px; }
-  .chip-btn {
-    width: auto; padding: 4px 10px; font-size: 11px; font-weight: 600;
-    background: #f1f2f6; border: 1px solid #ced6e0; border-radius: 4px;
-    cursor: pointer;
+  /* GAVETA EXPANSÍVEL DE ATALHOS */
+  details.quick-drawer {
+    margin-top: 8px;
+    background: #f8f9fa;
+    border: 1px solid #dcdde1;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
   }
-  .chip-btn:hover { background: #dfe4ea; }
+  details.quick-drawer summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: #2f3542;
+    outline: none;
+    user-select: none;
+  }
+  .chips-group {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .chips-label {
+    width: 100%;
+    font-size: 11px;
+    color: #747d8c;
+    font-weight: 700;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .chip-btn {
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #fff;
+    border: 1px solid #ced6e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .chip-btn:hover {
+    background: #ffeaa7;
+    border-color: #fdcb6e;
+  }
 
   /* HISTÓRICO */
   .history-box { margin-top: 18px; border-top: 1px solid #eee; padding-top: 12px; }
@@ -86,7 +121,7 @@
   .preview-container {
     background: #eaedf1;
     border-radius: 12px;
-    padding: 30px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -113,7 +148,7 @@
     margin-bottom: 12px;
   }
 
-  /* ESTRUTURA UNIVERSAL DA ETIQUETA */
+  /* ESTRUTURA UNIVERSAL DA ETIQUETA COM CONFINAMENTO TOTAL */
   .label-card {
     background: #fff;
     border: 1px solid #999;
@@ -126,31 +161,113 @@
     border-radius: 3px;
   }
 
-  .header { flex: 0 0 18%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; }
-  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; align-items: center; }
-  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; }
-  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; }
+  .header {
+    flex: 0 0 16%;
+    min-height: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #c8102e;
+    padding-bottom: 2px;
+    overflow: hidden;
+    gap: 4px;
+  }
+  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; align-items: center; overflow: hidden; }
+  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
   .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-  .main-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; padding: 4px 0; gap: 6px; }
-  .left-column { flex: 1.2; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
-  .right-column { flex: 0.8; min-width: 0; display: flex; justify-content: center; align-items: center; border: 1px solid #eee; border-radius: 4px; background: #fafafa; }
-  .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .main-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 2px 0;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .left-column {
+    flex: 1.2;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+  }
+  .right-column {
+    flex: 0.8;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: #fafafa;
+    overflow: hidden;
+    padding: 2px;
+  }
+  .right-column img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
 
-  .barcode-container { flex: 0 0 18%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; }
+  .barcode-container {
+    flex: 0 0 18%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+  }
+  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; display: block; margin: 0 auto; }
 
-  .footer-container { flex: 0 0 9%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; border-top: 1px dashed #ccc; padding-top: 2px; }
+  .footer-container {
+    flex: 0 0 9%;
+    min-height: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    border-top: 1px dashed #ccc;
+    padding-top: 2px;
+    overflow: hidden;
+  }
 
-  .store-text { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #000; }
-  .item-code { font-size: 10px; font-weight: bold; color: #444; }
-  .product { font-size: 14px; font-weight: bold; color: #000; word-break: break-word; text-align: center; }
-  .price { font-size: 28px; font-weight: bold; color: #000; white-space: nowrap; text-align: center; }
-  .fruit-info { font-size: 11px; text-transform: uppercase; font-weight: 800; color: #084298; text-align: center; }
-  .ean-text { font-family: monospace; font-size: 9px; font-weight: bold; }
-  .promo-text { font-size: 8px; color: #555; }
-  .print-date { font-size: 7px; color: #666; }
+  .fit-target {
+    word-break: break-word;
+    text-align: center;
+    line-height: 1.1;
+    overflow: hidden;
+  }
+
+  .store-text { font-weight: bold; text-transform: uppercase; color: #000; white-space: nowrap; }
+  .item-code { font-weight: bold; color: #444; white-space: nowrap; }
+  .product { font-weight: bold; color: #000; }
+  .price { font-weight: bold; color: #000; white-space: nowrap; line-height: 1; }
+  .fruit-info { text-transform: uppercase; font-weight: 800; color: #084298; line-height: 1.1; }
+  .ean-text { font-family: monospace; font-weight: bold; white-space: nowrap; }
+  .promo-text { color: #555; white-space: nowrap; }
+  .print-date { color: #666; white-space: nowrap; }
+
+  .deposit-text {
+    white-space: nowrap;
+    text-align: center;
+    font-weight: 900;
+    color: #c8102e;
+    background: #fff5f5;
+    padding: 0 3px;
+    border-radius: 2px;
+    border: 1px solid #fed7d7;
+    line-height: 1;
+  }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -270,24 +387,37 @@
           <div>
             <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
             <input id="origem" type="text" class="uppercase-input" placeholder="PORTUGAL">
-            <div class="quick-chips">
-              <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">PT</span>
-              <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">ES</span>
-            </div>
           </div>
           <div>
             <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
             <input id="categoria" type="text" class="uppercase-input" placeholder="I">
-            <div class="quick-chips">
-              <span class="chip-btn" onclick="setField('categoria', 'I')">Cat I</span>
-              <span class="chip-btn" onclick="setField('categoria', 'II')">Cat II</span>
-            </div>
           </div>
           <div>
             <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
             <input id="calibre" type="text" class="uppercase-input" placeholder="65/70">
           </div>
         </div>
+
+        <details class="quick-drawer">
+          <summary>⚡ Opções rápidas de Origem / Categoria</summary>
+          <div class="chips-label">Origens comuns em Portugal:</div>
+          <div class="chips-group">
+            <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">Portugal</span>
+            <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">Espanha</span>
+            <span class="chip-btn" onclick="setField('origem', 'MARROCOS')">Marrocos</span>
+            <span class="chip-btn" onclick="setField('origem', 'FRANÇA')">França</span>
+            <span class="chip-btn" onclick="setField('origem', 'HOLANDA')">Holanda</span>
+            <span class="chip-btn" onclick="setField('origem', 'COSTA RICA')">Costa Rica</span>
+            <span class="chip-btn" onclick="setField('origem', 'BRASIL')">Brasil</span>
+            <span class="chip-btn" onclick="setField('origem', 'ÁFRICA DO SUL')">África do Sul</span>
+          </div>
+          <div class="chips-label">Categorias Oficiais:</div>
+          <div class="chips-group">
+            <span class="chip-btn" onclick="setField('categoria', 'EXTRA')">Cat. Extra</span>
+            <span class="chip-btn" onclick="setField('categoria', 'I')">Cat. I</span>
+            <span class="chip-btn" onclick="setField('categoria', 'II')">Cat. II</span>
+          </div>
+        </details>
 
         <div id="bulkPriceContainer" style="display:none; margin-top: 10px;">
           <label for="bulkPrice" style="font-size:11px; margin-top:0;">Preço Especial (≥ 2 KG) (€/KG)</label>
@@ -346,8 +476,9 @@
         </div>
       </div>
 
-      <label for="ean">Código de Barras (EAN-13 ou Código Interno)</label>
-      <input id="ean" type="text" placeholder="Ex.: 5601234567890 ou DR058860">
+      <!-- CÓDIGO DE BARRAS -->
+      <label for="ean">Código de Barras (EAN / Leitura ótica - Opcional)</label>
+      <input id="ean" type="text" placeholder="Insira só se quiser barras (Ex.: 5601234567890)">
 
       <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
@@ -368,7 +499,7 @@
 
     <!-- CONTENTOR DE PRÉ-VISUALIZAÇÃO NÍTIDO -->
     <section class="preview-container print-area">
-      <div id="badgeSheet" class="sheet-badge">⭐ Pré-visualização Proporcional (Folha Oficial: 21 posições)</div>
+      <div id="badgeSheet" class="sheet-badge">⭐ Pré-visualização Proporcional</div>
       <div class="preview-wrap" id="previewWrap"></div>
     </section>
   </div>
@@ -559,10 +690,44 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
+/* MOTOR DE AUTOAJUSTE DE TEXTO DINÂMICO */
+function fitSingleElement(el, maxInitial) {
+  if (!el || !el.textContent.trim()) return;
+  const parent = el.parentElement;
+  if (!parent) return;
+
+  let size = maxInitial;
+  el.style.fontSize = size + "px";
+
+  let safety = 60;
+  while (
+    (el.scrollHeight > parent.clientHeight || el.scrollWidth > parent.clientWidth) &&
+    size > 7 && safety > 0
+  ) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+    safety--;
+  }
+}
+
+function autoFitAll(container) {
+  if (!container) return;
+  container.querySelectorAll(".label-card").forEach(lbl => {
+    fitSingleElement(lbl.querySelector(".store-text"), 15);
+    fitSingleElement(lbl.querySelector(".item-code"), 12);
+    fitSingleElement(lbl.querySelector(".product"), 26);
+    fitSingleElement(lbl.querySelector(".price"), 38);
+    fitSingleElement(lbl.querySelector(".fruit-info"), 14);
+    fitSingleElement(lbl.querySelector(".ean-text"), 11);
+    fitSingleElement(lbl.querySelector(".promo-text"), 9);
+    fitSingleElement(lbl.querySelector(".print-date"), 8);
+  });
+}
+
 let updateTimer = null;
 function updateLabelDebounced() {
   clearTimeout(updateTimer);
-  updateTimer = setTimeout(() => updateLabel(false), 80);
+  updateTimer = setTimeout(() => updateLabel(false), 60);
 }
 
 function updateLabel(isPrinting = false) {
@@ -573,7 +738,6 @@ function updateLabel(isPrinting = false) {
   const formatVal = $("presetSizes").value;
   const isAmanhecer = formatVal === "amanhecer";
   const isA6 = formatVal === "A6";
-  const isFruit = (val => val === "A6" || val === "125x80")(formatVal);
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   const dims = getDimensions();
 
@@ -591,8 +755,8 @@ function updateLabel(isPrinting = false) {
   const productVal = ($("product").value || "").trim().toUpperCase();
   const codeVal = ($("internalCode").value || "").trim().toUpperCase();
   const printDateStr = getPrintDateStr();
-  const ean = onlyDigits($("ean").value);
-  const barcodeVal = codeVal || ean || "5601227849374";
+  
+  const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
 
   const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
   const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
@@ -608,7 +772,7 @@ function updateLabel(isPrinting = false) {
     
     if (price !== null) {
       if (capacityUnit === "peso") {
-        priceStr = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
+        priceStr = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:0.55em; margin-left:2px; color:#333;">€/KG</span>';
       } else if (capacity > 0) {
         let unitPrice = (capacityUnit === "g") ? price / (capacity / 1000) : price / capacity;
         let displayUnit = (capacityUnit === "g") ? "KG" : (capacityUnit === "lt" ? "LT" : "UN");
@@ -629,40 +793,40 @@ function updateLabel(isPrinting = false) {
       labelDiv.className = "label-card";
       labelDiv.style.width = isPrinting ? "100%" : "70mm";
       labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "38mm";
-      labelDiv.style.padding = "3px 6px";
+      labelDiv.style.padding = "2px 5px";
 
       labelDiv.innerHTML = `
         <div class="header">
           <div class="logo-wrapper-1">${logo1HTML}</div>
           <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
+          <div class="header-store-container"><div class="store-text fit-target">${storeVal}</div></div>
         </div>
         <div class="main-content">
           <div class="left-column">
-            <div style="font-size:9px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
-            <div class="price">${priceStr}</div>
-            <div style="font-size:10px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
+            <div class="item-code fit-target" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+            <div class="product fit-target">${productVal || 'NOME DO PRODUTO'}</div>
+            <div class="price fit-target">${priceStr}</div>
+            <div class="fit-target" style="font-size:9px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
             <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
-            <div style="font-size:10px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
+            <div class="fit-target" style="font-size:9px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
           </div>
           <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
         </div>
-        <div class="barcode-container">
+        <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
           <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
+          <div class="ean-text fit-target">${barcodeVal}</div>
         </div>
         <div class="footer-container">
-          <div class="promo-container"><div class="promo-text">${promoStr}</div></div>
-          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+          <div class="promo-text fit-target">${promoStr}</div>
+          <div class="print-date fit-target">${printDateStr}</div>
         </div>
       `;
       previewWrap.appendChild(labelDiv);
-      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+      if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
     }
 
   } else {
-    // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL
+    // FORMATOS SOLTOS COM DIMENSIONAMENTO REAL E SUPORTE DINÂMICO
     previewWrap.className = "preview-wrap";
     const price = parsePrice($("price")?.value);
     const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "0,00";
@@ -686,19 +850,19 @@ function updateLabel(isPrinting = false) {
       labelDiv.className = "label-card";
       labelDiv.style.width = dims.width + "mm";
       labelDiv.style.height = dims.height + "mm";
-      labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "4px 8px";
+      labelDiv.style.padding = (dims.height > 60) ? "6px 10px" : "3px 6px";
 
       let dualPriceHTML = "";
       if (isA6 && bulkPriceFormatted) {
         dualPriceHTML = `
-          <div class="size-row" style="width:100%; gap:6px; margin: 4px 0;">
-            <div style="border:1px solid #ccc; border-radius:4px; padding:3px; text-align:center;">
-              <div style="font-size:9px; color:#555;">PREÇO KG</div>
-              <div style="font-size:20px; font-weight:bold;">${priceFormatted} €</div>
+          <div class="size-row" style="width:100%; gap:4px; margin: 2px 0;">
+            <div style="border:1px solid #ccc; border-radius:4px; padding:2px; text-align:center;">
+              <div style="font-size:8px; color:#555;">PREÇO KG</div>
+              <div class="price fit-target" style="font-size:18px;">${priceFormatted} €</div>
             </div>
-            <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:3px; text-align:center;">
-              <div style="font-size:9px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
-              <div style="font-size:20px; font-weight:bold; color:#c8102e;">${bulkPriceFormatted} €</div>
+            <div style="border:2px solid #c8102e; background:#fff5f5; border-radius:4px; padding:2px; text-align:center;">
+              <div style="font-size:8px; color:#c8102e; font-weight:bold;">${bulkLabelVal}</div>
+              <div class="price fit-target" style="font-size:18px; color:#c8102e;">${bulkPriceFormatted} €</div>
             </div>
           </div>
         `;
@@ -708,32 +872,37 @@ function updateLabel(isPrinting = false) {
         <div class="header">
           <div class="logo-wrapper-1">${logo1HTML}</div>
           <div class="logo-wrapper-2">${logo2HTML}</div>
-          <div class="header-store-container"><div class="store-text">${storeVal}</div></div>
+          <div class="header-store-container"><div class="store-text fit-target">${storeVal}</div></div>
         </div>
         <div class="main-content">
           <div class="left-column">
-            <div style="font-size:10px; font-weight:bold; color:#444; display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
-            <div class="product" style="font-size:${dims.height > 60 ? '20px' : '13px'};">${productVal || 'NOME DO PRODUTO'}</div>
-            ${dualPriceHTML ? dualPriceHTML : `<div class="price" style="font-size:${dims.height > 60 ? '34px' : '24px'};">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
-            <div class="fruit-info" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
+            <div class="item-code fit-target" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
+            <div class="product fit-target">${productVal || 'NOME DO PRODUTO'}</div>
+            ${dualPriceHTML ? dualPriceHTML : `<div class="price fit-target">${priceFormatted} <span style="font-size:0.5em; color:#333;">€/KG</span></div>`}
+            <div class="fruit-info fit-target" style="display:${fruitStr ? 'block' : 'none'};">${fruitStr}</div>
           </div>
           <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
         </div>
-        <div class="barcode-container">
+        <div class="barcode-container" style="display:${barcodeVal ? 'flex' : 'none'};">
           <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-          <div class="ean-container"><div class="ean-text">${barcodeVal}</div></div>
+          <div class="ean-text fit-target">${barcodeVal}</div>
         </div>
         <div class="footer-container">
-          <div class="promo-container"><div class="promo-text">Preço sujeito às condições comerciais em vigor.</div></div>
-          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+          <div class="promo-text fit-target">Preço sujeito às condições comerciais em vigor.</div>
+          <div class="print-date fit-target">${printDateStr}</div>
         </div>
       `;
       previewWrap.appendChild(labelDiv);
-      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+      if (barcodeVal) drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
     }
   }
+
+  requestAnimationFrame(() => {
+    autoFitAll(previewWrap);
+  });
 }
 
+// ATUALIZAÇÃO DE INTERFACE
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
   const isFruit = (val === "A6" || val === "125x80");
@@ -795,7 +964,7 @@ function triggerPrint() {
   setTimeout(() => {
     window.print();
     updateLabel(false);
-  }, 100);
+  }, 120);
 }
 
 function saveToHistory() {
