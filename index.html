@@ -109,7 +109,6 @@
     background: transparent;
   }
 
-  /* BARRA TÉCNICA DE ORIGEM/CAT/CAL EM TODA A LARGURA (NUNCA CORTA) */
   .fruit-full-bar {
     width: 100%;
     display: none;
@@ -173,7 +172,7 @@
   
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
+  .ean-text { font-family: monospace; font-size: 7px; font-weight: bold; line-height: 1; text-transform: none; letter-spacing: 0.2px; }
   .promo-text { font-size: 7px; color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; line-height: 1; }
   .print-date { font-size: 6.5px; color: #666; white-space: nowrap; line-height: 1; }
 
@@ -450,9 +449,9 @@
         </div>
       </div>
 
-      <!-- CÓDIGO DE BARRAS -->
-      <label for="ean">Código de Barras (EAN / Código)</label>
-      <input id="ean" type="text" style="text-transform: none;" placeholder="Insira o código (Ex.: 5601234567890 ou cod123)">
+      <!-- CÓDIGO DE BARRAS (SUPORTE ATÉ 14 DÍGITOS) -->
+      <label for="ean">Código de Barras (EAN-13, EAN-14 / Código)</label>
+      <input id="ean" type="text" style="text-transform: none;" placeholder="Insira até 14 dígitos (Ex.: 56012345678901)">
 
       <!-- FOTOGRAFIA -->
       <label for="photo">Fotografia do Produto (Opcional)</label>
@@ -537,7 +536,7 @@
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
           </div>
 
-          <!-- BARRA HORIZONTAL COMPLETA DE ORIGEM / CAT / CAL (LARGURA TOTAL 100%) -->
+          <!-- BARRA HORIZONTAL DE ORIGEM / CAT / CAL -->
           <div class="fruit-full-bar" id="cardFruit"></div>
 
           <div class="barcode-container" id="cardBarcodeBox">
@@ -668,6 +667,9 @@ function isValidEAN13(v) {
   return d.length === 13 && ean13CheckDigit(d.slice(0,12)) === d[12];
 }
 
+/* ============================================================ */
+/* MOTOR DE CÓDIGO DE BARRAS AVANÇADO (SUPORTE 13 E 14 DÍGITOS)   */
+/* ============================================================ */
 function drawBarcode(svg, value) {
   if (!svg) return;
   svg.innerHTML = "";
@@ -676,6 +678,9 @@ function drawBarcode(svg, value) {
 
   if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {
     drawEAN13(svg, cleanVal);
+  } else if ((cleanVal.length === 14 || cleanVal.length === 8) && /^\d+$/.test(cleanVal)) {
+    // Se for EAN-14 ou EAN-8 numérico, usa Code 128 otimizado para leitura linear perfeita
+    drawCode128(svg, cleanVal);
   } else {
     drawCode128(svg, cleanVal);
   }
@@ -898,7 +903,6 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // ORIGEM / CAT / CAL - NA BARRA INFERIOR DE LARGURA TOTAL (NUNCA CORTA)
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
@@ -915,7 +919,6 @@ function updateCard() {
     if (isLarge) {
       $("cardFruit").style.fontSize = (formatVal === "A5") ? "15px" : "13px";
     } else {
-      // Ajuste automático de escala para caber sem cortar nada
       if (fullText.length > 38) {
         $("cardFruit").style.fontSize = "7.2px";
       } else if (fullText.length > 30) {
