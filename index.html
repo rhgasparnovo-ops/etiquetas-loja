@@ -156,19 +156,18 @@
   
   .price { font-size: 22px; font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  /* LINHA ÚNICA BLINDADA PARA ORIGEM / CAT / CAL */
+  /* LINHA COMPLETA 100% VISÍVEL (SEM CORTE E SEM RETICÊNCIAS) */
   .fruit-info { 
-    font-size: 8.5px; 
+    font-size: 8px; 
     text-transform: uppercase; 
     font-weight: 800; 
     color: #084298; 
     display: none; 
     line-height: 1; 
     white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    max-width: 98%; 
-    letter-spacing: -0.2px;
+    overflow: visible; 
+    width: 100%; 
+    text-align: center;
   }
 
   .ean-text { font-family: monospace; font-size: 7.5px; font-weight: bold; line-height: 1; text-transform: none; }
@@ -530,7 +529,7 @@
               <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-size:7px; font-weight:900;" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="font-size:8px; color:#333; display:none; line-height:1;"></div>
               
-              <!-- LINHA ÚNICA GARANTIDA -->
+              <!-- ORIGEM / CAT / CAL SEMPRE COMPLETO -->
               <div class="fruit-info" id="cardFruit"></div>
             </div>
             <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
@@ -805,7 +804,6 @@ function updateCard() {
   const dims = getDimensions();
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
-  const showOrientation = isLargeFormat(formatVal);
 
   const card = $("mainLabelCard");
   if (isAmanhecer) {
@@ -893,19 +891,32 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // ORIGEM / CAT / CAL - LINHA ÚNICA
+  // ORIGEM / CAT / CAL - LINHA ÚNICA NUNCA CORTADA
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
   let parts = [];
   if (org) parts.push("Origem: " + org);
-  if (cat) parts.push("Cat: " + cat);
-  if (cal) parts.push("Cal: " + cal);
+  if (cat) parts.push("Cat. " + cat);
+  if (cal) parts.push("Cal. " + cal);
   
   if (parts.length > 0) {
+    const fullText = parts.join(" • ");
     $("cardFruit").style.display = "block";
-    $("cardFruit").textContent = parts.join(" | ");
-    $("cardFruit").style.fontSize = isLarge ? "13px" : "8.5px";
+    $("cardFruit").textContent = fullText;
+    
+    // Auto-escala do tamanho de letra para garantir que cabe 100% sem reticências
+    if (isLarge) {
+      $("cardFruit").style.fontSize = (formatVal === "A5") ? "15px" : "13px";
+    } else {
+      if (fullText.length > 36) {
+        $("cardFruit").style.fontSize = "7.2px";
+      } else if (fullText.length > 28) {
+        $("cardFruit").style.fontSize = "7.8px";
+      } else {
+        $("cardFruit").style.fontSize = "8.5px";
+      }
+    }
     $("cardFruit").style.marginTop = isLarge ? "4px" : "1px";
   } else {
     $("cardFruit").style.display = "none";
