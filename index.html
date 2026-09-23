@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Etiquetas de Preço - Balcão Agrícola</title>
+<title>Gerador de Etiquetas de Preço — Balcão Agrícola</title>
 <style>
   :root { 
     --red:#c8102e; 
@@ -14,10 +14,10 @@
     --offset-y: -6mm; 
   }
   * { box-sizing:border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f2f3f5; color:var(--dark); }
-  .app { max-width:1200px; margin:0 auto; padding:20px; }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#dcdde1; color:var(--dark); }
+  .app { max-width:1440px; margin:0 auto; padding:20px; }
   
-  /* TOPO PRINCIPAL COM NOME DA EMPRESA E LOGOS */
+  /* TOPO PRINCIPAL */
   .top-header {
     display: flex;
     justify-content: space-between;
@@ -26,16 +26,15 @@
     padding: 14px 24px;
     border-radius: 12px;
     border: 1px solid var(--border);
-    box-shadow: 0 3px 12px #0000000a;
-    margin-bottom: 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
     gap: 16px;
   }
   .top-header h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 22px;
     color: var(--dark);
     font-weight: 800;
-    letter-spacing: -0.3px;
   }
   .top-logos {
     display: flex;
@@ -43,37 +42,94 @@
     gap: 16px;
   }
   .top-logos img {
-    height: 44px;
+    height: 42px;
     max-width: 140px;
     object-fit: contain;
   }
   .top-logos .divider {
     width: 1px;
-    height: 32px;
+    height: 30px;
     background: #e0e0e0;
   }
 
-  .grid { display:grid; grid-template-columns:360px 1fr; gap:24px; align-items:start; }
-  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 3px 12px #0000000d; }
-  label { display:block; font-weight:700; margin:14px 0 6px; }
-  input, button, select { width:100%; padding:11px 12px; border:1px solid #bbb; border-radius:7px; font-size:15px; }
-  input[type="file"] { padding:8px; }
+  .grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
+  .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
+  label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
+  input, button, select { width:100%; padding:10px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
+  input[type="file"] { padding:6px; }
   button { cursor:pointer; font-weight:700; }
-  .primary { background:var(--red); color:#fff; border-color:var(--red); }
-  .secondary { background:#fff; }
-  .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
-  .status { min-height:18px; margin-top:8px; font-size:13px; }
-  .preview-wrap { min-height:560px; display:flex; justify-content:center; align-items:flex-start; padding:24px; background:#e9eaec; border-radius:10px; flex-wrap: wrap; gap: 10px; }
-  
-  .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 14px; display: none; }
-  .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 14px; }
+  .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
+  .secondary { background:#fff; font-size:15px; }
+  .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
 
-  /* ETIQUETA FOLHA AMANHECER E PADRÃO */
+  /* BOTÕES DE ATALHO RÁPIDO */
+  .quick-chips { display: flex; gap: 6px; margin-top: 5px; }
+  .chip-btn {
+    width: auto; padding: 4px 10px; font-size: 11px; font-weight: 600;
+    background: #f1f2f6; border: 1px solid #ced6e0; border-radius: 4px;
+    cursor: pointer; transition: 0.15s;
+  }
+  .chip-btn:hover { background: #dfe4ea; border-color: #a4b0be; }
+
+  /* HISTÓRICO DE ARTIGOS RECENTES */
+  .history-box {
+    margin-top: 18px; border-top: 1px solid #e1e2e6; padding-top: 12px;
+  }
+  .history-title { font-size: 12px; font-weight: 700; color: #57606f; margin-bottom: 8px; text-transform: uppercase; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 90px; overflow-y: auto; }
+  .history-item {
+    font-size: 11px; background: #f8f9fa; border: 1px solid #dcdde1; padding: 4px 8px;
+    border-radius: 4px; cursor: pointer; white-space: nowrap;
+  }
+  .history-item:hover { background: #ffeaa7; border-color: #fdcb6e; }
+
+  /* SIMULAÇÃO DE FOLHA DE IMPRESSÃO REAL NO ECRÃ */
+  .sheet-viewport {
+    background: #747d8c;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: auto;
+    min-height: 800px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .paper-sheet {
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    transform-origin: top center;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* FORMATO A4 EXATO */
+  .paper-a4 {
+    width: 210mm;
+    min-height: 297mm;
+    height: 297mm;
+    padding: 0;
+  }
+
+  .preview-wrap.amanhecer-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 70mm) !important;
+    grid-template-rows: 38mm repeat(6, 40mm) !important;
+    margin-left: var(--offset-x);
+    margin-top: var(--offset-y);
+    width: 210mm;
+  }
+
+  .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+  .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
+
+  /* ETIQUETA FOLHA AMANHECER */
   .label {
-    background: #fff; border: 1px solid #ccc;
+    background: #fff;
     display: flex; flex-direction: column;
-    padding: 3px 5px; gap: 0px; box-sizing: border-box; 
+    padding: 3px 5px; box-sizing: border-box; 
     overflow: hidden; position: relative;
+    border: 1px dashed #e4e7ea;
   }
   .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; overflow: hidden; gap: 4px; }
   .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; justify-content: flex-start; align-items: center; overflow: hidden; }
@@ -92,7 +148,6 @@
   .unit-price-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
   .deposit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
   .unit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
-  .fruit-container { flex: 0 0 12%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; padding: 2px; }
 
   .deposit-text { white-space: nowrap; text-align: center; font-size: 8px; font-weight: 900; color: #c8102e; background: #fff5f5; padding: 0 3px; border-radius: 2px; border: 1px solid #fed7d7; line-height: 1; }
 
@@ -124,6 +179,7 @@
     padding: 6px 10px; gap: 3px; box-sizing: border-box; 
     overflow: hidden; position: relative;
     width: 125mm; height: 80mm;
+    margin: 10px auto;
   }
   .f125-header { flex: 0 0 15%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
   .f125-main { flex: 1 1 auto; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
@@ -139,6 +195,7 @@
     padding: 10px 14px; gap: 6px; box-sizing: border-box; 
     overflow: hidden; position: relative;
     width: 105mm; height: 148mm;
+    margin: 10px auto;
   }
   .a6-header { flex: 0 0 14%; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
   .a6-main { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 6px; }
@@ -158,10 +215,11 @@
 
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  @media(max-width:850px){ 
+  
+  @media(max-width:980px){ 
     .top-header { flex-direction: column; align-items: flex-start; }
     .grid { grid-template-columns:1fr; } 
-    .preview-wrap { min-height:400px; } 
+    .sheet-viewport { padding: 10px; }
   }
   
   @media print {
@@ -169,46 +227,33 @@
     body { background: #fff; margin: 0; padding: 0; }
     body * { visibility: hidden !important; }
     .print-area, .print-area * { visibility: visible !important; }
-    .print-area { position: absolute; left: 0; top: 0; width: 100%; }
+    .print-area { position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; padding: 0 !important; box-shadow: none !important; }
     
-    .preview-wrap.amanhecer-sheet { 
-      display: grid !important; 
-      grid-template-columns: repeat(3, 70mm) !important; 
-      grid-template-rows: 38mm repeat(6, 40mm) !important; 
-      justify-content: start !important; align-content: start !important;
-      gap: 0 !important; padding: 0 !important; 
-      background: transparent !important;
-      width: 210mm !important; height: 278mm !important; 
+    .paper-sheet { box-shadow: none !important; margin: 0 !important; }
+    .preview-wrap.amanhecer-grid { 
       margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
     }
-    .preview-wrap.amanhecer-sheet .label { 
+    .preview-wrap.amanhecer-grid .label { 
       width: 100% !important; height: 100% !important; 
       border: 1px solid transparent !important; page-break-inside: avoid; margin: 0 !important;
       padding: 3px 5px !important; 
     }
-    .preview-wrap.amanhecer-sheet .label:nth-child(1),
-    .preview-wrap.amanhecer-sheet .label:nth-child(2),
-    .preview-wrap.amanhecer-sheet .label:nth-child(3) { padding-top: 3mm !important; }
-    .preview-wrap.amanhecer-sheet .label:nth-child(3n + 1) { padding-left: 6.5mm !important; }
-    .preview-wrap.amanhecer-sheet .label:nth-child(3n) { padding-right: 6.5mm !important; }
+    .preview-wrap.amanhecer-grid .label:nth-child(1),
+    .preview-wrap.amanhecer-grid .label:nth-child(2),
+    .preview-wrap.amanhecer-grid .label:nth-child(3) { padding-top: 3mm !important; }
+    .preview-wrap.amanhecer-grid .label:nth-child(3n + 1) { padding-left: 6.5mm !important; }
+    .preview-wrap.amanhecer-grid .label:nth-child(3n) { padding-right: 6.5mm !important; }
 
-    .preview-wrap:not(.amanhecer-sheet) {
-      display: flex !important; flex-wrap: wrap !important;
-      gap: 5mm !important; padding: 5mm !important;
-      justify-content: center !important; align-content: center !important;
-      width: 100% !important;
-    }
-    .preview-wrap:not(.amanhecer-sheet) .label,
-    .preview-wrap:not(.amanhecer-sheet) .fruit-label-125x80,
-    .preview-wrap:not(.amanhecer-sheet) .a6-label {
-      border: 1px solid #111 !important; page-break-after: always;
+    .preview-wrap:not(.amanhecer-grid) .fruit-label-125x80,
+    .preview-wrap:not(.amanhecer-grid) .a6-label {
+      border: 1px solid #111 !important; page-break-after: always; margin: 0 !important;
     }
   }
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- CABEÇALHO PROFISSIONAL COM EMPRESA E LOGOS -->
+  <!-- CABEÇALHO COM LOGOS -->
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
@@ -219,17 +264,17 @@
   </header>
 
   <div class="grid">
+    <!-- PAINEL DE CONTROLO -->
     <section class="panel">
 
       <label for="presetSizes">Formato / Tipo de Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 10px; background-color: #fffbdd; border-color: #f6c23e;">
         <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas)</option>
-        <option value="125x80">🍎 Fruta 125x80mm (Normal + Imagem + Código)</option>
-        <option value="A6">📄 Tabuleta Fruta A6 (Duplo Preço a partir de 2 kg + Imagem Grande)</option>
+        <option value="125x80">🍎 Fruta 125x80mm (Normal + Imagem)</option>
+        <option value="A6">📄 Tabuleta Fruta A6 (Duplo Preço ≥ 2kg + Imagem)</option>
         <option value="72x38">Etiqueta Prateleira (72 x 38 mm)</option>
         <option value="100x70">Grande / Promoção (100 x 70 mm)</option>
         <option value="50x30">Pequena / Talas (50 x 30 mm)</option>
-        <option value="custom">Outro tamanho (personalizado)</option>
       </select>
 
       <label for="store">Loja</label>
@@ -241,68 +286,82 @@
       <label for="internalCode">Código Interno</label>
       <input id="internalCode" type="text" placeholder="Ex.: DR058860">
 
-      <label for="product">Produto</label>
-      <input id="product" type="text" placeholder="Nome do produto">
+      <label for="product">Produto / Variedade</label>
+      <input id="product" type="text" placeholder="Ex.: MAÇÃ GALA">
 
-      <!-- SECÇÃO EXCLUSIVA DE FRUTARIA -->
+      <!-- DETALHES DE FRUTARIA COM ATALHOS RÁPIDOS -->
       <div class="fruit-panel" id="fruitPanel">
-        <h4>🍎 Detalhes Fruta / Legumes</h4>
+        <h4>🍎 Detalhes Fruta e Legumes</h4>
         <div class="size-row-3">
           <div>
             <label for="origem" style="font-size:11px; margin-top:0;">Origem</label>
-            <input id="origem" type="text" placeholder="Ex.: Portugal">
+            <input id="origem" type="text" placeholder="PORTUGAL">
+            <div class="quick-chips">
+              <span class="chip-btn" onclick="setField('origem', 'PORTUGAL')">PT</span>
+              <span class="chip-btn" onclick="setField('origem', 'ESPANHA')">ES</span>
+            </div>
           </div>
           <div>
             <label for="categoria" style="font-size:11px; margin-top:0;">Categoria</label>
-            <input id="categoria" type="text" placeholder="Ex.: I">
+            <input id="categoria" type="text" placeholder="I">
+            <div class="quick-chips">
+              <span class="chip-btn" onclick="setField('categoria', 'I')">Cat I</span>
+              <span class="chip-btn" onclick="setField('categoria', 'II')">Cat II</span>
+            </div>
           </div>
           <div>
             <label for="calibre" style="font-size:11px; margin-top:0;">Calibre</label>
-            <input id="calibre" type="text" placeholder="Ex.: 65/70">
+            <input id="calibre" type="text" placeholder="65/70">
           </div>
         </div>
-        <div id="bulkPriceContainer" style="display:none;">
-          <label for="bulkPrice" style="font-size:11px; margin-top:8px;">Preço Promocional p/ Quantidade (€) (A partir de 2 kg)</label>
-          <input id="bulkPrice" type="number" min="0" step="0.01" placeholder="Ex.: 1.59">
-          <label for="bulkLabel" style="font-size:11px; margin-top:8px;">Descrição da Quantidade</label>
+
+        <div id="bulkPriceContainer" style="display:none; margin-top: 10px;">
+          <label for="bulkPrice" style="font-size:11px; margin-top:0;">Preço Especial (≥ 2 KG) (€/KG)</label>
+          <input id="bulkPrice" type="text" inputmode="decimal" placeholder="Ex.: 1,59">
+          <label for="bulkLabel" style="font-size:11px; margin-top:6px;">Descrição da Quantidade</label>
           <input id="bulkLabel" type="text" value="A partir de 2 KG">
         </div>
       </div>
 
+      <!-- PREÇO E UNIDADE -->
       <div id="standardPricePanel">
-        <label for="price">Preço da Embalagem / KG (€)</label>
-        <input id="price" type="number" min="0" step="0.01" placeholder="0.00">
+        <label for="price">Preço Base (€)</label>
+        <input id="price" type="text" inputmode="decimal" placeholder="Ex.: 1,89">
         
-        <div class="size-row">
-          <div>
-            <label for="capacity">Quantidade</label>
-            <input id="capacity" type="number" min="0.001" step="0.001" value="1">
-          </div>
-          <div>
-            <label for="capacityUnit">Unidade</label>
-            <select id="capacityUnit">
-              <option value="kg" selected>Quilos (KG) -> €/KG</option>
-              <option value="g">Gramas (g) -> €/KG</option>
-              <option value="lt">Litros (LT) -> €/LT</option>
-              <option value="ml">Mililitros (ml) -> €/LT</option>
-              <option value="un">Unidades (UN) -> €/UN</option>
-              <option value="peso">⚖️ Venda ao Peso (Só €/KG)</option>
-            </select>
+        <div id="packagingRow" style="display:none; margin-top: 8px;">
+          <div class="size-row">
+            <div>
+              <label for="capacity">Quantidade Embalagem</label>
+              <input id="capacity" type="number" min="0.001" step="0.001" value="1">
+            </div>
+            <div>
+              <label for="capacityUnit">Tipo de Venda / Unidade</label>
+              <select id="capacityUnit">
+                <option value="peso" selected>Venda ao KG (€/KG)</option>
+                <option value="g">Embalado em Gramas (g)</option>
+                <option value="lt">Litros (LT)</option>
+                <option value="un">Unidades (UN)</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <label for="depositFeeSelect">Taxa de Garrafa / Vasilhame</label>
-        <select id="depositFeeSelect" style="margin-bottom: 6px;">
-          <option value="" selected>Nenhuma (Sem taxa)</option>
-          <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
-          <option value="custom">Outro valor...</option>
-        </select>
-        <input id="depositFeeCustom" type="text" placeholder="Escreva o valor..." style="display:none;">
+        <div id="depositContainer" style="margin-top: 8px;">
+          <label for="depositFeeSelect">Taxa de Garrafa / Vasilhame</label>
+          <select id="depositFeeSelect">
+            <option value="" selected>Nenhuma (Sem taxa)</option>
+            <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
+            <option value="custom">Outro valor...</option>
+          </select>
+          <input id="depositFeeCustom" type="text" placeholder="Escreva o valor..." style="display:none; margin-top: 5px;">
+        </div>
 
-        <label for="unit">Informação Extra (Opcional)</label>
-        <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
+        <div id="extraUnitContainer" style="margin-top: 8px;">
+          <label for="unit">Informação Extra (Opcional)</label>
+          <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
+        </div>
         
-        <div class="size-row">
+        <div id="promoDatesRow" class="size-row" style="margin-top: 8px;">
           <div>
             <label for="promoStart">Início Promoção</label>
             <input id="promoStart" type="date">
@@ -314,34 +373,32 @@
         </div>
       </div>
 
-      <label for="ean">EAN-13 (Opcional se usar Código Interno)</label>
-      <input id="ean" type="text" inputmode="numeric" maxlength="13" placeholder="5601234567890">
+      <label for="ean">Código de Barras (EAN-13 ou Código Interno)</label>
+      <input id="ean" type="text" placeholder="Ex.: 5601234567890 ou DR058860">
 
-      <label for="photo">Imagem adicional do produto (opcional)</label>
+      <label for="photo">Fotografia do Produto (Opcional)</label>
       <input id="photo" type="file" accept="image/*">
 
-      <div class="size-row" id="customSizeRow" style="display:none;">
-        <div>
-          <label for="labelWidth">Largura (mm)</label>
-          <input id="labelWidth" type="number" value="70">
-        </div>
-        <div>
-          <label for="labelHeight">Altura (mm)</label>
-          <input id="labelHeight" type="number" value="40">
-        </div>
-      </div>
-
-      <label for="copiesCount">Número de Cópias Iguais</label>
+      <label for="copiesCount" id="copiesLabel">Número de Cópias</label>
       <input id="copiesCount" type="number" min="1" max="100" value="21">
 
       <div class="actions">
-        <button class="primary" id="printBtn" type="button">🖨️ Imprimir etiqueta(s)</button>
+        <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
         <button class="secondary" id="clearBtn" type="button">Limpar</button>
+      </div>
+
+      <!-- HISTÓRICO DE ARTIGOS -->
+      <div class="history-box">
+        <div class="history-title">🕒 Últimos Artigos Emitidos</div>
+        <div class="history-list" id="historyList"></div>
       </div>
     </section>
 
-    <section class="panel print-area">
-      <div class="preview-wrap amanhecer-sheet" id="previewWrap"></div>
+    <!-- ÁREA DE PRÉ-VISUALIZAÇÃO DE FOLHA REAL -->
+    <section class="sheet-viewport print-area">
+      <div class="paper-sheet paper-a4" id="paperSheet">
+        <div class="preview-wrap amanhecer-grid" id="previewWrap"></div>
+      </div>
     </section>
   </div>
 </div>
@@ -354,6 +411,20 @@ const $ = id => document.getElementById(id);
 const globalLogoAgricola = "https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000";
 const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000";
 let globalPhotoData = "";
+
+// ATALHO RÁPIDO PARA BOTÕES CHIP
+function setField(fieldId, val) {
+  $(fieldId).value = val;
+  updateLabel();
+}
+
+// CONVERSÃO INTELIGENTE DE PREÇO (ACEITA VÍRGULA E PONTO)
+function parsePrice(valStr) {
+  if (!valStr) return null;
+  const clean = String(valStr).replace(",", ".").trim();
+  const num = parseFloat(clean);
+  return Number.isFinite(num) ? num : null;
+}
 
 function formatPromoDate(startStr, endStr) {
   if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
@@ -499,7 +570,8 @@ function fitText(textElement, containerElement, startSize) {
 
 function updateLabel() {
   const previewWrap = $("previewWrap");
-  if (!previewWrap) return;
+  const paperSheet = $("paperSheet");
+  if (!previewWrap || !paperSheet) return;
 
   const formatVal = $("presetSizes").value;
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
@@ -507,9 +579,20 @@ function updateLabel() {
   const isA6 = formatVal === "A6";
   const is125x80 = formatVal === "125x80";
   
+  // CONFIGURAÇÃO VISUAL DA FOLHA DE PAPEL
+  if (isAmanhecer) {
+    paperSheet.className = "paper-sheet paper-a4";
+    previewWrap.className = "preview-wrap amanhecer-grid";
+  } else {
+    paperSheet.className = "paper-sheet";
+    paperSheet.style.width = "auto";
+    paperSheet.style.height = "auto";
+    previewWrap.className = "preview-wrap";
+  }
+
   const storeVal = $("store").value;
-  const productVal = $("product").value.trim() || "";
-  const codeVal = $("internalCode").value.trim();
+  const productVal = $("product").value.trim().toUpperCase() || "";
+  const codeVal = $("internalCode").value.trim().toUpperCase();
   const printDateStr = getPrintDateStr();
   const ean = onlyDigits($("ean").value);
   const barcodeVal = codeVal || ean || "";
@@ -520,136 +603,136 @@ function updateLabel() {
   previewWrap.innerHTML = "";
 
   if (isA6) {
-    const rawPrice = $("price")?.value;
-    const price = Number(rawPrice);
-    const priceFormatted = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const price = parsePrice($("price")?.value);
+    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
     
-    const rawBulk = $("bulkPrice").value;
-    const bulkPrice = Number(rawBulk);
-    const bulkPriceFormatted = (rawBulk !== "" && Number.isFinite(bulkPrice) && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const bulkPrice = parsePrice($("bulkPrice").value);
+    const bulkPriceFormatted = (bulkPrice !== null && bulkPrice > 0) ? bulkPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
     const bulkLabelVal = $("bulkLabel").value.trim() || "A partir de 2 KG";
 
-    const origemVal = $("origem").value.trim();
-    const categoriaVal = $("categoria").value.trim();
-    const calibreVal = $("calibre").value.trim();
+    const origemVal = $("origem").value.trim().toUpperCase();
+    const categoriaVal = $("categoria").value.trim().toUpperCase();
+    const calibreVal = $("calibre").value.trim().toUpperCase();
     let fruitParts = [];
     if (origemVal) fruitParts.push("Origem: " + origemVal);
     if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
     if (calibreVal) fruitParts.push("Cal: " + calibreVal);
     const fruitStr = fruitParts.join(" | ");
 
-    const labelDiv = document.createElement("div");
-    labelDiv.className = "a6-label";
+    for (let c = 0; c < copies; c++) {
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "a6-label";
 
-    let dualPriceHTML = `
-      <div class="a6-price-normal">
-        <div class="price-label">Preço por KG</div>
-        <div class="price-main">${priceFormatted ? priceFormatted + ' <span style="font-size:0.6em; color:#444;">€/KG</span>' : '—'}</div>
-      </div>
-    `;
-
-    if (bulkPriceFormatted) {
-      dualPriceHTML += `
-        <div class="a6-price-bulk">
-          <div class="price-label" style="color:#c8102e; font-weight:900;">${bulkLabelVal}</div>
-          <div class="price-main price-bulk-main">${bulkPriceFormatted} <span style="font-size:0.6em; color:#c8102e;">€/KG</span></div>
+      let dualPriceHTML = `
+        <div class="a6-price-normal">
+          <div class="price-label">Preço por KG</div>
+          <div class="price-main">${priceFormatted ? priceFormatted + ' <span style="font-size:0.6em; color:#444;">€/KG</span>' : '—'}</div>
         </div>
       `;
+
+      if (bulkPriceFormatted) {
+        dualPriceHTML += `
+          <div class="a6-price-bulk">
+            <div class="price-label" style="color:#c8102e; font-weight:900;">${bulkLabelVal}</div>
+            <div class="price-main price-bulk-main">${bulkPriceFormatted} <span style="font-size:0.6em; color:#c8102e;">€/KG</span></div>
+          </div>
+        `;
+      }
+
+      labelDiv.innerHTML = `
+        <div class="a6-header">
+          <div class="logo-wrapper-1">${logo1HTML}</div>
+          <div class="logo-wrapper-2">${logo2HTML}</div>
+          <div class="header-store-container">
+            <div class="store-text">${storeVal}</div>
+          </div>
+        </div>
+        <div class="a6-main">
+          <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;">
+            <div style="font-size:12px; font-weight:bold; color:#444; text-align:center; min-height:14px;">${codeVal}</div>
+            <div class="a6-product">${productVal}</div>
+          </div>
+          <div class="a6-image-box" style="display:${globalPhotoData ? 'flex' : 'none'};">
+            <img src="${globalPhotoData}" alt="Foto">
+          </div>
+          <div class="a6-dual-price">${dualPriceHTML}</div>
+          <div class="a6-fruit" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
+        </div>
+        <div class="a6-barcode">
+          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+          <div class="ean-container"><div class="ean-text" style="font-size:14px;">${barcodeVal}</div></div>
+        </div>
+        <div class="a6-footer">
+          <div>Preço sujeito às condições comerciais em vigor.</div>
+          <div>${printDateStr}</div>
+        </div>
+      `;
+      previewWrap.appendChild(labelDiv);
+      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
     }
 
-    labelDiv.innerHTML = `
-      <div class="a6-header">
-        <div class="logo-wrapper-1">${logo1HTML}</div>
-        <div class="logo-wrapper-2">${logo2HTML}</div>
-        <div class="header-store-container">
-          <div class="store-text">${storeVal}</div>
-        </div>
-      </div>
-      <div class="a6-main">
-        <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;">
-          <div style="font-size:12px; font-weight:bold; color:#444; text-align:center; min-height:14px;">${codeVal}</div>
-          <div class="a6-product">${productVal}</div>
-        </div>
-        <div class="a6-image-box" style="display:${globalPhotoData ? 'flex' : 'none'};">
-          <img src="${globalPhotoData}" alt="Foto">
-        </div>
-        <div class="a6-dual-price">${dualPriceHTML}</div>
-        <div class="a6-fruit" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
-      </div>
-      <div class="a6-barcode">
-        <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-        <div class="ean-container"><div class="ean-text" style="font-size:14px;">${barcodeVal}</div></div>
-      </div>
-      <div class="a6-footer">
-        <div>Preço sujeito às condições comerciais em vigor.</div>
-        <div>${printDateStr}</div>
-      </div>
-    `;
-    previewWrap.appendChild(labelDiv);
-    drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
-
   } else if (is125x80) {
-    const rawPrice = $("price")?.value;
-    const price = Number(rawPrice);
-    const priceFormatted = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
+    const price = parsePrice($("price")?.value);
+    const priceFormatted = price !== null ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) : "";
     
-    const origemVal = $("origem").value.trim();
-    const categoriaVal = $("categoria").value.trim();
-    const calibreVal = $("calibre").value.trim();
+    const origemVal = $("origem").value.trim().toUpperCase();
+    const categoriaVal = $("categoria").value.trim().toUpperCase();
+    const calibreVal = $("calibre").value.trim().toUpperCase();
     let fruitParts = [];
     if (origemVal) fruitParts.push("Origem: " + origemVal);
     if (categoriaVal) fruitParts.push("Cat: " + categoriaVal);
     if (calibreVal) fruitParts.push("Cal: " + calibreVal);
     const fruitStr = fruitParts.join(" | ");
 
-    const labelDiv = document.createElement("div");
-    labelDiv.className = "fruit-label-125x80";
-    let priceStr = priceFormatted ? priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>' : '—';
+    for (let c = 0; c < copies; c++) {
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "fruit-label-125x80";
+      let priceStr = priceFormatted ? priceFormatted + ' <span style="font-size:0.5em; margin-left:3px; color:#333;">€/KG</span>' : '—';
 
-    labelDiv.innerHTML = `
-      <div class="f125-header">
-        <div class="logo-wrapper-1">${logo1HTML}</div>
-        <div class="logo-wrapper-2">${logo2HTML}</div>
-        <div class="header-store-container">
-          <div class="store-text" style="font-size:14px;">${storeVal}</div>
-        </div>
-      </div>
-      <div class="f125-main">
-        <div class="f125-left">
-          <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-            <div style="font-size:10px; font-weight:bold; color:#444; text-align:center; min-height:12px;">${codeVal}</div>
-            <div class="f125-product">${productVal}</div>
+      labelDiv.innerHTML = `
+        <div class="f125-header">
+          <div class="logo-wrapper-1">${logo1HTML}</div>
+          <div class="logo-wrapper-2">${logo2HTML}</div>
+          <div class="header-store-container">
+            <div class="store-text" style="font-size:14px;">${storeVal}</div>
           </div>
-          <div class="price" style="font-size:32px;">${priceStr}</div>
-          <div class="fruit-info" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
         </div>
-        <div class="f125-right" style="display:${globalPhotoData ? 'flex' : 'none'};">
-          <img src="${globalPhotoData}" alt="Foto">
+        <div class="f125-main">
+          <div class="f125-left">
+            <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+              <div style="font-size:10px; font-weight:bold; color:#444; text-align:center; min-height:12px;">${codeVal}</div>
+              <div class="f125-product">${productVal}</div>
+            </div>
+            <div class="price" style="font-size:32px;">${priceStr}</div>
+            <div class="fruit-info" style="display:${fruitStr ? 'flex' : 'none'};">${fruitStr}</div>
+          </div>
+          <div class="f125-right" style="display:${globalPhotoData ? 'flex' : 'none'};">
+            <img src="${globalPhotoData}" alt="Foto">
+          </div>
         </div>
-      </div>
-      <div class="barcode-container">
-        <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
-        <div class="ean-container"><div class="ean-text" style="font-size:11px;">${barcodeVal}</div></div>
-      </div>
-      <div class="footer-container">
-        <div class="promo-container"><div class="promo-text">Preço sujeito às condições comerciais em vigor.</div></div>
-        <div class="print-container"><div class="print-date">${printDateStr}</div></div>
-      </div>
-    `;
-    previewWrap.appendChild(labelDiv);
-    drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+        <div class="barcode-container">
+          <div class="svg-container"><svg class="barcode-svg" preserveAspectRatio="none"></svg></div>
+          <div class="ean-container"><div class="ean-text" style="font-size:11px;">${barcodeVal}</div></div>
+        </div>
+        <div class="footer-container">
+          <div class="promo-container"><div class="promo-text">Preço sujeito às condições comerciais em vigor.</div></div>
+          <div class="print-container"><div class="print-date">${printDateStr}</div></div>
+        </div>
+      `;
+      previewWrap.appendChild(labelDiv);
+      drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
+    }
 
   } else {
-    // MODO FOLHA OFICIAL AMANHECER OU ETIQUETAS SOLTAS
-    const rawPrice = $("price").value;
-    const price = Number(rawPrice);
-    let priceStr = (rawPrice !== "" && Number.isFinite(price)) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "";
+    // MODO FOLHA OFICIAL AMANHECER (21 ETIQUETAS)
+    const price = parsePrice($("price").value);
+    let priceStr = (price !== null) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "";
 
     const capacity = Number($("capacity").value);
     const capacityUnit = $("capacityUnit").value;
     let unitPriceStr = "";
     
-    if (rawPrice !== "" && Number.isFinite(price)) {
+    if (price !== null) {
       if (capacityUnit === "peso") {
         const pFormat = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
         priceStr = pFormat + ' <span style="font-size:0.55em; margin-left:3px; color:#333;">€/KG</span>';
@@ -657,17 +740,10 @@ function updateLabel() {
         let unitPrice = 0;
         let displayUnit = "";
         if (capacityUnit === "g") { unitPrice = price / (capacity / 1000); displayUnit = "KG"; }
-        else if (capacityUnit === "kg") { unitPrice = price / capacity; displayUnit = "KG"; }
-        else if (capacityUnit === "ml") { unitPrice = price / (capacity / 1000); displayUnit = "LT"; }
         else if (capacityUnit === "lt") { unitPrice = price / capacity; displayUnit = "LT"; }
         else if (capacityUnit === "un") { unitPrice = price / capacity; displayUnit = "UN"; }
         
-        if (capacity === 1 && (capacityUnit === "kg" || capacityUnit === "lt")) {
-           const pFormat = price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-           priceStr = pFormat + ` <span style="font-size:0.55em; margin-left:3px; color:#333;">€/${displayUnit}</span>`;
-        } else {
-           unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
-        }
+        unitPriceStr = unitPrice.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " € / " + displayUnit;
       }
     }
 
@@ -677,20 +753,12 @@ function updateLabel() {
 
     const unitVal = $("unit").value.trim();
     const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
-    const baseWidth = Number($("labelWidth").value) || 70;
-    const baseHeight = Number($("labelHeight").value) || 40;
 
     for (let c = 0; c < copies; c++) {
       const labelDiv = document.createElement("div");
       labelDiv.className = "label";
-      
-      if (isAmanhecer) {
-        labelDiv.style.width = "70mm";
-        labelDiv.style.height = (c < 3) ? "38mm" : "40mm"; 
-      } else {
-        labelDiv.style.width = baseWidth + "mm";
-        labelDiv.style.height = baseHeight + "mm";
-      }
+      labelDiv.style.width = "70mm";
+      labelDiv.style.height = (c < 3) ? "38mm" : "40mm"; 
 
       labelDiv.innerHTML = `
         <div class="header">
@@ -740,42 +808,45 @@ function updateLabel() {
   }
 }
 
+// GESTÃO DE MODOS DE ETIQUETA
 $("presetSizes").addEventListener("change", function() {
   const val = this.value;
-  const wrap = $("previewWrap");
-  
   const isFruitMode = (val === "A6" || val === "125x80");
+  
   $("fruitPanel").style.display = isFruitMode ? "block" : "none";
   $("bulkPriceContainer").style.display = (val === "A6") ? "block" : "none";
-  $("standardPricePanel").style.display = (val === "A6") ? "none" : "block";
-  $("customSizeRow").style.display = (val === "custom") ? "grid" : "none";
+  
+  // NA FRUTA OCULTA CAMPOS DESNECESSÁRIOS
+  $("packagingRow").style.display = (!isFruitMode && val === "amanhecer") ? "none" : "block";
+  $("depositContainer").style.display = isFruitMode ? "none" : "block";
+  $("extraUnitContainer").style.display = isFruitMode ? "none" : "block";
+  $("promoDatesRow").style.display = isFruitMode ? "none" : "grid";
 
   if (val === "amanhecer") { 
-    $("labelWidth").value = "70"; $("labelHeight").value = "40"; 
     $("copiesCount").value = "21";
-    document.documentElement.style.setProperty('--offset-x', "-6mm"); 
-    document.documentElement.style.setProperty('--offset-y', "-6mm");
-    wrap.className = "preview-wrap amanhecer-sheet";
-  } else if (isFruitMode) {
-    $("copiesCount").value = "1";
-    wrap.className = "preview-wrap";
   } else {
-    wrap.className = "preview-wrap";
-    document.documentElement.style.setProperty('--offset-x', "0mm");
-    document.documentElement.style.setProperty('--offset-y', "0mm");
-    if (val === "72x38") { $("labelWidth").value = "72"; $("labelHeight").value = "38"; } 
-    else if (val === "100x70") { $("labelWidth").value = "100"; $("labelHeight").value = "70"; } 
-    else if (val === "50x30") { $("labelWidth").value = "50"; $("labelHeight").value = "30"; } 
+    $("copiesCount").value = "1";
   }
   updateLabel();
 });
 
-["internalCode","product","unit","ean","origem","categoria","calibre","bulkPrice","bulkLabel","depositFeeCustom"].forEach(id => {
+// AUTO-MAIÚSCULAS NOS CAMPOS IMPORTANTES
+["product","internalCode","origem","categoria","calibre"].forEach(id => {
+  const el = $(id);
+  if (el) {
+    el.addEventListener("input", e => {
+      e.target.value = e.target.value.toUpperCase();
+      updateLabel();
+    });
+  }
+});
+
+["price","bulkPrice","bulkLabel","depositFeeCustom","ean","unit","capacity"].forEach(id => {
   const el = $(id);
   if (el) el.addEventListener("input", updateLabel);
 });
 
-["store","price","capacity","capacityUnit","depositFeeSelect","labelWidth","labelHeight","copiesCount","promoStart","promoEnd"].forEach(id => {
+["store","capacityUnit","depositFeeSelect","copiesCount","promoStart","promoEnd"].forEach(id => {
   const el = $(id);
   if (el) {
     el.addEventListener("change", updateLabel);
@@ -791,20 +862,76 @@ $("photo").addEventListener("change", function(event) {
   reader.readAsDataURL(file);
 });
 
-$("printBtn").addEventListener("click", function() {
-  updateLabel();
-  window.print();
+// ATALHO DE IMPRESSÃO RÁPIDA (F9 ou Ctrl+P)
+window.addEventListener("keydown", e => {
+  if (e.key === "F9" || (e.ctrlKey && e.key.toLowerCase() === "p")) {
+    e.preventDefault();
+    triggerPrint();
+  }
 });
 
+$("printBtn").addEventListener("click", triggerPrint);
+
+function triggerPrint() {
+  saveToHistory();
+  updateLabel();
+  window.print();
+}
+
+// SISTEMA DE HISTÓRICO LOCAL
+function saveToHistory() {
+  const item = {
+    code: $("internalCode").value.trim(),
+    product: $("product").value.trim(),
+    price: $("price").value.trim(),
+    bulkPrice: $("bulkPrice").value.trim(),
+    origem: $("origem").value.trim(),
+    categoria: $("categoria").value.trim(),
+    calibre: $("calibre").value.trim(),
+    format: $("presetSizes").value
+  };
+  if (!item.product) return;
+
+  let history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+  history = history.filter(h => h.product !== item.product);
+  history.unshift(item);
+  if (history.length > 10) history.pop();
+  localStorage.setItem("etiquetas_history", JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = $("historyList");
+  if (!list) return;
+  const history = JSON.parse(localStorage.getItem("etiquetas_history") || "[]");
+  list.innerHTML = "";
+  history.forEach(item => {
+    const btn = document.createElement("div");
+    btn.className = "history-item";
+    btn.textContent = item.product + (item.price ? ` (${item.price}€)` : "");
+    btn.onclick = () => {
+      $("internalCode").value = item.code || "";
+      $("product").value = item.product || "";
+      $("price").value = item.price || "";
+      $("bulkPrice").value = item.bulkPrice || "";
+      $("origem").value = item.origem || "";
+      $("categoria").value = item.categoria || "";
+      $("calibre").value = item.calibre || "";
+      $("presetSizes").value = item.format || "amanhecer";
+      $("presetSizes").dispatchEvent(new Event("change"));
+    };
+    list.appendChild(btn);
+  });
+}
+
 $("clearBtn").addEventListener("click", function() {
-  $("store").value = "PATAIAS"; 
   $("internalCode").value = ""; 
   $("product").value = "";
   $("price").value = ""; 
   $("bulkPrice").value = ""; 
   $("bulkLabel").value = "A partir de 2 KG";
   $("capacity").value = "1";
-  $("capacityUnit").value = "kg";
+  $("capacityUnit").value = "peso";
   $("depositFeeSelect").value = "";
   $("depositFeeCustom").value = "";
   $("depositFeeCustom").style.display = "none";
@@ -817,21 +944,15 @@ $("clearBtn").addEventListener("click", function() {
   $("categoria").value = ""; 
   $("calibre").value = "";
   $("presetSizes").value = "amanhecer"; 
-  $("labelWidth").value = "70"; 
-  $("labelHeight").value = "40";
-  $("fruitPanel").style.display = "none";
-  $("bulkPriceContainer").style.display = "none";
-  $("standardPricePanel").style.display = "block";
-  document.documentElement.style.setProperty('--offset-x', "-6mm");
-  document.documentElement.style.setProperty('--offset-y', "-6mm");
-  $("previewWrap").className = "preview-wrap amanhecer-sheet";
+  $("presetSizes").dispatchEvent(new Event("change"));
   globalPhotoData = ""; 
   $("photo").value = "";
   updateLabel();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  updateLabel();
+  renderHistory();
+  $("presetSizes").dispatchEvent(new Event("change"));
 });
 </script>
 </body>
