@@ -8,13 +8,12 @@
   :root { 
     --red:#c8102e; 
     --dark:#222; 
-    --light:#f5f5f5; 
     --border:#d7d7d7; 
     --offset-x: -6mm; 
     --offset-y: -6mm; 
   }
   * { box-sizing:border-box; }
-  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f4f5f7; color:var(--dark); }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
   .app { max-width:1300px; margin:0 auto; padding:20px; }
   
   /* TOPO COM LOGÓTIPOS */
@@ -42,17 +41,17 @@
     gap: 16px;
   }
   .top-logos img {
-    height: 40px;
+    height: 42px;
     max-width: 140px;
     object-fit: contain;
   }
   .top-logos .divider {
     width: 1px;
-    height: 28px;
+    height: 30px;
     background: #e0e0e0;
   }
 
-  .grid { display:grid; grid-template-columns:370px 1fr; gap:24px; align-items:start; }
+  .grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
   .panel { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
@@ -95,91 +94,92 @@
   .history-item { font-size: 11px; background: #f8f9fa; border: 1px solid #ddd; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
   .history-item:hover { background: #ffeaa7; }
 
-  /* ÁREA DE PRÉ-VISUALIZAÇÃO TOTALMENTE VISÍVEL */
+  /* ÁREA DE PRÉ-VISUALIZAÇÃO GARANTIDA */
   .preview-container {
-    background: #e4e7ec;
-    border: 1px solid #d0d5dd;
+    background: #dfe4ea;
+    border: 1px solid #ced6e0;
     border-radius: 12px;
-    padding: 24px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 560px;
+    justify-content: flex-start;
+    min-height: 600px;
     overflow-x: auto;
+  }
+  .sheet-badge {
+    background: #fff;
+    border: 1px solid #b2bec3;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #2d3436;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    margin-bottom: 18px;
+    text-align: center;
   }
   .preview-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-  }
-  .sheet-badge {
-    background: #fff;
-    border: 1px solid #ccd1d9;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #485460;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    margin-bottom: 12px;
+    width: 100%;
   }
 
-  /* CARTÃO UNIVERSAL DE ETIQUETA */
+  /* CARTÃO DE ETIQUETA VISÍVEL E PROPORCIONAL */
   .label-card {
     background: #ffffff !important;
-    border: 1px solid #777;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    overflow: hidden;
-    position: relative;
-    border-radius: 3px;
+    border: 1px solid #555 !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+    border-radius: 4px;
   }
 
   .header {
-    flex: 0 0 16%;
-    min-height: 0;
+    flex: 0 0 17%;
+    min-height: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #c8102e;
     padding-bottom: 2px;
-    overflow: hidden;
     gap: 4px;
+    overflow: hidden;
   }
-  .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; align-items: center; overflow: hidden; }
-  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+  .logo-wrapper-1 { flex: 0 0 30%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
+  .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
-  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .fallback-logo { font-size: 10px; font-weight: bold; color: #c8102e; }
 
   .main-content {
     flex: 1 1 auto;
-    min-height: 0;
+    min-height: 50px;
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: 2px 0;
-    gap: 4px;
+    padding: 4px 0;
+    gap: 6px;
     overflow: hidden;
   }
   .left-column {
     flex: 1.2;
     min-width: 0;
-    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    overflow: hidden;
     text-align: center;
+    overflow: hidden;
   }
   .right-column {
     flex: 0.8;
     min-width: 0;
-    min-height: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -196,8 +196,8 @@
   }
 
   .barcode-container {
-    flex: 0 0 18%;
-    min-height: 0;
+    flex: 0 0 20%;
+    min-height: 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -205,12 +205,12 @@
     width: 100%;
     overflow: hidden;
   }
-  .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; overflow: hidden; }
+  .svg-container { flex: 1 1 auto; min-height: 14px; display: flex; justify-content: center; width: 100%; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; display: block; margin: 0 auto; }
 
   .footer-container {
-    flex: 0 0 9%;
-    min-height: 0;
+    flex: 0 0 10%;
+    min-height: 14px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -235,11 +235,11 @@
     font-weight: 900;
     color: #c8102e;
     background: #fff5f5;
-    padding: 0 3px;
+    padding: 0 4px;
     border-radius: 2px;
     border: 1px solid #fed7d7;
     line-height: 1;
-    font-size: 8px;
+    font-size: 8.5px;
   }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
@@ -257,7 +257,6 @@
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-    body > *:not(.app) { display: none !important; }
     .top-header, .panel, .sheet-badge { display: none !important; }
     .grid { display: block !important; }
     .preview-container { background: transparent !important; border: none !important; padding: 0 !important; }
@@ -293,9 +292,9 @@
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
-      <img src="https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000" alt="Balcão Agrícola">
+      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.outerHTML='<span class=\'fallback-logo\'>BALCÃO AGRÍCOLA</span>'">
       <div class="divider"></div>
-      <img src="https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000" alt="Amanhecer">
+      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.outerHTML='<span class=\'fallback-logo\'>AMANHECER</span>'">
     </div>
   </header>
 
@@ -482,8 +481,8 @@
 
 const $ = id => document.getElementById(id);
 
-const globalLogoAgricola = "https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000";
-const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000";
+const globalLogoAgricola = "https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO";
+const globalLogoAmanhecer = "https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb";
 let globalPhotoData = "";
 
 function setField(fieldId, val) {
@@ -679,7 +678,7 @@ function updateLabel(isPrinting = false) {
       badgeSheet.textContent = "⭐ Folha Oficial Amanhecer (Impressão em 21 etiquetas na folha)";
     } else {
       badgeSheet.style.display = "block";
-      badgeSheet.textContent = `📐 Dimensões Reais: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
+      badgeSheet.textContent = `📐 Dimensões: ${dims.width} mm × ${dims.height} mm (${$("labelOrientation").value === "horizontal" ? "Horizontal" : "Vertical"})`;
     }
   }
 
@@ -690,8 +689,8 @@ function updateLabel(isPrinting = false) {
   
   const barcodeVal = onlyDigits($("ean").value) \vert{}\vert{} ($("ean").value || "").trim();
 
-  const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
-  const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
+  const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola" onerror="this.outerHTML='<span class=\\'fallback-logo\\'>BALCÃO AGRÍCOLA</span>'">`;
+  const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer" onerror="this.outerHTML='<span class=\\'fallback-logo\\'>AMANHECER</span>'">`;
 
   previewWrap.innerHTML = "";
 
@@ -723,9 +722,11 @@ function updateLabel(isPrinting = false) {
     for (let c = 0; c < totalRender; c++) {
       const labelDiv = document.createElement("div");
       labelDiv.className = "label-card";
-      labelDiv.style.width = isPrinting ? "100%" : "70mm";
-      labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "38mm";
-      labelDiv.style.padding = "2px 5px";
+      
+      // No ecrã mantém dimensão estável bem visível
+      labelDiv.style.width = isPrinting ? "100%" : "85mm";
+      labelDiv.style.height = isPrinting ? ((c < 3) ? "38mm" : "40mm") : "48mm";
+      labelDiv.style.padding = "3px 6px";
 
       labelDiv.innerHTML = `
         <div class="header">
@@ -738,9 +739,9 @@ function updateLabel(isPrinting = false) {
             <div class="item-code" style="display:${codeVal ? 'block' : 'none'};">${codeVal}</div>
             <div class="product">${productVal || 'NOME DO PRODUTO'}</div>
             <div class="price">${priceStr}</div>
-            <div style="font-size:9px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
+            <div style="font-size:9.5px; color:#555; display:${unitPriceStr ? 'block' : 'none'};">${unitPriceStr}</div>
             <div style="display:${depositVal ? 'block' : 'none'};"><span class="deposit-text">${depositVal}</span></div>
-            <div style="font-size:9px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
+            <div style="font-size:9.5px; color:#333; display:${unitVal ? 'block' : 'none'};">${unitVal}</div>
           </div>
           <div class="right-column" style="display:${globalPhotoData ? 'flex' : 'none'};"><img src="${globalPhotoData}"></div>
         </div>
@@ -782,7 +783,7 @@ function updateLabel(isPrinting = false) {
       labelDiv.className = "label-card";
       labelDiv.style.width = dims.width + "mm";
       labelDiv.style.height = dims.height + "mm";
-      labelDiv.style.padding = (dims.height > 60) ? "6px 10px" : "3px 6px";
+      labelDiv.style.padding = (dims.height > 60) ? "8px 12px" : "3px 6px";
 
       let dualPriceHTML = "";
       if (isA6 && bulkPriceFormatted) {
@@ -967,9 +968,10 @@ $("clearBtn").addEventListener("click", function() {
   updateLabel();
 });
 
+// DESENHA A ETIQUETA IMEDIATAMENTE AO ABRIR
 window.addEventListener("DOMContentLoaded", () => {
   renderHistory();
-  $("presetSizes").dispatchEvent(new Event("change"));
+  updateLabel();
 });
 </script>
 </body>
