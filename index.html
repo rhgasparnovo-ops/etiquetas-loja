@@ -30,11 +30,6 @@
   .status { min-height:18px; margin-top:8px; font-size:13px; }
   .preview-wrap { min-height:560px; display:flex; justify-content:center; align-items:flex-start; padding:24px; background:#e9eaec; border-radius:10px; flex-wrap: wrap; gap: 10px; }
   
-  /* ESTILOS DE CONFIGURAÇÃO */
-  #setupPanel { background: #e6f4ea; border: 2px dashed #1e8e3e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-  #setupPanel h3 { margin: 0 0 10px 0; color: #1e8e3e; font-size: 16px; }
-  #btnGenerateDefinitive { background: #1e8e3e; color: #fff; border: none; margin-top: 10px; }
-  
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 14px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 14px; }
 
@@ -93,7 +88,7 @@
   .promo-text { white-space: nowrap; text-align: left; line-height: 1; font-size: 7.5px; }
   .print-date { font-size: 5.5px; font-weight: normal; color: #555; white-space: nowrap; text-align: right; line-height: 1; }
 
-  /* ESTILOS FRUTA 125x80 (NORMAL COM IMAGEM) */
+  /* ESTILOS ESPECÍFICOS PARA FRUTA 125x80 (NORMAL COM IMAGEM) */
   .fruit-label-125x80 {
     background: #fff; border: 2px solid #222;
     display: flex; flex-direction: column;
@@ -213,17 +208,6 @@
 
   <div class="grid">
     <section class="panel">
-
-      <!-- PAINEL DE AUTOGERAÇÃO -->
-      <div id="setupPanel" style="display:block;">
-        <h3>⚙️ Fundir Logótipos no Ficheiro</h3>
-        <p style="font-size:12px; margin-top:0;">Faça isto apenas uma vez para gravar as imagens para sempre.</p>
-        <label for="setupLogo1" style="font-size:12px;">1. Logótipo Balcão Agrícola:</label>
-        <input id="setupLogo1" type="file" accept="image/*">
-        <label for="setupLogo2" style="font-size:12px;">2. Logótipo Amanhecer:</label>
-        <input id="setupLogo2" type="file" accept="image/*">
-        <button id="btnGenerateDefinitive">3. Transferir Ficheiro Definitivo</button>
-      </div>
 
       <label for="presetSizes">Formato / Tipo de Etiqueta</label>
       <select id="presetSizes" style="margin-bottom: 10px; background-color: #fffbdd; border-color: #f6c23e;">
@@ -357,53 +341,14 @@
 
 const $ = id => document.getElementById(id);
 
-let globalLogoAgricola = "/*B64_AGRICOLA*/";
-let globalLogoAmanhecer = "/*B64_AMANHECER*/";
+// LOGÓTIPOS VINDOS DIRETAMENTE DO GOOGLE DRIVE
+const globalLogoAgricola = "https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000";
+const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000";
 
-let tempLogoAgricola = "";
-let tempLogoAmanhecer = "";
 let globalPhotoData = "";
 
-if (globalLogoAgricola.length > 50 && globalLogoAmanhecer.length > 50) {
-  $("setupPanel").style.display = "none";
-}
-
-$("setupLogo1").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = evt => { tempLogoAgricola = evt.target.result; updateLabel(); };
-  reader.readAsDataURL(file);
-});
-
-$("setupLogo2").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = evt => { tempLogoAmanhecer = evt.target.result; updateLabel(); };
-  reader.readAsDataURL(file);
-});
-
-$("btnGenerateDefinitive").addEventListener("click", () => {
-  if (!tempLogoAgricola || !tempLogoAmanhecer) {
-    alert("Por favor, carregue os dois logótipos antes de transferir o ficheiro definitivo.");
-    return;
-  }
-  let htmlContent = document.documentElement.outerHTML;
-  htmlContent = htmlContent.replace('"/*B64_AGRICOLA*/"', '`' + tempLogoAgricola + '`');
-  htmlContent = htmlContent.replace('"/*B64_AMANHECER*/"', '`' + tempLogoAmanhecer + '`');
-  const blob = new Blob(["<!DOCTYPE html>\n" + htmlContent], {type: "text/html;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "Etiquetas_Amanhecer_Mestre_Definitivo.html";
-  a.click();
-  URL.revokeObjectURL(url);
-  alert("Ficheiro Mestre transferido com sucesso!");
-});
-
-function getLogo1() { return globalLogoAgricola.length > 50 ? globalLogoAgricola : tempLogoAgricola; }
-function getLogo2() { return globalLogoAmanhecer.length > 50 ? globalLogoAmanhecer : tempLogoAmanhecer; }
+function getLogo1() { return globalLogoAgricola; }
+function getLogo2() { return globalLogoAmanhecer; }
 
 function formatPromoDate(startStr, endStr) {
   if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
@@ -420,64 +365,7 @@ function formatPromoDate(startStr, endStr) {
     return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
   } else {
     const d1 = new Date(startStr);
-    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
-  }
-}
-
-function getPrintDateStr() {
-  const now = new Date();
-  return "Impresso a: " + now.toLocaleDateString('pt-PT');
-}
-
-const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
-const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
-const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
-const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
-
-function onlyDigits(value) { return String(value || "").replace(/\D/g, ""); }
-function ean13CheckDigit(first12) {
-  const digits = onlyDigits(first12).slice(0, 12);
-  if (digits.length !== 12) return null;
-  let sum = 0;
-  for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i % 2 === 0 ? 1 : 3); }
-  return String((10 - (sum % 10)) % 10);
-}
-function isValidEAN13(value) {
-  const digits = onlyDigits(value);
-  return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12];
-}
-
-function drawBarcode(svg, value) {
-  svg.innerHTML = "";
-  const cleanVal = String(value || "").trim();
-  if (!cleanVal) return;
-
-  const isEAN = (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal));
-
-  if (isEAN) {
-    drawEAN13(svg, cleanVal);
-  } else {
-    drawCode128(svg, cleanVal);
-  }
-}
-
-function drawEAN13(svg, value) {
-  const digits = onlyDigits(value);
-  const first = Number(digits[0]);
-  const leftDigits = digits.slice(1, 7);
-  const rightDigits = digits.slice(7);
-  const parity = EAN_PARITY[first];
-
-  let bits = "101";
-  for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }
-  bits += "01010"; 
-  for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }
-  bits += "101"; 
-
-  const quietZone = 11;
-  const totalWidth = bits.length + (quietZone * 2);
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+    return `Promoção a partir de ${d1.getDate()} de${months[d1.getMonth()]} de ${d1.getFullYear()}`;   } }  function getPrintDateStr() {   const now = new Date();   return "Impresso a: " + now.toLocaleDateString('pt-PT'); }  const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"]; const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"]; const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"]; const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];  function onlyDigits(value) { return String(value \vert{}\vert{} "").replace(/\D/g, ""); } function ean13CheckDigit(first12) {   const digits = onlyDigits(first12).slice(0, 12);   if (digits.length !== 12) return null;   let sum = 0;   for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i \% 2 === 0 ? 1 : 3); }   return String((10 - (sum \% 10)) \% 10); } function isValidEAN13(value) {   const digits = onlyDigits(value);   return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12]; }  function drawBarcode(svg, value) {   svg.innerHTML = "";   const cleanVal = String(value \vert{}\vert{} "").trim();   if (!cleanVal) return;    const isEAN = (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal));    if (isEAN) {     drawEAN13(svg, cleanVal);   } else {     drawCode128(svg, cleanVal);   } }  function drawEAN13(svg, value) {   const digits = onlyDigits(value);   const first = Number(digits[0]);   const leftDigits = digits.slice(1, 7);   const rightDigits = digits.slice(7);   const parity = EAN_PARITY[first];    let bits = "101";   for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }   bits += "01010";    for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }   bits += "101";     const quietZone = 11;   const totalWidth = bits.length + (quietZone * 2);   const ns = "http://www.w3.org/2000/svg";   svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -601,8 +489,8 @@ function updateLabel() {
 
   const finalLogo1 = getLogo1();
   const finalLogo2 = getLogo2();
-  const logo1HTML = finalLogo1 ? `<img class="brand-logo" src="${finalLogo1}" alt="Balcão Agrícola">` : `<span style="font-size:7px; color:#ccc;">(Logo 1)</span>`;
-  const logo2HTML = finalLogo2 ? `<img class="brand-logo" src="${finalLogo2}" alt="Amanhecer">` : `<span style="font-size:7px; color:#ccc;">(Logo 2)</span>`;
+  const logo1HTML = `<img class="brand-logo" src="${finalLogo1}" alt="Balcão Agrícola">`;
+  const logo2HTML = `<img class="brand-logo" src="${finalLogo2}" alt="Amanhecer">`;
 
   previewWrap.innerHTML = "";
 
