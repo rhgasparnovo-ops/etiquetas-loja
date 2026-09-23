@@ -64,40 +64,41 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* CARTÃO DE ETIQUETA COM MOTOR INTELIGENTE */
+  /* CARTÃO DE ETIQUETA COM MOTOR INTELIGENTE INTEGRAL */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333;
     box-shadow: 0 10px 25px rgba(0,0,0,0.18);
     display: flex !important;
     flex-direction: column !important;
+    justify-content: space-between !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
     position: relative !important;
     border-radius: 2px;
+    padding: 2px 4px !important;
   }
 
   .header {
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1.5px solid #c8102e; padding-bottom: 1px;
-    height: 18px; flex-shrink: 0; overflow: hidden;
+    height: 18px; flex-shrink: 0; overflow: hidden; width: 100%;
   }
   .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { 
     flex: 1; text-align: right; overflow: hidden; 
-    margin-right: 6mm; 
+    margin-right: 4mm; 
   }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
-  /* ARQUITETURA DE 3 COLUNAS AUTÓNOMAS E ISOLADAS (SEM COLISÕES) */
   .main-content {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     width: 100%; flex: 1 1 auto;
-    padding: 2px 4px; gap: 6px; overflow: hidden;
+    gap: 4px; overflow: hidden; margin: 1px 0;
   }
   
   .col-desc {
@@ -126,36 +127,35 @@
     display: none;
     text-align: center;
     white-space: nowrap;
-    overflow: visible;
-    line-height: 1.1;
+    overflow: hidden;
+    line-height: 1;
     font-weight: 800;
     color: #084298;
     text-transform: uppercase;
-    padding: 1px 0;
-    margin-top: auto;
     flex-shrink: 0;
+    margin: 1px 0;
   }
 
   .barcode-container {
     display: none; flex-direction: column; justify-content: center; align-items: center;
-    width: 100%; flex-shrink: 0; height: 16px; overflow: hidden;
+    width: 100%; flex-shrink: 0; height: 15px; overflow: hidden;
   }
-  .svg-container { width: 100%; height: 10px; display: flex; justify-content: center; overflow: hidden; }
+  .svg-container { width: 100%; height: 9px; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
 
   .footer-container {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; margin-top: 1px; flex-shrink: 0;
-    height: 11px; overflow: hidden;
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0;
+    height: 12px; overflow: hidden;
   }
 
-  .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
+  .store-text { font-size: 9px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
   .item-code { font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
-  .product { font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: left; }
+  .product { font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; overflow: hidden; text-align: left; }
   
   .price-wrapper { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    line-height: 1; margin: 1px 0; width: 100%;
+    line-height: 1; width: 100%;
   }
   .promo-top-row {
     display: flex; align-items: center; justify-content: center; gap: 4px; line-height: 1; margin-bottom: 1px;
@@ -164,9 +164,11 @@
   .promo-tag { color: #ffffff; background: #c8102e; border-radius: 3px; font-weight: 900; line-height: 1; }
   .price { font-weight: bold; color: #000; line-height: 1; white-space: nowrap; }
 
-  .ean-text { font-family: monospace; font-size: 6.5px; font-weight: bold; line-height: 1; text-transform: none; }
-  .promo-text { color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 68%; line-height: 1; }
-  .print-date { color: #666; white-space: nowrap; line-height: 1; }
+  .ean-text { font-family: monospace; font-size: 6px; font-weight: bold; line-height: 1; text-transform: none; }
+  
+  /* RODAPÉ AUTO-ADAPTATIVO */
+  .promo-text { color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; line-height: 1; flex: 1; margin-right: 4px; }
+  .print-date { color: #666; white-space: nowrap; line-height: 1; flex-shrink: 0; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -502,7 +504,6 @@
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
           
-          <!-- LAYOUT EM 3 COLUNAS AUTÓNOMAS -->
           <div class="main-content" id="cardMainContent">
             
             <div class="col-desc" id="cardColDesc">
@@ -535,6 +536,7 @@
             <div class="ean-text" id="cardBarcodeText"></div>
           </div>
           
+          <!-- RODAPÉ INTELIGENTE COM AUTO-ESCALA -->
           <div class="footer-container" id="cardFooter">
             <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
             <div class="print-date" id="cardPrintDate"></div>
@@ -787,13 +789,12 @@ function getDimensions() {
 }
 
 /* ============================================================ */
-/* MOTOR AUTÓNOMO DE AUTO-ADAPTAÇÃO (AUTO-FIT INTELIGENTE)       */
+/* MOTOR AUTÓNOMO DE AUTO-FIT INTEGRAL (PRODUTO, PREÇO E RODAPÉ) */
 /* ============================================================ */
 function autoFitElement(el, maxPx, minPx) {
   if (!el) return;
   let size = maxPx;
   el.style.fontSize = size + "px";
-  // Reduz automaticamente o tamanho da letra se o conteúdo exceder a caixa atribuída
   while (size > minPx && (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)) {
     size -= 0.5;
     el.style.fontSize = size + "px";
@@ -842,6 +843,23 @@ function updateCard() {
       brandLogos.forEach(logo => logo.style.maxHeight = "16px");
     }
     $("gridStartContainer").style.display = "none";
+  }
+
+  // TAMANHOS DE PARTIDA PARA O AUTO-FIT
+  if (isLarge) {
+    $("cardProduct").style.fontSize = (formatVal === "A5") ? "34px" : "26px";
+    $("cardPrice").style.fontSize = (formatVal === "A5") ? "65px" : "44px";
+    $("cardOldPrice").style.fontSize = "16px";
+    $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "16px";
+    $("cardPromoText").style.fontSize = "9px";
+    $("cardPrintDate").style.fontSize = "8.5px";
+  } else {
+    $("cardProduct").style.fontSize = isAmanhecer ? "11px" : "13px";
+    $("cardPrice").style.fontSize = isAmanhecer ? "20px" : "25px";
+    $("cardOldPrice").style.fontSize = "9px";
+    $("cardPromoTag").style.fontSize = isAmanhecer ? "10px" : "11.5px";
+    $("cardPromoText").style.fontSize = isAmanhecer ? "6.5px" : "7.5px";
+    $("cardPrintDate").style.fontSize = isAmanhecer ? "6px" : "7px";
   }
 
   $("cardStore").textContent = storeVal;
@@ -956,11 +974,12 @@ function updateCard() {
   $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 
-  // ACIONAR O MOTOR DE AUTO-ADAPTAÇÃO EM TEMPO REAL (GARANTE ZERO COLISÕES)
+  // DISPARAR AUTO-FIT INTELIGENTE EM TODOS OS ELEMENTOS TEXTUAIS
   setTimeout(() => {
-    autoFitElement($("cardProduct"), isLarge ? (formatVal === "A5" ? 36 : 28) : 12, 7);
-    autoFitElement($("cardPrice"), isLarge ? (formatVal === "A5" ? 70 : 50) : 22, 12);
-    autoFitElement($("cardFruit"), isLarge ? 16 : 8, 5);
+    autoFitElement($("cardProduct"), isLarge ? (formatVal === "A5" ? 32 : 24) : 11, 7);
+    autoFitElement($("cardPrice"), isLarge ? (formatVal === "A5" ? 65 : 44) : 22, 12);
+    autoFitElement($("cardFruit"), isLarge ? 14 : 7.5, 5);
+    autoFitElement($("cardPromoText"), isLarge ? 10 : 7, 4.5); // Auto-adaptação também do rodapé
   }, 10);
 }
 
