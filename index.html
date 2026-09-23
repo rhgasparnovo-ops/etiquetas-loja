@@ -799,11 +799,16 @@ function updateCard() {
   const capacityNum = parseFloat($("capacity").value) || 1;
 
   const card = $("mainLabelCard");
+  const header = $("cardHeader");
+  const brandLogos = card.querySelectorAll(".brand-logo");
+
   if (isAmanhecer) {
     card.style.width = "380px";
     card.style.height = "214px";
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
     $("gridStartContainer").style.display = "block";
+    header.style.height = "18px";
+    brandLogos.forEach(logo => logo.style.maxHeight = "16px");
   } else {
     const scale = 3.2;
     card.style.width = (dims.width * scale) + "px";
@@ -811,28 +816,42 @@ function updateCard() {
     
     if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
+      // AUMENTAR LOGÓTIPOS EM ETIQUETAS GRANDES
+      header.style.height = (formatVal === "A5") ? "34px" : "26px";
+      brandLogos.forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "28px" : "22px");
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
+      header.style.height = "18px";
+      brandLogos.forEach(logo => logo.style.maxHeight = "16px");
     }
     $("gridStartContainer").style.display = "none";
   }
 
+  // AUTO-ADAPTAÇÃO DE TAMANHO DE LETRA (SCALE-TO-FIT DINÂMICO)
   if (isLarge) {
-    $("cardProduct").style.fontSize = (formatVal === "A5") ? "32px" : "26px";
-    $("cardPrice").style.fontSize = (formatVal === "A5") ? "68px" : "54px";
+    const pLen = productVal.length;
+    let prodSize = 32;
+    if (pLen > 25) prodSize = 22;
+    if (pLen > 45) prodSize = 16;
+    $("cardProduct.style.fontSize") // auxiliar
+    $("cardProduct").style.fontSize = (formatVal === "A5") ? prodSize + "px" : Math.max(14, prodSize - 6) + "px";
+    
+    $("cardPrice").style.fontSize = (formatVal === "A5") ? "62px" : "44px";
     $("cardOldPrice").style.fontSize = "16px";
-    $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "18px";
-    $("cardPromoTag").style.padding = "3px 8px";
-    $("cardCode").style.fontSize = "11px";
+    $("cardPromoTag").style.fontSize = (formatVal === "A5") ? "22px" : "16px";
+    $("cardCode").style.fontSize = "12px";
     $("cardUnitPrice").style.fontSize = "14px";
     $("cardDepositText").style.fontSize = "11px";
     $("cardExtraUnit").style.fontSize = "12px";
   } else {
-    $("cardProduct").style.fontSize = isAmanhecer ? "11px" : "12.5px";
+    const pLen = productVal.length;
+    let prodSize = isAmanhecer ? 11 : 12.5;
+    if (pLen > 25) prodSize = 9.5;
+    $("cardProduct").style.fontSize = prodSize + "px";
+    
     $("cardPrice").style.fontSize = isAmanhecer ? "20px" : "24px";
     $("cardOldPrice").style.fontSize = "8.5px";
     $("cardPromoTag").style.fontSize = isAmanhecer ? "9.5px" : "11px";
-    $("cardPromoTag").style.padding = "1px 4px";
     $("cardCode").style.fontSize = isAmanhecer ? "7.5px" : "8.5px";
     $("cardUnitPrice").style.fontSize = isAmanhecer ? "7px" : "8px";
     $("cardDepositText").style.fontSize = isAmanhecer ? "6.5px" : "7.5px";
