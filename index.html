@@ -85,53 +85,45 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:20px}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;padding:10px;overflow:hidden}
-.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px}
+
+.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:75%}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
 .header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:4mm}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain}
 
-/* ============================================================
-   MAIN-CONTENT — CSS Grid (NUNCA sobrepõe, NUNCA corta)
-   Cada coluna tem o seu espaço reservado. As colunas respeitam
-   sempre a grelha, nunca invadem o espaço umas das outras.
-   ============================================================ */
-.main-content{display:grid!important;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0}
-
-/* ===== Imagem ENORME por defeito — 4 níveis de adaptação ===== */
-
-/* Nível 0 — padrão: imagem ocupa o máximo possível */
-.label-card.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,2.4fr)}
-.label-card.has-image.size-medium:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,2.9fr)}
-.label-card.has-image.size-large:not(.size-tiny) .main-content{grid-template-columns:minmax(0,.9fr) minmax(0,.9fr) minmax(0,3.4fr)}
-.label-card.has-image.size-xl:not(.size-tiny) .main-content{grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,4fr)}
-
-/* Nível 1 — se o nome não couber, imagem encolhe um pouco mas continua visível */
-.label-card.img-tight.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.4fr)!important}
-
-/* Nível 2 — nome comprido: imagem mini */
-.label-card.img-mini.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,.8fr)!important}
-
-/* Nível 3 — só em etiquetas minúsculas com nome gigante: imagem escondida */
+/* Grid com preço sempre ao centro */
+.main-content{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0}
+.label-card.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.label-card.img-tight .main-content,.label-card.img-mini .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
 .label-card.img-hidden .col-image{display:none!important}
-.label-card.img-hidden .main-content{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)!important}
-
-/* Fruit promo — imagens também grandes */
-.label-card.has-image.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,2.2fr)!important}
-.label-card.layout-fruit-promo.img-tight .main-content{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)!important}
-.label-card.layout-fruit-promo.img-mini .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,.6fr)!important}
+.label-card.img-hidden .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
+.label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+.label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
 
 .col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px}
-.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap}
+.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 3px;justify-self:center;align-self:center}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
-/* A IMAGEM: sempre inteira dentro da célula, nunca cortada, nunca distorcida */
-.col-image img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
+.col-image img{width:100%;height:100%;max-width:var(--img-scale,75%);max-height:var(--img-scale,75%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 
 .store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-.product{font-size:clamp(8px,3.2cqw,18px);font-weight:bold;color:#000;word-break:break-word;line-height:1.05;overflow:hidden;text-align:left;max-height:2.2em}
+
+/* ============================================================
+   NOME DO ARTIGO — 2 PALAVRAS POR LINHA
+   Cada <span class="w"> tem 2 palavras. Flex-column empilha-os.
+   ============================================================ */
+.product{
+  font-size:clamp(8px,3.2cqw,18px);
+  font-weight:bold;color:#000;line-height:1.05;
+  overflow:hidden;text-align:left;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:0;max-height:100%;min-width:0;width:100%;
+}
+.product .w{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 .unit-price-text{font-size:clamp(6px,2cqw,10px);color:#444;font-weight:800;line-height:1.1;margin-top:2px}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:1px}
@@ -148,6 +140,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #bbb;padding-top:1px;flex-shrink:0;height:10%;overflow:hidden}
 .promo-text{font-size:clamp(5px,1.6cqw,8px);color:#444;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:4px}
 .print-date{font-size:clamp(5px,1.5cqw,7.5px);color:#666;white-space:nowrap;line-height:1;flex-shrink:0}
+
 .fruit-promo-prices{display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:5px;padding:3px 0;align-items:stretch;flex-shrink:0}
 .label-card.layout-fruit-promo .col-price{display:none!important}
 .label-card.layout-fruit-promo .fruit-promo-prices{display:flex!important}
@@ -159,20 +152,26 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.85}
-.label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important;max-height:2.4em}
-.label-card.size-tiny{--header-h:18%}
+.label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important}
+
+.label-card.size-tiny{--header-h:18%;--img-scale:75%}
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
-.label-card.size-tiny .product{font-size:clamp(6px,5cqw,12px)!important;max-height:2.4em}
+.label-card.size-tiny .product{font-size:clamp(6px,5cqw,12px)!important}
 .label-card.size-tiny .price{font-size:clamp(11px,9cqw,20px)!important}
 .label-card.size-tiny .item-code{font-size:clamp(5px,2.6cqw,9px)!important}
 .label-card.size-tiny .store-text{font-size:clamp(5px,2.8cqw,9px)!important}
 .label-card.size-tiny .brand-logo{max-height:95%}
+
+.label-card.size-small{--img-scale:75%}
+
+.label-card.size-medium{--img-scale:72%}
 .label-card.size-medium .product{font-size:clamp(10px,3.5cqw,22px)!important}
 .label-card.size-medium .price{font-size:clamp(18px,7cqw,42px)!important}
 .label-card.size-medium .store-text{font-size:clamp(8px,2.3cqw,14px)!important}
 .label-card.size-medium .item-code{font-size:clamp(7px,2cqw,12px)!important}
-.label-card.size-large{--header-h:14%;--gap-main:6px;--img-pad:2px}
-.label-card.size-large .product{font-size:clamp(14px,4cqw,30px)!important;max-height:3em}
+
+.label-card.size-large{--header-h:14%;--gap-main:6px;--img-pad:2px;--img-scale:68%}
+.label-card.size-large .product{font-size:clamp(14px,4cqw,30px)!important}
 .label-card.size-large .price{font-size:clamp(24px,8cqw,62px)!important}
 .label-card.size-large .store-text{font-size:clamp(10px,2.6cqw,18px)!important}
 .label-card.size-large .item-code{font-size:clamp(9px,2.3cqw,16px)!important}
@@ -180,8 +179,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-large .promo-tag{font-size:clamp(10px,3cqw,20px)!important;padding:2px 5px}
 .label-card.size-large .old-price{font-size:clamp(9px,2.6cqw,17px)!important}
 .label-card.size-large .fruit-full-bar{font-size:clamp(9px,2.2cqw,15px)!important}
-.label-card.size-xl{--header-h:12%;--gap-main:10px;--img-pad:3px}
-.label-card.size-xl .product{font-size:clamp(20px,4.5cqw,48px)!important;max-height:3em}
+
+.label-card.size-xl{--header-h:12%;--gap-main:10px;--img-pad:3px;--img-scale:62%}
+.label-card.size-xl .product{font-size:clamp(20px,4.5cqw,48px)!important}
 .label-card.size-xl .price{font-size:clamp(36px,9cqw,96px)!important}
 .label-card.size-xl .store-text{font-size:clamp(14px,2.7cqw,26px)!important}
 .label-card.size-xl .item-code{font-size:clamp(12px,2.4cqw,22px)!important}
@@ -192,6 +192,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
 .label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
 .label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
+
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -206,6 +207,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:6.5mm!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+
 @media screen{#printZone{display:none!important}}
 @media print{
 .app{display:none!important}
@@ -432,7 +434,7 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
           <div class="main-content">
             <div class="col-desc">
               <div class="item-code" id="cardCode" style="display:none"></div>
-              <div class="product" id="cardProduct">NOME DO PRODUTO</div>
+              <div class="product" id="cardProduct"><span class="w">NOME DO</span><span class="w">PRODUTO</span></div>
               <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
               <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="display:none;color:#333"></div>
@@ -565,6 +567,30 @@ function updateEanBadge(){
   else if(/^\d{14}$/.test(clean)&&isValidEAN14(clean)){badge.textContent="EAN-14 ✓";badge.className="bc-badge ok"}
   else if(/^[\x20-\x7E]+$/.test(clean)){badge.textContent="Code128";badge.className="bc-badge warn"}
   else{badge.textContent="Inválido";badge.className="bc-badge err"}
+}
+
+/* ============================================================
+   NOME DO ARTIGO — 2 PALAVRAS POR LINHA
+   Agrupa as palavras em pares e cria um <span class="w"> por par.
+   ============================================================ */
+function setProductText(el,text){
+  if(!el)return;
+  el.innerHTML="";
+  const raw=String(text||"").trim();
+  if(!raw){
+    const s=document.createElement("span");s.className="w";s.textContent="NOME DO";el.appendChild(s);
+    const s2=document.createElement("span");s2.className="w";s2.textContent="PRODUTO";el.appendChild(s2);
+    return;
+  }
+  const words=raw.split(/\s+/).filter(Boolean);
+  // Agrupa em pares (2 palavras por linha)
+  for(let i=0;i<words.length;i+=2){
+    const chunk=words.slice(i,i+2).join(" ");
+    const s=document.createElement("span");
+    s.className="w";
+    s.textContent=chunk;
+    el.appendChild(s);
+  }
 }
 
 function renderQueue(){
@@ -798,49 +824,37 @@ function setField(id,val){const el=$(id);if(el){el.value=val;updateCard()}}
 window.setField=setField;
 
 function autoFitTextSync(el){
-  if(!el)return;el.style.fontSize="";
+  if(!el)return;
+  el.style.fontSize="";
+  const parent=el.parentElement;
+  if(!parent)return;
   let i=0;void el.offsetHeight;
-  while(el.scrollHeight>el.clientHeight+1&&i<12){
+  while(parent.scrollHeight>parent.clientHeight+1&&i<14){
     const cur=parseFloat(getComputedStyle(el).fontSize);
     if(!cur||cur<4)break;
     el.style.fontSize=(cur*0.92)+"px";i++;void el.offsetHeight;
   }
 }
 
-/* ============================================================
-   AUTO-ADAPTAÇÃO DA IMAGEM — NUNCA corta, NUNCA sobrepõe
-   Mede em tempo real se a coluna do nome está cortada e
-   vai descendo de nível até deixar de estar.
-   ============================================================ */
 function autoAdaptImage(card){
   if(!card||!card.classList.contains("has-image"))return;
   if(card.classList.contains("size-tiny"))return;
-
-  // Reset ao nível 0 (imagem máxima)
   card.classList.remove("img-tight","img-mini","img-hidden");
   void card.offsetWidth;
-
   const desc=card.querySelector(".col-desc");
   const prod=card.querySelector(".product");
   if(prod)autoFitTextSync(prod);
-
-  const isCut=()=>desc ? desc.scrollHeight > desc.clientHeight + 1 : false;
-  if(!isCut()) return;   // ✅ Está tudo a caber com imagem grande
-
-  // Nível 1 — imagem grande, descrição respira
+  const isCut=()=>desc?desc.scrollHeight>desc.clientHeight+1:false;
+  if(!isCut())return;
   card.classList.add("img-tight");
   void card.offsetWidth;
   if(prod)autoFitTextSync(prod);
-  if(!isCut()) return;
-
-  // Nível 2 — imagem mini
+  if(!isCut())return;
   card.classList.remove("img-tight");
   card.classList.add("img-mini");
   void card.offsetWidth;
   if(prod)autoFitTextSync(prod);
-  if(!isCut()) return;
-
-  // Nível 3 — só em etiquetas minúsculas com nome gigante
+  if(!isCut())return;
   card.classList.remove("img-mini");
   card.classList.add("img-hidden");
 }
@@ -880,7 +894,9 @@ function updateCardUnsafe(){
   }
 
   $("cardStore").textContent=storeVal;
-  $("cardProduct").textContent=productVal||"NOME DO PRODUTO";
+  // 🔥 NOME DO ARTIGO — 2 palavras por linha
+  setProductText($("cardProduct"),productVal||"NOME DO PRODUTO");
+
   if(codeVal){$("cardCode").style.display="block";$("cardCode").textContent=codeVal}
   else $("cardCode").style.display="none";
 
@@ -955,7 +971,6 @@ function updateCardUnsafe(){
   $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
   $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
 
-  // Auto-adaptação da imagem
   autoAdaptImage(card);
 }
 
