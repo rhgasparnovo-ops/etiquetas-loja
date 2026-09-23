@@ -184,16 +184,23 @@
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } .preview-container { position: relative; top: 0;} }
   
   /* ============================================================ */
-  /* IMPRESSÃO: REGRAS MILIMÉTRICAS OFICIAIS AMANHECER INTOCÁVEIS */
+  /* ZONA DE IMPRESSÃO INVISÍVEL NO ECRÃ (RESOLVE O BUG FATAL)    */
   /* ============================================================ */
+  @media screen {
+    #printZone { display: none !important; }
+  }
+
   @media print {
+    /* Esconde a aplicação toda na altura de imprimir */
+    .app { display: none !important; }
+    
+    /* Mostra a zona invisível que gerámos */
+    #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
+
     @page { margin: 0 !important; size: 210mm 297mm !important; }
-    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: visible !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     ::-webkit-scrollbar { display: none !important; }
     * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
-    .top-header, .left-col, .sheet-badge { display: none !important; }
-    .grid { display: block !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
-    .preview-container { background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; }
     
     .print-sheet-amanhecer {
       display: grid !important; 
@@ -210,7 +217,7 @@
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { padding-left: 6.5mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
 
-    .preview-wrap:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
+    #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
   }
 </style>
 
@@ -219,7 +226,6 @@
 #previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
 #previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
 @media screen { #previewWrap { contain: layout paint; } }
-@media print { html, body { margin:0 !important; padding:0 !important; } #previewWrap .label-card { box-sizing:border-box !important; max-width:none !important; } }
 </style>
 
 <style>
@@ -364,7 +370,7 @@
           <button class="save-btn" id="saveDbBtn" type="button">💾 Guardar Produto</button>
         </div>
         <div class="actions-full">
-          <button class="primary" id="printBtn" type="button">🖨️ Imprimir Fila [F9]</button>
+          <button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button>
           <button class="secondary" id="clearBtn" type="button">Limpar Editor</button>
         </div>
       </section>
@@ -391,7 +397,7 @@
       </details>
     </div>
 
-    <!-- PRÉ-VISUALIZAÇÃO (DIREITA) -->
+    <!-- PRÉ-VISUALIZAÇÃO (DIREITA) - ISTO NUNCA SERÁ APAGADO -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
@@ -435,6 +441,11 @@
   </div>
 </div>
 
+<!-- ============================================== -->
+<!-- NOVO: A ZONA INVISÍVEL ONDE A IMPRESSÃO OCORRE -->
+<!-- ============================================== -->
+<div id="printZone"></div>
+
 <script>
 "use strict";
 
@@ -442,9 +453,7 @@ const $ = id => document.getElementById(id);
 let globalOriginalPhoto = "";
 let globalProcessedPhoto = "";
 let printInProgress = false;
-let printRestoreTimer = null;
 let photoProcessingToken = 0;
-let globalMainCard = null; 
 
 // ==========================================
 // SISTEMA DE GESTÃO DE DADOS (FILA E DB)
@@ -647,7 +656,7 @@ $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
 // ==========================================
-// FUNÇÕES BASE
+// FUNÇÕES BASE DA ETIQUETA
 // ==========================================
 
 function setField(id, val) { const el = $(id); if (el) { el.value = val; updateCard(); } }
@@ -785,7 +794,7 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
-// A SOLUÇÃO DEFINITIVA DO BUG ESTÁ NESTA FUNÇÃO (usa card.querySelector para ser 100% blindado)
+// A SOLUÇÃO DEFINITIVA
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
   const productVal = ($("product").value || "").trim().toUpperCase();
@@ -803,8 +812,8 @@ function updateCardUnsafe() {
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
 
-  // Garante que usa sempre a referência correta, mesmo que o DOM principal esteja a ser atualizado.
-  const card = $("mainLabelCard") || globalMainCard;
+  // Usa apenas a etiqueta do ecra principal, que nunca é apagada.
+  const card = $("mainLabelCard");
   if (!card) return;
 
   const header = card.querySelector("#cardHeader");
@@ -1009,31 +1018,25 @@ function validateBeforePrint() {
   return true;
 }
 
-// O PROCESSO DE RESTAURO É AGORA INSTANTÂNEO E NÃO CAUSA ECRÃ BRANCO
-function restorePreview() {
-  if (printRestoreTimer) { clearTimeout(printRestoreTimer); printRestoreTimer = null; }
-  const previewWrap = $("previewWrap");
-  const card = globalMainCard; 
-  if (!previewWrap || !card) { window.location.reload(); return; }
 
-  previewWrap.className = "preview-wrap";
-  previewWrap.innerHTML = "";
-  previewWrap.appendChild(card);
-
-  updateCard();
+function cleanupAfterPrint() {
   printInProgress = false;
   $("printBtn").disabled = false;
-  renderQueue(); 
   
+  // Esvaziamos a zona invisível para libertar memória do PC
+  $("printZone").innerHTML = ""; 
+  
+  renderQueue(); 
   if (window.__PRO) window.__PRO.setPrintEnabled(true);
 }
 
-window.addEventListener("afterprint", restorePreview);
+// Opcional, para navegadores que suportam este evento.
+window.addEventListener("afterprint", cleanupAfterPrint);
 
 function triggerPrint() {
   if (printInProgress) return;
   
-  const originalFormDataBackup = getFormData(); // Guarda o que está a ser escrito
+  const originalFormDataBackup = getFormData(); 
   
   if (!validateBeforePrint()) return;
 
@@ -1042,17 +1045,14 @@ function triggerPrint() {
   $("printBtn").textContent = "⏳ A preparar folhas...";
 
   const formatVal = $("presetSizes").value;
-  const previewWrap = $("previewWrap");
+  const printZone = $("printZone");
+  const card = $("mainLabelCard");
   
-  // Guardamos com segurança a etiqueta do DOM
-  const card = $("mainLabelCard") || globalMainCard;
-  globalMainCard = card; 
-
   const startPos = parseInt($("startPosition").value, 10) || 1;
   const dims = getDimensions();
 
-  // EM VEZ DE APAGAR O ECRÃ A MEIO, CRIAMOS AS FOLHAS NA MEMÓRIA PRIMEIRO
-  const fragment = document.createDocumentFragment();
+  // Limpa a zona invisível antiga por precaução
+  printZone.innerHTML = "";
 
   let totalItemsToPrint = [];
   for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); 
@@ -1066,11 +1066,12 @@ function triggerPrint() {
      });
   }
 
+  // CRIA AS FOLHAS DIRETAMENTE NA ZONA INVISÍVEL (#printZone)
   if (formatVal === "amanhecer") {
     for(let i=0; i<totalItemsToPrint.length; i+=21) {
       let chunk = totalItemsToPrint.slice(i, i+21);
       let page = document.createElement("div");
-      page.className = "preview-wrap print-sheet-amanhecer";
+      page.className = "print-sheet-amanhecer";
       
       chunk.forEach((data, index) => {
         if(data === null) {
@@ -1104,11 +1105,10 @@ function triggerPrint() {
           emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
           page.appendChild(emptyDiv);
       }
-      fragment.appendChild(page);
+      printZone.appendChild(page);
     }
   } else {
     const gridWrap = document.createElement("div");
-    gridWrap.className = "preview-wrap";
     gridWrap.style.display = "grid";
     gridWrap.style.gridTemplateColumns = `repeat(auto-fit, minmax(${Math.max(20, dims.width)}mm, 1fr))`;
     gridWrap.style.gap = "0";
@@ -1130,26 +1130,19 @@ function triggerPrint() {
           gridWrap.appendChild(clone);
       }
     });
-    fragment.appendChild(gridWrap);
+    printZone.appendChild(gridWrap);
   }
 
-  // APAGAMOS O ECRÃ E INSERIMOS AS FOLHAS APENAS QUANDO JÁ ESTÃO TODAS PRONTAS
-  previewWrap.innerHTML = "";
-  if (formatVal === "amanhecer") {
-      previewWrap.className = ""; // Remove conflito CSS do layout interior
-  } else {
-      previewWrap.className = "preview-wrap";
-  }
-  previewWrap.appendChild(fragment);
-
-  // REPOMOS IMEDIATAMENTE O QUE O UTILIZADOR ESTAVA A FAZER
+  // COMO O ECRÃ PRINCIPAL NUNCA FOI APAGADO, BASTA REPOR OS DADOS NORMAIS
   setFormData(originalFormDataBackup);
   updateCardUnsafe();
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       window.print();
-      printRestoreTimer = setTimeout(restorePreview, 2500);
+      
+      // Quando a janela de impressão fecha, limpamos os bastidores.
+      cleanupAfterPrint();
     });
   });
 }
