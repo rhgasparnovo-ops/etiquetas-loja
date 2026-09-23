@@ -9,8 +9,9 @@
     --red:#c8102e; 
     --dark:#222; 
     --border:#d7d7d7; 
-    --offset-x: -6mm; 
-    --offset-y: 0mm; 
+    /* Offsets padrão — ajustáveis no painel "Ajustes de Impressão" */
+    --offset-x: 0mm;
+    --offset-y: 6mm;
   }
   * { box-sizing:border-box; }
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f2f5; color:var(--dark); }
@@ -33,6 +34,7 @@
   label { display:block; font-weight:700; margin:12px 0 5px; font-size:13px; }
   input, button, select { width:100%; padding:9px 12px; border:1px solid #bbb; border-radius:7px; font-size:14px; }
   input[type="file"] { padding:6px; }
+  input[type="range"] { padding: 0; height: 6px; }
   .uppercase-input { text-transform: uppercase; }
   
   .checkbox-label {
@@ -43,11 +45,13 @@
 
   button { cursor:pointer; font-weight:700; transition: 0.2s; }
   button:hover { filter: brightness(0.95); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
   
   .primary { background:var(--red); color:#fff; border-color:var(--red); font-size:15px; padding:12px; }
   .success-btn { background:#176b3a; color:#fff; border-color:#176b3a; font-size:15px; padding:12px; }
   .save-btn { background:#084298; color:#fff; border-color:#084298; font-size:14px; padding:10px; }
   .secondary { background:#f8f9fa; font-size:14px; border:1px solid #ced6e0; color: #2f3542;}
+  .warn-btn { background:#fff3cd; color:#664d03; border:1px solid #ffe69c; font-size:13px; padding:9px; }
   
   .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
   .actions-full { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
@@ -68,7 +72,7 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
-  /* LISTAS DE FILA E BASE DE DADOS */
+  /* LISTAS */
   .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
   .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
@@ -90,8 +94,15 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
+  /* PAINEL DE AJUSTES DE IMPRESSÃO */
+  .offset-panel { background: #fff9db; border: 1px solid #ffe066; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .offset-row { display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .offset-row label { margin: 0; font-size: 12px; }
+  .offset-value { text-align: center; font-family: monospace; font-size: 12px; font-weight: 800; color: #664d03; }
+  .offset-hint { font-size: 11px; color: #856404; margin-top: 6px; line-height: 1.4; }
+
   /* ============================================================ */
-  /* CARTÃO COM MOTOR FLUIDO INTELIGENTE                         */
+  /* CARTÃO FLUIDO                                                */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -153,23 +164,22 @@
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } .preview-container { position: relative; top: 0;} }
   
   /* ============================================================ */
-  /* ZONA DE IMPRESSÃO INVISÍVEL NO ECRÃ                          */
+  /* ZONA DE IMPRESSÃO                                            */
   /* ============================================================ */
   @media screen {
     #printZone { display: none !important; }
   }
 
   @media print {
-    /* Esconde a aplicação toda na altura de imprimir */
     .app { display: none !important; }
+    .pro-toast, .pro-print-overlay { display: none !important; }
     
-    /* Mostra Apenas a zona invisível que gerámos */
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
     html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm !important; height: 297mm !important; overflow: visible !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     ::-webkit-scrollbar { display: none !important; }
-    * { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+    * { -ms-overflow-style: none !important; scrollbar-width: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     
     .print-sheet-amanhecer {
       display: grid !important; 
@@ -178,7 +188,16 @@
       justify-content: start !important; align-content: start !important;
       gap: 0 !important; padding: 0 !important; width: 210mm !important; height: 278mm !important; 
       margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
-      page-break-inside: avoid !important; page-break-after: always !important; overflow: hidden !important;
+      page-break-inside: avoid !important; overflow: hidden !important;
+    }
+    /* Só força quebra de página entre folhas, NUNCA no fim */
+    .print-sheet-amanhecer:not(:last-child) {
+      page-break-after: always !important;
+      break-after: page !important;
+    }
+    .print-sheet-amanhecer:last-child {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
     }
     .print-sheet-amanhecer .label-card { width: 70mm !important; border: 1px solid transparent !important; box-shadow: none !important; page-break-inside: avoid !important; margin: 0 !important; padding: 2px 4px !important; overflow: hidden !important; }
     .print-sheet-amanhecer .label-card:nth-child(1), .print-sheet-amanhecer .label-card:nth-child(2), .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
@@ -187,11 +206,34 @@
     .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: 6.5mm !important; }
 
     #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
+
+    /* Grelha de calibração */
+    .calib-sheet {
+      display: grid !important;
+      grid-template-columns: 70mm 70mm 70mm !important;
+      grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+      gap: 0 !important; padding: 0 !important; width: 210mm !important; height: 278mm !important;
+      margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
+      page-break-inside: avoid !important; overflow: hidden !important;
+    }
+    .calib-sheet:not(:last-child) { page-break-after: always !important; }
+    .calib-cell {
+      border: 1px dashed #d33 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font: 900 14px Arial !important;
+      color: #c8102e !important;
+      background: #fff5f5 !important;
+    }
+    .calib-cell:nth-child(1), .calib-cell:nth-child(2), .calib-cell:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
+    .calib-cell:nth-child(n + 4) { height: 40mm !important; }
+    .calib-cell:nth-child(3n + 1) { padding-left: 6.5mm !important; }
+    .calib-cell:nth-child(3n) { padding-right: 6.5mm !important; }
   }
 </style>
 
 <style>
-/* Preview físico */
 #previewWrap .label-card[data-physical-width-mm] { box-sizing: border-box; }
 #previewWrap .label-card { max-width: min(100%, var(--label-w-mm, 70mm)); }
 @media screen { #previewWrap { contain: layout paint; } }
@@ -207,16 +249,15 @@
   <header class="top-header">
     <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
     <div class="top-logos">
-      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola">
+      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=0.3">
       <div class="divider"></div>
-      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer">
+      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=0.3">
     </div>
   </header>
 
   <div class="grid">
     <div class="left-col">
       <section class="panel" style="margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom: none;">
-        <!-- FORMATO DA ETIQUETA -->
         <label for="presetSizes">Medida / Formato da Etiqueta</label>
         <select id="presetSizes" style="margin-bottom: 8px; background-color: #fffbdd; border-color: #f6c23e;">
           <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)</option>
@@ -243,7 +284,6 @@
         </div>
       </section>
 
-      <!-- ACORDEÃO: EDITOR DE ETIQUETA -->
       <details class="drawer" open>
         <summary>📝 Editar Dados do Produto</summary>
         <div class="drawer-content">
@@ -315,6 +355,32 @@
           <label class="checkbox-label"><input type="checkbox" id="autoRemoveBg" checked> ✨ Remover fundo branco</label>
         </div>
       </details>
+
+      <!-- NOVO: PAINEL DE AJUSTES DE IMPRESSÃO -->
+      <details class="drawer" id="offsetDrawer">
+        <summary>🎯 Ajustes de Impressão (Alinhamento da Folha)</summary>
+        <div class="drawer-content">
+          <div class="offset-panel">
+            <div class="offset-row">
+              <label for="offsetXRange">↔ X</label>
+              <input id="offsetXRange" type="range" min="-30" max="30" step="0.5" value="0">
+              <span class="offset-value" id="offsetXVal">0 mm</span>
+            </div>
+            <div class="offset-row">
+              <label for="offsetYRange">↕ Y</label>
+              <input id="offsetYRange" type="range" min="-30" max="30" step="0.5" value="6">
+              <span class="offset-value" id="offsetYVal">6 mm</span>
+            </div>
+            <div class="offset-hint">
+              💡 <strong>Como calibrar:</strong> imprime primeiro a grelha de calibração sobre a folha Amanhecer. Se os retângulos ficarem deslocados, mexe nestes sliders até baterem ao certo. Os valores ficam guardados automaticamente.
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+              <button class="warn-btn" id="printCalibBtn" type="button">📏 Grelha Calibração</button>
+              <button class="secondary" id="resetOffsetBtn" type="button" style="font-size:13px; padding:9px;">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+      </details>
       
       <section class="panel" style="margin-top: 12px; margin-bottom: 12px;">
         <div id="gridStartContainer">
@@ -344,7 +410,6 @@
         </div>
       </section>
 
-      <!-- ACORDEÃO: FILA DE IMPRESSÃO -->
       <details class="drawer">
         <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
         <div class="drawer-content" style="background:#f1f2f6;">
@@ -355,7 +420,6 @@
         </div>
       </details>
 
-      <!-- ACORDEÃO: BASE DE DADOS -->
       <details class="drawer">
         <summary>🗃️ Produtos Guardados (<span id="dbBadge">0</span>)</summary>
         <div class="drawer-content" style="background:#f1f2f6;">
@@ -366,16 +430,14 @@
       </details>
     </div>
 
-    <!-- PRÉ-VISUALIZAÇÃO (DIREITA) -->
     <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
-        <!-- ESTE É O MOLDE QUE RESPONDE IMEDIATAMENTE AO QUE SE ESCREVE -->
         <div class="label-card" id="mainLabelCard" style="width: 380px; height: 214px;">
           <div class="header" id="cardHeader">
-            <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola"></div>
-            <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer"></div>
+            <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=0.3"></div>
+            <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=0.3"></div>
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
           
@@ -405,16 +467,12 @@
             <div class="print-date" id="cardPrintDate"></div>
           </div>
         </div>
-        <!-- FIM DO MOLDE -->
 
       </div>
     </section>
   </div>
 </div>
 
-<!-- ============================================== -->
-<!-- NOVO: A ZONA INVISÍVEL ONDE A IMPRESSÃO OCORRE -->
-<!-- ============================================== -->
 <div id="printZone"></div>
 
 <script>
@@ -427,17 +485,70 @@ let printInProgress = false;
 let photoProcessingToken = 0;
 
 // ==========================================
-// SISTEMA DE GESTÃO DE DADOS E MEMÓRIA
+// SEGURANÇA — sanitização de HTML
+// ==========================================
+function escapeHTML(str) {
+  return String(str || "").replace(/[&<>"']/g, m => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[m]));
+}
+
+// ==========================================
+// ARMAZENAMENTO SEGURO (localStorage pode falhar em modo privado)
+// ==========================================
+const Storage = {
+  get(key, fallback) {
+    try {
+      const v = localStorage.getItem(key);
+      return v === null ? fallback : v;
+    } catch (e) {
+      console.warn("localStorage indisponível:", e);
+      return fallback;
+    }
+  },
+  set(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e) {
+      console.warn("Não foi possível guardar em localStorage:", e);
+      return false;
+    }
+  }
+};
+
+// ==========================================
+// OFFSETS DE IMPRESSÃO (persistentes)
+// ==========================================
+let offsetX = parseFloat(Storage.get("balcao_offset_x", "0"));
+let offsetY = parseFloat(Storage.get("balcao_offset_y", "6"));
+if (!Number.isFinite(offsetX)) offsetX = 0;
+if (!Number.isFinite(offsetY)) offsetY = 6;
+
+function applyOffsets() {
+  document.documentElement.style.setProperty("--offset-x", offsetX + "mm");
+  document.documentElement.style.setProperty("--offset-y", offsetY + "mm");
+  const xEl = $("offsetXRange"), yEl = $("offsetYRange");
+  if (xEl) xEl.value = String(offsetX);
+  if (yEl) yEl.value = String(offsetY);
+  const xVal = $("offsetXVal"), yVal = $("offsetYVal");
+  if (xVal) xVal.textContent = offsetX + " mm";
+  if (yVal) yVal.textContent = offsetY + " mm";
+}
+
+// ==========================================
+// DADOS
 // ==========================================
 let printQueue = [];
 let savedProducts = [];
 
 try {
-    const lsData = localStorage.getItem("balcao_agricola_db");
-    if (lsData) { savedProducts = JSON.parse(lsData); }
-} catch(e) {
-    console.warn("Memória local corrompida. A iniciar base de dados vazia.");
-    savedProducts = [];
+  const lsData = Storage.get("balcao_agricola_db", null);
+  if (lsData) savedProducts = JSON.parse(lsData);
+  if (!Array.isArray(savedProducts)) savedProducts = [];
+} catch (e) {
+  console.warn("Base de dados corrompida. A reiniciar.");
+  savedProducts = [];
 }
 
 function getFormData() {
@@ -470,6 +581,7 @@ function getFormData() {
 }
 
 function setFormData(data) {
+  if (!data) return;
   $("presetSizes").value = data.presetSizes || "amanhecer";
   $("customWidth").value = data.customWidth || "70";
   $("customHeight").value = data.customHeight || "38";
@@ -503,6 +615,9 @@ function setFormData(data) {
   updateCard();
 }
 
+// ==========================================
+// FILA
+// ==========================================
 function renderQueue() {
   const container = $("queueListContainer");
   $("queueBadge").textContent = printQueue.length;
@@ -522,15 +637,17 @@ function renderQueue() {
     totalLabels += item.copies;
     const div = document.createElement("div");
     div.className = "list-item";
-    let priceStr = item.data.price ? item.data.price + "€" : "S/ Preço";
+    const priceStr = item.data.price ? escapeHTML(item.data.price) + "€" : "S/ Preço";
+    const name = escapeHTML(item.data.product || "Sem Nome");
+    const ref = escapeHTML(item.data.internalCode || "N/A");
     
     div.innerHTML = `
       <div class="list-item-info">
-        <strong>${item.copies}x ${item.data.product || 'Sem Nome'}</strong>
-        <span>Ref: ${item.data.internalCode || 'N/A'} | ${priceStr}</span>
+        <strong>${item.copies}x ${name}</strong>
+        <span>Ref: ${ref} | ${priceStr}</span>
       </div>
       <div class="list-item-actions">
-        <button class="btn-remove" onclick="removeFromQueue(${index})">❌</button>
+        <button class="btn-remove" data-action="remove-queue" data-index="${index}">❌</button>
       </div>
     `;
     container.appendChild(div);
@@ -541,17 +658,17 @@ function renderQueue() {
 
 function addToQueue() {
   setValidationState();
-  if($("appStatus").dataset.type === "error") {
-      setStatus("Existem erros. Corrija-os antes de adicionar à fila.", "error");
-      return;
+  if ($("appStatus").dataset.type === "error") {
+    setStatus("Existem erros. Corrija-os antes de adicionar à fila.", "error");
+    return;
   }
-  const copies = parseInt($("copiesCount").value) || 1;
+  const copies = Math.max(1, Math.min(500, parseInt($("copiesCount").value) || 1));
   const data = getFormData();
-  if(!data.product && !data.price && !data.internalCode) {
-      setStatus("Preencha os dados da etiqueta primeiro.", "error");
-      return;
+  if (!data.product && !data.price && !data.internalCode) {
+    setStatus("Preencha os dados da etiqueta primeiro.", "error");
+    return;
   }
-  printQueue.push({ data: data, copies: copies });
+  printQueue.push({ data, copies });
   renderQueue();
   setStatus("Adicionado à fila de impressão!", "success");
 }
@@ -562,12 +679,15 @@ window.removeFromQueue = function(index) {
 };
 
 $("clearQueueBtn").addEventListener("click", () => {
-  if(confirm("Tem a certeza que quer limpar a fila de impressão?")) {
+  if (confirm("Tem a certeza que quer limpar a fila de impressão?")) {
     printQueue = [];
     renderQueue();
   }
 });
 
+// ==========================================
+// BASE DE DADOS
+// ==========================================
 function renderDb() {
   const container = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -578,66 +698,91 @@ function renderDb() {
   }
   
   container.innerHTML = "";
-  savedProducts.sort((a,b) => (a.product||"").localeCompare(b.product||"")).forEach((data, index) => {
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.innerHTML = `
-      <div class="list-item-info">
-        <strong>${data.product || 'Sem Nome'}</strong>
-        <span>Ref: ${data.internalCode || 'N/A'} | ${data.price ? data.price+'€' : ''}</span>
-      </div>
-      <div class="list-item-actions">
-        <button class="btn-load" onclick="loadFromDb(${index})">Carregar</button>
-        <button class="btn-remove" onclick="removeFromDb(${index})">❌</button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
+  savedProducts
+    .map((p, i) => ({ p, i }))
+    .sort((a, b) => (a.p.product || "").localeCompare(b.p.product || ""))
+    .forEach(({ p: data, i: originalIndex }) => {
+      const div = document.createElement("div");
+      div.className = "list-item";
+      const name = escapeHTML(data.product || "Sem Nome");
+      const ref = escapeHTML(data.internalCode || "N/A");
+      const priceStr = data.price ? escapeHTML(data.price) + "€" : "";
+      
+      div.innerHTML = `
+        <div class="list-item-info">
+          <strong>${name}</strong>
+          <span>Ref: ${ref} | ${priceStr}</span>
+        </div>
+        <div class="list-item-actions">
+          <button class="btn-load" data-action="load-db" data-code="${escapeHTML(data.internalCode || "")}">Carregar</button>
+          <button class="btn-remove" data-action="remove-db" data-code="${escapeHTML(data.internalCode || "")}">❌</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
 }
 
 function saveToDb() {
   const data = getFormData();
-  if(!data.product && !data.internalCode) {
-      setStatus("Preencha um nome ou código para guardar.", "error");
-      return;
+  if (!data.product && !data.internalCode) {
+    setStatus("Preencha um nome ou código para guardar.", "error");
+    return;
   }
   data.originalPhoto = ""; 
   data.processedPhoto = "";
   
-  let existingIdx = savedProducts.findIndex(p => p.internalCode === data.internalCode && p.internalCode !== "");
-  if(existingIdx >= 0) {
-      savedProducts[existingIdx] = data; 
+  const existingIdx = savedProducts.findIndex(p => p.internalCode === data.internalCode && p.internalCode !== "");
+  if (existingIdx >= 0) {
+    savedProducts[existingIdx] = data; 
   } else {
-      savedProducts.push(data); 
+    savedProducts.push(data); 
   }
-  localStorage.setItem("balcao_agricola_db", JSON.stringify(savedProducts));
+  Storage.set("balcao_agricola_db", JSON.stringify(savedProducts));
   renderDb();
-  setStatus("Produto guardado com sucesso na base de dados!", "success");
+  setStatus("Produto guardado com sucesso!", "success");
 }
 
 window.loadFromDb = function(index) {
   const data = savedProducts[index];
-  if(data) {
+  if (data) {
     setFormData(data);
-    setStatus(`Produto '${data.product}' carregado.`, "success");
+    setStatus(`Produto '${escapeHTML(data.product || "")}' carregado.`, "success");
   }
 };
 
 window.removeFromDb = function(index) {
-  if(confirm("Eliminar este produto guardado?")) {
+  if (confirm("Eliminar este produto guardado?")) {
     savedProducts.splice(index, 1);
-    localStorage.setItem("balcao_agricola_db", JSON.stringify(savedProducts));
+    Storage.set("balcao_agricola_db", JSON.stringify(savedProducts));
     renderDb();
   }
 };
+
+// Delegação de eventos (mais robusto que onclick inline)
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const code = btn.dataset.code;
+  const idx = parseInt(btn.dataset.index, 10);
+  
+  if (action === "remove-queue" && Number.isFinite(idx)) window.removeFromQueue(idx);
+  if (action === "load-db") {
+    const i = savedProducts.findIndex(p => (p.internalCode || "") === code);
+    if (i >= 0) window.loadFromDb(i);
+  }
+  if (action === "remove-db") {
+    const i = savedProducts.findIndex(p => (p.internalCode || "") === code);
+    if (i >= 0) window.removeFromDb(i);
+  }
+});
 
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
 // ==========================================
-// FUNÇÕES BASE DA ETIQUETA
+// UTILITÁRIOS
 // ==========================================
-
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
   let clean = String(valStr).trim().replace(/€|\s/g, "");
@@ -650,27 +795,39 @@ function parsePrice(valStr) {
 function formatPromoDate(startStr, endStr) {
   if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
   const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-  if (startStr && endStr) {
-    const d1 = new Date(startStr); const d2 = new Date(endStr);
-    if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear()) return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-    else return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-  } else if (endStr) {
-    const d2 = new Date(endStr); return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
-  } else {
-    const d1 = new Date(startStr); return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
+  try {
+    if (startStr && endStr) {
+      const d1 = new Date(startStr), d2 = new Date(endStr);
+      if (d1.getMonth() === d2.getMonth() && d1.getFullYear() === d2.getFullYear())
+        return "Promoção de " + d1.getDate() + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+      return "Promoção de " + d1.getDate() + " de " + months[d1.getMonth()] + " a " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    } else if (endStr) {
+      const d2 = new Date(endStr);
+      return "Promoção válida até " + d2.getDate() + " de " + months[d2.getMonth()] + " de " + d2.getFullYear();
+    } else {
+      const d1 = new Date(startStr);
+      return "Promoção a partir de " + d1.getDate() + " de " + months[d1.getMonth()] + " de " + d1.getFullYear();
+    }
+  } catch (e) {
+    return "Preço sujeito às condições comerciais em vigor.";
   }
 }
 
 function removeBackground(dataUrl, callback) {
-  const token = ++photoProcessingToken; const img = new Image();
+  const token = ++photoProcessingToken;
+  const img = new Image();
   img.onload = function() {
     try {
-      const canvas = document.createElement("canvas"); canvas.width = img.naturalWidth || img.width; canvas.height = img.naturalHeight || img.height;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
       if (!canvas.width || !canvas.height) throw new Error("Imagem sem dimensões válidas.");
-      const ctx = canvas.getContext("2d", { willReadFrequently: true }); if (!ctx) throw new Error("Canvas indisponível.");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) throw new Error("Canvas indisponível.");
       ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); const data = imgData.data;
-      const corners = [ 0, (canvas.width - 1) * 4, ((canvas.height - 1) * canvas.width) * 4, ((canvas.height - 1) * canvas.width + (canvas.width - 1)) * 4 ];
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const corners = [0, (canvas.width - 1) * 4, ((canvas.height - 1) * canvas.width) * 4, ((canvas.height - 1) * canvas.width + (canvas.width - 1)) * 4];
       let bgR = 0, bgG = 0, bgB = 0;
       corners.forEach(idx => { bgR += data[idx]; bgG += data[idx + 1]; bgB += data[idx + 2]; });
       bgR = Math.round(bgR / 4); bgG = Math.round(bgG / 4); bgB = Math.round(bgB / 4);
@@ -679,106 +836,184 @@ function removeBackground(dataUrl, callback) {
         const r = data[i], g = data[i + 1], b = data[i + 2];
         const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
         if (dist < tolerance || (r > 240 && g > 240 && b > 240)) data[i + 3] = 0;
-        else if (dist < tolerance + 15) { const alphaFactor = (dist - tolerance) / 15; data[i + 3] = Math.round(data[i + 3] * alphaFactor); }
+        else if (dist < tolerance + 15) {
+          const alphaFactor = (dist - tolerance) / 15;
+          data[i + 3] = Math.round(data[i + 3] * alphaFactor);
+        }
       }
       ctx.putImageData(imgData, 0, 0);
       if (token === photoProcessingToken) callback(canvas.toDataURL("image/png"));
-    } catch (err) { console.warn(err); if (token === photoProcessingToken) callback(dataUrl); }
+    } catch (err) {
+      console.warn("Remoção de fundo falhou:", err);
+      if (token === photoProcessingToken) callback(dataUrl);
+    }
   };
   img.onerror = function() { if (token === photoProcessingToken) callback(dataUrl); };
   img.src = dataUrl;
 }
 
+// ==========================================
+// CÓDIGO DE BARRAS
+// ==========================================
 const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
 const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
 const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
 const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
 
+const C128_PATTERNS_BY_VALUE = [
+  "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"
+];
+
 function onlyDigits(v) { return String(v || "").replace(/\D/g, ""); }
 function ean13CheckDigit(f12) {
-  const d = onlyDigits(f12).slice(0, 12); if (d.length !== 12) return null;
-  let sum = 0; for (let i = 0; i < 12; i++) sum += Number(d[i]) * (i % 2 === 0 ? 1 : 3);
+  const d = onlyDigits(f12).slice(0, 12);
+  if (d.length !== 12) return null;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) sum += Number(d[i]) * (i % 2 === 0 ? 1 : 3);
   return String((10 - (sum % 10)) % 10);
 }
-function isValidEAN13(v) { const d = onlyDigits(v); return d.length === 13 && ean13CheckDigit(d.slice(0,12)) === d[12]; }
+function isValidEAN13(v) {
+  const d = onlyDigits(v);
+  return d.length === 13 && ean13CheckDigit(d.slice(0, 12)) === d[12];
+}
 function normalizeBarcode(value) { return String(value || "").trim().replace(/\s+/g, ""); }
 function isValidEAN14(v) {
-  const d = onlyDigits(v); if (d.length !== 14) return false;
-  let sum = 0; for (let i = 13, pos = 0; i >= 0; i--, pos++) sum += Number(d[i]) * (pos % 2 === 0 ? 3 : 1);
+  const d = onlyDigits(v);
+  if (d.length !== 14) return false;
+  let sum = 0;
+  for (let i = 13, pos = 0; i >= 0; i--, pos++) sum += Number(d[i]) * (pos % 2 === 0 ? 3 : 1);
   return sum % 10 === 0;
 }
 
 function drawBarcode(svg, value) {
-  if (!svg) return; svg.innerHTML = "";
-  const cleanVal = normalizeBarcode(value); if (!cleanVal) return;
+  if (!svg) return;
+  svg.innerHTML = "";
+  const cleanVal = normalizeBarcode(value);
+  if (!cleanVal) return;
   if (/^\d{13}$/.test(cleanVal) && isValidEAN13(cleanVal)) { drawEAN13(svg, cleanVal); return; }
   if (/^\d{14}$/.test(cleanVal) && isValidEAN14(cleanVal)) { drawCode128(svg, cleanVal); return; }
   if (/^[\x20-\x7E]+$/.test(cleanVal)) { drawCode128(svg, cleanVal); }
 }
 
 function drawEAN13(svg, value) {
-  const digits = onlyDigits(value); const first = Number(digits[0]); const leftDigits = digits.slice(1, 7); const rightDigits = digits.slice(7); const parity = EAN_PARITY[first];
+  const digits = onlyDigits(value);
+  const first = Number(digits[0]);
+  const leftDigits = digits.slice(1, 7);
+  const rightDigits = digits.slice(7);
+  const parity = EAN_PARITY[first];
   let bits = "101";
   for (let i = 0; i < 6; i++) bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])];
   bits += "01010";
   for (let i = 0; i < 6; i++) bits += EAN_R[Number(rightDigits[i])];
   bits += "101";
-  const quietZone = 11; const totalWidth = bits.length + quietZone * 2; const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`); svg.setAttribute("preserveAspectRatio", "none");
-  const bg = document.createElementNS(ns, "rect"); bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white"); svg.appendChild(bg);
+  const quietZone = 11;
+  const totalWidth = bits.length + quietZone * 2;
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  const bg = document.createElementNS(ns, "rect");
+  bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
+  bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72");
+  bg.setAttribute("fill", "white");
+  svg.appendChild(bg);
   for (let i = 0; i < bits.length; i++) {
     if (bits[i] !== "1") continue;
-    const rect = document.createElementNS(ns, "rect"); rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0); rect.setAttribute("width", 1); rect.setAttribute("height", 62); rect.setAttribute("fill", "black"); svg.appendChild(rect);
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0);
+    rect.setAttribute("width", 1); rect.setAttribute("height", 62);
+    rect.setAttribute("fill", "black");
+    svg.appendChild(rect);
   }
 }
 
 function drawCode128(svg, text) {
-  const clean = String(text || ""); if (!/^[\x20-\x7E]+$/.test(clean)) return;
-  const codes = [104]; for (const ch of clean) codes.push(ch.charCodeAt(0) - 32);
-  let checksum = codes[0]; for (let i = 1; i < codes.length; i++) checksum += codes[i] * i; codes.push(checksum % 103);
-  const sequence = [...codes.map(String), "STOP"]; let fullBits = "";
+  const clean = String(text || "");
+  if (!/^[\x20-\x7E]+$/.test(clean)) return;
+  const codes = [104];
+  for (const ch of clean) codes.push(ch.charCodeAt(0) - 32);
+  let checksum = codes[0];
+  for (let i = 1; i < codes.length; i++) checksum += codes[i] * i;
+  codes.push(checksum % 103);
+  const sequence = [...codes.map(String), "STOP"];
+  let fullBits = "";
   for (const code of sequence) {
-    const pat = code === "STOP" ? "2331112" : C128_PATTERNS_BY_VALUE[Number(code)]; if (!pat) return; 
-    let isBar = true; for (const digit of pat) { const len = Number(digit); fullBits += (isBar ? "1" : "0").repeat(len); isBar = !isBar; }
+    const pat = code === "STOP" ? "2331112" : C128_PATTERNS_BY_VALUE[Number(code)];
+    if (!pat) return;
+    let isBar = true;
+    for (const digit of pat) {
+      const len = Number(digit);
+      fullBits += (isBar ? "1" : "0").repeat(len);
+      isBar = !isBar;
+    }
   }
-  const quietZone = 11; const totalWidth = fullBits.length + quietZone * 2; const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`); svg.setAttribute("preserveAspectRatio", "none");
-  const bg = document.createElementNS(ns, "rect"); bg.setAttribute("x", "0"); bg.setAttribute("y", "0"); bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72"); bg.setAttribute("fill", "white"); svg.appendChild(bg);
+  const quietZone = 11;
+  const totalWidth = fullBits.length + quietZone * 2;
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  const bg = document.createElementNS(ns, "rect");
+  bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
+  bg.setAttribute("width", totalWidth); bg.setAttribute("height", "72");
+  bg.setAttribute("fill", "white");
+  svg.appendChild(bg);
   for (let i = 0; i < fullBits.length; i++) {
     if (fullBits[i] !== "1") continue;
-    const rect = document.createElementNS(ns, "rect"); rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0); rect.setAttribute("width", 1); rect.setAttribute("height", 62); rect.setAttribute("fill", "black"); svg.appendChild(rect);
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", i + quietZone); rect.setAttribute("y", 0);
+    rect.setAttribute("width", 1); rect.setAttribute("height", 62);
+    rect.setAttribute("fill", "black");
+    svg.appendChild(rect);
   }
 }
 
-const C128_PATTERNS_BY_VALUE = [
-  "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"
-];
-
+// ==========================================
+// DIMENSÕES / FORMATO
+// ==========================================
 function isLargeFormat(val) {
   if (val === "125x80" || val === "A6" || val === "A5" || val === "100x70") return true;
-  if (val === "custom") { const w = parseFloat($("customWidth").value)||0; const h = parseFloat($("customHeight").value)||0; return (w >= 90 || h >= 65); }
+  if (val === "custom") {
+    const w = parseFloat($("customWidth").value) || 0;
+    const h = parseFloat($("customHeight").value) || 0;
+    return (w >= 90 || h >= 65);
+  }
   return false;
 }
 
 function getDimensions() {
-  const formatVal = $("presetSizes").value; const orientation = $("labelOrientation").value; const allowOrientation = isLargeFormat(formatVal);
-  let w = 70; let h = 38;
-  switch(formatVal) {
-    case "amanhecer": w = 70; h = 38; break; case "125x80": w = 125; h = 80; break; case "A6": w = 148; h = 105; break; case "A5": w = 210; h = 148; break; case "105x38": w = 105; h = 38; break; case "70x38": w = 70; h = 38; break; case "65x38": w = 65; h = 38; break; case "52x30": w = 52; h = 30; break; case "100x70": w = 100; h = 70; break; case "50x30": w = 50; h = 30; break;
-    case "custom": w = parseFloat($("customWidth").value) || 70; h = parseFloat($("customHeight").value) || 38; break;
+  const formatVal = $("presetSizes").value;
+  const orientation = $("labelOrientation").value;
+  const allowOrientation = isLargeFormat(formatVal);
+  let w = 70, h = 38;
+  switch (formatVal) {
+    case "amanhecer": w = 70; h = 38; break;
+    case "125x80": w = 125; h = 80; break;
+    case "A6": w = 148; h = 105; break;
+    case "A5": w = 210; h = 148; break;
+    case "105x38": w = 105; h = 38; break;
+    case "70x38": w = 70; h = 38; break;
+    case "65x38": w = 65; h = 38; break;
+    case "52x30": w = 52; h = 30; break;
+    case "100x70": w = 100; h = 70; break;
+    case "50x30": w = 50; h = 30; break;
+    case "custom":
+      w = parseFloat($("customWidth").value) || 70;
+      h = parseFloat($("customHeight").value) || 38;
+      break;
   }
-  if (allowOrientation && orientation === "vertical" && w > h) { const temp = w; w = h; h = temp; }
+  if (allowOrientation && orientation === "vertical" && w > h) {
+    const temp = w; w = h; h = temp;
+  }
   return { width: w, height: h };
 }
 
-function setField(id, val) { 
-    const el = $(id); 
-    if (el) { el.value = val; updateCard(); } 
+function setField(id, val) {
+  const el = $(id);
+  if (el) { el.value = val; updateCard(); }
 }
 window.setField = setField;
 
 // ==========================================
-// RENDERIZAÇÃO DIRETA NO ECRÃ (100% ORIGINAL E SEGURO)
+// RENDERIZAÇÃO DO CARTÃO
 // ==========================================
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
@@ -805,8 +1040,8 @@ function updateCardUnsafe() {
     $("cardHeader").style.height = "18px";
     document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "16px");
   } else {
-    const scale = 3.2; 
-    $("mainLabelCard").style.width = (dims.width * scale) + "px"; 
+    const scale = 3.2;
+    $("mainLabelCard").style.width = (dims.width * scale) + "px";
     $("mainLabelCard").style.height = (dims.height * scale) + "px";
     if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
@@ -814,87 +1049,132 @@ function updateCardUnsafe() {
       document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "28px" : "22px");
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
-      $("cardHeader").style.height = "18px"; 
+      $("cardHeader").style.height = "18px";
       document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "16px");
     }
     $("gridStartContainer").style.display = "none";
   }
 
-  // Preenchemos com os IDs exatos, como funcionava perfeitamente no inicio!
   $("cardStore").textContent = storeVal;
   $("cardProduct").textContent = productVal || "NOME DO PRODUTO";
   
-  if (codeVal) { $("cardCode").style.display = "block"; $("cardCode").textContent = codeVal; } 
-  else { $("cardCode").style.display = "none"; }
-
-  if (priceNum !== null) {
-    const formatted = priceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2});
-    if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
-      $("cardPromoTopRow").style.display = "flex"; $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
-      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100); $("cardPromoTag").textContent = "-" + discount + "%";
-    } else { $("cardPromoTopRow").style.display = "none"; }
-
-    if (capUnit === "peso") {
-      $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>'; $("cardUnitPrice").style.display = "none";
-    } else {
-      $("cardPrice").textContent = formatted + " €";
-      if (capUnit === "lt" && capacityNum > 0) { const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerLt + " € / LT"; $("cardUnitPrice").style.display = "block"; } 
-      else if (capUnit === "g" && capacityNum > 0) { const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}); $("cardUnitPrice").textContent = pPerKg + " € / KG"; $("cardUnitPrice").style.display = "block"; } 
-      else if (capUnit === "un") { $("cardUnitPrice").textContent = formatted + " € / UN"; $("cardUnitPrice").style.display = "block"; } 
-      else { $("cardUnitPrice").style.display = "none"; }
-    }
+  if (codeVal) {
+    $("cardCode").style.display = "block";
+    $("cardCode").textContent = codeVal;
   } else {
-    $("cardPrice").textContent = "0,00 €"; $("cardPromoTopRow").style.display = "none"; $("cardUnitPrice").style.display = "none";
+    $("cardCode").style.display = "none";
   }
 
-  // Estes dados são opcionais, se não existirem usamos string vazia
-  const elOrigem = $("origem");
-  const elCat = $("categoria");
-  const elCal = $("calibre");
+  if (priceNum !== null) {
+    const formatted = priceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (isPromo && oldPriceNum !== null && oldPriceNum > priceNum) {
+      $("cardPromoTopRow").style.display = "flex";
+      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+      const discount = Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100);
+      $("cardPromoTag").textContent = "-" + discount + "%";
+    } else {
+      $("cardPromoTopRow").style.display = "none";
+    }
+
+    if (capUnit === "peso") {
+      $("cardPrice").innerHTML = formatted + ' <span style="font-size:0.45em; color:#333;">€/KG</span>';
+      $("cardUnitPrice").style.display = "none";
+    } else {
+      $("cardPrice").textContent = formatted + " €";
+      if (capUnit === "lt" && capacityNum > 0) {
+        const pPerLt = (priceNum / capacityNum).toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        $("cardUnitPrice").textContent = pPerLt + " € / LT";
+        $("cardUnitPrice").style.display = "block";
+      } else if (capUnit === "g" && capacityNum > 0) {
+        const pPerKg = (priceNum / (capacityNum / 1000)).toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        $("cardUnitPrice").textContent = pPerKg + " € / KG";
+        $("cardUnitPrice").style.display = "block";
+      } else if (capUnit === "un") {
+        $("cardUnitPrice").textContent = formatted + " € / UN";
+        $("cardUnitPrice").style.display = "block";
+      } else {
+        $("cardUnitPrice").style.display = "none";
+      }
+    }
+  } else {
+    $("cardPrice").textContent = "0,00 €";
+    $("cardPromoTopRow").style.display = "none";
+    $("cardUnitPrice").style.display = "none";
+  }
+
+  const org = ($("origem") ? $("origem").value : "").trim().toUpperCase();
+  const cat = ($("categoria") ? $("categoria").value : "").trim().toUpperCase();
+  const cal = ($("calibre") ? $("calibre").value : "").trim().toUpperCase();
+  const parts = [];
+  if (org) parts.push("Origem: " + org);
+  if (cat) parts.push("Cat. " + cat);
+  if (cal) parts.push("Cal. " + cal);
   
-  const org = (elOrigem ? elOrigem.value : "").trim().toUpperCase();
-  const cat = (elCat ? elCat.value : "").trim().toUpperCase();
-  const cal = (elCal ? elCal.value : "").trim().toUpperCase();
-  let parts = [];
-  if (org) parts.push("Origem: " + org); if (cat) parts.push("Cat. " + cat); if (cal) parts.push("Cal. " + cal);
-  
-  if (parts.length > 0) { const fullText = parts.join(" • "); $("cardFruit").style.display = "block"; $("cardFruit").textContent = fullText; } 
-  else { $("cardFruit").style.display = "none"; }
+  if (parts.length > 0) {
+    $("cardFruit").style.display = "block";
+    $("cardFruit").textContent = parts.join(" • ");
+  } else {
+    $("cardFruit").style.display = "none";
+  }
 
   const depositSelect = $("depositFeeSelect").value;
-  let depositVal = depositSelect === "custom" ? $("customDepositInput").value.trim() : depositSelect;
-  if (depositVal) { $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depositVal; } 
-  else { $("cardDeposit").style.display = "none"; }
+  const depositVal = depositSelect === "custom" ? $("customDepositInput").value.trim() : depositSelect;
+  if (depositVal) {
+    $("cardDeposit").style.display = "block";
+    $("cardDepositText").textContent = depositVal;
+  } else {
+    $("cardDeposit").style.display = "none";
+  }
 
   const extraUnit = ($("unit").value || "").trim();
-  if (extraUnit) { $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = extraUnit; } 
-  else { $("cardExtraUnit").style.display = "none"; }
+  if (extraUnit) {
+    $("cardExtraUnit").style.display = "block";
+    $("cardExtraUnit").textContent = extraUnit;
+  } else {
+    $("cardExtraUnit").style.display = "none";
+  }
 
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  if (activePhoto) { $("cardPhotoBox").style.display = "flex"; $("cardPhotoImg").src = activePhoto; } 
-  else { $("cardPhotoBox").style.display = "none"; }
+  if (activePhoto) {
+    $("cardPhotoBox").style.display = "flex";
+    $("cardPhotoImg").src = activePhoto;
+  } else {
+    $("cardPhotoBox").style.display = "none";
+  }
 
-  if (barcodeToDraw) { $("cardBarcodeBox").style.display = "flex"; $("cardBarcodeText").textContent = barcodeToDraw; drawBarcode($("cardBarcodeSvg"), barcodeToDraw); } 
-  else { $("cardBarcodeBox").style.display = "none"; }
+  if (barcodeToDraw) {
+    $("cardBarcodeBox").style.display = "flex";
+    $("cardBarcodeText").textContent = barcodeToDraw;
+    drawBarcode($("cardBarcodeSvg"), barcodeToDraw);
+  } else {
+    $("cardBarcodeBox").style.display = "none";
+  }
 
-  const pStart = $("promoStart").value; const pEnd = $("promoEnd").value;
-  $("cardPromoText").textContent = formatPromoDate(pStart, pEnd);
+  $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
 }
 
+// Debounce: evita renders em cadeia a cada tecla em PCs lentos
+let _updateCardTimer = null;
 function updateCard() {
-  try { 
-      updateCardUnsafe(); 
-      setValidationState(); 
-  } catch (err) { 
-      console.error(err); 
-  }
+  if (_updateCardTimer) clearTimeout(_updateCardTimer);
+  _updateCardTimer = setTimeout(() => {
+    try {
+      updateCardUnsafe();
+      setValidationState();
+    } catch (err) {
+      console.error("Erro ao atualizar cartão:", err);
+    }
+  }, 16);
 }
 
 function setStatus(message, type = "info") {
-  let el = $("appStatus"); if (!el) return;
-  el.textContent = message || ""; el.dataset.type = type; el.style.display = message ? "block" : "none";
-  if(type === "success") setTimeout(() => el.style.display="none", 3000);
+  const el = $("appStatus");
+  if (!el) return;
+  el.textContent = message || "";
+  el.dataset.type = type;
+  el.style.display = message ? "block" : "none";
+  if (type === "success") setTimeout(() => el.style.display = "none", 3000);
 }
 
 function setValidationState() {
@@ -910,118 +1190,233 @@ function setValidationState() {
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
     if (!valid) errors.push("Código inválido (verifique os dígitos).");
   }
-  if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) errors.push("A data final da promoção não pode ser anterior à inicial.");
+  if ($("promoStart").value && $("promoEnd").value && $("promoStart").value > $("promoEnd").value) {
+    errors.push("A data final da promoção não pode ser anterior à inicial.");
+  }
 
   setStatus(errors.join(" "), errors.length ? "error" : "");
 }
 
 function updateOrientationVisibility() {
-  const formatVal = $("presetSizes").value; const show = isLargeFormat(formatVal);
-  const orientBox = $("orientationBox"); const row = $("storeOrientationRow");
-  if (show) { orientBox.style.display = "block"; row.style.gridTemplateColumns = "1fr 1fr"; $("fruitPanel").style.display = "block"; } 
-  else { orientBox.style.display = "none"; row.style.gridTemplateColumns = "1fr"; $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none"; }
+  const formatVal = $("presetSizes").value;
+  const show = isLargeFormat(formatVal);
+  const orientBox = $("orientationBox");
+  const row = $("storeOrientationRow");
+  if (show) {
+    orientBox.style.display = "block";
+    row.style.gridTemplateColumns = "1fr 1fr";
+    $("fruitPanel").style.display = "block";
+  } else {
+    orientBox.style.display = "none";
+    row.style.gridTemplateColumns = "1fr";
+    $("fruitPanel").style.display = (formatVal === "A6" || formatVal === "125x80") ? "block" : "none";
+  }
 }
 
-$("presetSizes").addEventListener("change", function() {
-  const val = this.value; $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
+// ==========================================
+// EVENTOS
+// ==========================================
+$("presetSizes").addEventListener("change", function () {
+  const val = this.value;
+  $("customDimensionsRow").style.display = (val === "custom") ? "grid" : "none";
   $("copiesCount").value = (val === "amanhecer") ? "21" : "1";
-  updateOrientationVisibility(); updateCard();
+  updateOrientationVisibility();
+  updateCard();
 });
 
-$("customWidth").addEventListener("input", function() { updateOrientationVisibility(); updateCard(); });
-$("customHeight").addEventListener("input", function() { updateOrientationVisibility(); updateCard(); });
-$("isPromoActive").addEventListener("change", function() { $("promoBox").style.display = this.checked ? "block" : "none"; updateCard(); });
+$("customWidth").addEventListener("input", () => { updateOrientationVisibility(); updateCard(); });
+$("customHeight").addEventListener("input", () => { updateOrientationVisibility(); updateCard(); });
+$("isPromoActive").addEventListener("change", function () {
+  $("promoBox").style.display = this.checked ? "block" : "none";
+  updateCard();
+});
 $("labelOrientation").addEventListener("change", updateCard);
 
-// OS EVENT LISTENERS CRUCIAIS PARA ATUALIZAR A ETIQUETA ENQUANTO ESCREVE:
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput"].forEach(id => {
-  const el = $(id); if (el) el.addEventListener("input", updateCard);
+  const el = $(id);
+  if (el) el.addEventListener("input", updateCard);
 });
 
 ["store","capacityUnit","depositFeeSelect","promoStart","promoEnd"].forEach(id => {
-  const el = $(id); if (el) el.addEventListener("change", updateCard);
+  const el = $(id);
+  if (el) el.addEventListener("change", updateCard);
 });
 
 $("autoRemoveBg").addEventListener("change", updateCard);
 
-$("photo").addEventListener("change", function(e) {
-  const file = e.target.files[0]; photoProcessingToken++; globalOriginalPhoto = ""; globalProcessedPhoto = "";
+$("photo").addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  photoProcessingToken++;
+  globalOriginalPhoto = "";
+  globalProcessedPhoto = "";
   if (!file) { updateCard(); return; }
-  if (!file.type.startsWith("image/")) { setStatus("Selecione uma imagem válida.", "error"); e.target.value = ""; updateCard(); return; }
-  if (file.size > 12 * 1024 * 1024) { setStatus("Imagem muito grande (Max: 12MB).", "error"); e.target.value = ""; updateCard(); return; }
+  if (!file.type.startsWith("image/")) {
+    setStatus("Selecione uma imagem válida.", "error");
+    e.target.value = "";
+    updateCard();
+    return;
+  }
+  if (file.size > 12 * 1024 * 1024) {
+    setStatus("Imagem muito grande (Max: 12MB).", "error");
+    e.target.value = "";
+    updateCard();
+    return;
+  }
 
   const reader = new FileReader();
   reader.onerror = () => setStatus("Erro ao ler imagem.", "error");
   reader.onload = evt => {
-    globalOriginalPhoto = evt.target.result; updateCard();
-    removeBackground(globalOriginalPhoto, processed => { globalProcessedPhoto = processed || globalOriginalPhoto; updateCard(); });
+    globalOriginalPhoto = evt.target.result;
+    updateCard();
+    removeBackground(globalOriginalPhoto, processed => {
+      globalProcessedPhoto = processed || globalOriginalPhoto;
+      updateCard();
+    });
   };
   reader.readAsDataURL(file);
 });
 
-$("clearBtn").addEventListener("click", function() {
-  if(!confirm("Limpar o editor? Isto apagará o que está a escrever agora.")) return;
-  $("internalCode").value = ""; $("product").value = ""; $("price").value = ""; $("oldPrice").value = "";
-  $("ean").value = ""; $("unit").value = ""; $("depositFeeSelect").value = ""; $("customDepositInput").value = "";
-  $("promoStart").value = ""; $("promoEnd").value = ""; $("capacity").value = "0.75"; $("capacityUnit").value = "lt";
-  $("isPromoActive").checked = false; $("promoBox").style.display = "none";
-  if ($("origem")) $("origem").value = ""; if ($("categoria")) $("categoria").value = ""; if ($("calibre")) $("calibre").value = "";
-  photoProcessingToken++; globalOriginalPhoto = ""; globalProcessedPhoto = ""; $("photo").value = ""; $("autoRemoveBg").checked = true;
-  $("store").value = "PATAIAS"; $("labelOrientation").value = "horizontal"; $("customWidth").value = "70"; $("customHeight").value = "38";
-  $("startPosition").value = "1"; $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
+$("clearBtn").addEventListener("click", function () {
+  if (!confirm("Limpar o editor? Isto apagará o que está a escrever agora.")) return;
+  $("internalCode").value = "";
+  $("product").value = "";
+  $("price").value = "";
+  $("oldPrice").value = "";
+  $("ean").value = "";
+  $("unit").value = "";
+  $("depositFeeSelect").value = "";
+  $("customDepositInput").value = "";
+  $("promoStart").value = "";
+  $("promoEnd").value = "";
+  $("capacity").value = "0.75";
+  $("capacityUnit").value = "lt";
+  $("isPromoActive").checked = false;
+  $("promoBox").style.display = "none";
+  if ($("origem")) $("origem").value = "";
+  if ($("categoria")) $("categoria").value = "";
+  if ($("calibre")) $("calibre").value = "";
+  photoProcessingToken++;
+  globalOriginalPhoto = "";
+  globalProcessedPhoto = "";
+  $("photo").value = "";
+  $("autoRemoveBg").checked = true;
+  $("store").value = "PATAIAS";
+  $("labelOrientation").value = "horizontal";
+  $("customWidth").value = "70";
+  $("customHeight").value = "38";
+  $("startPosition").value = "1";
+  $("presetSizes").value = "amanhecer";
+  $("customDimensionsRow").style.display = "none";
   $("copiesCount").value = "21";
-  updateOrientationVisibility(); updateCard();
+  updateOrientationVisibility();
+  updateCard();
 });
 
-$("printBtn").addEventListener("click", function() {
+// ==========================================
+// AJUSTES DE IMPRESSÃO (SLIDERS)
+// ==========================================
+$("offsetXRange").addEventListener("input", function () {
+  offsetX = parseFloat(this.value) || 0;
+  $("offsetXVal").textContent = offsetX + " mm";
+  applyOffsets();
+  Storage.set("balcao_offset_x", String(offsetX));
+});
+
+$("offsetYRange").addEventListener("input", function () {
+  offsetY = parseFloat(this.value) || 0;
+  $("offsetYVal").textContent = offsetY + " mm";
+  applyOffsets();
+  Storage.set("balcao_offset_y", String(offsetY));
+});
+
+$("resetOffsetBtn").addEventListener("click", function () {
+  offsetX = 0; offsetY = 6;
+  applyOffsets();
+  Storage.set("balcao_offset_x", "0");
+  Storage.set("balcao_offset_y", "6");
+  setStatus("Ajustes de impressão restaurados (X=0mm, Y=6mm).", "success");
+});
+
+// Grelha de calibração — imprime 21 retângulos numerados para afinar alinhamento
+$("printCalibBtn").addEventListener("click", function () {
+  const printZone = $("printZone");
+  printZone.innerHTML = "";
+  
+  const page = document.createElement("div");
+  page.className = "calib-sheet";
+  for (let i = 1; i <= 21; i++) {
+    const cell = document.createElement("div");
+    cell.className = "calib-cell";
+    cell.textContent = "• " + i + " •";
+    page.appendChild(cell);
+  }
+  printZone.appendChild(page);
+  
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { printZone.innerHTML = ""; }, 800);
+  }, 80);
+});
+
+// ==========================================
+// IMPRESSÃO
+// ==========================================
+$("printBtn").addEventListener("click", function () {
   if (window.__PRO && typeof window.__PRO.safePrint === "function") {
     window.__PRO.safePrint();
   } else {
-    triggerPrint();
+    window.triggerPrint();
   }
 });
 
 function validateBeforePrint() {
   setValidationState();
-  if($("appStatus").dataset.type === "error") {
-      setStatus("Existem erros. Corrija-os antes de imprimir.", "error"); return false;
+  if ($("appStatus").dataset.type === "error") {
+    setStatus("Existem erros. Corrija-os antes de imprimir.", "error");
+    return false;
   }
   
   if (printQueue.length === 0) {
-      const price = parsePrice($("price").value);
-      if (price === null) { setStatus("Introduza um preço válido.", "error"); $("price").focus(); return false; }
-      
-      const formatVal = $("presetSizes").value;
-      const startPos = parseInt($("startPosition").value, 10) || 1;
-      const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-      if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
-        setStatus(`As ${copies} etiquetas ultrapassam o limite da página.`, "error"); return false;
-      }
+    const price = parsePrice($("price").value);
+    if (price === null) {
+      setStatus("Introduza um preço válido.", "error");
+      $("price").focus();
+      return false;
+    }
+    
+    const formatVal = $("presetSizes").value;
+    const startPos = parseInt($("startPosition").value, 10) || 1;
+    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+    if (formatVal === "amanhecer" && startPos + copies - 1 > 21) {
+      setStatus(`As ${copies} etiquetas ultrapassam o limite da página.`, "error");
+      return false;
+    }
   }
   
   return true;
 }
 
-// Limpeza após imprimir (apaga a zona invisível)
 function cleanupAfterPrint() {
   printInProgress = false;
   $("printBtn").disabled = false;
-  $("printBtn").innerHTML = printQueue.length > 0 ? `🖨️ Imprimir Fila (${printQueue.reduce((a,b)=>a+b.copies,0)} etiq.) [F9]` : "🖨️ Imprimir [F9]";
-  $("printZone").innerHTML = ""; // Esvazia a memória invisível
+  $("printBtn").innerHTML = printQueue.length > 0
+    ? `🖨️ Imprimir Fila (${printQueue.reduce((a, b) => a + b.copies, 0)} etiq.) [F9]`
+    : "🖨️ Imprimir [F9]";
+  $("printZone").innerHTML = "";
   if (window.__PRO) window.__PRO.setPrintEnabled(true);
 }
-
-window.addEventListener("afterprint", cleanupAfterPrint);
 
 function triggerPrint() {
   if (printInProgress) return;
   
-  const originalFormDataBackup = getFormData(); 
+  const originalFormDataBackup = getFormData();
   
   if (!validateBeforePrint()) {
-    // Se falhar validação, garantir que o overlay sai
-    if (window.__PRO && typeof window.__PRO.hideOverlay === "function") window.__PRO.hideOverlay();
-    if (window.__PRO) window.__PRO.state.printing = false;
+    if (window.__PRO) {
+      if (typeof window.__PRO.hideOverlay === "function") window.__PRO.hideOverlay();
+      window.__PRO.state.printing = false;
+      window.__PRO.setPrintEnabled(true);
+    }
     return;
   }
 
@@ -1032,56 +1427,49 @@ function triggerPrint() {
   const formatVal = $("presetSizes").value;
   const printZone = $("printZone");
   const card = $("mainLabelCard");
-  
   const startPos = parseInt($("startPosition").value, 10) || 1;
   const dims = getDimensions();
 
-  // Limpa a zona invisível de impressões anteriores
-  printZone.innerHTML = ""; 
+  printZone.innerHTML = "";
 
-  let totalItemsToPrint = [];
-  // Adiciona espaços vazios se começar noutra posição
-  for(let i=1; i<startPos; i++) totalItemsToPrint.push(null); 
-  
+  const totalItemsToPrint = [];
+  for (let i = 1; i < startPos; i++) totalItemsToPrint.push(null);
+
   if (printQueue.length === 0) {
-     const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
-     for(let i=0; i<copies; i++) totalItemsToPrint.push(getFormData());
+    const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
+    for (let i = 0; i < copies; i++) totalItemsToPrint.push(getFormData());
   } else {
-     printQueue.forEach(qItem => {
-         for(let i=0; i<qItem.copies; i++) totalItemsToPrint.push(qItem.data);
-     });
+    printQueue.forEach(qItem => {
+      for (let i = 0; i < qItem.copies; i++) totalItemsToPrint.push(qItem.data);
+    });
   }
 
-  // DESENHA TUDO NA ZONA INVISÍVEL, PROTEGENDO O ECRÃ
   if (formatVal === "amanhecer") {
-    for(let i=0; i<totalItemsToPrint.length; i+=21) {
-      let chunk = totalItemsToPrint.slice(i, i+21);
-      let page = document.createElement("div");
+    for (let i = 0; i < totalItemsToPrint.length; i += 21) {
+      const chunk = totalItemsToPrint.slice(i, i + 21);
+      const page = document.createElement("div");
       page.className = "print-sheet-amanhecer";
       
       chunk.forEach((data, index) => {
-        if(data === null) {
-          let emptyDiv = document.createElement("div");
+        if (data === null) {
+          const emptyDiv = document.createElement("div");
           emptyDiv.className = "label-card";
           emptyDiv.style.visibility = "hidden";
           emptyDiv.style.width = "70mm";
           emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
           page.appendChild(emptyDiv);
         } else {
-          setFormData(data); 
+          setFormData(data);
           updateCardUnsafe();
           
-          let clone = card.cloneNode(true);
-          
-          // REMOVE TODOS OS IDs DA CÓPIA PARA NUNCA CONFLITUAREM COM O ECRÃ
+          const clone = card.cloneNode(true);
           clone.removeAttribute("id");
           const ids = clone.querySelectorAll("[id]");
-          for(let k=0; k<ids.length; k++) ids[k].removeAttribute("id");
+          for (let k = 0; k < ids.length; k++) ids[k].removeAttribute("id");
           
           clone.style.width = "70mm";
           clone.style.height = index < 3 ? "38mm" : "40mm";
           
-          // Desenha o código de barras no único SVG que está dentro do clone
           const eanVal = normalizeBarcode(data.ean || data.internalCode);
           const barcodeSvg = clone.querySelector("svg");
           if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
@@ -1089,13 +1477,14 @@ function triggerPrint() {
           page.appendChild(clone);
         }
       });
-      for(let j=chunk.length; j<21; j++) {
-          let emptyDiv = document.createElement("div");
-          emptyDiv.className = "label-card";
-          emptyDiv.style.visibility = "hidden";
-          emptyDiv.style.width = "70mm";
-          emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
-          page.appendChild(emptyDiv);
+      
+      for (let j = chunk.length; j < 21; j++) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "label-card";
+        emptyDiv.style.visibility = "hidden";
+        emptyDiv.style.width = "70mm";
+        emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
+        page.appendChild(emptyDiv);
       }
       printZone.appendChild(page);
     }
@@ -1106,36 +1495,34 @@ function triggerPrint() {
     gridWrap.style.gap = "0";
 
     totalItemsToPrint.forEach(data => {
-      if(data !== null) {
-          setFormData(data);
-          updateCardUnsafe();
-          
-          let clone = card.cloneNode(true);
-          clone.removeAttribute("id");
-          const ids = clone.querySelectorAll("[id]");
-          for(let k=0; k<ids.length; k++) ids[k].removeAttribute("id");
-          
-          clone.style.width = dims.width + "mm";
-          clone.style.height = dims.height + "mm";
-          
-          const eanVal = normalizeBarcode(data.ean || data.internalCode);
-          const barcodeSvg = clone.querySelector("svg");
-          if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
-          
-          gridWrap.appendChild(clone);
+      if (data !== null) {
+        setFormData(data);
+        updateCardUnsafe();
+        
+        const clone = card.cloneNode(true);
+        clone.removeAttribute("id");
+        const ids = clone.querySelectorAll("[id]");
+        for (let k = 0; k < ids.length; k++) ids[k].removeAttribute("id");
+        
+        clone.style.width = dims.width + "mm";
+        clone.style.height = dims.height + "mm";
+        
+        const eanVal = normalizeBarcode(data.ean || data.internalCode);
+        const barcodeSvg = clone.querySelector("svg");
+        if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
+        
+        gridWrap.appendChild(clone);
       }
     });
     printZone.appendChild(gridWrap);
   }
 
-  // DEVOLVE AO ECRÃ PRINCIPAL EXATAMENTE O QUE O UTILIZADOR TINHA ESCRITO
   setFormData(originalFormDataBackup);
   updateCardUnsafe();
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       window.print();
-      // Fallback: se afterprint não disparar em 3s, força cleanup
       setTimeout(() => {
         if (printInProgress) cleanupAfterPrint();
       }, 3000);
@@ -1143,22 +1530,38 @@ function triggerPrint() {
   });
 }
 
-// ✅ EXPOR GLOBALMENTE para o __PRO e para o botão
+// Expor globalmente
 window.triggerPrint = triggerPrint;
 window.cleanupAfterPrint = cleanupAfterPrint;
+window.addEventListener("afterprint", cleanupAfterPrint);
 
-// ARRANQUE SEGURO
-try {
-  updateOrientationVisibility();
-  updateCard();
-  renderDb();
-  renderQueue();
-} catch (error) {
-  console.error("Erro crítico ao arrancar:", error);
-}
+// Aviso antes de fechar com fila cheia
+window.addEventListener("beforeunload", (ev) => {
+  if (printQueue.length > 0) {
+    ev.preventDefault();
+    ev.returnValue = "";
+  }
+});
+
+// ==========================================
+// ARRANQUE
+// ==========================================
+(function boot() {
+  try {
+    applyOffsets();
+    updateOrientationVisibility();
+    updateCard();
+    renderDb();
+    renderQueue();
+    console.log("%c✅ Gerador de Etiquetas pronto.", "color:#176b3a;font-weight:bold;");
+  } catch (error) {
+    console.error("Erro crítico ao arrancar:", error);
+    const st = $("appStatus");
+    if (st) { st.textContent = "Erro ao iniciar. Recarregue a página."; st.dataset.type = "error"; st.style.display = "block"; }
+  }
+})();
 </script>
 
-<!-- ====== MODO PROFISSIONAL: ESTADO E VALIDAÇÃO ====== -->
 <div id="proToast" class="pro-toast" role="status" aria-live="polite"></div>
 <div id="proPrintOverlay" class="pro-print-overlay" aria-hidden="true">
   <div class="pro-print-box">
@@ -1172,13 +1575,13 @@ try {
   "use strict";
 
   const PRO = {
-    state: { dirty: false, valid: false, printing: false },
+    state: { printing: false },
     els: {},
     init() {
       this.els.toast = document.getElementById("proToast");
       this.els.overlay = document.getElementById("proPrintOverlay");
       this.els.printText = document.getElementById("proPrintText");
-      this.installStateTracking();
+      this.installAfterprint();
       this.installHotkeys();
     },
     toast(text, type) {
@@ -1188,25 +1591,19 @@ try {
       clearTimeout(this._toastTimer);
       this._toastTimer = setTimeout(() => this.els.toast.classList.remove("show"), 3200);
     },
-    installStateTracking() {
+    installAfterprint() {
       window.addEventListener("afterprint", () => {
         this.state.printing = false;
         this.hideOverlay();
         this.setPrintEnabled(true);
-        // Reset de segurança
         setTimeout(() => {
           if (typeof window.cleanupAfterPrint === "function") {
             try { window.cleanupAfterPrint(); } catch (e) { console.warn(e); }
           }
         }, 500);
       });
-      window.addEventListener("beforeunload", (ev) => {
-        if (!this.state.dirty) return;
-        ev.preventDefault(); ev.returnValue = "";
-      });
     },
     installHotkeys() {
-      // ÚNICO listener de F9 / Ctrl+P — evita conflitos com o script principal
       document.addEventListener("keydown", (ev) => {
         const isF9 = ev.key === "F9";
         const isCtrlP = ev.ctrlKey && ev.key && ev.key.toLowerCase() === "p";
@@ -1235,7 +1632,6 @@ try {
     safePrint() {
       if (this.state.printing) return;
       this.state.printing = true;
-      this.state.dirty = false;
       this.setPrintEnabled(false);
       this.showOverlay("A processar toda a fila de impressão...");
       try {
@@ -1259,7 +1655,6 @@ try {
 })();
 </script>
 <style>
-/* ====== CAMADA PROFISSIONAL ====== */
 .pro-toast { position:fixed; right:18px; bottom:18px; z-index:99999; opacity:0; transform:translateY(10px); pointer-events:none; transition:.2s; padding:12px 16px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.18); background:#fff; border:1px solid #d7dce2; max-width:380px; font:600 14px/1.4 system-ui,sans-serif; }
 .pro-toast.show { opacity:1; transform:translateY(0); }
 .pro-toast.error { border-color:#e2a1a1; color:#9d1c1c; }
