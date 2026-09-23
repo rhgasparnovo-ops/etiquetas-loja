@@ -64,7 +64,7 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* CARTÃO DE ETIQUETA UNIVERSAL */
+  /* CARTÃO DE ETIQUETA */
   .label-card {
     background: #ffffff !important;
     border: 1px solid #333;
@@ -90,21 +90,29 @@
   }
   .brand-logo { max-width: 100%; max-height: 16px; object-fit: contain; }
 
+  /* DISPOSIÇÃO EQUILIBRADA EM 3 COLUNAS: ESQ (DESCRIÇÃO), CENTRO (PREÇOS), DIR (IMAGEM) */
   .main-content {
-    display: flex; flex-direction: row; width: 100%; flex: 1 1 auto;
-    padding: 2px 0 1px; gap: 4px; overflow: hidden; align-items: center;
-  }
-  .left-column {
-    flex: 1.1; min-width: 0; display: flex; flex-direction: column;
-    justify-content: space-around; align-items: center; text-align: center;
-    height: 100%; overflow: hidden;
+    display: grid !important;
+    grid-template-columns: 1.2fr 1fr 0.9fr !important;
+    width: 100%; flex: 1 1 auto;
+    padding: 2px 4px; gap: 4px; overflow: hidden; align-items: center;
   }
   
-  .right-column {
-    flex: 0.9; min-width: 0; display: none; justify-content: center; align-items: center;
-    height: 96%; overflow: hidden; padding: 1px; background: transparent;
+  .col-desc {
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    text-align: left; height: 100%; overflow: hidden; gap: 1px;
   }
-  .right-column img {
+
+  .col-price {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; height: 100%; overflow: hidden;
+  }
+
+  .col-image {
+    display: none; justify-content: center; align-items: center;
+    height: 96%; overflow: hidden; background: transparent; padding: 1px;
+  }
+  .col-image img {
     max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto;
     background: transparent;
   }
@@ -139,7 +147,7 @@
 
   .store-text { font-size: 9.5px; font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
   .item-code { font-weight: 900; color: #111; line-height: 1; letter-spacing: 0.3px; }
-  .product { font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: center; }
+  .product { font-weight: bold; color: #000; word-break: break-word; line-height: 1.05; max-height: 2.1em; overflow: hidden; text-align: left; }
   
   .price-wrapper { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -225,7 +233,6 @@
       overflow: hidden !important;
     }
     
-    /* 1.ª LINHA (38mm COM 3mm TOP PADDING) */
     .print-sheet-amanhecer .label-card:nth-child(1),
     .print-sheet-amanhecer .label-card:nth-child(2),
     .print-sheet-amanhecer .label-card:nth-child(3) { 
@@ -233,17 +240,14 @@
       padding-top: 3mm !important; 
     }
     
-    /* LINHAS SEGUINTES (40mm) */
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { 
       height: 40mm !important;
     }
     
-    /* MARGEM LATERAL ESQUERDA (COLUNA 1) */
     .print-sheet-amanhecer .label-card:nth-child(3n + 1) { 
       padding-left: 6.5mm !important; 
     }
     
-    /* MARGEM LATERAL DIREITA (COLUNA 3) */
     .print-sheet-amanhecer .label-card:nth-child(3n) { 
       padding-right: 6.5mm !important; 
     }
@@ -494,12 +498,18 @@
             <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
           </div>
           
+          <!-- NOVO LAYOUT EQUILIBRADO EM 3 COLUNAS: ESQ (DESCRIÇÃO), CENTRO (PREÇO), DIR (IMAGEM) -->
           <div class="main-content" id="cardMainContent">
-            <div class="left-column" id="cardLeftCol">
+            
+            <div class="col-desc" id="cardColDesc">
               <div class="item-code" id="cardCode" style="display:none;"></div>
               <div class="product" id="cardProduct">NOME DO PRODUTO</div>
-              
-              <!-- BLOCO DE PREÇO -->
+              <div id="cardUnitPrice" style="color:#555; display:none; font-weight:bold; line-height:1;"></div>
+              <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-weight:900;" id="cardDepositText"></span></div>
+              <div id="cardExtraUnit" style="color:#333; display:none; line-height:1;"></div>
+            </div>
+
+            <div class="col-price" id="cardColPrice">
               <div class="price-wrapper" id="cardPriceWrapper">
                 <div class="promo-top-row" id="cardPromoTopRow" style="display:none;">
                   <span class="old-price" id="cardOldPrice"></span>
@@ -507,16 +517,13 @@
                 </div>
                 <div class="price" id="cardPrice">0,00 €</div>
               </div>
-
-              <div id="cardUnitPrice" style="color:#555; display:none; font-weight:bold; line-height:1;"></div>
-              <div id="cardDeposit" style="display:none; line-height:1;"><span style="color:#c8102e; background:#fff5f5; border:1px solid #fed7d7; padding:0 3px; font-weight:900;" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="color:#333; display:none; line-height:1;"></div>
             </div>
-            
-            <div class="right-column" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
+
+            <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt="Produto"></div>
+
           </div>
 
-          <!-- BARRA HORIZONTAL DE ORIGEM / CAT / CAL -->
+          <!-- BARRA DE ORIGEM / CAT / CAL -->
           <div class="fruit-full-bar" id="cardFruit"></div>
 
           <div class="barcode-container" id="cardBarcodeBox">
@@ -810,7 +817,6 @@ function updateCard() {
     $("gridStartContainer").style.display = "none";
   }
 
-  // ESCALAS TIPOGRÁFICAS ADAPTADAS: PEQUENAS COMPACTAS / GRANDES DESTAQUE
   if (isLarge) {
     $("cardProduct").style.fontSize = (formatVal === "A5") ? "32px" : "26px";
     $("cardPrice").style.fontSize = (formatVal === "A5") ? "68px" : "54px";
@@ -822,8 +828,6 @@ function updateCard() {
     $("cardDepositText").style.fontSize = "11px";
     $("cardExtraUnit").style.fontSize = "12px";
   } else {
-    // Escala rigorosa compacta para a folha Amanhecer e etiquetas de prateleira (cabe sempre tudo sem cortar)
-    $("cardProduct.style.fontSize") // aplicado inline abaixo
     $("cardProduct").style.fontSize = isAmanhecer ? "11px" : "12.5px";
     $("cardPrice").style.fontSize = isAmanhecer ? "20px" : "24px";
     $("cardOldPrice").style.fontSize = "8.5px";
@@ -885,7 +889,6 @@ function updateCard() {
     $("cardUnitPrice").style.display = "none";
   }
 
-  // ORIGEM / CAT / CAL - TAMANHO COMPACTO E ADAPTADO PARA CABER SEMPRE
   const org = ($("origem")?.value || "").trim().toUpperCase();
   const cat = ($("categoria")?.value || "").trim().toUpperCase();
   const cal = ($("calibre")?.value || "").trim().toUpperCase();
@@ -902,7 +905,6 @@ function updateCard() {
     if (isLarge) {
       $("cardFruit").style.fontSize = (formatVal === "A5") ? "15px" : "13px";
     } else {
-      // Escala perfeita para folha Amanhecer caber sem cortes
       if (fullText.length > 38) {
         $("cardFruit").style.fontSize = "6.5px";
       } else if (fullText.length > 30) {
