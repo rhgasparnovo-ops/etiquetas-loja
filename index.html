@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerador de Etiquetas de Preço Profissional - Mestre Definitivo</title>
+<title>Gerador de Etiquetas de Preço Profissional</title>
 <style>
   :root { 
     --red:#c8102e; 
@@ -33,21 +33,17 @@
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 14px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 14px; }
 
-  /* ========================================================
-     ESTRUTURA DA ETIQUETA PADRÃO
-     ======================================================== */
+  /* ETIQUETA FOLHA AMANHECER E PADRÃO */
   .label {
     background: #fff; border: 1px solid #ccc;
     display: flex; flex-direction: column;
     padding: 3px 5px; gap: 0px; box-sizing: border-box; 
-    overflow: hidden;
-    position: relative;
+    overflow: hidden; position: relative;
   }
-  
   .header { flex: 0 0 16%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #c8102e; padding-bottom: 2px; overflow: hidden; gap: 4px; }
   .logo-wrapper-1 { flex: 0 0 28%; height: 100%; display: flex; justify-content: flex-start; align-items: center; overflow: hidden; }
   .logo-wrapper-2 { flex: 0 0 30%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; padding-left: 2px; padding-right: 2px; }
+  .header-store-container { flex: 1; height: 100%; display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
   .brand-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
   
   .main-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; overflow: hidden; padding: 1px 0; gap: 4px; }
@@ -55,40 +51,38 @@
   .right-column { flex: 0.9; min-width: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
   .right-column img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-  .code-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .product-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .price-container { flex: 0 0 28%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .unit-price-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .deposit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .unit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
-  .fruit-container { flex: 0 0 12%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; padding: 2px; }
+  .code-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .product-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .price-container { flex: 0 0 28%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .unit-price-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .deposit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .unit-container { flex: 0 0 11%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
+  .fruit-container { flex: 0 0 12%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; padding: 2px; }
 
   .deposit-text { white-space: nowrap; text-align: center; font-size: 8px; font-weight: 900; color: #c8102e; background: #fff5f5; padding: 0 3px; border-radius: 2px; border: 1px solid #fed7d7; line-height: 1; }
 
-  .barcode-container { flex: 0 0 17%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .barcode-container { flex: 0 0 17%; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
   .svg-container { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; width: 100%; }
   .svg-container svg { width: 88%; height: 100%; display: block; margin: 0 auto; }
-  .ean-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; width: 100%; }
+  .ean-container { flex: 0 0 24%; min-height: 0; display: flex; justify-content: center; align-items: center; width: 100%; }
 
-  .footer-container { flex: 0 0 10%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; overflow: hidden; width: 100%; border-top: 1px dashed #ccc; padding-top: 1px; }
-  .promo-container { flex: 1; min-width: 0; display: flex; justify-content: flex-start; align-items: flex-end; overflow: hidden; height: 100%; }
-  .print-container { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: flex-end; padding-left: 4px; height: 100%; }
+  .footer-container { flex: 0 0 10%; min-height: 0; display: flex; justify-content: space-between; align-items: flex-end; width: 100%; border-top: 1px dashed #ccc; padding-top: 1px; }
+  .promo-container { flex: 1; min-width: 0; display: flex; justify-content: flex-start; align-items: flex-end; }
+  .print-container { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: flex-end; padding-left: 4px; }
 
   .store-text, .item-code, .product, .price, .unit-price, .unit, .fruit-info, .ean-text, .promo-text, .print-date { margin: 0; padding: 0; font-weight: bold; color: #000; }
-  
   .store-text { white-space: nowrap; text-align: right; text-transform: uppercase; font-size: 11px; line-height: 1; }
-  .item-code { white-space: nowrap; text-align: center; font-size: 8px; color: #333; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; }
+  .item-code { white-space: nowrap; text-align: center; font-size: 8px; color: #333; text-transform: uppercase; letter-spacing: 0.5px; }
   .product { white-space: normal; word-break: break-word; text-align: center; font-size: 10px; line-height: 1.05; } 
   .price { white-space: nowrap; text-align: center; display: flex; align-items: baseline; justify-content: center; font-size: 18px; line-height: 1; }
-  .unit-price { white-space: nowrap; text-align: center; color: #555; font-size: 8.5px; line-height: 1; }
-  .unit { white-space: nowrap; text-align: center; color: #333; font-size: 8.5px; line-height: 1; }
-  .fruit-info { white-space: nowrap; text-align: center; color: #084298; font-size: 11px; line-height: 1; text-transform: uppercase; font-weight: 800; }
-  
-  .ean-text { font-family: monospace; white-space: nowrap; letter-spacing: 1px; text-align: center; line-height: 1; font-size: 7.5px; }
-  .promo-text { white-space: nowrap; text-align: left; line-height: 1; font-size: 7.5px; }
-  .print-date { font-size: 5.5px; font-weight: normal; color: #555; white-space: nowrap; text-align: right; line-height: 1; }
+  .unit-price { white-space: nowrap; text-align: center; color: #555; font-size: 8.5px; }
+  .unit { white-space: nowrap; text-align: center; color: #333; font-size: 8.5px; }
+  .fruit-info { white-space: nowrap; text-align: center; color: #084298; font-size: 11px; text-transform: uppercase; font-weight: 800; }
+  .ean-text { font-family: monospace; white-space: nowrap; letter-spacing: 1px; text-align: center; font-size: 7.5px; }
+  .promo-text { white-space: nowrap; text-align: left; font-size: 7.5px; }
+  .print-date { font-size: 5.5px; font-weight: normal; color: #555; white-space: nowrap; text-align: right; }
 
-  /* ESTILOS ESPECÍFICOS PARA FRUTA 125x80 (NORMAL COM IMAGEM) */
+  /* FRUTA 125x80 */
   .fruit-label-125x80 {
     background: #fff; border: 2px solid #222;
     display: flex; flex-direction: column;
@@ -96,14 +90,14 @@
     overflow: hidden; position: relative;
     width: 125mm; height: 80mm;
   }
-  .f125-header { flex: 0 0 15%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
-  .f125-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
-  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; overflow: hidden; }
-  .f125-right { flex: 0.7; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
+  .f125-header { flex: 0 0 15%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c8102e; padding-bottom: 2px; }
+  .f125-main { flex: 1 1 auto; display: flex; flex-direction: row; width: 100%; padding: 3px 0; gap: 8px; }
+  .f125-left { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; }
+  .f125-right { flex: 0.7; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
   .f125-right img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .f125-product { font-size: 22px; font-weight: bold; text-align: center; line-height: 1.1; word-break: break-word; }
 
-  /* ESTILOS TABULETA A6 (COM IMAGEM MAIOR E DUPLO PREÇO) */
+  /* TABULETA A6 */
   .a6-label {
     background: #fff; border: 2px solid #222;
     display: flex; flex-direction: column;
@@ -111,27 +105,26 @@
     overflow: hidden; position: relative;
     width: 105mm; height: 148mm;
   }
-  .a6-header { flex: 0 0 14%; min-height: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
-  .a6-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 8px; }
+  .a6-header { flex: 0 0 14%; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #c8102e; padding-bottom: 4px; }
+  .a6-main { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; padding: 6px 0; gap: 8px; }
   .a6-product { flex: 0 0 15%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; text-align: center; line-height: 1.1; }
-  .a6-image-box { flex: 0 0 35%; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+  .a6-image-box { flex: 0 0 35%; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
   .a6-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .a6-dual-price { flex: 0 0 26%; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
   .a6-price-normal, .a6-price-bulk { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 6px; padding: 4px; }
   .a6-price-normal { background: #fff; border: 2px solid #ccc; }
   .a6-price-bulk { background: #fff5f5; border: 3px solid #c8102e; }
+  .price-label { font-size: 11px; text-transform: uppercase; color: #555; text-align: center; }
+  .price-main { font-size: 28px; font-weight: bold; color: #000; text-align: center; white-space: nowrap; }
+  .price-bulk-main { color: #c8102e; }
   .a6-fruit { flex: 0 0 10%; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border: 1px solid #b6d4fe; border-radius: 6px; font-size: 13px; font-weight: 800; color: #084298; text-transform: uppercase; }
   .a6-barcode { flex: 0 0 15%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
   .a6-footer { flex: 0 0 7%; display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px dashed #ccc; padding-top: 4px; font-size: 11px; }
 
   .size-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .size-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-
   @media(max-width:850px){ .grid{grid-template-columns:1fr;} .preview-wrap{min-height:400px;} }
   
-  /* ========================================================
-     REGRAS DE IMPRESSÃO
-     ======================================================== */
   @media print {
     @page { margin: 0; size: auto; }
     body { background: #fff; margin: 0; padding: 0; }
@@ -143,68 +136,41 @@
       display: grid !important; 
       grid-template-columns: repeat(3, 70mm) !important; 
       grid-template-rows: 38mm repeat(6, 40mm) !important; 
-      justify-content: start !important;
-      align-content: start !important;
-      gap: 0 !important; 
-      padding: 0 !important; 
+      justify-content: start !important; align-content: start !important;
+      gap: 0 !important; padding: 0 !important; 
       background: transparent !important;
-      width: 210mm !important; 
-      height: 278mm !important; 
-      transform: none !important;
-      margin-left: var(--offset-x) !important;
-      margin-top: var(--offset-y) !important;
+      width: 210mm !important; height: 278mm !important; 
+      margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
     }
-    
     .preview-wrap.amanhecer-sheet .label { 
-      width: 100% !important; 
-      height: 100% !important; 
-      border: 1px solid transparent !important; 
-      box-shadow: none !important; 
-      page-break-inside: avoid; 
-      margin: 0 !important;
-      -webkit-print-color-adjust: exact; 
-      print-color-adjust: exact; 
+      width: 100% !important; height: 100% !important; 
+      border: 1px solid transparent !important; page-break-inside: avoid; margin: 0 !important;
       padding: 3px 5px !important; 
     }
-
     .preview-wrap.amanhecer-sheet .label:nth-child(1),
     .preview-wrap.amanhecer-sheet .label:nth-child(2),
-    .preview-wrap.amanhecer-sheet .label:nth-child(3) {
-      padding-top: 3mm !important; 
-    }
-
-    .preview-wrap.amanhecer-sheet .label:nth-child(3n + 1) {
-      padding-left: 6.5mm !important;
-    }
-
-    .preview-wrap.amanhecer-sheet .label:nth-child(3n) {
-      padding-right: 6.5mm !important;
-    }
+    .preview-wrap.amanhecer-sheet .label:nth-child(3) { padding-top: 3mm !important; }
+    .preview-wrap.amanhecer-sheet .label:nth-child(3n + 1) { padding-left: 6.5mm !important; }
+    .preview-wrap.amanhecer-sheet .label:nth-child(3n) { padding-right: 6.5mm !important; }
 
     .preview-wrap:not(.amanhecer-sheet) {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      gap: 5mm !important;
-      padding: 5mm !important;
-      justify-content: center !important;
-      align-content: center !important;
+      display: flex !important; flex-wrap: wrap !important;
+      gap: 5mm !important; padding: 5mm !important;
+      justify-content: center !important; align-content: center !important;
       width: 100% !important;
     }
     .preview-wrap:not(.amanhecer-sheet) .label,
     .preview-wrap:not(.amanhecer-sheet) .fruit-label-125x80,
     .preview-wrap:not(.amanhecer-sheet) .a6-label {
-      border: 1px solid #111 !important;
-      page-break-after: always;
+      border: 1px solid #111 !important; page-break-after: always;
     }
-    
-    img { -webkit-print-color-adjust: exact; print-color-adjust: exact; display: block !important; visibility: visible !important; opacity: 1 !important; }
   }
 </style>
 </head>
 <body>
 <div class="app">
   <h1>Gerador de Etiquetas de Preço</h1>
-  <p class="subtitle">Sistema Completo Mestre (Amanhecer + Fruta 125x80 + Tabuleta A6 com Imagem Grande)</p>
+  <p class="subtitle">Sistema Completo Mestre (Amanhecer + Fruta + Tabuleta A6)</p>
 
   <div class="grid">
     <section class="panel">
@@ -284,9 +250,9 @@
           <option value="" selected>Nenhuma (Sem taxa)</option>
           <option value="+0,10 € (Inclui tara)">+0,10 € (Inclui tara)</option>
           <option value="Acresce 0,10 € Depósito">Acresce 0,10 € Depósito</option>
-          <option value="custom">Outro valor (escrever abaixo)...</option>
+          <option value="custom">Outro valor...</option>
         </select>
-        <input id="depositFeeCustom" type="text" placeholder="Escreva se escolheu 'Outro valor'..." style="display:none;">
+        <input id="depositFeeCustom" type="text" placeholder="Escreva o valor..." style="display:none;">
 
         <label for="unit">Informação Extra (Opcional)</label>
         <input id="unit" type="text" placeholder="Ex.: Caixa 10kg">
@@ -305,7 +271,6 @@
 
       <label for="ean">EAN-13 (Opcional se usar Código Interno)</label>
       <input id="ean" type="text" inputmode="numeric" maxlength="13" placeholder="5601234567890">
-      <div id="eanStatus" class="status"></div>
 
       <label for="photo">Imagem adicional do produto (opcional)</label>
       <input id="photo" type="file" accept="image/*">
@@ -341,14 +306,9 @@
 
 const $ = id => document.getElementById(id);
 
-// LOGÓTIPOS VINDOS DIRETAMENTE DO GOOGLE DRIVE
 const globalLogoAgricola = "https://drive.google.com/thumbnail?id=1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO&sz=w1000";
 const globalLogoAmanhecer = "https://drive.google.com/thumbnail?id=1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb&sz=w1000";
-
 let globalPhotoData = "";
-
-function getLogo1() { return globalLogoAgricola; }
-function getLogo2() { return globalLogoAmanhecer; }
 
 function formatPromoDate(startStr, endStr) {
   if (!startStr && !endStr) return "Preço sujeito às condições comerciais em vigor.";
@@ -365,7 +325,63 @@ function formatPromoDate(startStr, endStr) {
     return `Promoção válida até ${d2.getDate()} de ${months[d2.getMonth()]} de${d2.getFullYear()}`;
   } else {
     const d1 = new Date(startStr);
-    return `Promoção a partir de ${d1.getDate()} de${months[d1.getMonth()]} de ${d1.getFullYear()}`;   } }  function getPrintDateStr() {   const now = new Date();   return "Impresso a: " + now.toLocaleDateString('pt-PT'); }  const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"]; const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"]; const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"]; const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];  function onlyDigits(value) { return String(value \vert{}\vert{} "").replace(/\D/g, ""); } function ean13CheckDigit(first12) {   const digits = onlyDigits(first12).slice(0, 12);   if (digits.length !== 12) return null;   let sum = 0;   for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i \% 2 === 0 ? 1 : 3); }   return String((10 - (sum \% 10)) \% 10); } function isValidEAN13(value) {   const digits = onlyDigits(value);   return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12]; }  function drawBarcode(svg, value) {   svg.innerHTML = "";   const cleanVal = String(value \vert{}\vert{} "").trim();   if (!cleanVal) return;    const isEAN = (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal));    if (isEAN) {     drawEAN13(svg, cleanVal);   } else {     drawCode128(svg, cleanVal);   } }  function drawEAN13(svg, value) {   const digits = onlyDigits(value);   const first = Number(digits[0]);   const leftDigits = digits.slice(1, 7);   const rightDigits = digits.slice(7);   const parity = EAN_PARITY[first];    let bits = "101";   for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }   bits += "01010";    for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }   bits += "101";     const quietZone = 11;   const totalWidth = bits.length + (quietZone * 2);   const ns = "http://www.w3.org/2000/svg";   svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
+    return `Promoção a partir de ${d1.getDate()} de ${months[d1.getMonth()]} de${d1.getFullYear()}`;
+  }
+}
+
+function getPrintDateStr() {
+  const now = new Date();
+  return "Impresso a: " + now.toLocaleDateString('pt-PT');
+}
+
+const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+
+function onlyDigits(value) { return String(value || "").replace(/\D/g, ""); }
+function ean13CheckDigit(first12) {
+  const digits = onlyDigits(first12).slice(0, 12);
+  if (digits.length !== 12) return null;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) { sum += Number(digits[i]) * (i % 2 === 0 ? 1 : 3); }
+  return String((10 - (sum % 10)) % 10);
+}
+function isValidEAN13(value) {
+  const digits = onlyDigits(value);
+  return digits.length === 13 && ean13CheckDigit(digits.slice(0,12)) === digits[12];
+}
+
+function drawBarcode(svg, value) {
+  if (!svg) return;
+  svg.innerHTML = "";
+  const cleanVal = String(value || "").trim();
+  if (!cleanVal) return;
+
+  if (cleanVal.length === 13 && /^\d+$/.test(cleanVal) && isValidEAN13(cleanVal)) {
+    drawEAN13(svg, cleanVal);
+  } else {
+    drawCode128(svg, cleanVal);
+  }
+}
+
+function drawEAN13(svg, value) {
+  const digits = onlyDigits(value);
+  const first = Number(digits[0]);
+  const leftDigits = digits.slice(1, 7);
+  const rightDigits = digits.slice(7);
+  const parity = EAN_PARITY[first];
+
+  let bits = "101";
+  for (let i = 0; i < 6; i++) { bits += parity[i] === "L" ? EAN_L[Number(leftDigits[i])] : EAN_G[Number(leftDigits[i])]; }
+  bits += "01010"; 
+  for (let i = 0; i < 6; i++) { bits += EAN_R[Number(rightDigits[i])]; }
+  bits += "101"; 
+
+  const quietZone = 11;
+  const totalWidth = bits.length + (quietZone * 2);
+  const ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", `0 0 ${totalWidth} 72`);
   svg.setAttribute("preserveAspectRatio", "none");
   svg.setAttribute("shape-rendering", "crispEdges");
 
@@ -427,7 +443,7 @@ function drawCode128(svg, text) {
 }
 
 function fitText(textElement, containerElement, startSize) {
-  if (!textElement.textContent.trim()) return;
+  if (!textElement || !containerElement || !textElement.textContent.trim()) return;
   let size = startSize;
   textElement.style.fontSize = size + "px";
   while ((textElement.scrollHeight > containerElement.clientHeight - 2 || textElement.scrollWidth > containerElement.clientWidth - 4) && size > 4) {
@@ -436,43 +452,10 @@ function fitText(textElement, containerElement, startSize) {
   }
 }
 
-$("presetSizes").addEventListener("change", function() {
-  const val = this.value;
-  const wrap = $("previewWrap");
-  
-  const isFruitMode = (val === "A6" || val === "125x80");
-  $("fruitPanel").style.display = isFruitMode ? "block" : "none";
-  $("bulkPriceContainer").style.display = (val === "A6") ? "block" : "none";
-  $("customSizeRow").style.display = (val === "custom") ? "grid" : "none";
-
-  if (val === "amanhecer") { 
-    $("labelWidth").value = "70"; $("labelHeight").value = "40"; 
-    $("copiesCount").value = "21";
-    document.documentElement.style.setProperty('--offset-x', "-6mm"); 
-    document.documentElement.style.setProperty('--offset-y', "-6mm");
-    wrap.className = "preview-wrap amanhecer-sheet";
-  } else if (isFruitMode) {
-    $("copiesCount").value = "1";
-    wrap.className = "preview-wrap";
-  } else {
-    wrap.className = "preview-wrap";
-    document.documentElement.style.setProperty('--offset-x', "0mm");
-    document.documentElement.style.setProperty('--offset-y', "0mm");
-    if (val === "72x38") { $("labelWidth").value = "72"; $("labelHeight").value = "38"; } 
-    else if (val === "100x70") { $("labelWidth").value = "100"; $("labelHeight").value = "70"; } 
-    else if (val === "50x30") { $("labelWidth").value = "50"; $("labelHeight").value = "30"; } 
-  }
-  updateLabel();
-});
-
-let debounceTimer;
-function updateLabelDebounced() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(updateLabel, 300); 
-}
-
 function updateLabel() {
   const previewWrap = $("previewWrap");
+  if (!previewWrap) return;
+
   const formatVal = $("presetSizes").value;
   const copies = Math.max(1, Math.min(100, Number($("copiesCount").value) || 1));
   const isAmanhecer = formatVal === "amanhecer";
@@ -487,10 +470,8 @@ function updateLabel() {
   const ean = onlyDigits($("ean").value);
   const barcodeVal = codeRaw || ean || "5601227849374";
 
-  const finalLogo1 = getLogo1();
-  const finalLogo2 = getLogo2();
-  const logo1HTML = `<img class="brand-logo" src="${finalLogo1}" alt="Balcão Agrícola">`;
-  const logo2HTML = `<img class="brand-logo" src="${finalLogo2}" alt="Amanhecer">`;
+  const logo1HTML = `<img class="brand-logo" src="${globalLogoAgricola}" alt="Balcão Agrícola">`;
+  const logo2HTML = `<img class="brand-logo" src="${globalLogoAmanhecer}" alt="Amanhecer">`;
 
   previewWrap.innerHTML = "";
 
@@ -610,7 +591,7 @@ function updateLabel() {
     drawBarcode(labelDiv.querySelector(".barcode-svg"), barcodeVal);
 
   } else {
-    // MODO PADRÃO (AMANHECER / ETIQUETAS SOLTAS)
+    // MODO FOLHA OFICIAL AMANHECER (21 ETIQUETAS) OU FORMATOS SOLTOS
     const price = Number($("price").value);
     let priceStr = Number.isFinite(price) ? price.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €" : "0,00 €";
 
@@ -640,7 +621,7 @@ function updateLabel() {
 
     const selectVal = $("depositFeeSelect").value;
     let depositVal = selectVal === "custom" ? $("depositFeeCustom").value.trim() : selectVal;
-    $("depositFeeCustom").style.display = selectVal === "custom" ? "block" : "none";
+    if ($("depositFeeCustom")) $("depositFeeCustom").style.display = selectVal === "custom" ? "block" : "none";
 
     const unitVal = $("unit").value.trim();
     const promoStr = formatPromoDate($("promoStart").value, $("promoEnd").value);
@@ -672,7 +653,6 @@ function updateLabel() {
         </div>
         <div class="main-content">
           <div class="left-column">
-            <div class="code-container" style="display:none;"><div class="item-code"></div></div>
             <div class="product-container"><div class="product">${productVal}</div></div>
             <div class="price-container"><div class="price">${priceStr}</div></div>
             <div class="unit-price-container" style="display:${unitPriceStr ? 'flex' : 'none'};"><div class="unit-price">${unitPriceStr}</div></div>
@@ -710,12 +690,47 @@ function updateLabel() {
   }
 }
 
-["internalCode","product","unit","ean","depositFeeCustom","origem","categoria","calibre","bulkPrice","bulkLabel"].forEach(id => {
-  $(id).addEventListener("input", updateLabelDebounced);
+$("presetSizes").addEventListener("change", function() {
+  const val = this.value;
+  const wrap = $("previewWrap");
+  
+  const isFruitMode = (val === "A6" || val === "125x80");
+  $("fruitPanel").style.display = isFruitMode ? "block" : "none";
+  $("bulkPriceContainer").style.display = (val === "A6") ? "block" : "none";
+  $("standardPricePanel").style.display = (val === "A6") ? "none" : "block";
+  $("customSizeRow").style.display = (val === "custom") ? "grid" : "none";
+
+  if (val === "amanhecer") { 
+    $("labelWidth").value = "70"; $("labelHeight").value = "40"; 
+    $("copiesCount").value = "21";
+    document.documentElement.style.setProperty('--offset-x', "-6mm"); 
+    document.documentElement.style.setProperty('--offset-y', "-6mm");
+    wrap.className = "preview-wrap amanhecer-sheet";
+  } else if (isFruitMode) {
+    $("copiesCount").value = "1";
+    wrap.className = "preview-wrap";
+  } else {
+    wrap.className = "preview-wrap";
+    document.documentElement.style.setProperty('--offset-x', "0mm");
+    document.documentElement.style.setProperty('--offset-y', "0mm");
+    if (val === "72x38") { $("labelWidth").value = "72"; $("labelHeight").value = "38"; } 
+    else if (val === "100x70") { $("labelWidth").value = "100"; $("labelHeight").value = "70"; } 
+    else if (val === "50x30") { $("labelWidth").value = "50"; $("labelHeight").value = "30"; } 
+  }
+  updateLabel();
 });
+
+["internalCode","product","unit","ean","origem","categoria","calibre","bulkPrice","bulkLabel","depositFeeCustom"].forEach(id => {
+  const el = $(id);
+  if (el) el.addEventListener("input", updateLabel);
+});
+
 ["store","price","capacity","capacityUnit","depositFeeSelect","labelWidth","labelHeight","copiesCount","promoStart","promoEnd"].forEach(id => {
-  $(id).addEventListener("change", updateLabel);
-  $(id).addEventListener("input", updateLabelDebounced);
+  const el = $(id);
+  if (el) {
+    el.addEventListener("change", updateLabel);
+    el.addEventListener("input", updateLabel);
+  }
 });
 
 $("photo").addEventListener("change", function(event) {
@@ -745,10 +760,9 @@ $("clearBtn").addEventListener("click", function() {
   updateLabel();
 });
 
-window.onload = function() { 
-  $("fruitPanel").style.display = "none";
-  updateLabel(); 
-};
+window.addEventListener("DOMContentLoaded", () => {
+  updateLabel();
+});
 </script>
 </body>
 </html>
