@@ -9,7 +9,6 @@
     --red:#c8102e; 
     --dark:#222; 
     --border:#d7d7d7; 
-    /* Offsets padrão — ajustáveis no painel "Ajustes de Impressão" */
     --offset-x: 0mm;
     --offset-y: 6mm;
   }
@@ -72,7 +71,6 @@
   .chip-btn { padding: 3px 8px; font-size: 11px; font-weight: 600; background: #fff; border: 1px solid #ced6e0; border-radius: 4px; cursor: pointer; }
   .chip-btn:hover { background: #ffeaa7; border-color: #fdcb6e; }
 
-  /* LISTAS */
   .list-item { background: #fff; border: 1px solid #dcdde1; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
   .list-item-info strong { display: block; color: var(--dark); font-size: 13px; }
   .list-item-info span { color: #636e72; font-size: 11px; display: block; margin-top: 2px;}
@@ -94,7 +92,6 @@
   }
   .preview-wrap { display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; overflow: hidden; }
 
-  /* PAINEL DE AJUSTES DE IMPRESSÃO */
   .offset-panel { background: #fff9db; border: 1px solid #ffe066; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
   .offset-row { display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; margin-bottom: 6px; }
   .offset-row label { margin: 0; font-size: 12px; }
@@ -102,7 +99,7 @@
   .offset-hint { font-size: 11px; color: #856404; margin-top: 6px; line-height: 1.4; }
 
   /* ============================================================ */
-  /* CARTÃO FLUIDO                                                */
+  /* CARTÃO BASE — motor fluido + auto-escala                      */
   /* ============================================================ */
   .label-card {
     background: #ffffff !important;
@@ -117,18 +114,29 @@
     border-radius: 2px;
     padding: 2px 4px !important;
     container-type: inline-size;
+    /* Valores padrão — sobrescritos pelas classes de tamanho */
+    --header-h: 12%;
+    --img-flex: 0.7;
+    --barcode-h: 14%;
+    --footer-h: 10%;
+    --img-pad: 1px;
+    --gap-main: 4px;
+    --pad-label: 2px 4px;
+    --desc-flex: 1.3;
+    --price-flex: 1;
   }
 
-  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #c8102e; padding-bottom: 1px; height: 12%; flex-shrink: 0; overflow: hidden; width: 100%; }
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #c8102e; padding-bottom: 1px; height: var(--header-h); flex-shrink: 0; overflow: hidden; width: 100%; }
   .logo-wrapper-1, .logo-wrapper-2 { width: 28%; height: 100%; display: flex; align-items: center; justify-content: flex-start; overflow: hidden; }
   .logo-wrapper-2 { justify-content: center; }
   .header-store-container { flex: 1; text-align: right; overflow: hidden; margin-right: 4mm; }
   .brand-logo { max-width: 100%; max-height: 85%; object-fit: contain; }
 
-  .main-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; width: 100%; flex: 1 1 auto; gap: 4px; overflow: hidden; margin: 1px 0; }
-  .col-desc { flex: 1.3; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: 100%; overflow: hidden; gap: 1px; }
-  .col-price { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; overflow: hidden; white-space: nowrap; }
-  .col-image { flex: 0.7; min-width: 0; display: none; justify-content: center; align-items: center; height: 98%; overflow: hidden; background: transparent; padding: 1px; }
+  .main-content { display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; width: 100%; flex: 1 1 auto; gap: var(--gap-main); overflow: hidden; margin: 1px 0; }
+  .col-desc { flex: var(--desc-flex); min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: 100%; overflow: hidden; gap: 1px; }
+  .col-price { flex: var(--price-flex); min-width: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; overflow: hidden; white-space: nowrap; }
+  .col-image { flex: var(--img-flex); min-width: 0; display: none; justify-content: center; align-items: center; height: 98%; overflow: hidden; background: transparent; padding: var(--img-pad); }
+  .col-image.show { display: flex !important; }
   .col-image img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; background: transparent; }
 
   .store-text { font-size: clamp(7px, 2.2cqw, 11px); font-weight: bold; text-transform: uppercase; color: #000; line-height: 1; }
@@ -145,14 +153,110 @@
   .deposit-box { font-size: clamp(5.5px, 1.8cqw, 9.5px); color: #c8102e; background: #fff5f5; border: 1px solid #fed7d7; padding: 0 3px; font-weight: 900; line-height: 1.1; margin-top: 1px; display: inline-block; }
   .fruit-full-bar { width: 100%; display: none; text-align: center; white-space: nowrap; overflow: hidden; line-height: 1.1; font-weight: 800; color: #084298; text-transform: uppercase; font-size: clamp(6px, 2.1cqw, 11px); flex-shrink: 0; margin: 1px 0; }
 
-  .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: 14%; overflow: hidden; }
+  .barcode-container { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; flex-shrink: 0; height: var(--barcode-h); overflow: hidden; }
+  .barcode-container.show { display: flex !important; }
   .svg-container { width: 100%; height: 70%; display: flex; justify-content: center; overflow: hidden; }
   .svg-container svg { width: 85%; height: 100%; }
   .ean-text { font-family: monospace; font-size: clamp(5px, 1.5cqw, 8px); font-weight: bold; line-height: 1; text-transform: none; }
 
-  .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0; height: 10%; overflow: hidden; }
+  .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; border-top: 1px dashed #bbb; padding-top: 1px; flex-shrink: 0; height: var(--footer-h); overflow: hidden; }
   .promo-text { font-size: clamp(5px, 1.6cqw, 8px); color: #444; font-weight: 600; white-space: nowrap; overflow: hidden; line-height: 1; flex: 1; margin-right: 4px; }
   .print-date { font-size: clamp(5px, 1.5cqw, 7.5px); color: #666; white-space: nowrap; line-height: 1; flex-shrink: 0; }
+
+  /* ============================================================ */
+  /* 🎨 CLASSES DE TAMANHO — AUTO-ESCALA POR CLASSE                */
+  /* ============================================================ */
+
+  /* ────────── TINY (50x30, 52x30) ──────────
+     Sem espaço: esconde imagem, código de barras e rodapé.
+     Preço e produto dominam. */
+  .label-card.size-tiny {
+    --header-h: 18%;
+    --img-flex: 0;
+    --barcode-h: 0;
+    --footer-h: 0;
+    --gap-main: 1px;
+    --desc-flex: 1.6;
+    --price-flex: 1.4;
+    --pad-label: 1px 2px;
+  }
+  .label-card.size-tiny .col-image,
+  .label-card.size-tiny .barcode-container,
+  .label-card.size-tiny .footer-container,
+  .label-card.size-tiny .fruit-full-bar { display: none !important; }
+  .label-card.size-tiny .product { font-size: clamp(6px, 5cqw, 12px) !important; max-height: 2.4em; }
+  .label-card.size-tiny .price { font-size: clamp(11px, 9cqw, 20px) !important; }
+  .label-card.size-tiny .item-code { font-size: clamp(5px, 2.6cqw, 9px) !important; }
+  .label-card.size-tiny .store-text { font-size: clamp(5px, 2.8cqw, 9px) !important; }
+  .label-card.size-tiny .unit-price-text { font-size: clamp(4px, 2.2cqw, 7px) !important; }
+  .label-card.size-tiny .promo-tag { font-size: clamp(5px, 3cqw, 10px) !important; padding: 0 2px; }
+  .label-card.size-tiny .old-price { font-size: clamp(4px, 2.5cqw, 8px) !important; }
+  .label-card.size-tiny .header { border-bottom-width: 1px; }
+  .label-card.size-tiny .brand-logo { max-height: 95%; }
+
+  /* ────────── SMALL (65x38, 70x38, Amanhecer) ────────── */
+  .label-card.size-small {
+    --header-h: 12%;
+    --img-flex: 0.7;
+    --barcode-h: 12%;
+    --footer-h: 9%;
+  }
+
+  /* ────────── MEDIUM (105x38, 100x70) ────────── */
+  .label-card.size-medium {
+    --header-h: 12%;
+    --img-flex: 1;
+    --barcode-h: 13%;
+    --footer-h: 10%;
+  }
+  .label-card.size-medium .product { font-size: clamp(10px, 3.5cqw, 22px) !important; }
+  .label-card.size-medium .price { font-size: clamp(18px, 7cqw, 42px) !important; }
+  .label-card.size-medium .store-text { font-size: clamp(8px, 2.3cqw, 14px) !important; }
+  .label-card.size-medium .item-code { font-size: clamp(7px, 2cqw, 12px) !important; }
+
+  /* ────────── LARGE (125x80, A6) ────────── */
+  .label-card.size-large {
+    --header-h: 14%;
+    --img-flex: 1.2;
+    --barcode-h: 12%;
+    --footer-h: 10%;
+    --gap-main: 6px;
+    --img-pad: 2px;
+  }
+  .label-card.size-large .product { font-size: clamp(14px, 4cqw, 30px) !important; max-height: 3em; }
+  .label-card.size-large .price { font-size: clamp(24px, 8cqw, 62px) !important; }
+  .label-card.size-large .store-text { font-size: clamp(10px, 2.6cqw, 18px) !important; }
+  .label-card.size-large .item-code { font-size: clamp(9px, 2.3cqw, 16px) !important; }
+  .label-card.size-large .unit-price-text { font-size: clamp(8px, 2cqw, 14px) !important; }
+  .label-card.size-large .promo-tag { font-size: clamp(10px, 3cqw, 20px) !important; padding: 2px 5px; }
+  .label-card.size-large .old-price { font-size: clamp(9px, 2.6cqw, 17px) !important; }
+  .label-card.size-large .fruit-full-bar { font-size: clamp(9px, 2.2cqw, 15px) !important; }
+  .label-card.size-large .deposit-box { font-size: clamp(8px, 2cqw, 14px) !important; }
+
+  /* ────────── XL (A5) ────────── */
+  .label-card.size-xl {
+    --header-h: 12%;
+    --img-flex: 1.4;
+    --barcode-h: 12%;
+    --footer-h: 10%;
+    --gap-main: 10px;
+    --img-pad: 3px;
+    --desc-flex: 1.2;
+    --price-flex: 1.1;
+  }
+  .label-card.size-xl .product { font-size: clamp(20px, 4.5cqw, 48px) !important; max-height: 3em; }
+  .label-card.size-xl .price { font-size: clamp(36px, 9cqw, 96px) !important; }
+  .label-card.size-xl .store-text { font-size: clamp(14px, 2.7cqw, 26px) !important; }
+  .label-card.size-xl .item-code { font-size: clamp(12px, 2.4cqw, 22px) !important; }
+  .label-card.size-xl .unit-price-text { font-size: clamp(11px, 2.2cqw, 20px) !important; }
+  .label-card.size-xl .promo-tag { font-size: clamp(14px, 3.2cqw, 32px) !important; padding: 3px 8px; border-radius: 6px; }
+  .label-card.size-xl .old-price { font-size: clamp(12px, 2.8cqw, 24px) !important; }
+  .label-card.size-xl .fruit-full-bar { font-size: clamp(12px, 2.5cqw, 22px) !important; }
+  .label-card.size-xl .deposit-box { font-size: clamp(10px, 2.2cqw, 18px) !important; padding: 2px 6px; }
+  .label-card.size-xl .ean-text { font-size: clamp(10px, 1.8cqw, 14px) !important; }
+  .label-card.size-xl .promo-text { font-size: clamp(9px, 1.6cqw, 14px) !important; }
+  .label-card.size-xl .print-date { font-size: clamp(9px, 1.5cqw, 13px) !important; }
+  .label-card.size-xl .header { border-bottom-width: 2px; }
 
   .fruit-panel { background: #f0f8ff; border: 1px solid #b6d4fe; padding: 12px; border-radius: 8px; margin-bottom: 12px; display: none; }
   .fruit-panel h4 { margin: 0 0 8px 0; color: #084298; font-size: 13px; }
@@ -163,17 +267,11 @@
   
   @media(max-width:850px){ .top-header { flex-direction: column; align-items: flex-start; } .grid { grid-template-columns:1fr; } .preview-container { position: relative; top: 0;} }
   
-  /* ============================================================ */
-  /* ZONA DE IMPRESSÃO                                            */
-  /* ============================================================ */
-  @media screen {
-    #printZone { display: none !important; }
-  }
+  @media screen { #printZone { display: none !important; } }
 
   @media print {
     .app { display: none !important; }
     .pro-toast, .pro-print-overlay { display: none !important; }
-    
     #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
 
     @page { margin: 0 !important; size: 210mm 297mm !important; }
@@ -190,15 +288,8 @@
       margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important;
       page-break-inside: avoid !important; overflow: hidden !important;
     }
-    /* Só força quebra de página entre folhas, NUNCA no fim */
-    .print-sheet-amanhecer:not(:last-child) {
-      page-break-after: always !important;
-      break-after: page !important;
-    }
-    .print-sheet-amanhecer:last-child {
-      page-break-after: avoid !important;
-      break-after: avoid !important;
-    }
+    .print-sheet-amanhecer:not(:last-child) { page-break-after: always !important; break-after: page !important; }
+    .print-sheet-amanhecer:last-child { page-break-after: avoid !important; break-after: avoid !important; }
     .print-sheet-amanhecer .label-card { width: 70mm !important; border: 1px solid transparent !important; box-shadow: none !important; page-break-inside: avoid !important; margin: 0 !important; padding: 2px 4px !important; overflow: hidden !important; }
     .print-sheet-amanhecer .label-card:nth-child(1), .print-sheet-amanhecer .label-card:nth-child(2), .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
     .print-sheet-amanhecer .label-card:nth-child(n + 4) { height: 40mm !important; }
@@ -207,7 +298,6 @@
 
     #printZone > div:not(.print-sheet-amanhecer) .label-card { border: 1px solid #222 !important; page-break-after: always !important; margin: 5mm !important; box-shadow: none !important; overflow: hidden !important; }
 
-    /* Grelha de calibração */
     .calib-sheet {
       display: grid !important;
       grid-template-columns: 70mm 70mm 70mm !important;
@@ -217,15 +307,7 @@
       page-break-inside: avoid !important; overflow: hidden !important;
     }
     .calib-sheet:not(:last-child) { page-break-after: always !important; }
-    .calib-cell {
-      border: 1px dashed #d33 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font: 900 14px Arial !important;
-      color: #c8102e !important;
-      background: #fff5f5 !important;
-    }
+    .calib-cell { border: 1px dashed #d33 !important; display: flex !important; align-items: center !important; justify-content: center !important; font: 900 14px Arial !important; color: #c8102e !important; background: #fff5f5 !important; }
     .calib-cell:nth-child(1), .calib-cell:nth-child(2), .calib-cell:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
     .calib-cell:nth-child(n + 4) { height: 40mm !important; }
     .calib-cell:nth-child(3n + 1) { padding-left: 6.5mm !important; }
@@ -356,7 +438,6 @@
         </div>
       </details>
 
-      <!-- NOVO: PAINEL DE AJUSTES DE IMPRESSÃO -->
       <details class="drawer" id="offsetDrawer">
         <summary>🎯 Ajustes de Impressão (Alinhamento da Folha)</summary>
         <div class="drawer-content">
@@ -434,7 +515,7 @@
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer (21 Etiquetas)</div>
       <div class="preview-wrap" id="previewWrap">
         
-        <div class="label-card" id="mainLabelCard" style="width: 380px; height: 214px;">
+        <div class="label-card size-small" id="mainLabelCard" style="width: 380px; height: 214px;">
           <div class="header" id="cardHeader">
             <div class="logo-wrapper-1"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=0.3"></div>
             <div class="logo-wrapper-2"><img class="brand-logo" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=0.3"></div>
@@ -485,7 +566,7 @@ let printInProgress = false;
 let photoProcessingToken = 0;
 
 // ==========================================
-// SEGURANÇA — sanitização de HTML
+// UTILITÁRIOS
 // ==========================================
 function escapeHTML(str) {
   return String(str || "").replace(/[&<>"']/g, m => ({
@@ -493,32 +574,19 @@ function escapeHTML(str) {
   }[m]));
 }
 
-// ==========================================
-// ARMAZENAMENTO SEGURO (localStorage pode falhar em modo privado)
-// ==========================================
 const Storage = {
   get(key, fallback) {
-    try {
-      const v = localStorage.getItem(key);
-      return v === null ? fallback : v;
-    } catch (e) {
-      console.warn("localStorage indisponível:", e);
-      return fallback;
-    }
+    try { const v = localStorage.getItem(key); return v === null ? fallback : v; }
+    catch (e) { console.warn("localStorage indisponível:", e); return fallback; }
   },
   set(key, value) {
-    try {
-      localStorage.setItem(key, value);
-      return true;
-    } catch (e) {
-      console.warn("Não foi possível guardar em localStorage:", e);
-      return false;
-    }
+    try { localStorage.setItem(key, value); return true; }
+    catch (e) { console.warn("Não foi possível guardar:", e); return false; }
   }
 };
 
 // ==========================================
-// OFFSETS DE IMPRESSÃO (persistentes)
+// OFFSETS DE IMPRESSÃO
 // ==========================================
 let offsetX = parseFloat(Storage.get("balcao_offset_x", "0"));
 let offsetY = parseFloat(Storage.get("balcao_offset_y", "6"));
@@ -701,7 +769,7 @@ function renderDb() {
   savedProducts
     .map((p, i) => ({ p, i }))
     .sort((a, b) => (a.p.product || "").localeCompare(b.p.product || ""))
-    .forEach(({ p: data, i: originalIndex }) => {
+    .forEach(({ p: data }) => {
       const div = document.createElement("div");
       div.className = "list-item";
       const name = escapeHTML(data.product || "Sem Nome");
@@ -758,7 +826,6 @@ window.removeFromDb = function(index) {
   }
 };
 
-// Delegação de eventos (mais robusto que onclick inline)
 document.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
@@ -781,7 +848,7 @@ $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 
 // ==========================================
-// UTILITÁRIOS
+// PARSING E DATAS
 // ==========================================
 function parsePrice(valStr) {
   if (valStr == null || String(valStr).trim() === "") return null;
@@ -813,6 +880,9 @@ function formatPromoDate(startStr, endStr) {
   }
 }
 
+// ==========================================
+// REMOÇÃO DE FUNDO
+// ==========================================
 function removeBackground(dataUrl, callback) {
   const token = ++photoProcessingToken;
   const img = new Image();
@@ -1006,6 +1076,32 @@ function getDimensions() {
   return { width: w, height: h };
 }
 
+/**
+ * Motor de auto-escala: escolhe a classe visual conforme o tamanho.
+ *  - tiny   → 50x30, 52x30 (esconde imagem/barcode/footer, preço grande)
+ *  - small  → 65x38, 70x38, Amanhecer (equilíbrio)
+ *  - medium → 105x38, 100x70 (mais espaço, preço maior)
+ *  - large  → 125x80, A6 (imagem grande, preço enorme)
+ *  - xl     → A5 (tudo em grande destaque)
+ */
+function getSizeClass(w, h) {
+  const maxDim = Math.max(w, h);
+  if (maxDim < 55) return "size-tiny";
+  if (maxDim < 82) return "size-small";
+  if (maxDim < 115) return "size-medium";
+  if (maxDim < 165) return "size-large";
+  return "size-xl";
+}
+
+function applySizeClass(el, w, h) {
+  if (!el) return;
+  el.classList.remove("size-tiny", "size-small", "size-medium", "size-large", "size-xl");
+  el.classList.add(getSizeClass(w, h));
+  el.dataset.physicalWidthMm = w;
+  el.dataset.physicalHeightMm = h;
+  el.style.setProperty("--label-w-mm", w + "mm");
+}
+
 function setField(id, val) {
   const el = $(id);
   if (el) { el.value = val; updateCard(); }
@@ -1013,7 +1109,7 @@ function setField(id, val) {
 window.setField = setField;
 
 // ==========================================
-// RENDERIZAÇÃO DO CARTÃO
+// RENDERIZAÇÃO
 // ==========================================
 function updateCardUnsafe() {
   const storeVal = $("store").value || "PATAIAS";
@@ -1032,25 +1128,26 @@ function updateCardUnsafe() {
   const capUnit = $("capacityUnit").value;
   const capacityNum = parseFloat($("capacity").value) || 1;
 
+  const card = $("mainLabelCard");
+
   if (isAmanhecer) {
-    $("mainLabelCard").style.width = "380px";
-    $("mainLabelCard").style.height = "214px";
+    card.style.width = "380px";
+    card.style.height = "214px";
+    applySizeClass(card, 70, 38); // Amanhecer é small
     $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
     $("gridStartContainer").style.display = "block";
-    $("cardHeader").style.height = "18px";
     document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "16px");
   } else {
     const scale = 3.2;
-    $("mainLabelCard").style.width = (dims.width * scale) + "px";
-    $("mainLabelCard").style.height = (dims.height * scale) + "px";
+    card.style.width = (dims.width * scale) + "px";
+    card.style.height = (dims.height * scale) + "px";
+    applySizeClass(card, dims.width, dims.height);
     if (isLarge) {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm (${orientation === "horizontal" ? "Horizontal" : "Vertical"})`;
-      $("cardHeader").style.height = (formatVal === "A5") ? "34px" : "26px";
-      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "28px" : "22px");
+      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = (formatVal === "A5") ? "40px" : (formatVal === "A6") ? "32px" : "26px");
     } else {
       $("badgeSheet").textContent = `📐 Formato: ${dims.width} mm × ${dims.height} mm`;
-      $("cardHeader").style.height = "18px";
-      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "16px");
+      document.querySelectorAll("#mainLabelCard .brand-logo").forEach(logo => logo.style.maxHeight = "18px");
     }
     $("gridStartContainer").style.display = "none";
   }
@@ -1135,26 +1232,48 @@ function updateCardUnsafe() {
   }
 
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  if (activePhoto) {
-    $("cardPhotoBox").style.display = "flex";
+  const photoBox = $("cardPhotoBox");
+  if (activePhoto && !card.classList.contains("size-tiny")) {
+    photoBox.classList.add("show");
     $("cardPhotoImg").src = activePhoto;
   } else {
-    $("cardPhotoBox").style.display = "none";
+    photoBox.classList.remove("show");
   }
 
-  if (barcodeToDraw) {
-    $("cardBarcodeBox").style.display = "flex";
+  const barcodeBox = $("cardBarcodeBox");
+  if (barcodeToDraw && !card.classList.contains("size-tiny")) {
+    barcodeBox.classList.add("show");
     $("cardBarcodeText").textContent = barcodeToDraw;
     drawBarcode($("cardBarcodeSvg"), barcodeToDraw);
   } else {
-    $("cardBarcodeBox").style.display = "none";
+    barcodeBox.classList.remove("show");
   }
 
   $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
   $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString('pt-PT');
+
+  // Auto-fit do nome do produto (só encolhe, nunca aumenta — mantém design)
+  requestAnimationFrame(() => autoFitText($("cardProduct")));
 }
 
-// Debounce: evita renders em cadeia a cada tecla em PCs lentos
+/**
+ * Auto-shrink: reduz o font-size do produto até caber.
+ * Ideal para nomes compridos em etiquetas pequenas.
+ */
+function autoFitText(el) {
+  if (!el) return;
+  el.style.fontSize = "";
+  let iter = 0;
+  const maxIter = 10;
+  // Se não está a transbordar, sai já
+  while (el.scrollHeight > el.clientHeight + 1 && iter < maxIter) {
+    const cur = parseFloat(getComputedStyle(el).fontSize);
+    if (!cur || cur < 4) break;
+    el.style.fontSize = (cur * 0.92) + "px";
+    iter++;
+  }
+}
+
 let _updateCardTimer = null;
 function updateCard() {
   if (_updateCardTimer) clearTimeout(_updateCardTimer);
@@ -1313,7 +1432,7 @@ $("clearBtn").addEventListener("click", function () {
 });
 
 // ==========================================
-// AJUSTES DE IMPRESSÃO (SLIDERS)
+// AJUSTES DE IMPRESSÃO
 // ==========================================
 $("offsetXRange").addEventListener("input", function () {
   offsetX = parseFloat(this.value) || 0;
@@ -1337,7 +1456,6 @@ $("resetOffsetBtn").addEventListener("click", function () {
   setStatus("Ajustes de impressão restaurados (X=0mm, Y=6mm).", "success");
 });
 
-// Grelha de calibração — imprime 21 retângulos numerados para afinar alinhamento
 $("printCalibBtn").addEventListener("click", function () {
   const printZone = $("printZone");
   printZone.innerHTML = "";
@@ -1453,7 +1571,7 @@ function triggerPrint() {
       chunk.forEach((data, index) => {
         if (data === null) {
           const emptyDiv = document.createElement("div");
-          emptyDiv.className = "label-card";
+          emptyDiv.className = "label-card size-small";
           emptyDiv.style.visibility = "hidden";
           emptyDiv.style.width = "70mm";
           emptyDiv.style.height = index < 3 ? "38mm" : "40mm";
@@ -1469,10 +1587,15 @@ function triggerPrint() {
           
           clone.style.width = "70mm";
           clone.style.height = index < 3 ? "38mm" : "40mm";
+          applySizeClass(clone, 70, index < 3 ? 38 : 40);
           
           const eanVal = normalizeBarcode(data.ean || data.internalCode);
           const barcodeSvg = clone.querySelector("svg");
           if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
+          
+          // Auto-fit do nome no clone
+          const prodEl = clone.querySelector(".product");
+          if (prodEl) requestAnimationFrame(() => autoFitText(prodEl));
           
           page.appendChild(clone);
         }
@@ -1480,7 +1603,7 @@ function triggerPrint() {
       
       for (let j = chunk.length; j < 21; j++) {
         const emptyDiv = document.createElement("div");
-        emptyDiv.className = "label-card";
+        emptyDiv.className = "label-card size-small";
         emptyDiv.style.visibility = "hidden";
         emptyDiv.style.width = "70mm";
         emptyDiv.style.height = j < 3 ? "38mm" : "40mm";
@@ -1506,10 +1629,14 @@ function triggerPrint() {
         
         clone.style.width = dims.width + "mm";
         clone.style.height = dims.height + "mm";
+        applySizeClass(clone, dims.width, dims.height);
         
         const eanVal = normalizeBarcode(data.ean || data.internalCode);
         const barcodeSvg = clone.querySelector("svg");
         if (barcodeSvg && eanVal) drawBarcode(barcodeSvg, eanVal);
+        
+        const prodEl = clone.querySelector(".product");
+        if (prodEl) requestAnimationFrame(() => autoFitText(prodEl));
         
         gridWrap.appendChild(clone);
       }
@@ -1530,12 +1657,10 @@ function triggerPrint() {
   });
 }
 
-// Expor globalmente
 window.triggerPrint = triggerPrint;
 window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 
-// Aviso antes de fechar com fila cheia
 window.addEventListener("beforeunload", (ev) => {
   if (printQueue.length > 0) {
     ev.preventDefault();
