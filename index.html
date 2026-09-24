@@ -251,6 +251,35 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .cam-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .cam-actions button{width:auto;padding:10px 22px}
 @media(max-width:600px){.bf-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.bf-card img{height:85px}}
+
+/* ============ Abas Frutas / Legumes ============ */
+.banco-tabs{display:flex;gap:4px;border-bottom:2px solid #e4e8ee;margin-bottom:14px;margin-top:4px}
+.banco-tab{flex:1;background:transparent;border:none;padding:12px 8px;font-weight:800;font-size:14px;color:#7a8391;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;border-radius:0;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.banco-tab:hover{color:#4a5560}
+.banco-tab.active{color:#c8102e;border-bottom-color:#c8102e}
+.banco-tab .badge-cat{display:inline-block;background:#eef1f5;color:#4a5560;font-size:11px;font-weight:800;padding:1px 7px;border-radius:10px;line-height:1.6;min-width:20px;text-align:center}
+.banco-tab.active .badge-cat{background:#c8102e;color:#fff}
+@media(max-width:600px){.banco-tab{font-size:13px;padding:11px 6px}}
+
+/* ============ Seletor de categoria no modal do nome ============ */
+.cat-picker{margin-bottom:14px}
+.cat-picker-label{font-size:11px;font-weight:800;color:#4a5560;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:block}
+.cat-picker-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-opt{position:relative;cursor:pointer;display:block}
+.cat-opt input{position:absolute;opacity:0;pointer-events:none}
+.cat-opt-inner{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 10px;border:2px solid #e4e8ee;border-radius:12px;background:#fff;font-weight:900;font-size:14px;color:#4a5560;transition:all .15s;text-align:center}
+.cat-opt:hover .cat-opt-inner{border-color:#c8d0dc;background:#fafbfc}
+.cat-opt input:checked + .cat-opt-inner.cat-fruta{border-color:#c8102e;background:linear-gradient(135deg,#fff5f5,#ffe8e8);color:#c8102e;box-shadow:0 0 0 3px rgba(200,16,46,.12)}
+.cat-opt input:checked + .cat-opt-inner.cat-legume{border-color:#1e8a4a;background:linear-gradient(135deg,#f0fdf4,#dbf5e5);color:#0d5a2f;box-shadow:0 0 0 3px rgba(30,138,74,.12)}
+.cat-icon{font-size:18px}
+
+/* ============ Secção Fotografia — botão do banco próximo ============ */
+.fotografia-box{background:linear-gradient(135deg,#f0f8ff,#e5f1ff);border:1.5px solid #b6d4fe;border-radius:12px;padding:14px;margin-top:10px}
+.fotografia-box .fotografia-title{font-size:12px;font-weight:900;color:#084298;text-transform:uppercase;letter-spacing:.4px;margin:0 0 10px 0;display:flex;align-items:center;gap:6px}
+.fotografia-box button{margin-bottom:8px}
+.fotografia-box button:last-child{margin-bottom:0}
+.fotografia-hint{font-size:11px;color:#084298;line-height:1.4;opacity:.9;margin-top:6px}
+
 .mobile-tab-bar{display:none}
 .tab-el{display:block}
 .tab-badge{display:none;background:#c8102e;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
@@ -334,7 +363,7 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .confirm-box .confirm-actions .confirm-yes{background:#c8102e;color:#fff;border-color:#c8102e}
 .name-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100002;align-items:center;justify-content:center;padding:20px}
 .name-modal.show{display:flex}
-.name-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.name-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .name-modal-box h3{margin:0 0 6px 0;font-size:16px;font-weight:900;color:#1a1f28}
 .name-modal-box p{margin:0 0 14px 0;font-size:13px;color:#4a5560;line-height:1.4}
 .name-modal-box input{width:100%;margin-bottom:16px}
@@ -408,7 +437,7 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
           <input id="internalCode" type="text" class="uppercase-input">
           <label for="product">Produto / Variedade</label>
           <input id="product" type="text" class="uppercase-input">
-          <button type="button" class="secondary" id="abrirBancoFrutaBtn" style="margin-top:8px;border-color:#c8102e;color:#c8102e">🍎 Escolher foto do banco (fruta/legumes)</button>
+
           <div class="fruit-panel" id="fruitPanel">
             <h4>🍎 Origem, Categoria e Calibre</h4>
             <div class="size-row-3">
@@ -505,17 +534,19 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
               <div><label for="promoEnd">Fim Oportunidade</label><input id="promoEnd" type="date"></div>
             </div>
           </div>
+
           <label for="ean" style="color:#084298">Código de Barras (EAN) <span id="eanBadge" class="bc-badge" style="display:none"></span></label>
           <input id="ean" type="text" style="text-transform:uppercase;border-color:#b6d4fe;background:#f8fbff">
           <button type="button" class="secondary" id="scanEanBtn" style="margin-top:6px;border-color:#084298;color:#084298">📷 Ler código de barras com a câmara</button>
-          <label for="photo">Fotografia (Opcional)</label>
-          <input id="photo" type="file" accept="image/*">
-          <button type="button" class="secondary" id="openCameraBtn" style="margin-top:6px;border-color:#176b3a;color:#176b3a">📷 Tirar foto agora</button>
 
-          <div style="margin-top:12px;padding:12px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px dashed #b6d4fe;border-radius:12px">
-            <div style="font-size:12px;font-weight:900;color:#084298;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">📚 Banco de imagens do Drive</div>
-            <button type="button" class="secondary" id="fotoBancoBtn" style="margin:0;background:#fff;border-color:#084298;color:#084298;font-weight:900">📷 Fotografar artigo para o banco</button>
-            <div style="font-size:11px;color:#084298;margin-top:6px;line-height:1.35;opacity:.85">Tira foto → remove fundo → pergunta o nome → fica guardado no Drive para usar em qualquer etiqueta futura.</div>
+          <!-- ============ FOTOGRAFIA (agora com tudo junto) ============ -->
+          <div class="fotografia-box">
+            <div class="fotografia-title">📸 Fotografia do produto</div>
+            <label for="photo" style="margin-top:0;font-size:11px;color:#084298">Carregar ficheiro</label>
+            <input id="photo" type="file" accept="image/*">
+            <button type="button" class="secondary" id="fotoBancoBtn" style="margin-top:8px;background:#fff;border-color:#084298;color:#084298;font-weight:900">📷 Fotografar artigo para o banco</button>
+            <button type="button" class="secondary" id="abrirBancoFrutaBtn" style="margin-top:8px;background:#fff;border-color:#c8102e;color:#c8102e;font-weight:900">🍎 Escolher foto do banco (fruta/legumes)</button>
+            <div class="fotografia-hint">Podes: <strong>carregar ficheiro</strong>, <strong>tirar foto para o banco</strong> (guarda com nome e categoria) ou <strong>escolher do banco</strong> existente.</div>
           </div>
 
           <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo automaticamente</label>
@@ -634,7 +665,20 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 <div class="name-modal" id="nameModal">
   <div class="name-modal-box">
     <h3 id="nameModalTitle">📷 Guardar foto no banco</h3>
-    <p id="nameModalDesc">Dê um nome ao artigo. Este nome será usado no ficheiro do Drive.</p>
+    <p id="nameModalDesc">Escolhe a categoria e dá um nome ao artigo.</p>
+    <div class="cat-picker">
+      <span class="cat-picker-label">Categoria</span>
+      <div class="cat-picker-options">
+        <label class="cat-opt">
+          <input type="radio" name="categoriaPick" value="FRUTA">
+          <div class="cat-opt-inner cat-fruta"><span class="cat-icon">🍎</span> Fruta</div>
+        </label>
+        <label class="cat-opt">
+          <input type="radio" name="categoriaPick" value="LEGUME">
+          <div class="cat-opt-inner cat-legume"><span class="cat-icon">🥬</span> Legume</div>
+        </label>
+      </div>
+    </div>
     <input id="nameModalInput" type="text" placeholder="Ex.: MAÇÃ GALA NACIONAL" style="text-transform:uppercase;font-weight:800;font-size:16px;padding:14px">
     <div class="name-modal-actions">
       <button type="button" class="name-modal-no" id="nameModalCancel">Cancelar</button>
@@ -660,12 +704,17 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
-      <h3 class="modal-title" style="margin:0">🍎 Banco de Frutas e Legumes</h3>
-      <input id="buscaBancoFruta" style="max-width:260px">
+      <h3 class="modal-title" style="margin:0">📚 Banco de imagens</h3>
+      <input id="buscaBancoFruta" style="max-width:220px">
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button id="processarBancoBtn" class="secondary" type="button" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border-color:#084298;color:#084298;font-weight:900">🎨 Recortar todas</button>
+        <button id="processarBancoBtn" class="secondary" type="button" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border-color:#084298;color:#084298;font-weight:900">🎨 Recortar estas</button>
         <button id="fecharBancoFruta" class="secondary" type="button" style="width:auto;padding:8px 14px">✕ Fechar</button>
       </div>
+    </div>
+
+    <div class="banco-tabs">
+      <button type="button" class="banco-tab active" data-cat="FRUTA">🍎 Frutas <span class="badge-cat" id="bancoCountFruta">0</span></button>
+      <button type="button" class="banco-tab" data-cat="LEGUME">🥬 Legumes <span class="badge-cat" id="bancoCountLegume">0</span></button>
     </div>
 
     <div id="bancoProgress" style="display:none;margin-bottom:14px;padding:12px;background:#f8f9fa;border-radius:10px;border:1px solid #e0e0e0">
@@ -735,11 +784,20 @@ function confirmDialog(msg) {
   });
 }
 
-function pedirNomeArtigo(valorInicial){
+/* ============================================================
+   Modal para pedir nome + categoria
+   Retorna { nome, categoria } ou null
+   ============================================================ */
+function pedirNomeArtigo(valorInicial, categoriaSugerida){
   return new Promise(function(resolve){
     const modal = document.getElementById("nameModal");
     const input = document.getElementById("nameModalInput");
+    const catIn = document.querySelectorAll('input[name="categoriaPick"]');
+
     input.value = String(valorInicial || "").toUpperCase();
+    const catFinal = categoriaSugerida === 'LEGUME' ? 'LEGUME' : 'FRUTA';
+    catIn.forEach(function(r){ r.checked = (r.value === catFinal); });
+
     modal.classList.add("show");
     setTimeout(function(){ input.focus(); input.select(); }, 50);
 
@@ -752,32 +810,39 @@ function pedirNomeArtigo(valorInicial){
       resolve(resultado);
     }
 
-    document.getElementById("nameModalConfirm").onclick = function(){
+    function confirmar(){
       const v = (input.value || "").trim().toUpperCase();
       if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
-      fechar(v);
-    };
+      let cat = 'FRUTA';
+      catIn.forEach(function(r){ if(r.checked) cat = r.value; });
+      fechar({ nome: v, categoria: cat });
+    }
+
+    document.getElementById("nameModalConfirm").onclick = confirmar;
     document.getElementById("nameModalCancel").onclick = function(){ fechar(null); };
     input.onkeydown = function(e){
-      if(e.key === "Enter"){ e.preventDefault(); document.getElementById("nameModalConfirm").click(); }
+      if(e.key === "Enter"){ e.preventDefault(); confirmar(); }
       if(e.key === "Escape"){ e.preventDefault(); fechar(null); }
     };
     modal.onclick = function(e){ if(e.target === modal) fechar(null); };
   });
 }
 
-async function guardarFotoBanco(nome, dataUrl){
+async function guardarFotoBanco(nome, categoria, dataUrl){
   setStatus("A guardar foto no banco…");
   try{
     const comprimida = await compressSmart(dataUrl, 700, 0.72);
-    const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome });
+    const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome, categoria: categoria });
+    /* Remover duplicados locais do mesmo nome + categoria */
     bancoFruta = bancoFruta.filter(function(f){
-      return String(f.nome||"").toUpperCase() !== nome;
+      return !(String(f.nome||"").toUpperCase() === nome &&
+               String(f.categoria||'FRUTA').toUpperCase() === categoria);
     });
-    bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url });
+    bancoFruta.push({ nome: r.nome, categoria: r.categoria, fotoId: r.id, fotoUrl: r.url });
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
+    atualizarContagensBanco();
     renderBancoFruta();
-    toast("✅ Foto guardada no banco: " + r.nome, "success", 4500);
+    toast("✅ Foto guardada em " + (r.categoria === 'LEGUME' ? '🥬 Legumes' : '🍎 Frutas') + ": " + r.nome, "success", 4500);
   }catch(e){
     toast("Erro ao guardar no banco: " + e.message, "error");
     throw e;
@@ -871,6 +936,7 @@ async function api(fn, payload){
 const $ = function(id){return document.getElementById(id)};
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, photoToken = 0;
 let fotoBancoModo = false;
+let bancoCategoriaAtiva = 'FRUTA';   /* Aba ativa */
 function escapeHTML(s){return String(s||"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 
 const Storage = {
@@ -884,1445 +950,4 @@ function applyOffsets(){
   document.documentElement.style.setProperty("--offset-x",offsetX+"mm");
   document.documentElement.style.setProperty("--offset-y",offsetY+"mm");
   if($("offsetXRange")) $("offsetXRange").value = String(offsetX);
-  if($("offsetYRange")) $("offsetYRange").value = String(offsetY);
-  if($("offsetXVal"))   $("offsetXVal").textContent = offsetX+" mm";
-  if($("offsetYVal"))   $("offsetYVal").textContent = offsetY+" mm";
-}
-
-let printQueue = [];
-let savedProducts = [];
-let bancoFruta = [];
-
-async function carregarTudo(){
-  try{
-    setStatus('A carregar do Drive…');
-    const p = await api('listarProdutos').catch(function(){return []});
-    const f = await api('listarBancoFruta').catch(function(){return []});
-    savedProducts = p || [];
-    bancoFruta = f || [];
-    renderDb(); renderBancoFruta();
-    setStatus('✅ Dados carregados ('+savedProducts.length+' produtos, '+bancoFruta.length+' frutas).','success');
-  }catch(e){
-    setStatus('⚠️ Erro a ligar ao Drive: '+e.message,'error');
-  }
-}
-
-function getFormData(){return{
-  presetSizes:$("presetSizes").value,customWidth:$("customWidth").value,customHeight:$("customHeight").value,
-  store:$("store").value,
-  internalCode:$("internalCode").value.trim().toUpperCase(),product:$("product").value.trim().toUpperCase(),
-  origem:$("origem").value.trim().toUpperCase(),categoria:$("categoria").value.trim().toUpperCase(),
-  calibre:$("calibre").value.trim().toUpperCase(),
-  price:$("price").value,isPromoActive:$("isPromoActive").checked,oldPrice:$("oldPrice").value,
-  capacity:$("capacity").value,capacityUnit:$("capacityUnit").value,
-  depositFeeSelect:$("depositFeeSelect").value,customDepositInput:$("customDepositInput").value,
-  unit:$("unit").value,promoStart:$("promoStart").value,promoEnd:$("promoEnd").value,
-  ean:$("ean").value.trim().toUpperCase(),autoRemoveBg:$("autoRemoveBg").checked,useAI:$("useAI").checked,
-  originalPhoto:globalOriginalPhoto,processedPhoto:globalProcessedPhoto,
-  promoMinQty:$("promoMinQty").value,promoUnit:$("promoUnit").value,promoPrice:$("promoPrice").value
-}}
-
-function setFormData(d){
-  if(!d) return;
-  $("presetSizes").value = d.presetSizes||d.formato||"amanhecer";
-  $("customWidth").value = d.customWidth||"70"; $("customHeight").value = d.customHeight||"38";
-  $("store").value = d.store||d.loja||"PATAIAS";
-  $("internalCode").value = d.internalCode||d.codigo||"";
-  $("product").value = d.product||d.nome||"";
-  $("origem").value = d.origem||"";
-  $("categoria").value = d.categoria||"";
-  $("calibre").value = d.calibre||"";
-  $("price").value = d.price||d.preco||"";
-  $("isPromoActive").checked = d.isPromoActive||false;
-  $("oldPrice").value = d.oldPrice||"";
-  $("capacity").value = d.capacity||d.capacidade||"";
-  $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
-  $("capacityUnit").dataset.last = $("capacityUnit").value;
-  $("depositFeeSelect").value = d.depositFeeSelect||"";
-  $("customDepositInput").value = d.customDepositInput||d.deposito||"";
-  $("unit").value = d.unit||"";
-  $("promoStart").value = d.promoStart||"";
-  $("promoEnd").value = d.promoEnd||"";
-  $("ean").value = (d.ean||"").toUpperCase();
-  $("autoRemoveBg").checked = d.autoRemoveBg!==false;
-  $("useAI").checked = d.useAI!==false;
-  $("promoMinQty").value = d.promoMinQty||"2";
-  $("promoUnit").value = d.promoUnit||"KG";
-  $("promoPrice").value = d.promoPrice||"";
-  globalOriginalPhoto = d.originalPhoto||d.fotoUrl||"";
-  globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
-  $("photo").value = "";
-  $("promoBox").style.display = $("isPromoActive").checked?"block":"none";
-  $("customDepositInput").style.display = $("depositFeeSelect").value==="custom"?"block":"none";
-  updateOrientationVisibility();
-  updateCard();
-}
-
-function markFieldError(id,has){const el=$(id);if(!el)return;if(has)el.classList.add("input-error");else el.classList.remove("input-error")}
-function clearFieldErrors(){document.querySelectorAll(".input-error").forEach(function(el){el.classList.remove("input-error")})}
-
-function updateEanBadge(){
-  const badge = $("eanBadge"); const raw = $("ean").value.trim();
-  if(!raw){badge.style.display="none";return}
-  const clean = normalizeBarcode(raw); badge.style.display="inline-block";
-  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){badge.textContent="EAN-13 ✓";badge.className="bc-badge ok"}
-  else if(/^\d{14}$/.test(clean) && isValidEAN14(clean)){badge.textContent="EAN-14 ✓";badge.className="bc-badge ok"}
-  else if(/^[\x20-\x7E]+$/.test(clean)){badge.textContent="Code128";badge.className="bc-badge warn"}
-  else{badge.textContent="Inválido";badge.className="bc-badge err"}
-}
-
-function setProductText(el,text){
-  if(!el) return;
-  el.innerHTML = "";
-  const raw = String(text||"").trim();
-  if(!raw){
-    ["NOME","DO","PRODUTO"].forEach(function(t){
-      var s=document.createElement("span");
-      s.className="w";
-      s.textContent=t;
-      el.appendChild(s);
-    });
-    return;
-  }
-  const words = raw.split(/\s+/).filter(Boolean);
-  words.forEach(function(word){
-    const s = document.createElement("span");
-    s.className = "w";
-    s.textContent = word;
-    el.appendChild(s);
-  });
-}
-
-function calcUnitInfo(capUnit){
-  switch(capUnit){
-    case "peso": return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
-    case "g":    return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1/1000   };
-    case "lt":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1        };
-    case "cl":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/100    };
-    case "ml":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/1000   };
-    case "un":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:1        };
-    case "dz":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:12       };
-    case "dose": return { unitSuffix:"€/DOSE",unitLabel:"€/DOSE", normalizar:1        };
-    default:     return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
-  }
-}
-
-function renderQueue(){
-  const c = $("queueListContainer");
-  $("queueBadge").textContent = printQueue.length;
-  const tb = document.getElementById("tabQueueBadge");
-  if (tb) { tb.textContent = printQueue.length; tb.classList.toggle("show", printQueue.length > 0); }
-  if(printQueue.length===0){
-    c.innerHTML = '<div class="empty-msg">A fila está vazia.</div>';
-    $("clearQueueBtn").style.display = "none";
-    $("printBtn").textContent = "🖨️ Imprimir [F9]";
-    return;
-  }
-  $("clearQueueBtn").style.display = "block";
-  let total = 0; c.innerHTML = "";
-  printQueue.forEach(function(item,i){
-    total += item.copies;
-    const div = document.createElement("div"); div.className = "list-item";
-    const fmt = (item.data.presetSizes==="amanhecer")?"Amanhecer":item.data.presetSizes;
-    const jaGuardado = savedProducts.some(function(p){
-      return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode);
-    });
-    const iconeGuardar = jaGuardado ? "✅" : "💾";
-    const tituloGuardar = jaGuardado ? "Já guardado no Drive (clica para atualizar)" : "Guardar este produto no Drive";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
-    c.appendChild(div);
-  });
-  $("printBtn").innerHTML = '🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
-}
-function addToQueue(){
-  setValidationState();
-  if($("appStatus").dataset.type==="error"){setStatus("Corrija os erros antes.","error");return}
-  const copies = Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
-  const data = getFormData();
-  if(!data.product && !data.price && !data.internalCode){setStatus("Preencha os dados primeiro.","error");return}
-  printQueue.push({data:data,copies:copies}); renderQueue(); setStatus("Adicionado à fila!","success");
-}
-
-window.saveQueueItem = async function(i){
-  const item = printQueue[i];
-  if(!item){ toast("Item da fila não encontrado.", "error"); return; }
-  const d = item.data;
-  if(!d.product && !d.internalCode){
-    toast("Item sem nome nem código — preenche primeiro.", "warning", 5000);
-    return;
-  }
-  const existente = savedProducts.find(function(p){
-    return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode);
-  });
-  if(existente){
-    const substituir = await confirmDialog("Já existe um produto \""+d.product+"\" no Drive. Substituir os dados pelo item da fila?");
-    if(!substituir) return;
-  }
-  setStatus("A guardar \""+(d.product||d.internalCode)+"\" no Drive…");
-  try{
-    let fotoId  = d.fotoId  || "";
-    let fotoUrl = d.fotoUrl || "";
-    const foto  = d.processedPhoto || d.originalPhoto;
-    if(foto && foto.indexOf('http') !== 0){
-      const nomeFic = (d.internalCode||'artigo') + '_' + Date.now() + '.jpg';
-      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
-      const up = await api('uploadFoto', { base64:fotoOtimizada, nomeFicheiro:nomeFic });
-      fotoId  = up.id;
-      fotoUrl = up.url;
-    }
-    await api('guardarProduto', {
-      codigo:      d.internalCode,
-      nome:        d.product,
-      preco:       d.price,
-      oldPrice:    d.oldPrice,
-      promoPrice:  d.promoPrice,
-      promoMinQty: d.promoMinQty,
-      promoUnit:   d.promoUnit,
-      origem:      d.origem,
-      categoria:   d.categoria,
-      calibre:     d.calibre,
-      ean:         d.ean,
-      loja:        d.store,
-      unidade:     d.capacityUnit,
-      capacidade:  d.capacity,
-      deposito:    d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect,
-      formato:     d.presetSizes,
-      fotoId:      fotoId,
-      fotoUrl:     fotoUrl
-    });
-    item.data.fotoId  = fotoId;
-    item.data.fotoUrl = fotoUrl;
-    item.data.processedPhoto = fotoUrl;
-    item.data.originalPhoto  = fotoUrl;
-    await carregarTudo();
-    renderQueue();
-    setStatus("✅ \""+(d.product||d.internalCode)+"\" guardado no Drive.", "success", 3500);
-  }catch(e){
-    setStatus("Erro ao guardar: "+e.message, "error");
-  }
-};
-
-window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
-window.duplicateQueue = function(i){
-  const item = printQueue[i]; if(!item) return;
-  printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies});
-  renderQueue(); setStatus("Item duplicado.","success");
-};
-$("clearQueueBtn").addEventListener("click", async function(){
-  if(await confirmDialog("Limpar toda a fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
-});
-
-function renderDb(){
-  const c = $("dbListContainer");
-  $("dbBadge").textContent = savedProducts.length;
-  if(savedProducts.length===0){c.innerHTML='<div class="empty-msg">Nenhum produto guardado ainda.</div>';return}
-  c.innerHTML = "";
-  savedProducts.map(function(p,i){return {p:p,i:i}}).sort(function(a,b){return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt")}).forEach(function(obj){
-    const d = obj.p, i = obj.i;
-    const div = document.createElement("div"); div.className = "list-item";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+(d.preco?escapeHTML(d.preco)+"€":"")+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Editar">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Eliminar">❌</button></div>';
-    c.appendChild(div);
-  });
-}
-async function saveToDb(){
-  const data = getFormData();
-  if(!data.product && !data.internalCode){setStatus("Preencha um nome ou código.","error");return}
-  setStatus("A guardar no Drive…");
-  try{
-    const foto = data.processedPhoto || data.originalPhoto;
-    if(foto && foto.indexOf('http')!==0){
-      const nome = (data.internalCode||'artigo')+'_'+Date.now()+'.jpg';
-      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
-      const up = await api('uploadFoto',{ base64:fotoOtimizada, nomeFicheiro:nome });
-      data.fotoId  = up.id;
-      data.fotoUrl = up.url;
-      globalOriginalPhoto = up.url;
-      globalProcessedPhoto = up.url;
-    }
-    await api('guardarProduto',{
-      codigo:      data.internalCode,
-      nome:        data.product,
-      preco:       data.price,
-      oldPrice:    data.oldPrice,
-      promoPrice:  data.promoPrice,
-      promoMinQty: data.promoMinQty,
-      promoUnit:   data.promoUnit,
-      origem:      data.origem,
-      categoria:   data.categoria,
-      calibre:     data.calibre,
-      ean:         data.ean,
-      loja:        data.store,
-      unidade:     data.capacityUnit,
-      capacidade:  data.capacity,
-      deposito:    data.depositFeeSelect==='custom' ? data.customDepositInput : data.depositFeeSelect,
-      formato:     data.presetSizes,
-      fotoId:      data.fotoId  || '',
-      fotoUrl:     data.fotoUrl || ''
-    });
-    await carregarTudo();
-    setStatus("✅ Guardado no Drive.","success");
-  }catch(e){setStatus("Erro ao guardar: "+e.message,"error")}
-}
-window.duplicateFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  const copia = JSON.parse(JSON.stringify(d));
-  copia.codigo = (d.codigo || 'NOVO') + '-COPIA';
-  setFormData(copia);
-  if(copia.fotoUrl){ globalOriginalPhoto = copia.fotoUrl; globalProcessedPhoto = copia.fotoUrl; updateCard(); }
-  switchMobileTab('editar');
-  toast('Produto carregado como cópia. Edite o código antes de guardar.', 'info', 4500);
-};
-window.loadFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  setFormData(d);
-  if(d.fotoUrl){globalOriginalPhoto=d.fotoUrl;globalProcessedPhoto=d.fotoUrl;updateCard()}
-  switchMobileTab('editar');
-  setStatus("Produto carregado.","success");
-};
-window.removeFromDb = async function(i){
-  const d = savedProducts[i]; if(!d) return;
-  if(!(await confirmDialog("Eliminar produto '"+d.nome+"'?"))) return;
-  try{
-    await api('apagarProduto',{ codigo:d.codigo });
-    await carregarTudo();
-    setStatus("Produto eliminado.","success");
-  }catch(e){setStatus("Erro: "+e.message,"error")}
-};
-window.queueFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  const copies = Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
-  printQueue.push({data:JSON.parse(JSON.stringify(d)),copies:copies});
-  renderQueue(); setStatus("Adicionado à fila.","success");
-};
-
-document.addEventListener("click",function(e){
-  const chip = e.target.closest(".chip-btn[data-field]");
-  if(chip){ setField(chip.dataset.field,chip.dataset.val); return }
-  const btn = e.target.closest("[data-action]"); if(!btn) return;
-  const a = btn.dataset.action, i = parseInt(btn.dataset.index,10);
-  if(a==="remove-queue" && isFinite(i)) window.removeFromQueue(i);
-  if(a==="dup-queue"    && isFinite(i)) window.duplicateQueue(i);
-  if(a==="save-queue"   && isFinite(i)) window.saveQueueItem(i);
-  if(a==="load-db"      && isFinite(i)) window.loadFromDb(i);
-  if(a==="dup-db"       && isFinite(i)) window.duplicateFromDb(i);
-  if(a==="queue-db"     && isFinite(i)) window.queueFromDb(i);
-  if(a==="remove-db"    && isFinite(i)) window.removeFromDb(i);
-});
-document.addEventListener("change",function(e){
-  const inp = e.target.closest('input[data-action="copies"]'); if(!inp) return;
-  const i = parseInt(inp.dataset.index,10); if(!isFinite(i)) return;
-  const v = Math.max(1,Math.min(500,parseInt(inp.value)||1));
-  if(printQueue[i]){printQueue[i].copies=v;inp.value=v;renderQueue()}
-});
-
-$("addToQueueBtn").addEventListener("click",addToQueue);
-$("saveDbBtn").addEventListener("click",saveToDb);
-$("recarregarDbBtn").addEventListener("click",carregarTudo);
-$("syncBancoBtn").addEventListener("click",async function(){
-  try{ setStatus("A sincronizar banco…"); const r = await api('sincronizarBancoFruta');
-    await carregarTudo();
-    setStatus("✅ Sincronizado. "+r.novos+" novos, "+r.removidos+" removidos, total "+r.total+".","success");
-  }catch(e){setStatus("Erro: "+e.message,"error")}
-});
-
-function renderBancoFruta(filtro){
-  filtro = filtro||'';
-  const c = $("gradeBancoFruta"); if(!c) return;
-  const q = filtro.toUpperCase();
-  const lista = bancoFruta.filter(function(f){return !q || String(f.nome).toUpperCase().indexOf(q)>=0});
-  if(lista.length===0){ c.innerHTML = '<div class="empty-msg">Nenhuma foto no banco. Arrasta fotos para a pasta BancoFruta do Drive e clica em "Sincronizar".</div>'; return }
-  c.innerHTML = lista.map(function(f){return '<div class="bf-card" data-url="'+f.fotoUrl+'" data-nome="'+f.nome+'"><img src="'+f.fotoUrl+'" loading="lazy"><div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>'}).join('');
-  c.querySelectorAll('.bf-card').forEach(function(el){
-    el.addEventListener('click',function(){
-      globalOriginalPhoto = el.dataset.url;
-      globalProcessedPhoto = el.dataset.url;
-      if(!$('product').value.trim()) $('product').value = el.dataset.nome;
-      updateCard();
-      $('bancoFrutaModal').classList.remove('show');
-      setStatus('Foto e nome aplicados.','success');
-    });
-  });
-}
-
-/* Abrir banco: faz sync silencioso + abre modal */
-let _abrirBancoHandler = async function(e){
-  if(e) e.preventDefault();
-  $('bancoFrutaModal').classList.add('show');
-  renderBancoFruta($('buscaBancoFruta').value);
-  try{
-    const r = await api('sincronizarBancoFruta');
-    if(r.removidos > 0 || r.novos > 0){
-      await carregarTudo();
-      renderBancoFruta($('buscaBancoFruta').value);
-      if(r.removidos > 0) toast('🧹 '+r.removidos+' foto(s) órfã(s) removida(s).', 'info', 3500);
-      if(r.novos > 0)    toast('🆕 '+r.novos+' foto(s) nova(s) adicionada(s).', 'info', 3500);
-    }
-  }catch(err){ /* silencioso */ }
-};
-$("abrirBancoFrutaBtn").addEventListener("click", _abrirBancoHandler);
-
-/* ============================================================
-   🎨 Processar TODAS as fotos do banco: recortar fundo + comprimir
-   ============================================================ */
-$("processarBancoBtn").addEventListener("click", async function(){
-  if(bancoFruta.length === 0){ toast("Banco vazio — não há fotos para processar.", "warning"); return; }
-  const total = bancoFruta.length;
-  const confirmar = await confirmDialog("Recortar e comprimir as " + total + " fotos do banco?\n\nPode demorar vários minutos.\nNÃO feches a página durante o processo.");
-  if(!confirmar) return;
-
-  const progresso = $("bancoProgress");
-  const barra = $("bancoProgressBar");
-  const texto = $("bancoProgressText");
-  progresso.style.display = "block";
-  $("processarBancoBtn").disabled = true;
-
-  let ok = 0, falhas = 0;
-  const falhados = [];
-  const usarIA = $("useAI") && $("useAI").checked;
-
-  for(let i = 0; i < bancoFruta.length; i++){
-    const f = bancoFruta[i];
-    const pct = Math.round((i / total) * 100);
-    barra.style.width = pct + "%";
-    texto.textContent = "🎨 " + (i + 1) + " / " + total + "  ·  " + f.nome;
-
-    try{
-      /* 1. Descarregar */
-      const resp = await fetch(f.fotoUrl);
-      if(!resp.ok) throw new Error("HTTP " + resp.status);
-      const blob = await resp.blob();
-      const dataUrl = await new Promise(function(res, rej){
-        const r = new FileReader();
-        r.onloadend = function(){ res(r.result); };
-        r.onerror = rej;
-        r.readAsDataURL(blob);
-      });
-
-      /* 2. Remover fundo */
-      let semFundo = dataUrl;
-      if(usarIA){
-        try{
-          semFundo = await removeBackgroundAI(dataUrl, null);
-        }catch(e){
-          console.warn("IA falhou em " + f.nome + ", uso simples:", e);
-          semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
-        }
-      }else{
-        semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
-      }
-
-      /* 3. Comprimir */
-      const comprimida = await compressSmart(semFundo, 700, 0.72);
-
-      /* 4. Substituir no Drive */
-      const r = await api('substituirFotoBanco', {
-        fotoId: f.fotoId,
-        base64: comprimida,
-        nome: f.nome
-      });
-
-      /* 5. Atualizar memória */
-      f.fotoId  = r.id;
-      f.fotoUrl = r.url;
-      ok++;
-    }catch(e){
-      console.error("Erro em " + f.nome + ":", e);
-      falhas++;
-      falhados.push(f.nome);
-    }
-  }
-
-  barra.style.width = "100%";
-  texto.textContent = "✅ Concluído — " + ok + " processadas, " + falhas + " falhadas.";
-  $("processarBancoBtn").disabled = false;
-
-  try{ await carregarTudo(); }catch(e){}
-  renderBancoFruta($("buscaBancoFruta").value);
-
-  setTimeout(function(){
-    progresso.style.display = "none";
-    barra.style.width = "0%";
-  }, 6000);
-
-  if(falhas > 0){
-    toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length > 3 ? "..." : "") + ")", "warning", 9000);
-  }else{
-    toast("🎉 " + ok + " fotos recortadas e comprimidas!", "success", 5000);
-  }
-});
-
-$("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.target.value)});
-$("fecharBancoFruta").addEventListener("click",function(){$("bancoFrutaModal").classList.remove("show")});
-$("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("bancoFrutaModal"))$("bancoFrutaModal").classList.remove("show")});
-
-let camStream = null;
-async function openCamera(){
-  const modal = $("cameraModal"); modal.classList.add("show");
-  try{
-    camStream = await navigator.mediaDevices.getUserMedia({
-      video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} },
-      audio:false
-    });
-    $("camVideo").srcObject = camStream;
-  }catch(e){
-    toast("Não foi possível aceder à câmara: "+e.message, "error");
-    closeCamera();
-  }
-}
-function closeCamera(){
-  if(camStream){ camStream.getTracks().forEach(function(t){t.stop()}); camStream = null }
-  $("camVideo").srcObject = null;
-  $("cameraModal").classList.remove("show");
-  setTimeout(function(){ fotoBancoModo = false; }, 300);
-}
-$("fotoBancoBtn").addEventListener("click", function(){
-  fotoBancoModo = true;
-  openCamera();
-});
-$("openCameraBtn").addEventListener("click",openCamera);
-$("camClose").addEventListener("click",closeCamera);
-
-$("camSnap").addEventListener("click", async function(){
-  const v = $("camVideo"), c = $("camCanvas");
-  const maxW = 1400;
-  let w = v.videoWidth, h = v.videoHeight;
-  if(w > maxW){ h = Math.round(h * maxW/w); w = maxW }
-  c.width = w; c.height = h;
-  c.getContext("2d").drawImage(v,0,0,w,h);
-  const dataUrl = c.toDataURL("image/jpeg",0.92);
-
-  if(fotoBancoModo){
-    fotoBancoModo = false;
-    closeCamera();
-    setStatus("Foto capturada. A remover fundo…");
-
-    let fotoFinal = dataUrl;
-    if($("autoRemoveBg").checked){
-      try{
-        fotoFinal = await removeBackgroundSmart(dataUrl);
-        toast("✅ Fundo removido!", "success");
-      }catch(e){
-        toast("IA falhou, guardo foto original.", "warning");
-      }
-    }
-
-    const nomeSugerido = ($("product").value || "").trim().toUpperCase();
-    const nome = await pedirNomeArtigo(nomeSugerido);
-    if(!nome){ setStatus("Guardar no banco cancelado.", "info"); return; }
-
-    const existe = bancoFruta.some(function(f){
-      return String(f.nome||"").toUpperCase() === nome;
-    });
-    if(existe){
-      const substituir = await confirmDialog("Já existe uma foto \"" + nome + "\" no banco. Substituir pela nova?");
-      if(!substituir) return;
-    }
-
-    try{
-      await guardarFotoBanco(nome, fotoFinal);
-      setStatus("✅ Guardado no banco.", "success");
-    }catch(e){
-      setStatus("Erro: " + e.message, "error");
-    }
-    return;
-  }
-
-  globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
-  updateCard();
-  closeCamera();
-  setStatus("Foto capturada.","success");
-
-  if($("autoRemoveBg").checked){
-    try {
-      const semFundo = await removeBackgroundSmart(dataUrl);
-      globalProcessedPhoto = semFundo;
-      updateCard();
-      toast("✅ Fundo removido!", "success");
-      await perguntarGuardarNoBanco();
-    } catch(e) {
-      toast("Erro a remover fundo: " + e.message, "error");
-    }
-  }
-});
-
-async function perguntarGuardarNoBanco(){
-  if(!globalProcessedPhoto) return;
-  const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
-  if(!querGuardar) return;
-
-  const nome = ($("product").value || "").trim().toUpperCase();
-  if(!nome){
-    toast("Escreva o nome do produto antes de guardar a foto no banco.", "warning", 5500);
-    return;
-  }
-
-  const existe = bancoFruta.some(function(f){
-    return String(f.nome||"").toUpperCase() === nome;
-  });
-  if(existe){
-    const substituir = await confirmDialog("Já existe uma foto \""+nome+"\" no banco. Substituir pela nova?");
-    if(!substituir) return;
-  }
-
-  try{
-    await guardarFotoBanco(nome, globalProcessedPhoto);
-  }catch(e){ /* toast já mostrado */ }
-}
-
-let scanner = null;
-async function openScanner(){
-  $("scannerModal").classList.add("show");
-  scanner = new Html5Qrcode("reader");
-  try{
-    await scanner.start(
-      { facingMode:"environment" },
-      { fps:10, qrbox:{width:280,height:180},
-        formatsToSupport:[
-          Html5QrcodeSupportedFormats.EAN_13,
-          Html5QrcodeSupportedFormats.EAN_8,
-          Html5QrcodeSupportedFormats.UPC_A,
-          Html5QrcodeSupportedFormats.UPC_E,
-          Html5QrcodeSupportedFormats.CODE_128,
-          Html5QrcodeSupportedFormats.QR_CODE
-        ]},
-      function(decoded){
-        $("ean").value = String(decoded).toUpperCase();
-        updateEanBadge(); updateCard();
-        setStatus("Código lido: "+decoded,"success");
-        closeScanner();
-      },
-      function(){}
-    );
-  }catch(e){
-    toast("Câmara indisponível: "+e.message, "error");
-    closeScanner();
-  }
-}
-async function closeScanner(){
-  try{ if(scanner){ await scanner.stop(); await scanner.clear() } }catch(e){}
-  scanner = null;
-  $("scannerModal").classList.remove("show");
-}
-$("scanEanBtn").addEventListener("click",openScanner);
-$("scanClose").addEventListener("click",closeScanner);
-
-function parsePrice(v){
-  if(v==null || String(v).trim()==="") return null;
-  let c = String(v).trim().replace(/€|\s/g,"");
-  if(c.indexOf(",")>-1 && c.indexOf(".")>-1) c = c.replace(/\./g,"").replace(",",".");
-  else c = c.replace(",",".");
-  const n = Number(c); return isFinite(n)?n:null;
-}
-function formatPromoDate(s,e){
-  if(!s && !e) return "Preço sujeito às condições comerciais em vigor.";
-  const m = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  try{
-    if(s && e){
-      const d1 = new Date(s), d2 = new Date(e);
-      if(d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear())
-        return "Oportunidade de "+d1.getDate()+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-      return "Oportunidade de "+d1.getDate()+" de "+m[d1.getMonth()]+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-    }else if(e){
-      const d2 = new Date(e); return "Oportunidade válida até "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-    }else{
-      const d1 = new Date(s); return "Oportunidade a partir de "+d1.getDate()+" de "+m[d1.getMonth()]+" de "+d1.getFullYear();
-    }
-  }catch(err){ return "Preço sujeito às condições comerciais em vigor." }
-}
-
-function removeBackgroundSimple(dataUrl,cb){
-  const token = ++photoToken; const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.onload = function(){
-    try{
-      const cv = document.createElement("canvas");
-      cv.width = img.naturalWidth||img.width; cv.height = img.naturalHeight||img.height;
-      if(!cv.width||!cv.height) throw new Error("sem dim");
-      const ctx = cv.getContext("2d",{willReadFrequently:true}); ctx.drawImage(img,0,0);
-      const iData = ctx.getImageData(0,0,cv.width,cv.height); const d = iData.data;
-      const corners = [0,(cv.width-1)*4,((cv.height-1)*cv.width)*4,((cv.height-1)*cv.width+(cv.width-1))*4];
-      let bgR=0,bgG=0,bgB=0;
-      corners.forEach(function(i){bgR+=d[i];bgG+=d[i+1];bgB+=d[i+2]});
-      bgR=Math.round(bgR/4); bgG=Math.round(bgG/4); bgB=Math.round(bgB/4);
-      const tol = 48;
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i],g=d[i+1],b=d[i+2];
-        const dist = Math.sqrt((r-bgR)*(r-bgR)+(g-bgG)*(g-bgG)+(b-bgB)*(b-bgB));
-        if(dist<tol || (r>240&&g>240&&b>240)) d[i+3] = 0;
-        else if(dist<tol+15) d[i+3] = Math.round(d[i+3]*((dist-tol)/15));
-      }
-      ctx.putImageData(iData,0,0);
-      if(token===photoToken) cb(cv.toDataURL("image/png"));
-    }catch(err){ if(token===photoToken) cb(dataUrl) }
-  };
-  img.onerror = function(){ if(token===photoToken) cb(dataUrl) };
-  img.src = dataUrl;
-}
-
-let _bgAIModule = null;
-let _bgAILoading = null;
-
-async function loadBgAI() {
-  if (_bgAIModule) return _bgAIModule;
-  if (_bgAILoading) return _bgAILoading;
-  _bgAILoading = (async function(){
-    try {
-      const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');
-      _bgAIModule = mod;
-      return mod;
-    } finally {
-      _bgAILoading = null;
-    }
-  })();
-  return _bgAILoading;
-}
-
-async function removeBackgroundAI(dataUrl, onProgress) {
-  const mod = await loadBgAI();
-  const blob = await mod.removeBackground(dataUrl, {
-    output: { format: 'image/png' },
-    progress: function(key, current, total) {
-      if (onProgress) onProgress(key, current, total);
-    }
-  });
-  return new Promise(function(resolve, reject){
-    const reader = new FileReader();
-    reader.onloadend = function(){ resolve(reader.result); };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
-async function removeBackgroundSmart(dataUrl) {
-  const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
-  if (useAI) {
-    try {
-      return await removeBackgroundAI(dataUrl, function(key, cur, total){
-        if (String(key).indexOf('fetch') === 0) {
-          const pct = total > 0 ? Math.round((cur / total) * 100) : 0;
-          setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…");
-        } else {
-          setStatus("🤖 A processar imagem com IA…");
-        }
-      });
-    } catch(e) {
-      console.warn("IA falhou, uso algoritmo simples:", e);
-      toast("IA indisponível, uso remoção simples.", "warning");
-    }
-  }
-  return new Promise(function(resolve){
-    removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); });
-  });
-}
-
-const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
-const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
-const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
-const EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
-function onlyDigits(v){return String(v||"").replace(/\D/g,"")}
-function ean13CheckDigit(f12){const d=onlyDigits(f12).slice(0,12);if(d.length!==12)return null;let s=0;for(let i=0;i<12;i++)s+=Number(d[i])*(i%2===0?1:3);return String((10-(s%10))%10)}
-function isValidEAN13(v){const d=onlyDigits(v);return d.length===13 && ean13CheckDigit(d.slice(0,12))===d[12]}
-function isValidEAN14(v){const d=onlyDigits(v);if(d.length!==14)return false;let s=0;for(let i=13,p=0;i>=0;i--,p++)s+=Number(d[i])*(p%2===0?3:1);return s%10===0}
-function normalizeBarcode(v){return String(v||"").trim().replace(/\s+/g,"")}
-
-function drawBarcode(svg,value){
-  if(!svg) return; svg.innerHTML = "";
-  const clean = normalizeBarcode(value); if(!clean) return;
-  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){drawEAN13(svg,clean);return}
-  if(/^\d{14}$/.test(clean)){drawCode128(svg,clean);return}
-  if(/^[\x20-\x7E]+$/.test(clean)) drawCode128(svg,clean);
-}
-function drawEAN13(svg,value){
-  const dg = onlyDigits(value); const first = Number(dg[0]);
-  const L = dg.slice(1,7), R = dg.slice(7); const par = EAN_P[first];
-  let bits = "101";
-  for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
-  bits += "01010";
-  for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])];
-  bits += "101";
-  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){
-    if(bits[i]!=="1") continue;
-    const r = document.createElementNS(ns,"rect");
-    r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black");
-    svg.appendChild(r);
-  }
-}
-function drawCode128(svg,text){
-  const clean = String(text||""); if(!/^[\x20-\x7E]+$/.test(clean)) return;
-  const C128=["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"];
-  const codes = [104]; for(let i=0;i<clean.length;i++) codes.push(clean.charCodeAt(i)-32);
-  let sum = codes[0]; for(let i=1;i<codes.length;i++) sum += codes[i]*i; codes.push(sum%103);
-  const seq = codes.map(String); seq.push("STOP"); let bits = "";
-  for(let k=0;k<seq.length;k++){
-    const c = seq[k]; const pat = c==="STOP" ? "2331112" : C128[Number(c)]; if(!pat) return;
-    let isBar = true;
-    for(let j=0;j<pat.length;j++){ bits += (isBar?"1":"0").repeat(Number(pat[j])); isBar = !isBar }
-  }
-  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){
-    if(bits[i]!=="1") continue;
-    const r = document.createElementNS(ns,"rect");
-    r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black");
-    svg.appendChild(r);
-  }
-}
-
-function isLargeFormat(v){
-  if(["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1) return true;
-  if(v==="custom"){
-    const w = parseFloat($("customWidth").value)||0, h = parseFloat($("customHeight").value)||0;
-    return w>=90 || h>=65;
-  }
-  return false;
-}
-function isFruitPromoFormat(v){return v==="frutaPromo125x80"||v==="frutaPromoA6"}
-function getDimensionsFor(fv,cw,ch){
-  let w=70,h=38;
-  switch(fv){
-    case"amanhecer":w=70;h=38;break;case"125x80":w=125;h=80;break;case"A6":w=148;h=105;break;
-    case"A5":w=210;h=148;break;case"105x38":w=105;h=38;break;case"70x38":w=70;h=38;break;
-    case"65x38":w=65;h=38;break;case"52x30":w=52;h=30;break;case"100x70":w=100;h=70;break;
-    case"50x30":w=50;h=30;break;case"frutaPromo125x80":w=125;h=80;break;case"frutaPromoA6":w=148;h=105;break;
-    case"custom":w=parseFloat(cw)||70;h=parseFloat(ch)||38;break;
-  }
-  return {width:w,height:h};
-}
-function getDimensions(){return getDimensionsFor($("presetSizes").value,$("customWidth").value,$("customHeight").value)}
-function getSizeClass(w,h){const m=Math.max(w,h);if(m<55)return"size-tiny";if(m<82)return"size-small";if(m<115)return"size-medium";if(m<165)return"size-large";return"size-xl"}
-function applySizeClass(el,w,h){if(!el)return;el.classList.remove("size-tiny","size-small","size-medium","size-large","size-xl");el.classList.add(getSizeClass(w,h))}
-function setField(id,val){const el=$(id);if(el){el.value=val;updateCard()}}
-window.setField = setField;
-
-function switchMobileTab(tab) {
-  const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]');
-  if (btn) btn.click();
-}
-document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    document.body.setAttribute('data-mobile-tab', btn.dataset.tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-});
-
-function autoFitTextSync(el){
-  if(!el) return;
-  el.style.fontSize = "";
-  const parent = el.parentElement; if(!parent) return;
-  let i = 0; void el.offsetHeight;
-  while(parent.scrollHeight > parent.clientHeight+1 && i<18){
-    const cur = parseFloat(getComputedStyle(el).fontSize);
-    if(!cur || cur<4) break;
-    el.style.fontSize = (cur*0.94)+"px"; i++; void el.offsetHeight;
-  }
-}
-function autoAdaptImage(card){
-  if(!card || !card.classList.contains("has-image")) return;
-  if(card.classList.contains("size-tiny")) return;
-  card.classList.remove("img-tight","img-mini","img-hidden");
-  void card.offsetWidth;
-  const desc = card.querySelector(".col-desc");
-  const prod = card.querySelector(".product");
-  if(prod) autoFitTextSync(prod);
-  const isCut = function(){return desc ? desc.scrollHeight>desc.clientHeight+1 : false};
-  if(!isCut()) return;
-  card.classList.add("img-tight"); void card.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!isCut()) return;
-  card.classList.remove("img-tight"); card.classList.add("img-mini"); void card.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!isCut()) return;
-  card.classList.remove("img-mini"); card.classList.add("img-hidden");
-}
-
-function reAdaptClone(clone){
-  if(!clone) return;
-  clone.classList.remove("img-tight","img-mini","img-hidden");
-  const prod = clone.querySelector(".product");
-  if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
-  if(!clone.classList.contains("has-image")) return;
-  if(clone.classList.contains("size-tiny")) return;
-  const desc = clone.querySelector(".col-desc");
-  if(!desc) return;
-  const isCut = function(){ return desc.scrollHeight > desc.clientHeight + 1; };
-  if(!isCut()) return;
-  clone.classList.add("img-tight");
-  void clone.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!isCut()) return;
-  clone.classList.remove("img-tight");
-  clone.classList.add("img-mini");
-  void clone.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!isCut()) return;
-  clone.classList.remove("img-mini");
-  clone.classList.add("img-hidden");
-}
-
-function updateCapacityHint(){
-  const hint = document.getElementById("capacityHint");
-  if(!hint) return;
-  const capUnit = $("capacityUnit").value;
-  const capNum = parseFloat($("capacity").value)||0;
-  const priceNum = parsePrice($("price").value);
-
-  if(capNum<=0 || priceNum===null){ hint.style.display="none"; return; }
-
-  const info = calcUnitInfo(capUnit);
-  const precoUnit = priceNum / (capNum * info.normalizar);
-  hint.textContent = "→ " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
-  hint.style.display = "block";
-
-  const ratio = precoUnit / priceNum;
-  if(ratio > 100 || ratio < 0.01){
-    hint.style.background = "#fff5e6";
-    hint.style.borderLeftColor = "#f6c23e";
-    hint.style.color = "#7c5a0c";
-    hint.textContent = "⚠️ Verifique a quantidade → " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
-  }else{
-    hint.style.background = "#eef4ff";
-    hint.style.borderLeftColor = "#084298";
-    hint.style.color = "#084298";
-  }
-}
-
-$("capacityUnit").dataset.last = $("capacityUnit").value;
-
-$("capacityUnit").addEventListener("change", function(){
-  const prev = this.dataset.last || this.value;
-  this.dataset.last = this.value;
-  const capInput = $("capacity");
-  const cur = parseFloat(capInput.value);
-
-  const grupo = function(u){
-    if(u==="g")    return "massa-pequena";
-    if(u==="peso") return "massa-grande";
-    if(u==="ml")   return "volume-ml";
-    if(u==="cl")   return "volume-cl";
-    if(u==="lt")   return "volume-grande";
-    return "especial";
-  };
-  const g1 = grupo(prev), g2 = grupo(this.value);
-  const isMassa  = function(g){ return g.indexOf("massa")===0; };
-  const isVolume = function(g){ return g.indexOf("volume")===0; };
-
-  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){
-    capInput.value = "";
-  }
-  else if(cur > 0 && g1 !== g2){
-    let novo = cur;
-    if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
-    if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
-    if(g1==="volume-ml" && g2==="volume-grande")   novo = cur / 1000;
-    if(g1==="volume-ml" && g2==="volume-cl")       novo = cur / 10;
-    if(g1==="volume-cl" && g2==="volume-grande")   novo = cur / 100;
-    if(g1==="volume-cl" && g2==="volume-ml")       novo = cur * 10;
-    if(g1==="volume-grande" && g2==="volume-ml")   novo = cur * 1000;
-    if(g1==="volume-grande" && g2==="volume-cl")   novo = cur * 100;
-    if(novo > 0){
-      capInput.value = String(Number(novo.toFixed(4)));
-    }
-  }
-  else if(!cur || cur <= 0){
-    switch(this.value){
-      case "g":    capInput.value = "500"; break;
-      case "cl":   capInput.value = "75";  break;
-      case "ml":   capInput.value = "500"; break;
-      case "dz":   capInput.value = "1";   break;
-      case "dose": capInput.value = "1";   break;
-    }
-  }
-  updateCard();
-});
-
-(function(){
-  const eanInput = $("ean");
-  if(!eanInput) return;
-  eanInput.addEventListener("input", function(){
-    const pos = this.selectionStart;
-    const upper = this.value.toUpperCase();
-    if(this.value !== upper){
-      this.value = upper;
-      try { this.setSelectionRange(pos, pos); } catch(e){}
-    }
-  });
-})();
-
-function updateCardUnsafe(){
-  const storeVal = $("store").value||"PATAIAS";
-  const productVal = ($("product").value||"").trim().toUpperCase();
-  const codeVal = ($("internalCode").value||"").trim().toUpperCase();
-  const barcodeToDraw = ($("ean").value||"").trim().toUpperCase();
-  const priceNum = parsePrice($("price").value);
-  const oldPriceNum = parsePrice($("oldPrice").value);
-  const promoPriceNum = parsePrice($("promoPrice").value);
-  const isPromo = $("isPromoActive").checked;
-  const fv = $("presetSizes").value;
-  const isAmanhecer = fv==="amanhecer";
-  const isFP = isFruitPromoFormat(fv);
-  const dims = getDimensions();
-  const capUnit = $("capacityUnit").value;
-  const capNum = parseFloat($("capacity").value)||0;
-  const card = $("mainLabelCard");
-
-  if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
-
-  if(isAmanhecer){
-    card.style.width="380px"; card.style.height="214px";
-    applySizeClass(card,70,38);
-    $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
-  }else{
-    const scale = 3.2;
-    card.style.width = (dims.width*scale)+"px";
-    card.style.height = (dims.height*scale)+"px";
-    applySizeClass(card,dims.width,dims.height);
-    const prefix = isFP ? "💡 Fruta/Legumes Oportunidade" : "📐 Formato";
-    $("badgeSheet").textContent = prefix + ": " + dims.width + " × " + dims.height + " mm";
-  }
-
-  $("cardStore").textContent = storeVal;
-  setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
-
-  if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal }
-  else $("cardCode").style.display = "none";
-
-  if(priceNum!==null){
-    const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
-
-    if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
-      $("cardPromoTopRow").style.display = "flex";
-      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-      const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
-      $("cardPromoTag").textContent = "-"+disc+"%";
-    }else $("cardPromoTopRow").style.display = "none";
-
-    const info = calcUnitInfo(capUnit);
-
-    if(capNum>0){
-      $("cardPrice").textContent = fmt+" €";
-      const precoUnit = priceNum / (capNum * info.normalizar);
-      $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.unitLabel;
-      $("cardUnitPrice").style.display = "block";
-    }else{
-      $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.unitSuffix+'</span>';
-      $("cardUnitPrice").style.display = "none";
-    }
-  }else{
-    const infoFb = calcUnitInfo(capUnit);
-    $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>';
-    $("cardPromoTopRow").style.display = "none";
-    $("cardUnitPrice").style.display = "none";
-  }
-
-  if(isFP){
-    const pu = $("promoUnit").value||"KG";
-    const pm = $("promoMinQty").value||"2";
-    $("cardFpNormalPrice").textContent = (priceNum!==null) ? priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
-    $("cardFpNormalUnit").textContent = "/ "+pu;
-    $("cardFpPromoPrice").textContent = (promoPriceNum!==null) ? promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
-    $("cardFpPromoUnit").textContent = "/ "+pu;
-    $("cardFpPromoLabel").textContent = (pu==="KG") ? "LEVE "+pm+" KG OU MAIS" : "LEVE "+pm+" UN OU MAIS";
-  }
-
-  const org = ($("origem").value||"").trim().toUpperCase();
-  const cat = ($("categoria").value||"").trim().toUpperCase();
-  const cal = ($("calibre").value||"").trim().toUpperCase();
-  const parts = [];
-  if(org) parts.push("Origem: "+org);
-  if(cat) parts.push("Cat. "+cat);
-  if(cal) parts.push("Cal. "+cal);
-  if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • ") }
-  else $("cardFruit").style.display = "none";
-
-  const dep = $("depositFeeSelect").value;
-  const depVal = dep==="custom" ? $("customDepositInput").value.trim() : dep;
-  if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal }
-  else $("cardDeposit").style.display = "none";
-
-  const eu = ($("unit").value||"").trim();
-  if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu }
-  else $("cardExtraUnit").style.display = "none";
-
-  const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  const photoBox = $("cardPhotoBox");
-  if(activePhoto && !card.classList.contains("size-tiny")){
-    card.classList.add("has-image");
-    photoBox.classList.add("show");
-    $("cardPhotoImg").src = activePhoto;
-  }else{
-    card.classList.remove("has-image","img-tight","img-mini","img-hidden");
-    photoBox.classList.remove("show");
-  }
-
-  const bcBox = $("cardBarcodeBox");
-  if(barcodeToDraw && !card.classList.contains("size-tiny")){
-    bcBox.classList.add("show");
-    $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase();
-    drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
-  }else bcBox.classList.remove("show");
-
-  $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
-  $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
-
-  autoAdaptImage(card);
-}
-
-let _t = null;
-function updateCard(){
-  if(_t) clearTimeout(_t);
-  _t = setTimeout(function(){
-    try{ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }
-    catch(err){ console.error("updateCard:",err) }
-  },16);
-}
-function setStatus(msg,type){
-  const el = $("appStatus"); if(!el) return;
-  el.textContent = msg||"";
-  el.dataset.type = type||"";
-  el.style.display = msg ? "block" : "none";
-  if(msg && (type==="error" || type==="success")) toast(msg, type);
-  if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none" },3500);
-}
-function setValidationState(){
-  clearFieldErrors();
-  const price = parsePrice($("price").value);
-  const oldPrice = parsePrice($("oldPrice").value);
-  const promoPrice = parsePrice($("promoPrice").value);
-  const ean = normalizeBarcode($("ean").value);
-  const errors = [];
-  const fv = $("presetSizes").value;
-  const isFP = isFruitPromoFormat(fv);
-  if($("price").value.trim() && price===null){ errors.push("Preço inválido."); markFieldError("price",true) }
-  if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice===null){ errors.push("Preço anterior inválido."); markFieldError("oldPrice",true) }
-  if($("isPromoActive").checked && !isFP && price!==null && oldPrice!==null && oldPrice<=price){ errors.push("Preço anterior deve ser superior."); markFieldError("oldPrice",true) }
-  if(isFP){
-    if($("promoPrice").value.trim() && promoPrice===null){ errors.push("Preço especial inválido."); markFieldError("promoPrice",true) }
-    if(price!==null && promoPrice!==null && promoPrice>=price){ errors.push("Preço especial deve ser inferior."); markFieldError("promoPrice",true) }
-  }
-  if(ean){
-    const valid = (/^\d{13}$/.test(ean)&&isValidEAN13(ean)) || (/^\d{14}$/.test(ean)&&isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
-    if(!valid){ errors.push("Código de barras inválido."); markFieldError("ean",true) }
-  }
-  setStatus(errors.join(" "), errors.length?"error":"");
-}
-function updateOrientationVisibility(){
-  const fv = $("presetSizes").value;
-  const show = isLargeFormat(fv);
-  const isFP = isFruitPromoFormat(fv);
-  $("fruitPanel").style.display = (show||fv==="A6"||fv==="125x80"||fv==="frutaPromo125x80"||fv==="frutaPromoA6") ? "block" : "none";
-  $("fruitPromoPanel").style.display = isFP ? "block" : "none";
-  const lbl = $("isPromoActive").closest("label");
-  if(lbl) lbl.style.display = isFP ? "none" : "flex";
-  if(isFP) $("promoBox").style.display = "none";
-}
-
-$("presetSizes").addEventListener("change",function(){
-  const val = this.value;
-  $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
-  $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
-  updateOrientationVisibility(); updateCard();
-});
-$("customWidth").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
-$("customHeight").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
-$("isPromoActive").addEventListener("change",function(){$("promoBox").style.display=this.checked?"block":"none";updateCard()});
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("input",updateCard);
-});
-["store","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("change",updateCard);
-});
-$("autoRemoveBg").addEventListener("change",updateCard);
-
-$("photo").addEventListener("change", async function(e){
-  const file = e.target.files[0];
-  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
-  if(!file){ updateCard(); return }
-  if(file.type.indexOf("image/")!==0){ setStatus("Imagem inválida.","error"); e.target.value=""; updateCard(); return }
-  if(file.size > 12*1024*1024){ setStatus("Imagem muito grande (máx 12 MB).","error"); e.target.value=""; updateCard(); return }
-  const r = new FileReader();
-  r.onerror = function(){ setStatus("Erro a ler imagem.","error"); };
-  r.onload = async function(evt){
-    globalOriginalPhoto = evt.target.result; updateCard();
-    if($("autoRemoveBg").checked){
-      try {
-        const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
-        globalProcessedPhoto = semFundo;
-        updateCard();
-        toast("✅ Fundo removido!", "success");
-        await perguntarGuardarNoBanco();
-      } catch(e) {
-        toast("Erro: " + e.message, "error");
-      }
-    }
-  };
-  r.readAsDataURL(file);
-});
-
-$("clearBtn").addEventListener("click", async function(){
-  if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
-  ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){if($(id))$(id).value=""});
-  $("depositFeeSelect").value="";
-  $("capacityUnit").value="peso";
-  $("capacityUnit").dataset.last = "peso";
-  $("isPromoActive").checked = false; $("promoBox").style.display="none";
-  $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
-  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
-  $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
-  $("store").value = "PATAIAS";
-  $("customWidth").value = "70"; $("customHeight").value = "38";
-  $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
-  $("copiesCount").value = "21";
-  updateOrientationVisibility(); updateCard();
-  toast("Editor limpo.", "info");
-});
-
-$("offsetXRange").addEventListener("input",function(){
-  offsetX = parseFloat(this.value)||0; $("offsetXVal").textContent = offsetX+" mm";
-  applyOffsets(); Storage.set("balcao_offset_x",String(offsetX));
-});
-$("offsetYRange").addEventListener("input",function(){
-  offsetY = parseFloat(this.value)||0; $("offsetYVal").textContent = offsetY+" mm";
-  applyOffsets(); Storage.set("balcao_offset_y",String(offsetY));
-});
-$("resetOffsetBtn").addEventListener("click",function(){
-  offsetX = 0; offsetY = 6; applyOffsets();
-  Storage.set("balcao_offset_x","0"); Storage.set("balcao_offset_y","6");
-  setStatus("Ajustes restaurados (X=0, Y=6mm).","success");
-});
-$("printCalibBtn").addEventListener("click",function(){
-  const pz = $("printZone"); pz.innerHTML = "";
-  const page = document.createElement("div"); page.className = "calib-sheet";
-  for(let i=1;i<=21;i++){const cell = document.createElement("div");cell.className = "calib-cell";cell.textContent = "• "+i+" •";page.appendChild(cell)}
-  pz.appendChild(page);
-  setTimeout(function(){ window.print(); setTimeout(function(){pz.innerHTML=""},1500) },80);
-});
-
-function buildLabelClone(data,dims){
-  const backup = getFormData();
-  setFormData(data); updateCardUnsafe();
-  const card = $("mainLabelCard");
-  const clone = card.cloneNode(true);
-  clone.removeAttribute("id");
-  const ids = clone.querySelectorAll("[id]");
-  for(let k=0;k<ids.length;k++) ids[k].removeAttribute("id");
-  applySizeClass(clone,dims.width,dims.height);
-  const eanVal = normalizeBarcode(data.ean);
-  const svg = clone.querySelector("svg");
-  if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg,eanVal) }
-  const prodEl = clone.querySelector(".product");
-  if(prodEl) autoFitTextSync(prodEl);
-  setFormData(backup); updateCardUnsafe();
-  return clone;
-}
-
-$("printBtn").addEventListener("click",function(){window.triggerPrint()});
-
-function validateBeforePrint(){
-  setValidationState();
-  if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false }
-  if(printQueue.length===0){
-    const price = parsePrice($("price").value);
-    if(price===null){ setStatus("Introduza um preço válido.","error"); $("price").focus(); return false }
-    const fv = $("presetSizes").value;
-    if(isFruitPromoFormat(fv)){
-      const pp = parsePrice($("promoPrice").value);
-      if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false }
-    }
-    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
-    if(fv==="amanhecer" && copies>21){ setStatus("Máximo 21 etiquetas por folha.","error"); return false }
-  }
-  return true;
-}
-function cleanupAfterPrint(){
-  printInProgress = false;
-  $("printBtn").disabled = false;
-  $("printBtn").innerHTML = printQueue.length>0
-    ? '🖨️ Imprimir Fila ('+printQueue.reduce(function(a,b){return a+b.copies},0)+' etiq.) [F9]'
-    : "🖨️ Imprimir [F9]";
-  $("printZone").innerHTML = "";
-  $("proPrintOverlay").classList.remove("show");
-}
-function triggerPrint(){
-  if(printInProgress) return;
-  if(!validateBeforePrint()) return;
-  printInProgress = true;
-  $("printBtn").disabled = true; $("printBtn").textContent = "⏳ A preparar...";
-  $("proPrintOverlay").classList.add("show");
-  const pz = $("printZone"); pz.innerHTML = "";
-  const editorFmt = $("presetSizes").value;
-  const items = [];
-  if(printQueue.length===0){
-    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
-    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:editorFmt});
-  }else{
-    printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||editorFmt;
-      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
-    });
-  }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({format:it.format,items:[it.data]});
-  });
-  const amanhecerQueue = [];
-  groups.forEach(function(g){
-    if(g.format==="amanhecer"){
-      g.items.forEach(function(d){amanhecerQueue.push(d)});
-    }else{
-      const first = g.items[0];
-      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
-      const wrap = document.createElement("div");
-      wrap.className = "print-wrap-generic";
-      wrap.style.display = "flex";
-      wrap.style.flexWrap = "wrap";
-      wrap.style.gap = "2mm";
-      wrap.style.alignItems = "flex-start";
-      wrap.style.justifyContent = "flex-start";
-      wrap.style.width = "210mm";
-      wrap.style.boxSizing = "border-box";
-      g.items.forEach(function(d){
-        const c = buildLabelClone(d,dims);
-        c.style.setProperty("width",  dims.width  + "mm", "important");
-        c.style.setProperty("height", dims.height + "mm", "important");
-        c.style.setProperty("flex",   "0 0 auto", "important");
-        c.style.setProperty("box-sizing", "border-box", "important");
-        wrap.appendChild(c);
-      });
-      pz.appendChild(wrap);
-    }
-  });
-  for(let i=0;i<amanhecerQueue.length;i+=21){
-    const chunk = amanhecerQueue.slice(i,i+21);
-    const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
-    chunk.forEach(function(data,idx){
-      const dims = {width:70,height:idx<3?38:40};
-      const c = buildLabelClone(data,dims);
-      c.style.setProperty("width",  "70mm", "important");
-      c.style.setProperty("height", idx<3?"38mm":"40mm", "important");
-      c.style.setProperty("box-sizing","border-box", "important");
-      page.appendChild(c);
-    });
-    for(let j=chunk.length;j<21;j++){
-      const empty = document.createElement("div");
-      empty.className = "label-card size-small";
-      empty.style.visibility = "hidden";
-      empty.style.setProperty("width",  "70mm", "important");
-      empty.style.setProperty("height", j<3?"38mm":"40mm", "important");
-      page.appendChild(empty);
-    }
-    pz.appendChild(page);
-  }
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      window.print();
-      setTimeout(function(){ if(printInProgress) cleanupAfterPrint() },3000);
-    });
-  });
-}
-window.triggerPrint = triggerPrint;
-window.cleanupAfterPrint = cleanupAfterPrint;
-window.addEventListener("afterprint",cleanupAfterPrint);
-window.addEventListener("beforeunload",function(ev){if(printQueue.length>0){ev.preventDefault();ev.returnValue=""}});
-
-$("printDbBtn").addEventListener("click", async function(){
-  if(savedProducts.length===0){ setStatus("Sem produtos guardados.","error"); return }
-  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?"))) return;
-  const old = printQueue.slice();
-  printQueue = savedProducts.map(function(p){return {data:JSON.parse(JSON.stringify(p)),copies:1}});
-  renderQueue();
-  setTimeout(function(){
-    window.triggerPrint();
-    setTimeout(function(){printQueue=old;renderQueue()},3000);
-  },100);
-});
-
-$("previewSheetBtn").addEventListener("click",function(){
-  const content = $("sheetPreviewContent"); content.innerHTML = "";
-  const items = [];
-  if(printQueue.length===0){
-    const copies = Math.max(1,Math.min(21,Number($("copiesCount").value)||1));
-    const fv = $("presetSizes").value;
-    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:fv});
-  }else{
-    printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||"amanhecer";
-      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
-    });
-  }
-  if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({format:it.format,items:[it.data]});
-  });
-  let totalPreviewed = 0;
-  groups.forEach(function(g){
-    if(g.format==="amanhecer"){
-      for(let i=0;i<g.items.length;i+=21){
-        const chunk = g.items.slice(i,i+21);
-        const page = document.createElement("div"); page.className = "preview-page-amanhecer";
-        chunk.forEach(function(d,idx){
-          const dims = {width:70,height:idx<3?38:40};
-          const clone = buildLabelClone(d,dims);
-          clone.style.width = "70mm"; clone.style.height = idx<3?"38mm":"40mm";
-          page.appendChild(clone);
-        });
-        for(let j=chunk.length;j<21;j++){
-          const empty = document.createElement("div");
-          empty.className = "label-card size-small empty";
-          page.appendChild(empty);
-        }
-        content.appendChild(page);
-        page.querySelectorAll(".label-card:not(.empty)").forEach(function(c){ reAdaptClone(c); });
-        totalPreviewed += chunk.length;
-      }
-    }else{
-      const first = g.items[0];
-      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
-      const grp = document.createElement("div"); grp.className = "preview-group-flex";
-      g.items.forEach(function(d){
-        const clone = buildLabelClone(d,dims);
-        const scale = 3.2;
-        clone.style.width = (dims.width*scale)+"px";
-        clone.style.height = (dims.height*scale)+"px";
-        grp.appendChild(clone);
-      });
-      content.appendChild(grp);
-      grp.querySelectorAll(".label-card").forEach(function(c){ reAdaptClone(c); });
-      totalPreviewed += g.items.length;
-    }
-  });
-  $("sheetPreviewTitle").textContent = "👁️ Pré-visualização ("+totalPreviewed+" etiqueta"+(totalPreviewed>1?"s":"")+")";
-  $("sheetPreview").classList.add("show");
-});
-$("sheetPreviewClose").addEventListener("click",function(){$("sheetPreview").classList.remove("show")});
-$("sheetPreview").addEventListener("click",function(e){if(e.target===$("sheetPreview"))$("sheetPreview").classList.remove("show")});
-
-document.addEventListener("keydown",function(ev){
-  if(ev.key==="F9"){ ev.preventDefault(); window.triggerPrint() }
-  if(ev.key==="Escape"){
-    $("sheetPreview").classList.remove("show");
-    closeCamera(); closeScanner();
-    $("bancoFrutaModal").classList.remove("show");
-  }
-});
-
-(async function boot(){
-  try{
-    applyOffsets();
-    updateOrientationVisibility();
-    updateCard();
-    renderQueue();
-    await carregarTudo();
-  }catch(err){ console.error("Erro arranque:",err) }
-})();
-</script>
-</body>
-</html>
+  if($("offsetYRange")) $("offsetYRange").value
