@@ -41,36 +41,9 @@ button:active:not(:disabled){transform:scale(.97)}
 .secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .secondary:hover{border-color:#c8d0dc;background:#fafbfc}
 .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#fff3c4 100%);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
-.format-select{
-  margin-bottom:10px;
-  background:linear-gradient(135deg,#fffdf5 0%,#fff9db 100%);
-  border:1.5px solid #f6c23e;
-  color:#1a1f28;
-  font-weight:700;
-  font-size:14px;
-  padding:11px 40px 11px 14px;
-  border-radius:10px;
-  letter-spacing:.1px;
-  appearance:none;
-  -webkit-appearance:none;
-  background-image:
-    linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),
-    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a87600' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-position: 0 0, calc(100% - 16px) 50%;
-  background-repeat: no-repeat, no-repeat;
-  background-size: 100% 100%, 12px 8px;
-  cursor:pointer;
-  transition:border-color .15s, box-shadow .15s;
-}
+.format-select{margin-bottom:10px;background:linear-gradient(135deg,#fffdf5 0%,#fff9db 100%);border:1.5px solid #f6c23e;color:#1a1f28;font-weight:700;font-size:14px;padding:11px 40px 11px 14px;border-radius:10px;letter-spacing:.1px;appearance:none;-webkit-appearance:none;background-image:linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a87600' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:0 0,calc(100% - 16px) 50%;background-repeat:no-repeat,no-repeat;background-size:100% 100%,12px 8px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
 .format-select:hover{border-color:#e0a800;box-shadow:0 2px 8px rgba(246,194,62,.2)}
-.format-select:focus{
-  outline:none;
-  border-color:#c8102e;
-  box-shadow:0 0 0 3px rgba(200,16,46,.12);
-  background-image:
-    linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),
-    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-}
+.format-select:focus{outline:none;border-color:#c8102e;box-shadow:0 0 0 3px rgba(200,16,46,.12)}
 .format-select optgroup{background:#fff;color:#7a5c00;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px 2px 8px}
 .format-select option{background:#fff;color:#1a1f28;font-weight:600;font-size:14px;padding:8px 12px}
 .format-select option:checked{background:linear-gradient(135deg,#fff5f5 0%,#ffe8e8 100%);color:#c8102e;font-weight:800}
@@ -104,6 +77,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .list-item-actions button{padding:4px 7px;font-size:11px;width:auto;border-radius:4px}
 .copies-input{width:50px;padding:4px 6px;font-size:12px;text-align:center;font-weight:700}
 .btn-remove{background:#fff0f0;color:#c0392b;border:1px solid #fab1a0}
+.btn-save-queue{background:#eaf7ef;color:#176b3a;border:1px solid #9bd5b1}
+.btn-save-queue:hover{background:#d7f0e0;border-color:#6cbf8b}
 .btn-load{background:#eef9f0;color:#27ae60;border:1px solid #a3cb38}
 .btn-dup{background:#eef1ff;color:#4c5fd5;border:1px solid #a5b0e8}
 .empty-msg{text-align:center;color:#b2bec3;font-style:italic;padding:10px 0;font-size:12px}
@@ -222,7 +197,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview-header h3{margin:0;font-size:16px}
 .sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .preview-page-amanhecer{display:grid;grid-template-columns:70mm 70mm 70mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:210mm;height:278mm;background:#fff}
-.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important}
+.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
+.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+.preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+.preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
+.preview-page-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
+.preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 @media screen{#printZone{display:none!important}}
 @media print{
@@ -230,14 +210,27 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview,.pro-print-overlay{display:none!important}
 #printZone{display:block!important;margin:0!important;padding:0!important}
 @page{margin:0!important;size:210mm 297mm!important}
-html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;height:297mm!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+body{min-height:0!important;max-height:none!important;overflow:visible!important}
+#printZone,#printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
+#printZone .label-card{container-type:normal!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
 .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
-.print-sheet-amanhecer:not(:last-child){page-break-after:always!important}
+.print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
+.print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
 .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
-.print-wrap-generic{margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important}
-.print-wrap-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important}
+.print-sheet-amanhecer .label-card:nth-child(1),.print-sheet-amanhecer .label-card:nth-child(2),.print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+.print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+.print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
+.print-sheet-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
+.print-wrap-generic{margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;display:block!important;width:210mm!important;padding:0!important;box-sizing:border-box!important}
+.print-wrap-generic:not(:last-child){page-break-after:always!important;break-after:page!important}
+.print-wrap-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
+.print-wrap-generic .label-card{display:flex!important;border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0 0 2mm 0!important;flex:0 0 auto!important}
 .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
 .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
+.calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
+.calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
+#printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
 }
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
@@ -268,106 +261,61 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .app{max-width:100%;padding:0 12px 12px 12px}
   .top-header{padding:12px 16px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;background:#fff}
   .top-header h1{font-size:14px;line-height:1.15;font-weight:900;flex:1;letter-spacing:.6px;color:#1a1f28;display:flex;align-items:center;gap:6px;text-transform:uppercase}
-  .h1-tag{font-size:1.05em;transform:translateY(-1px)}
-  .top-logos{flex-shrink:0;gap:8px;padding:5px 10px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:12px;border:1px solid #eef1f5;box-shadow:inset 0 1px 2px rgba(0,0,0,.02)}
-  .top-logos img{height:24px;max-width:80px;filter:contrast(1.05)}
+  .top-logos{flex-shrink:0;gap:8px;padding:5px 10px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:12px;border:1px solid #eef1f5}
+  .top-logos img{height:24px;max-width:80px}
   .top-logos .divider{height:18px;background:#dfe3e8}
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
-  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;transition:all .25s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;gap:2px}
-  .mobile-tab-bar button.active{color:#c8102e;border-bottom-color:transparent}
-  .mobile-tab-bar button.active::before{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:3px;background:linear-gradient(90deg,#c8102e 0%,#e83a55 100%);border-radius:3px 3px 0 0;box-shadow:0 -2px 8px rgba(200,16,46,.4)}
-  .mobile-tab-bar button.active::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center bottom,rgba(200,16,46,.08) 0%,transparent 70%);pointer-events:none}
-  .tab-badge{position:absolute;top:5px;right:calc(50% - 26px);background:linear-gradient(135deg,#e83a55,#c8102e);box-shadow:0 2px 6px rgba(200,16,46,.4);border:1.5px solid #fff;font-size:9px;padding:1px 5px;border-radius:9px;margin:0;min-width:18px;height:18px;line-height:15px;text-align:center}
+  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;letter-spacing:.3px}
+  .mobile-tab-bar button.active{color:#c8102e}
+  .mobile-tab-bar button.active::before{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:3px;background:linear-gradient(90deg,#c8102e 0%,#e83a55 100%);border-radius:3px 3px 0 0}
+  .tab-badge{position:absolute;top:5px;right:calc(50% - 26px);background:linear-gradient(135deg,#e83a55,#c8102e);border:1.5px solid #fff;font-size:9px;padding:1px 5px;border-radius:9px;margin:0;min-width:18px;height:18px;line-height:15px;text-align:center}
   .tab-el{display:none!important}
   body[data-mobile-tab="editar"] .tab-editar{display:block!important}
   body[data-mobile-tab="ver"]    .tab-ver{display:flex!important}
   body[data-mobile-tab="fila"]   .tab-fila{display:block!important}
   .panel{border-radius:16px;padding:14px;margin-bottom:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);background:#fff}
   label{font-size:11px;margin:10px 0 4px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
-  input,select,textarea{padding:13px 14px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc;transition:all .15s}
+  input,select,textarea{padding:13px 14px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc}
   input:focus,select:focus,textarea:focus{outline:none;border-color:#c8102e;background:#fff;box-shadow:0 0 0 3px rgba(200,16,46,.1)}
   input[type=range]{padding:0;height:8px;background:transparent;border:none}
-  input[type=date]{font-size:15px}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
   .format-select{font-size:15px;padding:14px 40px 14px 16px;min-height:52px;border-radius:12px;font-weight:800}
-  .format-select optgroup{font-size:11px;padding:10px 12px 4px 12px}
-  .format-select option{padding:12px 14px;font-size:15px}
-  button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800;letter-spacing:.2px}
-  .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;letter-spacing:.5px;padding:18px 16px;min-height:60px;box-shadow:0 4px 14px rgba(200,16,46,.35),inset 0 1px 0 rgba(255,255,255,.2);border-radius:16px;text-shadow:0 1px 2px rgba(0,0,0,.15)}
-  .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(23,107,58,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
-  .save-btn{background:linear-gradient(135deg,#0a5ecb 0%,#084298 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(8,66,152,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
-  .secondary{background:#fff;border:1.5px solid #e6eaf0;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.05),0 0 0 0.5px rgba(0,0,0,.02);font-size:12px;font-weight:800;padding:13px 8px;min-height:50px;border-radius:13px;letter-spacing:.15px}
-  .secondary:active:not(:disabled){background:#f7f9fb;border-color:#d0d8e0;transform:scale(.98)}
-  .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#ffeaa3 100%);border:1.5px solid #ffd54f;color:#7a5c00;font-weight:800;min-height:50px;border-radius:13px;box-shadow:0 1px 3px rgba(255,213,79,.25)}
-  details.drawer{border-radius:16px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);overflow:hidden;background:#fff}
-  details.drawer summary{padding:16px 18px;font-size:14.5px;font-weight:800;color:#1a1f28;background:#fff;position:relative;letter-spacing:.15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-  details.drawer summary::after{content:"▾";font-size:14px;color:#a8b2be;font-weight:900;transition:transform .2s;margin-left:auto;flex-shrink:0}
+  button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800}
+  .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;padding:18px 16px;min-height:60px;border-radius:16px}
+  .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;border-radius:15px}
+  .save-btn{background:linear-gradient(135deg,#0a5ecb 0%,#084298 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;border-radius:15px}
+  .secondary{background:#fff;border:1.5px solid #e6eaf0;color:#2c3440;font-size:12px;font-weight:800;padding:13px 8px;min-height:50px;border-radius:13px}
+  .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#ffeaa3 100%);border:1.5px solid #ffd54f;color:#7a5c00;font-weight:800;min-height:50px;border-radius:13px}
+  details.drawer{border-radius:16px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden;background:#fff}
+  details.drawer summary{padding:16px 18px;font-size:14.5px;font-weight:800;color:#1a1f28;background:#fff;display:flex;align-items:center;justify-content:space-between}
+  details.drawer summary::after{content:"▾";font-size:14px;color:#a8b2be;font-weight:900;margin-left:auto}
   details.drawer[open] summary::after{transform:rotate(180deg);color:#c8102e}
-  details.drawer[open] summary{border-bottom:1px solid #f0f2f5;background:linear-gradient(to bottom,#fff,#fcfdfe)}
-  details.quick-drawer{padding:12px 14px;border-radius:12px;border:1px solid #eef1f5;background:linear-gradient(to bottom,#fbfcfe,#f4f6f9)}
-  details.quick-drawer summary{font-size:13px;font-weight:800;color:#4a5560}
-  .chip-btn{padding:9px 14px;font-size:12.5px;border-radius:10px;min-height:36px;font-weight:800;background:#fff;border:1.5px solid #e4e8ee;color:#3a4552;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:all .15s}
-  .chip-btn:active{transform:scale(.94);background:#f0f2f5}
-  .chip-btn[data-field=origem]{background:linear-gradient(135deg,#eaf4ff,#dceeff);border-color:#b6d4fe;color:#084298}
-  .chip-btn[data-field=categoria]{background:linear-gradient(135deg,#fff6e8,#ffedd5);border-color:#f5c98b;color:#8a4b00}
-  .chip-btn[data-field=calibre]{background:linear-gradient(135deg,#f0fbe9,#e3f7d5);border-color:#b5d99f;color:#2d6b1f}
+  .chip-btn{padding:9px 14px;font-size:12.5px;border-radius:10px;min-height:36px;font-weight:800}
   .list-item{padding:12px;border-radius:12px;gap:10px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:8px}
   .list-item-info strong{font-size:14px;font-weight:800}
   .list-item-info span{font-size:11.5px;margin-top:3px;color:#7a8391}
   .list-item-actions{gap:5px}
-  .list-item-actions button{padding:9px 10px;font-size:14px;border-radius:11px;min-width:44px;min-height:44px;border-width:1px;font-weight:700;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  .list-item-actions button:active:not(:disabled){transform:scale(.92)}
+  .list-item-actions button{padding:9px 10px;font-size:14px;border-radius:11px;min-width:44px;min-height:44px;font-weight:700}
   .btn-load{background:linear-gradient(135deg,#e8f7ee,#d4f0df);border-color:#a3cb38;color:#176b3a}
+  .btn-save-queue{background:linear-gradient(135deg,#e6f9ec,#c8f0d7);border-color:#6cbf8b;color:#0d5a2f}
   .btn-dup{background:linear-gradient(135deg,#eef1ff,#dfe5ff);border-color:#a5b0e8;color:#4c5fd5}
   .btn-remove{background:linear-gradient(135deg,#fff0f0,#ffe4e0);border-color:#fab1a0;color:#c0392b}
-  .copies-input{width:56px;padding:8px 6px;font-size:14px;border-radius:9px;background:#f0f2f5;border:1.5px solid #d8dee5}
+  .copies-input{width:56px;padding:8px 6px;font-size:14px;border-radius:9px}
   .modal{padding:0;gap:12px}
   .modal-panel{border-radius:0;max-height:100vh;height:100vh;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
-  .modal-title{font-size:16px;font-weight:800}
-  #reader{width:100vw;max-width:100vw;border-radius:0;background:#000}
-  #camVideo{max-width:100vw;max-height:65vh;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  #reader{width:100vw;max-width:100vw;border-radius:0}
+  #camVideo{max-width:100vw;max-height:65vh;border-radius:14px}
   .cam-actions{padding:0 16px 16px;width:100%;gap:8px}
-  .cam-actions button{flex:1;padding:15px 16px;font-size:16px;min-height:56px;border-radius:15px;font-weight:900;letter-spacing:.3px}
-  .cam-actions .primary{background:linear-gradient(135deg,#e61937,#c8102e);box-shadow:0 4px 16px rgba(200,16,46,.4)}
-  .cam-actions .secondary{background:rgba(255,255,255,.95);border:none;color:#2c3440;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+  .cam-actions button{flex:1;padding:15px 16px;font-size:16px;min-height:56px;border-radius:15px;font-weight:900}
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
-  .bf-card{border-radius:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   .bf-card img{height:100px}
-  .bf-card .bf-nome{font-size:11px;padding:7px 4px;font-weight:800}
   .toast-container{top:auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:none;gap:8px}
-  .toast{padding:14px 16px;border-radius:12px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(20px)}
-  .toast.show{transform:translateY(0)}
   .confirm-overlay{padding:16px}
-  .confirm-box{border-radius:18px;padding:22px 20px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
-  .confirm-box p{font-size:15px;margin-bottom:18px}
-  .confirm-box .confirm-actions{gap:10px}
-  .confirm-box .confirm-actions button{padding:14px;font-size:15px;min-height:48px;border-radius:11px}
+  .confirm-box{border-radius:18px;padding:22px 20px}
   .sheet-preview{padding:0}
-  .sheet-preview-inner{border-radius:0;padding:14px;max-height:100vh;max-width:100vw;width:100vw;padding-top:calc(14px + env(safe-area-inset-top,0px))}
-  .sheet-preview-header{gap:8px;flex-wrap:nowrap}
-  .sheet-preview-header h3{font-size:14px;line-height:1.2}
-  .sheet-preview-header .secondary{padding:10px 14px;font-size:13px;min-height:44px}
-  .preview-container{position:relative!important;top:0!important;min-height:calc(100vh - 160px)!important;padding:16px 12px!important;border-radius:14px;background:#e6eaef}
-  .preview-wrap{padding:4px!important}
-  #mainLabelCard{max-width:100%!important;box-shadow:0 10px 30px rgba(0,0,0,.16)!important}
-  .sheet-badge{font-size:11px;padding:7px 14px;margin-bottom:14px;font-weight:800}
-  .pro-print-box{padding:22px;border-radius:18px;min-width:260px}
-  #abrirBancoFrutaBtn{background:linear-gradient(135deg,#fff5f5,#ffe8e8);border:1.5px solid #fed7d7!important;color:#c8102e!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(200,16,46,.08)}
-  #abrirBancoFrutaBtn:active{background:linear-gradient(135deg,#ffe8e8,#ffd6d6);transform:scale(.98)}
-  #scanEanBtn{background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px solid #b6d4fe!important;color:#084298!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(8,66,152,.08)}
-  #scanEanBtn:active{background:linear-gradient(135deg,#dee9ff,#cdddff);transform:scale(.98)}
-  #openCameraBtn{background:linear-gradient(135deg,#edfaf2,#dbf5e5);border:1.5px solid #a3d9b8!important;color:#176b3a!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(23,107,58,.08)}
-  #openCameraBtn:active{background:linear-gradient(135deg,#dbf5e5,#c7efd6);transform:scale(.98)}
-  #recarregarDbBtn,#syncBancoBtn{border-radius:12px;min-height:48px;font-weight:800;background:linear-gradient(135deg,#f8fafc,#eef1f5);border:1.5px solid #e0e5eb;color:#2c3440;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-  #recarregarDbBtn:active,#syncBancoBtn:active{background:linear-gradient(135deg,#eef1f5,#e2e7ee);transform:scale(.98)}
-}
-@media(max-width:400px){
-  .top-header h1{font-size:13px;letter-spacing:.4px}
-  .top-logos img{height:20px;max-width:66px}
-  .top-logos{padding:4px 8px;gap:8px}
-  .mobile-tab-bar button{font-size:10px;padding:11px 2px}
-  .bf-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
-  .bf-card img{height:85px}
+  .sheet-preview-inner{border-radius:0;padding:14px;max-height:100vh;max-width:100vw;width:100vw}
+  .preview-container{position:relative!important;top:0!important;min-height:calc(100vh - 160px)!important;padding:16px 12px!important;border-radius:14px}
+  #mainLabelCard{max-width:100%!important}
 }
 .toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
 .toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
@@ -384,6 +332,21 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .confirm-box .confirm-actions button{flex:1;padding:12px;font-size:14px;width:auto}
 .confirm-box .confirm-actions .confirm-no{background:#f0f2f5;border:1px solid #ccc;color:#222}
 .confirm-box .confirm-actions .confirm-yes{background:#c8102e;color:#fff;border-color:#c8102e}
+.name-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100002;align-items:center;justify-content:center;padding:20px}
+.name-modal.show{display:flex}
+.name-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.name-modal-box h3{margin:0 0 6px 0;font-size:16px;font-weight:900;color:#1a1f28}
+.name-modal-box p{margin:0 0 14px 0;font-size:13px;color:#4a5560;line-height:1.4}
+.name-modal-box input{width:100%;margin-bottom:16px}
+.name-modal-actions{display:flex;gap:10px}
+.name-modal-actions button{flex:1;padding:13px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
+.name-modal-no{background:#f0f2f5;color:#2c3440}
+.name-modal-yes{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;box-shadow:0 3px 12px rgba(23,107,58,.3)}
+@media(max-width:900px){
+  .name-modal-box{border-radius:20px;padding:22px 20px}
+  .name-modal-box h3{font-size:17px}
+  .name-modal-actions button{padding:15px;font-size:15px;min-height:52px;border-radius:13px}
+}
 </style>
 </head>
 <body data-mobile-tab="editar">
@@ -548,6 +511,13 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
           <label for="photo">Fotografia (Opcional)</label>
           <input id="photo" type="file" accept="image/*">
           <button type="button" class="secondary" id="openCameraBtn" style="margin-top:6px;border-color:#176b3a;color:#176b3a">📷 Tirar foto agora</button>
+
+          <div style="margin-top:12px;padding:12px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px dashed #b6d4fe;border-radius:12px">
+            <div style="font-size:12px;font-weight:900;color:#084298;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">📚 Banco de imagens do Drive</div>
+            <button type="button" class="secondary" id="fotoBancoBtn" style="margin:0;background:#fff;border-color:#084298;color:#084298;font-weight:900">📷 Fotografar artigo para o banco</button>
+            <div style="font-size:11px;color:#084298;margin-top:6px;line-height:1.35;opacity:.85">Tira foto → remove fundo → pergunta o nome → fica guardado no Drive para usar em qualquer etiqueta futura.</div>
+          </div>
+
           <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo automaticamente</label>
           <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade · 1ª vez descarrega ~40MB)</label>
         </div>
@@ -661,6 +631,18 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   </div>
 </div>
 
+<div class="name-modal" id="nameModal">
+  <div class="name-modal-box">
+    <h3 id="nameModalTitle">📷 Guardar foto no banco</h3>
+    <p id="nameModalDesc">Dê um nome ao artigo. Este nome será usado no ficheiro do Drive.</p>
+    <input id="nameModalInput" type="text" placeholder="Ex.: MAÇÃ GALA NACIONAL" style="text-transform:uppercase;font-weight:800;font-size:16px;padding:14px">
+    <div class="name-modal-actions">
+      <button type="button" class="name-modal-no" id="nameModalCancel">Cancelar</button>
+      <button type="button" class="name-modal-yes" id="nameModalConfirm">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="cameraModal">
   <video id="camVideo" autoplay playsinline></video>
   <canvas id="camCanvas" style="display:none"></canvas>
@@ -742,6 +724,55 @@ function confirmDialog(msg) {
   });
 }
 
+function pedirNomeArtigo(valorInicial){
+  return new Promise(function(resolve){
+    const modal = document.getElementById("nameModal");
+    const input = document.getElementById("nameModalInput");
+    input.value = String(valorInicial || "").toUpperCase();
+    modal.classList.add("show");
+    setTimeout(function(){ input.focus(); input.select(); }, 50);
+
+    function fechar(resultado){
+      modal.classList.remove("show");
+      document.getElementById("nameModalConfirm").onclick = null;
+      document.getElementById("nameModalCancel").onclick = null;
+      input.onkeydown = null;
+      modal.onclick = null;
+      resolve(resultado);
+    }
+
+    document.getElementById("nameModalConfirm").onclick = function(){
+      const v = (input.value || "").trim().toUpperCase();
+      if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
+      fechar(v);
+    };
+    document.getElementById("nameModalCancel").onclick = function(){ fechar(null); };
+    input.onkeydown = function(e){
+      if(e.key === "Enter"){ e.preventDefault(); document.getElementById("nameModalConfirm").click(); }
+      if(e.key === "Escape"){ e.preventDefault(); fechar(null); }
+    };
+    modal.onclick = function(e){ if(e.target === modal) fechar(null); };
+  });
+}
+
+async function guardarFotoBanco(nome, dataUrl){
+  setStatus("A guardar foto no banco…");
+  try{
+    const comprimida = await compressSmart(dataUrl, 700, 0.72);
+    const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome });
+    bancoFruta = bancoFruta.filter(function(f){
+      return String(f.nome||"").toUpperCase() !== nome;
+    });
+    bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url });
+    bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
+    renderBancoFruta();
+    toast("✅ Foto guardada no banco: " + r.nome, "success", 4500);
+  }catch(e){
+    toast("Erro ao guardar no banco: " + e.message, "error");
+    throw e;
+  }
+}
+
 function compressImage(dataUrl, maxSize, quality) {
   maxSize = maxSize || 1000;
   quality = quality || 0.85;
@@ -766,7 +797,6 @@ function compressImage(dataUrl, maxSize, quality) {
   });
 }
 
-/* ============ Compressão inteligente ============ */
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || 700;
   quality = quality || 0.72;
@@ -829,6 +859,7 @@ async function api(fn, payload){
 
 const $ = function(id){return document.getElementById(id)};
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, photoToken = 0;
+let fotoBancoModo = false;
 function escapeHTML(s){return String(s||"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
 
 const Storage = {
@@ -982,7 +1013,12 @@ function renderQueue(){
     total += item.copies;
     const div = document.createElement("div"); div.className = "list-item";
     const fmt = (item.data.presetSizes==="amanhecer")?"Amanhecer":item.data.presetSizes;
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-dup" data-action="dup-queue" data-index="'+i+'">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'">❌</button></div>';
+    const jaGuardado = savedProducts.some(function(p){
+      return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode);
+    });
+    const iconeGuardar = jaGuardado ? "✅" : "💾";
+    const tituloGuardar = jaGuardado ? "Já guardado no Drive (clica para atualizar)" : "Guardar este produto no Drive";
+    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
     c.appendChild(div);
   });
   $("printBtn").innerHTML = '🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
@@ -995,6 +1031,66 @@ function addToQueue(){
   if(!data.product && !data.price && !data.internalCode){setStatus("Preencha os dados primeiro.","error");return}
   printQueue.push({data:data,copies:copies}); renderQueue(); setStatus("Adicionado à fila!","success");
 }
+
+window.saveQueueItem = async function(i){
+  const item = printQueue[i];
+  if(!item){ toast("Item da fila não encontrado.", "error"); return; }
+  const d = item.data;
+  if(!d.product && !d.internalCode){
+    toast("Item sem nome nem código — preenche primeiro.", "warning", 5000);
+    return;
+  }
+  const existente = savedProducts.find(function(p){
+    return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode);
+  });
+  if(existente){
+    const substituir = await confirmDialog("Já existe um produto \""+d.product+"\" no Drive. Substituir os dados pelo item da fila?");
+    if(!substituir) return;
+  }
+  setStatus("A guardar \""+(d.product||d.internalCode)+"\" no Drive…");
+  try{
+    let fotoId  = d.fotoId  || "";
+    let fotoUrl = d.fotoUrl || "";
+    const foto  = d.processedPhoto || d.originalPhoto;
+    if(foto && foto.indexOf('http') !== 0){
+      const nomeFic = (d.internalCode||'artigo') + '_' + Date.now() + '.jpg';
+      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
+      const up = await api('uploadFoto', { base64:fotoOtimizada, nomeFicheiro:nomeFic });
+      fotoId  = up.id;
+      fotoUrl = up.url;
+    }
+    await api('guardarProduto', {
+      codigo:      d.internalCode,
+      nome:        d.product,
+      preco:       d.price,
+      oldPrice:    d.oldPrice,
+      promoPrice:  d.promoPrice,
+      promoMinQty: d.promoMinQty,
+      promoUnit:   d.promoUnit,
+      origem:      d.origem,
+      categoria:   d.categoria,
+      calibre:     d.calibre,
+      ean:         d.ean,
+      loja:        d.store,
+      unidade:     d.capacityUnit,
+      capacidade:  d.capacity,
+      deposito:    d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect,
+      formato:     d.presetSizes,
+      fotoId:      fotoId,
+      fotoUrl:     fotoUrl
+    });
+    item.data.fotoId  = fotoId;
+    item.data.fotoUrl = fotoUrl;
+    item.data.processedPhoto = fotoUrl;
+    item.data.originalPhoto  = fotoUrl;
+    await carregarTudo();
+    renderQueue();
+    setStatus("✅ \""+(d.product||d.internalCode)+"\" guardado no Drive.", "success", 3500);
+  }catch(e){
+    setStatus("Erro ao guardar: "+e.message, "error");
+  }
+};
+
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
 window.duplicateQueue = function(i){
   const item = printQueue[i]; if(!item) return;
@@ -1095,6 +1191,7 @@ document.addEventListener("click",function(e){
   const a = btn.dataset.action, i = parseInt(btn.dataset.index,10);
   if(a==="remove-queue" && isFinite(i)) window.removeFromQueue(i);
   if(a==="dup-queue"    && isFinite(i)) window.duplicateQueue(i);
+  if(a==="save-queue"   && isFinite(i)) window.saveQueueItem(i);
   if(a==="load-db"      && isFinite(i)) window.loadFromDb(i);
   if(a==="dup-db"       && isFinite(i)) window.duplicateFromDb(i);
   if(a==="queue-db"     && isFinite(i)) window.queueFromDb(i);
@@ -1160,7 +1257,12 @@ function closeCamera(){
   if(camStream){ camStream.getTracks().forEach(function(t){t.stop()}); camStream = null }
   $("camVideo").srcObject = null;
   $("cameraModal").classList.remove("show");
+  setTimeout(function(){ fotoBancoModo = false; }, 300);
 }
+$("fotoBancoBtn").addEventListener("click", function(){
+  fotoBancoModo = true;
+  openCamera();
+});
 $("openCameraBtn").addEventListener("click",openCamera);
 $("camClose").addEventListener("click",closeCamera);
 
@@ -1172,6 +1274,43 @@ $("camSnap").addEventListener("click", async function(){
   c.width = w; c.height = h;
   c.getContext("2d").drawImage(v,0,0,w,h);
   const dataUrl = c.toDataURL("image/jpeg",0.92);
+
+  if(fotoBancoModo){
+    fotoBancoModo = false;
+    closeCamera();
+    setStatus("Foto capturada. A remover fundo…");
+
+    let fotoFinal = dataUrl;
+    if($("autoRemoveBg").checked){
+      try{
+        fotoFinal = await removeBackgroundSmart(dataUrl);
+        toast("✅ Fundo removido!", "success");
+      }catch(e){
+        toast("IA falhou, guardo foto original.", "warning");
+      }
+    }
+
+    const nomeSugerido = ($("product").value || "").trim().toUpperCase();
+    const nome = await pedirNomeArtigo(nomeSugerido);
+    if(!nome){ setStatus("Guardar no banco cancelado.", "info"); return; }
+
+    const existe = bancoFruta.some(function(f){
+      return String(f.nome||"").toUpperCase() === nome;
+    });
+    if(existe){
+      const substituir = await confirmDialog("Já existe uma foto \"" + nome + "\" no banco. Substituir pela nova?");
+      if(!substituir) return;
+    }
+
+    try{
+      await guardarFotoBanco(nome, fotoFinal);
+      setStatus("✅ Guardado no banco.", "success");
+    }catch(e){
+      setStatus("Erro: " + e.message, "error");
+    }
+    return;
+  }
+
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
   updateCard();
   closeCamera();
@@ -1209,20 +1348,9 @@ async function perguntarGuardarNoBanco(){
     if(!substituir) return;
   }
 
-  setStatus("A guardar foto no banco…");
   try{
-    const comprimida = await compressSmart(globalProcessedPhoto, 700, 0.72);
-    const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome });
-    bancoFruta = bancoFruta.filter(function(f){
-      return String(f.nome||"").toUpperCase() !== nome;
-    });
-    bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url });
-    bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
-    renderBancoFruta();
-    toast("✅ Foto guardada no banco: "+r.nome, "success", 4000);
-  }catch(e){
-    toast("Erro ao guardar no banco: "+e.message, "error");
-  }
+    await guardarFotoBanco(nome, globalProcessedPhoto);
+  }catch(e){ /* toast já mostrado */ }
 }
 
 let scanner = null;
@@ -1495,6 +1623,30 @@ function autoAdaptImage(card){
   card.classList.remove("img-mini"); card.classList.add("img-hidden");
 }
 
+function reAdaptClone(clone){
+  if(!clone) return;
+  clone.classList.remove("img-tight","img-mini","img-hidden");
+  const prod = clone.querySelector(".product");
+  if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
+  if(!clone.classList.contains("has-image")) return;
+  if(clone.classList.contains("size-tiny")) return;
+  const desc = clone.querySelector(".col-desc");
+  if(!desc) return;
+  const isCut = function(){ return desc.scrollHeight > desc.clientHeight + 1; };
+  if(!isCut()) return;
+  clone.classList.add("img-tight");
+  void clone.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  clone.classList.remove("img-tight");
+  clone.classList.add("img-mini");
+  void clone.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  clone.classList.remove("img-mini");
+  clone.classList.add("img-hidden");
+}
+
 function updateCapacityHint(){
   const hint = document.getElementById("capacityHint");
   if(!hint) return;
@@ -1571,7 +1723,6 @@ $("capacityUnit").addEventListener("change", function(){
   updateCard();
 });
 
-/* ============ Forçar código de barras em MAIÚSCULAS ============ */
 (function(){
   const eanInput = $("ean");
   if(!eanInput) return;
@@ -1582,7 +1733,6 @@ $("capacityUnit").addEventListener("change", function(){
       this.value = upper;
       try { this.setSelectionRange(pos, pos); } catch(e){}
     }
-    /* O updateCard() corre automaticamente via listener 'input' já registado */
   });
 })();
 
@@ -1913,12 +2063,19 @@ function triggerPrint(){
       const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
       const wrap = document.createElement("div");
       wrap.className = "print-wrap-generic";
-      wrap.style.display = "grid";
-      wrap.style.gridTemplateColumns = "repeat(auto-fit, minmax("+Math.max(20,dims.width)+"mm, 1fr))";
-      wrap.style.gap = "0";
+      wrap.style.display = "flex";
+      wrap.style.flexWrap = "wrap";
+      wrap.style.gap = "2mm";
+      wrap.style.alignItems = "flex-start";
+      wrap.style.justifyContent = "flex-start";
+      wrap.style.width = "210mm";
+      wrap.style.boxSizing = "border-box";
       g.items.forEach(function(d){
         const c = buildLabelClone(d,dims);
-        c.style.width = dims.width+"mm"; c.style.height = dims.height+"mm";
+        c.style.setProperty("width",  dims.width  + "mm", "important");
+        c.style.setProperty("height", dims.height + "mm", "important");
+        c.style.setProperty("flex",   "0 0 auto", "important");
+        c.style.setProperty("box-sizing", "border-box", "important");
         wrap.appendChild(c);
       });
       pz.appendChild(wrap);
@@ -1930,14 +2087,17 @@ function triggerPrint(){
     chunk.forEach(function(data,idx){
       const dims = {width:70,height:idx<3?38:40};
       const c = buildLabelClone(data,dims);
-      c.style.width = "70mm"; c.style.height = idx<3?"38mm":"40mm";
+      c.style.setProperty("width",  "70mm", "important");
+      c.style.setProperty("height", idx<3?"38mm":"40mm", "important");
+      c.style.setProperty("box-sizing","border-box", "important");
       page.appendChild(c);
     });
     for(let j=chunk.length;j<21;j++){
       const empty = document.createElement("div");
       empty.className = "label-card size-small";
       empty.style.visibility = "hidden";
-      empty.style.width = "70mm"; empty.style.height = j<3?"38mm":"40mm";
+      empty.style.setProperty("width",  "70mm", "important");
+      empty.style.setProperty("height", j<3?"38mm":"40mm", "important");
       page.appendChild(empty);
     }
     pz.appendChild(page);
@@ -2003,7 +2163,9 @@ $("previewSheetBtn").addEventListener("click",function(){
           empty.className = "label-card size-small empty";
           page.appendChild(empty);
         }
-        content.appendChild(page); totalPreviewed += chunk.length;
+        content.appendChild(page);
+        page.querySelectorAll(".label-card:not(.empty)").forEach(function(c){ reAdaptClone(c); });
+        totalPreviewed += chunk.length;
       }
     }else{
       const first = g.items[0];
@@ -2011,12 +2173,14 @@ $("previewSheetBtn").addEventListener("click",function(){
       const grp = document.createElement("div"); grp.className = "preview-group-flex";
       g.items.forEach(function(d){
         const clone = buildLabelClone(d,dims);
-        const scale = 2;
+        const scale = 3.2;
         clone.style.width = (dims.width*scale)+"px";
         clone.style.height = (dims.height*scale)+"px";
         grp.appendChild(clone);
       });
-      content.appendChild(grp); totalPreviewed += g.items.length;
+      content.appendChild(grp);
+      grp.querySelectorAll(".label-card").forEach(function(c){ reAdaptClone(c); });
+      totalPreviewed += g.items.length;
     }
   });
   $("sheetPreviewTitle").textContent = "👁️ Pré-visualização ("+totalPreviewed+" etiqueta"+(totalPreviewed>1?"s":"")+")";
