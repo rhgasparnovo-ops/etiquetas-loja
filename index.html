@@ -41,6 +41,60 @@ button:active:not(:disabled){transform:scale(.97)}
 .secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .secondary:hover{border-color:#c8d0dc;background:#fafbfc}
 .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#fff3c4 100%);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
+
+/* ============ Seletor de formato elegante ============ */
+.format-select{
+  margin-bottom:10px;
+  background:linear-gradient(135deg,#fffdf5 0%,#fff9db 100%);
+  border:1.5px solid #f6c23e;
+  color:#1a1f28;
+  font-weight:700;
+  font-size:14px;
+  padding:11px 40px 11px 14px;
+  border-radius:10px;
+  letter-spacing:.1px;
+  appearance:none;
+  -webkit-appearance:none;
+  background-image:
+    linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a87600' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-position: 0 0, calc(100% - 16px) 50%;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% 100%, 12px 8px;
+  cursor:pointer;
+  transition:border-color .15s, box-shadow .15s;
+}
+.format-select:hover{border-color:#e0a800;box-shadow:0 2px 8px rgba(246,194,62,.2)}
+.format-select:focus{
+  outline:none;
+  border-color:#c8102e;
+  box-shadow:0 0 0 3px rgba(200,16,46,.12);
+  background-image:
+    linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+}
+.format-select optgroup{
+  background:#fff;
+  color:#7a5c00;
+  font-weight:800;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  padding:6px 8px 2px 8px;
+}
+.format-select option{
+  background:#fff;
+  color:#1a1f28;
+  font-weight:600;
+  font-size:14px;
+  padding:8px 12px;
+}
+.format-select option:checked{
+  background:linear-gradient(135deg,#fff5f5 0%,#ffe8e8 100%);
+  color:#c8102e;
+  font-weight:800;
+}
+
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .actions-full{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
 .actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
@@ -275,12 +329,10 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .cam-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .cam-actions button{width:auto;padding:10px 22px}
 @media(max-width:600px){.bf-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.bf-card img{height:85px}}
-
 .mobile-tab-bar{display:none}
 .tab-el{display:block}
 .tab-badge{display:none;background:#c8102e;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
 .tab-badge.show{display:inline-block}
-
 @media(max-width:900px){
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -308,6 +360,9 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   input[type=range]{padding:0;height:8px;background:transparent;border:none}
   input[type=date]{font-size:15px}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
+  .format-select{font-size:15px;padding:14px 40px 14px 16px;min-height:52px;border-radius:12px;font-weight:800}
+  .format-select optgroup{font-size:11px;padding:10px 12px 4px 12px}
+  .format-select option{padding:12px 14px;font-size:15px}
   button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800;letter-spacing:.2px}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;letter-spacing:.5px;padding:18px 16px;min-height:60px;box-shadow:0 4px 14px rgba(200,16,46,.35),inset 0 1px 0 rgba(255,255,255,.2);border-radius:16px;text-shadow:0 1px 2px rgba(0,0,0,.15)}
   .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(23,107,58,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
@@ -422,20 +477,30 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
     <div class="left-col">
       <section class="panel tab-el tab-editar">
         <label for="presetSizes">Medida / Formato da Etiqueta</label>
-        <select id="presetSizes" style="margin-bottom:8px;background:#fffbdd;border-color:#f6c23e">
-          <option value="amanhecer" selected>⭐ Folha Oficial Amanhecer (21 un. - 70x38/40 mm)</option>
-          <option value="125x80">🍎 Fruta/Legumes Suporte (125 x 80 mm)</option>
-          <option value="frutaPromo125x80">💡 Fruta/Legumes 125x80 (Leve 2+)</option>
-          <option value="A6">📄 Tabuleta A6 (148 x 105 mm)</option>
-          <option value="frutaPromoA6">💡 Tabuleta A6 (Leve 2+)</option>
-          <option value="A5">📄 Tabuleta A5 Grande (210 x 148 mm)</option>
-          <option value="105x38">🏷️ Prateleira Longa (105 x 38 mm)</option>
-          <option value="70x38">🏷️ Prateleira Standard (70 x 38 mm)</option>
-          <option value="65x38">🏷️ Prateleira Média (65 x 38 mm)</option>
-          <option value="52x30">🏷️ Tala Estreita (52 x 30 mm)</option>
-          <option value="100x70">🏷️ Cartaz Médio (100 x 70 mm)</option>
-          <option value="50x30">🏷️ Fruta Individual (50 x 30 mm)</option>
-          <option value="custom">⚙️ Tamanho Personalizado (mm)...</option>
+        <select id="presetSizes" class="format-select">
+          <optgroup label="⭐ Amanhecer">
+            <option value="amanhecer" selected>⭐ Folha Oficial · 21 un · 70×38/40</option>
+          </optgroup>
+          <optgroup label="🍎 Fruta e Legumes">
+            <option value="125x80">🍎 Suporte · 125×80</option>
+            <option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option>
+            <option value="50x30">🍎 Individual · 50×30</option>
+          </optgroup>
+          <optgroup label="📄 Tabuletas">
+            <option value="A6">📄 Tabuleta A6 · 148×105</option>
+            <option value="frutaPromoA6">💡 Tabuleta A6 Leve 2+ · 148×105</option>
+            <option value="A5">📄 Tabuleta A5 · 210×148</option>
+            <option value="100x70">🏷️ Cartaz Médio · 100×70</option>
+          </optgroup>
+          <optgroup label="🏷️ Prateleira">
+            <option value="105x38">🏷️ Longa · 105×38</option>
+            <option value="70x38">🏷️ Standard · 70×38</option>
+            <option value="65x38">🏷️ Média · 65×38</option>
+            <option value="52x30">🏷️ Tala Estreita · 52×30</option>
+          </optgroup>
+          <optgroup label="⚙️ Outro">
+            <option value="custom">⚙️ Tamanho Personalizado…</option>
+          </optgroup>
         </select>
         <div class="size-row" id="customDimensionsRow" style="display:none;margin-bottom:8px;background:#fff9db;padding:8px;border-radius:6px;border:1px dashed #fab005">
           <div><label for="customWidth" style="margin-top:0;font-size:12px">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
@@ -452,7 +517,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
           <label for="product">Produto / Variedade</label>
           <input id="product" type="text" class="uppercase-input">
           <button type="button" class="secondary" id="abrirBancoFrutaBtn" style="margin-top:8px;border-color:#c8102e;color:#c8102e">🍎 Escolher foto do banco (fruta/legumes)</button>
-
           <div class="fruit-panel" id="fruitPanel">
             <h4>🍎 Origem, Categoria e Calibre</h4>
             <div class="size-row-3">
@@ -496,7 +560,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
               </div>
             </details>
           </div>
-
           <div class="fruit-promo-panel" id="fruitPromoPanel">
             <h4>💡 Oportunidade "Leve 2 ou mais"</h4>
             <div class="size-row">
@@ -506,7 +569,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
             <label for="promoPrice" style="margin-top:8px;font-size:11px">Preço Especial (€)</label>
             <input id="promoPrice" type="text" inputmode="decimal" style="border-color:#c8102e;background:#fff9fb">
           </div>
-
           <div id="standardPricePanel">
             <label for="price">Preço de Venda (€)</label>
             <input id="price" type="text" inputmode="decimal">
@@ -551,11 +613,9 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
               <div><label for="promoEnd">Fim Oportunidade</label><input id="promoEnd" type="date"></div>
             </div>
           </div>
-
           <label for="ean" style="color:#084298">Código de Barras (EAN) <span id="eanBadge" class="bc-badge" style="display:none"></span></label>
           <input id="ean" type="text" style="text-transform:none;border-color:#b6d4fe;background:#f8fbff">
           <button type="button" class="secondary" id="scanEanBtn" style="margin-top:6px;border-color:#084298;color:#084298">📷 Ler código de barras com a câmara</button>
-
           <label for="photo">Fotografia (Opcional)</label>
           <input id="photo" type="file" accept="image/*">
           <button type="button" class="secondary" id="openCameraBtn" style="margin-top:6px;border-color:#176b3a;color:#176b3a">📷 Tirar foto agora</button>
@@ -1127,7 +1187,6 @@ function closeCamera(){
 $("openCameraBtn").addEventListener("click",openCamera);
 $("camClose").addEventListener("click",closeCamera);
 
-/* ============ Câmara: tirar foto + IA + pergunta de guardar no banco ============ */
 $("camSnap").addEventListener("click", async function(){
   const v = $("camVideo"), c = $("camCanvas");
   const maxW = 1400;
@@ -1154,7 +1213,6 @@ $("camSnap").addEventListener("click", async function(){
   }
 });
 
-/* ============ Pergunta se quer guardar a foto no banco ============ */
 async function perguntarGuardarNoBanco(){
   if(!globalProcessedPhoto) return;
   const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
