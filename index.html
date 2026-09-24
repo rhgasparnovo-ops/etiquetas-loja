@@ -161,7 +161,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .barcode-container.show{display:flex!important}
 .svg-container{width:100%;height:70%;display:flex;justify-content:center;overflow:hidden}
 .svg-container svg{width:85%;height:100%}
-.ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1}
+.ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #bbb;padding-top:1px;flex-shrink:0;height:10%;overflow:hidden}
 .promo-text{font-size:clamp(5px,1.6cqw,8px);color:#444;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:4px}
 .print-date{font-size:clamp(5px,1.5cqw,7.5px);color:#666;white-space:nowrap;line-height:1;flex-shrink:0}
@@ -543,7 +543,7 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
             </div>
           </div>
           <label for="ean" style="color:#084298">Código de Barras (EAN) <span id="eanBadge" class="bc-badge" style="display:none"></span></label>
-          <input id="ean" type="text" style="text-transform:none;border-color:#b6d4fe;background:#f8fbff">
+          <input id="ean" type="text" style="text-transform:uppercase;border-color:#b6d4fe;background:#f8fbff">
           <button type="button" class="secondary" id="scanEanBtn" style="margin-top:6px;border-color:#084298;color:#084298">📷 Ler código de barras com a câmara</button>
           <label for="photo">Fotografia (Opcional)</label>
           <input id="photo" type="file" accept="image/*">
@@ -742,7 +742,6 @@ function confirmDialog(msg) {
   });
 }
 
-/* ============ Compressão simples (compatibilidade) ============ */
 function compressImage(dataUrl, maxSize, quality) {
   maxSize = maxSize || 1000;
   quality = quality || 0.85;
@@ -768,9 +767,6 @@ function compressImage(dataUrl, maxSize, quality) {
 }
 
 /* ============ Compressão inteligente ============ */
-/* Detecta transparência:
-   - Com transparência → WebP q=0.72 (10-20x mais leve)
-   - Sem transparência → JPEG q=0.75 (2-3x mais leve) */
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || 700;
   quality = quality || 0.72;
@@ -787,7 +783,6 @@ function compressSmart(dataUrl, maxSize, quality) {
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
 
-      /* Detectar transparência real */
       let temTransparencia = false;
       try {
         const tmp = document.createElement('canvas');
@@ -880,7 +875,7 @@ function getFormData(){return{
   capacity:$("capacity").value,capacityUnit:$("capacityUnit").value,
   depositFeeSelect:$("depositFeeSelect").value,customDepositInput:$("customDepositInput").value,
   unit:$("unit").value,promoStart:$("promoStart").value,promoEnd:$("promoEnd").value,
-  ean:$("ean").value.trim(),autoRemoveBg:$("autoRemoveBg").checked,useAI:$("useAI").checked,
+  ean:$("ean").value.trim().toUpperCase(),autoRemoveBg:$("autoRemoveBg").checked,useAI:$("useAI").checked,
   originalPhoto:globalOriginalPhoto,processedPhoto:globalProcessedPhoto,
   promoMinQty:$("promoMinQty").value,promoUnit:$("promoUnit").value,promoPrice:$("promoPrice").value
 }}
@@ -906,7 +901,7 @@ function setFormData(d){
   $("unit").value = d.unit||"";
   $("promoStart").value = d.promoStart||"";
   $("promoEnd").value = d.promoEnd||"";
-  $("ean").value = d.ean||"";
+  $("ean").value = (d.ean||"").toUpperCase();
   $("autoRemoveBg").checked = d.autoRemoveBg!==false;
   $("useAI").checked = d.useAI!==false;
   $("promoMinQty").value = d.promoMinQty||"2";
@@ -1247,7 +1242,7 @@ async function openScanner(){
           Html5QrcodeSupportedFormats.QR_CODE
         ]},
       function(decoded){
-        $("ean").value = decoded;
+        $("ean").value = String(decoded).toUpperCase();
         updateEanBadge(); updateCard();
         setStatus("Código lido: "+decoded,"success");
         closeScanner();
@@ -1576,11 +1571,26 @@ $("capacityUnit").addEventListener("change", function(){
   updateCard();
 });
 
+/* ============ Forçar código de barras em MAIÚSCULAS ============ */
+(function(){
+  const eanInput = $("ean");
+  if(!eanInput) return;
+  eanInput.addEventListener("input", function(){
+    const pos = this.selectionStart;
+    const upper = this.value.toUpperCase();
+    if(this.value !== upper){
+      this.value = upper;
+      try { this.setSelectionRange(pos, pos); } catch(e){}
+    }
+    /* O updateCard() corre automaticamente via listener 'input' já registado */
+  });
+})();
+
 function updateCardUnsafe(){
   const storeVal = $("store").value||"PATAIAS";
   const productVal = ($("product").value||"").trim().toUpperCase();
   const codeVal = ($("internalCode").value||"").trim().toUpperCase();
-  const barcodeToDraw = ($("ean").value||"").trim();
+  const barcodeToDraw = ($("ean").value||"").trim().toUpperCase();
   const priceNum = parsePrice($("price").value);
   const oldPriceNum = parsePrice($("oldPrice").value);
   const promoPriceNum = parsePrice($("promoPrice").value);
@@ -1685,7 +1695,7 @@ function updateCardUnsafe(){
   const bcBox = $("cardBarcodeBox");
   if(barcodeToDraw && !card.classList.contains("size-tiny")){
     bcBox.classList.add("show");
-    $("cardBarcodeText").textContent = barcodeToDraw;
+    $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase();
     drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
   }else bcBox.classList.remove("show");
 
