@@ -204,8 +204,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .cam-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .cam-actions button{width:auto;padding:10px 22px}
 @media(max-width:600px){.bf-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.bf-card img{height:85px}}
-
-/* ============ Mobile tabs ============ */
 .mobile-tab-bar{display:none}
 @media(max-width:900px){
   .app{padding-top:0}
@@ -220,8 +218,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 }
 .tab-badge{display:none;background:#c8102e;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
 .tab-badge.show{display:inline-block}
-
-/* ============ Toast ============ */
 .toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
 .toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
 .toast.show{opacity:1;transform:translateX(0)}
@@ -230,8 +226,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .toast.warning{border-left-color:#f6c23e;color:#7c5a0c}
 .toast.info{border-left-color:#084298;color:#052c66}
 @media(max-width:900px){.toast-container{top:auto;bottom:16px;right:12px;left:12px;max-width:none}.toast{transform:translateY(20px)}.toast.show{transform:translateY(0)}}
-
-/* ============ Confirm dialog ============ */
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
 .confirm-overlay.show{display:flex}
 .confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
@@ -383,7 +377,8 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
           <label for="photo">Fotografia (Opcional)</label>
           <input id="photo" type="file" accept="image/*">
           <button type="button" class="secondary" id="openCameraBtn" style="margin-top:6px;border-color:#176b3a;color:#176b3a">📷 Tirar foto agora</button>
-          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo branco</label>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo automaticamente</label>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade · 1ª vez descarrega ~40MB)</label>
         </div>
       </details>
 
@@ -664,7 +659,7 @@ function getFormData(){return{
   capacity:$("capacity").value,capacityUnit:$("capacityUnit").value,
   depositFeeSelect:$("depositFeeSelect").value,customDepositInput:$("customDepositInput").value,
   unit:$("unit").value,promoStart:$("promoStart").value,promoEnd:$("promoEnd").value,
-  ean:$("ean").value.trim(),autoRemoveBg:$("autoRemoveBg").checked,
+  ean:$("ean").value.trim(),autoRemoveBg:$("autoRemoveBg").checked,useAI:$("useAI").checked,
   originalPhoto:globalOriginalPhoto,processedPhoto:globalProcessedPhoto,
   promoMinQty:$("promoMinQty").value,promoUnit:$("promoUnit").value,promoPrice:$("promoPrice").value
 }}
@@ -691,6 +686,7 @@ function setFormData(d){
   $("promoEnd").value = d.promoEnd||"";
   $("ean").value = d.ean||"";
   $("autoRemoveBg").checked = d.autoRemoveBg!==false;
+  $("useAI").checked = d.useAI!==false;
   $("promoMinQty").value = d.promoMinQty||"2";
   $("promoUnit").value = d.promoUnit||"KG";
   $("promoPrice").value = d.promoPrice||"";
@@ -931,21 +927,29 @@ function closeCamera(){
 }
 $("openCameraBtn").addEventListener("click",openCamera);
 $("camClose").addEventListener("click",closeCamera);
-$("camSnap").addEventListener("click",function(){
+$("camSnap").addEventListener("click", async function(){
   const v = $("camVideo"), c = $("camCanvas");
   const maxW = 1400;
   let w = v.videoWidth, h = v.videoHeight;
   if(w > maxW){ h = Math.round(h * maxW/w); w = maxW }
   c.width = w; c.height = h;
   c.getContext("2d").drawImage(v,0,0,w,h);
-  const dataUrl = c.toDataURL("image/jpeg",0.9);
+  const dataUrl = c.toDataURL("image/jpeg",0.92);
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
   updateCard();
-  if($("autoRemoveBg").checked){
-    removeBackground(dataUrl,function(p){globalProcessedPhoto = p || dataUrl; updateCard()});
-  }
   closeCamera();
   setStatus("Foto capturada.","success");
+
+  if($("autoRemoveBg").checked){
+    try {
+      const semFundo = await removeBackgroundSmart(dataUrl);
+      globalProcessedPhoto = semFundo;
+      updateCard();
+      toast("✅ Fundo removido!", "success");
+    } catch(e) {
+      toast("Erro a remover fundo: " + e.message, "error");
+    }
+  }
 });
 
 let scanner = null;
@@ -1009,7 +1013,8 @@ function formatPromoDate(s,e){
   }catch(err){ return "Preço sujeito às condições comerciais em vigor." }
 }
 
-function removeBackground(dataUrl,cb){
+/* ============ Remoção de fundo — SIMPLES (local, rápido) ============ */
+function removeBackgroundSimple(dataUrl,cb){
   const token = ++photoToken; const img = new Image();
   img.crossOrigin = "anonymous";
   img.onload = function(){
@@ -1036,6 +1041,64 @@ function removeBackground(dataUrl,cb){
   };
   img.onerror = function(){ if(token===photoToken) cb(dataUrl) };
   img.src = dataUrl;
+}
+
+/* ============ Remoção de fundo — IA (qualidade, 1ª vez lenta) ============ */
+let _bgAIModule = null;
+let _bgAILoading = null;
+
+async function loadBgAI() {
+  if (_bgAIModule) return _bgAIModule;
+  if (_bgAILoading) return _bgAILoading;
+  _bgAILoading = (async function(){
+    try {
+      const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');
+      _bgAIModule = mod;
+      return mod;
+    } finally {
+      _bgAILoading = null;
+    }
+  })();
+  return _bgAILoading;
+}
+
+async function removeBackgroundAI(dataUrl, onProgress) {
+  const mod = await loadBgAI();
+  const blob = await mod.removeBackground(dataUrl, {
+    output: { format: 'image/png' },
+    progress: function(key, current, total) {
+      if (onProgress) onProgress(key, current, total);
+    }
+  });
+  return new Promise(function(resolve, reject){
+    const reader = new FileReader();
+    reader.onloadend = function(){ resolve(reader.result); };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+/* ============ Wrapper unificado ============ */
+async function removeBackgroundSmart(dataUrl) {
+  const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
+  if (useAI) {
+    try {
+      return await removeBackgroundAI(dataUrl, function(key, cur, total){
+        if (String(key).indexOf('fetch') === 0) {
+          const pct = total > 0 ? Math.round((cur / total) * 100) : 0;
+          setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…");
+        } else {
+          setStatus("🤖 A processar imagem com IA…");
+        }
+      });
+    } catch(e) {
+      console.warn("IA falhou, uso algoritmo simples:", e);
+      toast("IA indisponível, uso remoção simples.", "warning");
+    }
+  }
+  return new Promise(function(resolve){
+    removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); });
+  });
 }
 
 const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
@@ -1351,17 +1414,26 @@ $("isPromoActive").addEventListener("change",function(){$("promoBox").style.disp
 });
 $("autoRemoveBg").addEventListener("change",updateCard);
 
-$("photo").addEventListener("change",function(e){
+$("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
   photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
   if(!file){ updateCard(); return }
   if(file.type.indexOf("image/")!==0){ setStatus("Imagem inválida.","error"); e.target.value=""; updateCard(); return }
   if(file.size > 12*1024*1024){ setStatus("Imagem muito grande (máx 12 MB).","error"); e.target.value=""; updateCard(); return }
   const r = new FileReader();
-  r.onerror = function(){setStatus("Erro a ler imagem.","error")};
-  r.onload = function(evt){
+  r.onerror = function(){ setStatus("Erro a ler imagem.","error"); };
+  r.onload = async function(evt){
     globalOriginalPhoto = evt.target.result; updateCard();
-    removeBackground(globalOriginalPhoto,function(p){globalProcessedPhoto = p||globalOriginalPhoto;updateCard()});
+    if($("autoRemoveBg").checked){
+      try {
+        const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
+        globalProcessedPhoto = semFundo;
+        updateCard();
+        toast("✅ Fundo removido!", "success");
+      } catch(e) {
+        toast("Erro: " + e.message, "error");
+      }
+    }
   };
   r.readAsDataURL(file);
 });
@@ -1373,7 +1445,7 @@ $("clearBtn").addEventListener("click", async function(){
   $("isPromoActive").checked = false; $("promoBox").style.display="none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
-  $("photo").value = ""; $("autoRemoveBg").checked = true;
+  $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
   $("store").value = "PATAIAS";
   $("customWidth").value = "70"; $("customHeight").value = "38";
   $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
