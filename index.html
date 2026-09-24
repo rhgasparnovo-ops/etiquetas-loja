@@ -113,7 +113,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,75%);max-height:var(--img-scale,75%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-
 .product{
   font-weight:900;
   color:#000;
@@ -141,7 +140,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .unit-price-text{
   font-size:clamp(7px,2.3cqw,13px);
   color:#c8102e;
@@ -196,7 +194,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
 .label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important}
-
 .label-card.size-tiny{--header-h:18%;--img-scale:70%}
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5.5cqw,14px)!important;line-height:1.02}
@@ -235,7 +232,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
 .label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
 .label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
-
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -289,26 +285,22 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
   .app{max-width:100%;padding:0 12px 12px 12px}
-
   .top-header{padding:12px 16px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;background:#fff}
   .top-header h1{font-size:14px;line-height:1.15;font-weight:900;flex:1;letter-spacing:.6px;color:#1a1f28;display:flex;align-items:center;gap:6px;text-transform:uppercase}
   .h1-tag{font-size:1.05em;transform:translateY(-1px)}
   .top-logos{flex-shrink:0;gap:8px;padding:5px 10px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:12px;border:1px solid #eef1f5;box-shadow:inset 0 1px 2px rgba(0,0,0,.02)}
   .top-logos img{height:24px;max-width:80px;filter:contrast(1.05)}
   .top-logos .divider{height:18px;background:#dfe3e8}
-
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
   .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;transition:all .25s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;gap:2px}
   .mobile-tab-bar button.active{color:#c8102e;border-bottom-color:transparent}
   .mobile-tab-bar button.active::before{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:3px;background:linear-gradient(90deg,#c8102e 0%,#e83a55 100%);border-radius:3px 3px 0 0;box-shadow:0 -2px 8px rgba(200,16,46,.4)}
   .mobile-tab-bar button.active::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center bottom,rgba(200,16,46,.08) 0%,transparent 70%);pointer-events:none}
   .tab-badge{position:absolute;top:5px;right:calc(50% - 26px);background:linear-gradient(135deg,#e83a55,#c8102e);box-shadow:0 2px 6px rgba(200,16,46,.4);border:1.5px solid #fff;font-size:9px;padding:1px 5px;border-radius:9px;margin:0;min-width:18px;height:18px;line-height:15px;text-align:center}
-
   .tab-el{display:none!important}
   body[data-mobile-tab="editar"] .tab-editar{display:block!important}
   body[data-mobile-tab="ver"]    .tab-ver{display:flex!important}
   body[data-mobile-tab="fila"]   .tab-fila{display:block!important}
-
   .panel{border-radius:16px;padding:14px;margin-bottom:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);background:#fff}
   label{font-size:11px;margin:10px 0 4px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
   input,select,textarea{padding:13px 14px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc;transition:all .15s}
@@ -316,7 +308,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   input[type=range]{padding:0;height:8px;background:transparent;border:none}
   input[type=date]{font-size:15px}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
-
   button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800;letter-spacing:.2px}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;letter-spacing:.5px;padding:18px 16px;min-height:60px;box-shadow:0 4px 14px rgba(200,16,46,.35),inset 0 1px 0 rgba(255,255,255,.2);border-radius:16px;text-shadow:0 1px 2px rgba(0,0,0,.15)}
   .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(23,107,58,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
@@ -324,7 +315,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .secondary{background:#fff;border:1.5px solid #e6eaf0;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.05),0 0 0 0.5px rgba(0,0,0,.02);font-size:12px;font-weight:800;padding:13px 8px;min-height:50px;border-radius:13px;letter-spacing:.15px}
   .secondary:active:not(:disabled){background:#f7f9fb;border-color:#d0d8e0;transform:scale(.98)}
   .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#ffeaa3 100%);border:1.5px solid #ffd54f;color:#7a5c00;font-weight:800;min-height:50px;border-radius:13px;box-shadow:0 1px 3px rgba(255,213,79,.25)}
-
   details.drawer{border-radius:16px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);overflow:hidden;background:#fff}
   details.drawer summary{padding:16px 18px;font-size:14.5px;font-weight:800;color:#1a1f28;background:#fff;position:relative;letter-spacing:.15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
   details.drawer summary::after{content:"▾";font-size:14px;color:#a8b2be;font-weight:900;transition:transform .2s;margin-left:auto;flex-shrink:0}
@@ -332,13 +322,11 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   details.drawer[open] summary{border-bottom:1px solid #f0f2f5;background:linear-gradient(to bottom,#fff,#fcfdfe)}
   details.quick-drawer{padding:12px 14px;border-radius:12px;border:1px solid #eef1f5;background:linear-gradient(to bottom,#fbfcfe,#f4f6f9)}
   details.quick-drawer summary{font-size:13px;font-weight:800;color:#4a5560}
-
   .chip-btn{padding:9px 14px;font-size:12.5px;border-radius:10px;min-height:36px;font-weight:800;background:#fff;border:1.5px solid #e4e8ee;color:#3a4552;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:all .15s}
   .chip-btn:active{transform:scale(.94);background:#f0f2f5}
   .chip-btn[data-field=origem]{background:linear-gradient(135deg,#eaf4ff,#dceeff);border-color:#b6d4fe;color:#084298}
   .chip-btn[data-field=categoria]{background:linear-gradient(135deg,#fff6e8,#ffedd5);border-color:#f5c98b;color:#8a4b00}
   .chip-btn[data-field=calibre]{background:linear-gradient(135deg,#f0fbe9,#e3f7d5);border-color:#b5d99f;color:#2d6b1f}
-
   .list-item{padding:12px;border-radius:12px;gap:10px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:8px}
   .list-item-info strong{font-size:14px;font-weight:800}
   .list-item-info span{font-size:11.5px;margin-top:3px;color:#7a8391}
@@ -349,7 +337,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .btn-dup{background:linear-gradient(135deg,#eef1ff,#dfe5ff);border-color:#a5b0e8;color:#4c5fd5}
   .btn-remove{background:linear-gradient(135deg,#fff0f0,#ffe4e0);border-color:#fab1a0;color:#c0392b}
   .copies-input{width:56px;padding:8px 6px;font-size:14px;border-radius:9px;background:#f0f2f5;border:1.5px solid #d8dee5}
-
   .modal{padding:0;gap:12px}
   .modal-panel{border-radius:0;max-height:100vh;height:100vh;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
   .modal-title{font-size:16px;font-weight:800}
@@ -359,35 +346,28 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .cam-actions button{flex:1;padding:15px 16px;font-size:16px;min-height:56px;border-radius:15px;font-weight:900;letter-spacing:.3px}
   .cam-actions .primary{background:linear-gradient(135deg,#e61937,#c8102e);box-shadow:0 4px 16px rgba(200,16,46,.4)}
   .cam-actions .secondary{background:rgba(255,255,255,.95);border:none;color:#2c3440;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
   .bf-card{border-radius:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   .bf-card img{height:100px}
   .bf-card .bf-nome{font-size:11px;padding:7px 4px;font-weight:800}
-
   .toast-container{top:auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:none;gap:8px}
   .toast{padding:14px 16px;border-radius:12px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.18);transform:translateY(20px)}
   .toast.show{transform:translateY(0)}
-
   .confirm-overlay{padding:16px}
   .confirm-box{border-radius:18px;padding:22px 20px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
   .confirm-box p{font-size:15px;margin-bottom:18px}
   .confirm-box .confirm-actions{gap:10px}
   .confirm-box .confirm-actions button{padding:14px;font-size:15px;min-height:48px;border-radius:11px}
-
   .sheet-preview{padding:0}
   .sheet-preview-inner{border-radius:0;padding:14px;max-height:100vh;max-width:100vw;width:100vw;padding-top:calc(14px + env(safe-area-inset-top,0px))}
   .sheet-preview-header{gap:8px;flex-wrap:nowrap}
   .sheet-preview-header h3{font-size:14px;line-height:1.2}
   .sheet-preview-header .secondary{padding:10px 14px;font-size:13px;min-height:44px}
-
   .preview-container{position:relative!important;top:0!important;min-height:calc(100vh - 160px)!important;padding:16px 12px!important;border-radius:14px;background:#e6eaef}
   .preview-wrap{padding:4px!important}
   #mainLabelCard{max-width:100%!important;box-shadow:0 10px 30px rgba(0,0,0,.16)!important}
   .sheet-badge{font-size:11px;padding:7px 14px;margin-bottom:14px;font-weight:800}
-
   .pro-print-box{padding:22px;border-radius:18px;min-width:260px}
-
   #abrirBancoFrutaBtn{background:linear-gradient(135deg,#fff5f5,#ffe8e8);border:1.5px solid #fed7d7!important;color:#c8102e!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(200,16,46,.08)}
   #abrirBancoFrutaBtn:active{background:linear-gradient(135deg,#ffe8e8,#ffd6d6);transform:scale(.98)}
   #scanEanBtn{background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px solid #b6d4fe!important;color:#084298!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(8,66,152,.08)}
@@ -397,7 +377,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   #recarregarDbBtn,#syncBancoBtn{border-radius:12px;min-height:48px;font-weight:800;background:linear-gradient(135deg,#f8fafc,#eef1f5);border:1.5px solid #e0e5eb;color:#2c3440;box-shadow:0 1px 2px rgba(0,0,0,.04)}
   #recarregarDbBtn:active,#syncBancoBtn:active{background:linear-gradient(135deg,#eef1f5,#e2e7ee);transform:scale(.98)}
 }
-
 @media(max-width:400px){
   .top-header h1{font-size:13px;letter-spacing:.4px}
   .top-logos img{height:20px;max-width:66px}
@@ -406,7 +385,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
   .bf-card img{height:85px}
 }
-
 .toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
 .toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
 .toast.show{opacity:1;transform:translateX(0)}
@@ -414,7 +392,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .toast.error{border-left-color:#c0392b;color:#7a221a}
 .toast.warning{border-left-color:#f6c23e;color:#7c5a0c}
 .toast.info{border-left-color:#084298;color:#052c66}
-
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
 .confirm-overlay.show{display:flex}
 .confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
@@ -1149,6 +1126,8 @@ function closeCamera(){
 }
 $("openCameraBtn").addEventListener("click",openCamera);
 $("camClose").addEventListener("click",closeCamera);
+
+/* ============ Câmara: tirar foto + IA + pergunta de guardar no banco ============ */
 $("camSnap").addEventListener("click", async function(){
   const v = $("camVideo"), c = $("camCanvas");
   const maxW = 1400;
@@ -1168,11 +1147,48 @@ $("camSnap").addEventListener("click", async function(){
       globalProcessedPhoto = semFundo;
       updateCard();
       toast("✅ Fundo removido!", "success");
+      await perguntarGuardarNoBanco();
     } catch(e) {
       toast("Erro a remover fundo: " + e.message, "error");
     }
   }
 });
+
+/* ============ Pergunta se quer guardar a foto no banco ============ */
+async function perguntarGuardarNoBanco(){
+  if(!globalProcessedPhoto) return;
+  const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
+  if(!querGuardar) return;
+
+  const nome = ($("product").value || "").trim().toUpperCase();
+  if(!nome){
+    toast("Escreva o nome do produto antes de guardar a foto no banco.", "warning", 5500);
+    return;
+  }
+
+  const existe = bancoFruta.some(function(f){
+    return String(f.nome||"").toUpperCase() === nome;
+  });
+  if(existe){
+    const substituir = await confirmDialog("Já existe uma foto \""+nome+"\" no banco. Substituir pela nova?");
+    if(!substituir) return;
+  }
+
+  setStatus("A guardar foto no banco…");
+  try{
+    const comprimida = await compressImage(globalProcessedPhoto, 800, 0.85);
+    const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome });
+    bancoFruta = bancoFruta.filter(function(f){
+      return String(f.nome||"").toUpperCase() !== nome;
+    });
+    bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url });
+    bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
+    renderBancoFruta();
+    toast("✅ Foto guardada no banco: "+r.nome, "success", 4000);
+  }catch(e){
+    toast("Erro ao guardar no banco: "+e.message, "error");
+  }
+}
 
 let scanner = null;
 async function openScanner(){
@@ -1471,7 +1487,6 @@ function updateCapacityHint(){
   }
 }
 
-/* ============ Conversão automática ao mudar de unidade ============ */
 $("capacityUnit").dataset.last = $("capacityUnit").value;
 
 $("capacityUnit").addEventListener("change", function(){
@@ -1489,16 +1504,13 @@ $("capacityUnit").addEventListener("change", function(){
     return "especial";
   };
   const g1 = grupo(prev), g2 = grupo(this.value);
-
   const isMassa  = function(g){ return g.indexOf("massa")===0; };
   const isVolume = function(g){ return g.indexOf("volume")===0; };
 
   if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){
-    /* Dimensão diferente (massa ↔ volume) → limpa */
     capInput.value = "";
   }
   else if(cur > 0 && g1 !== g2){
-    /* Mesma dimensão, escala diferente → converte */
     let novo = cur;
     if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
     if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
@@ -1513,7 +1525,6 @@ $("capacityUnit").addEventListener("change", function(){
     }
   }
   else if(!cur || cur <= 0){
-    /* Campo vazio → sugestão típica */
     switch(this.value){
       case "g":    capInput.value = "500"; break;
       case "cl":   capInput.value = "75";  break;
@@ -1726,6 +1737,7 @@ $("photo").addEventListener("change", async function(e){
         globalProcessedPhoto = semFundo;
         updateCard();
         toast("✅ Fundo removido!", "success");
+        await perguntarGuardarNoBanco();
       } catch(e) {
         toast("Erro: " + e.message, "error");
       }
