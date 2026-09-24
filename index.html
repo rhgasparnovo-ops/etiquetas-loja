@@ -327,7 +327,7 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
 .confirm-overlay.show{display:flex}
 .confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.confirm-box p{margin:0 0 18px 0;font-size:15px;font-weight:600;line-height:1.4;color:#222}
+.confirm-box p{margin:0 0 18px 0;font-size:15px;font-weight:600;line-height:1.4;color:#222;white-space:pre-line}
 .confirm-box .confirm-actions{display:flex;gap:10px}
 .confirm-box .confirm-actions button{flex:1;padding:12px;font-size:14px;width:auto}
 .confirm-box .confirm-actions .confirm-no{background:#f0f2f5;border:1px solid #ccc;color:#222}
@@ -662,8 +662,19 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
     <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
       <h3 class="modal-title" style="margin:0">🍎 Banco de Frutas e Legumes</h3>
       <input id="buscaBancoFruta" style="max-width:260px">
-      <button id="fecharBancoFruta" class="secondary" style="width:auto;padding:8px 14px">✕ Fechar</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="processarBancoBtn" class="secondary" type="button" style="width:auto;padding:8px 14px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border-color:#084298;color:#084298;font-weight:900">🎨 Recortar todas</button>
+        <button id="fecharBancoFruta" class="secondary" type="button" style="width:auto;padding:8px 14px">✕ Fechar</button>
+      </div>
     </div>
+
+    <div id="bancoProgress" style="display:none;margin-bottom:14px;padding:12px;background:#f8f9fa;border-radius:10px;border:1px solid #e0e0e0">
+      <div id="bancoProgressText" style="font-size:13px;font-weight:800;color:#084298;margin-bottom:8px">A preparar…</div>
+      <div style="width:100%;height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden">
+        <div id="bancoProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#084298,#4a90e2);transition:width .3s ease"></div>
+      </div>
+    </div>
+
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
@@ -1208,8 +1219,9 @@ $("addToQueueBtn").addEventListener("click",addToQueue);
 $("saveDbBtn").addEventListener("click",saveToDb);
 $("recarregarDbBtn").addEventListener("click",carregarTudo);
 $("syncBancoBtn").addEventListener("click",async function(){
-  try{ setStatus("A sincronizar banco…"); const r = await api('sincronizarBancoFruta'); await carregarTudo();
-    setStatus("✅ Sincronizado. "+r.novos+" novos, total "+r.total+".","success");
+  try{ setStatus("A sincronizar banco…"); const r = await api('sincronizarBancoFruta');
+    await carregarTudo();
+    setStatus("✅ Sincronizado. "+r.novos+" novos, "+r.removidos+" removidos, total "+r.total+".","success");
   }catch(e){setStatus("Erro: "+e.message,"error")}
 });
 
@@ -1231,10 +1243,114 @@ function renderBancoFruta(filtro){
     });
   });
 }
-$("abrirBancoFrutaBtn").addEventListener("click",function(){
-  $("bancoFrutaModal").classList.add("show");
+
+/* Abrir banco: faz sync silencioso + abre modal */
+let _abrirBancoHandler = async function(e){
+  if(e) e.preventDefault();
+  $('bancoFrutaModal').classList.add('show');
+  renderBancoFruta($('buscaBancoFruta').value);
+  try{
+    const r = await api('sincronizarBancoFruta');
+    if(r.removidos > 0 || r.novos > 0){
+      await carregarTudo();
+      renderBancoFruta($('buscaBancoFruta').value);
+      if(r.removidos > 0) toast('🧹 '+r.removidos+' foto(s) órfã(s) removida(s).', 'info', 3500);
+      if(r.novos > 0)    toast('🆕 '+r.novos+' foto(s) nova(s) adicionada(s).', 'info', 3500);
+    }
+  }catch(err){ /* silencioso */ }
+};
+$("abrirBancoFrutaBtn").addEventListener("click", _abrirBancoHandler);
+
+/* ============================================================
+   🎨 Processar TODAS as fotos do banco: recortar fundo + comprimir
+   ============================================================ */
+$("processarBancoBtn").addEventListener("click", async function(){
+  if(bancoFruta.length === 0){ toast("Banco vazio — não há fotos para processar.", "warning"); return; }
+  const total = bancoFruta.length;
+  const confirmar = await confirmDialog("Recortar e comprimir as " + total + " fotos do banco?\n\nPode demorar vários minutos.\nNÃO feches a página durante o processo.");
+  if(!confirmar) return;
+
+  const progresso = $("bancoProgress");
+  const barra = $("bancoProgressBar");
+  const texto = $("bancoProgressText");
+  progresso.style.display = "block";
+  $("processarBancoBtn").disabled = true;
+
+  let ok = 0, falhas = 0;
+  const falhados = [];
+  const usarIA = $("useAI") && $("useAI").checked;
+
+  for(let i = 0; i < bancoFruta.length; i++){
+    const f = bancoFruta[i];
+    const pct = Math.round((i / total) * 100);
+    barra.style.width = pct + "%";
+    texto.textContent = "🎨 " + (i + 1) + " / " + total + "  ·  " + f.nome;
+
+    try{
+      /* 1. Descarregar */
+      const resp = await fetch(f.fotoUrl);
+      if(!resp.ok) throw new Error("HTTP " + resp.status);
+      const blob = await resp.blob();
+      const dataUrl = await new Promise(function(res, rej){
+        const r = new FileReader();
+        r.onloadend = function(){ res(r.result); };
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+
+      /* 2. Remover fundo */
+      let semFundo = dataUrl;
+      if(usarIA){
+        try{
+          semFundo = await removeBackgroundAI(dataUrl, null);
+        }catch(e){
+          console.warn("IA falhou em " + f.nome + ", uso simples:", e);
+          semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
+        }
+      }else{
+        semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
+      }
+
+      /* 3. Comprimir */
+      const comprimida = await compressSmart(semFundo, 700, 0.72);
+
+      /* 4. Substituir no Drive */
+      const r = await api('substituirFotoBanco', {
+        fotoId: f.fotoId,
+        base64: comprimida,
+        nome: f.nome
+      });
+
+      /* 5. Atualizar memória */
+      f.fotoId  = r.id;
+      f.fotoUrl = r.url;
+      ok++;
+    }catch(e){
+      console.error("Erro em " + f.nome + ":", e);
+      falhas++;
+      falhados.push(f.nome);
+    }
+  }
+
+  barra.style.width = "100%";
+  texto.textContent = "✅ Concluído — " + ok + " processadas, " + falhas + " falhadas.";
+  $("processarBancoBtn").disabled = false;
+
+  try{ await carregarTudo(); }catch(e){}
   renderBancoFruta($("buscaBancoFruta").value);
+
+  setTimeout(function(){
+    progresso.style.display = "none";
+    barra.style.width = "0%";
+  }, 6000);
+
+  if(falhas > 0){
+    toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length > 3 ? "..." : "") + ")", "warning", 9000);
+  }else{
+    toast("🎉 " + ok + " fotos recortadas e comprimidas!", "success", 5000);
+  }
 });
+
 $("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.target.value)});
 $("fecharBancoFruta").addEventListener("click",function(){$("bancoFrutaModal").classList.remove("show")});
 $("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("bancoFrutaModal"))$("bancoFrutaModal").classList.remove("show")});
