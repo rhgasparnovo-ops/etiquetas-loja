@@ -99,19 +99,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .offset-hint{font-size:11px;color:#856404;margin-top:6px;line-height:1.4}
 .offset-section-title{font-size:11px;font-weight:900;color:#7c5a0c;text-transform:uppercase;letter-spacing:.4px;margin:10px 0 6px}
 .offset-divider{border-top:1px dashed #ffe066;margin:10px 0}
-.offset-quick-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px 0}
-.offset-quick-btns button{background:#fff;border:1.5px solid #0a5ecb;color:#0a5ecb;font-weight:900;font-size:12px;padding:10px 6px;border-radius:8px;min-height:auto}
-.offset-quick-btns button:hover{background:#0a5ecb;color:#fff;filter:none}
 .preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:20px}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;padding:10px;overflow:hidden}
-
-/* ═══════════════════════════════════════════════════════════
-   LABEL CARD — margens laterais internas de 5 mm
-   No ecrã usa 7.14cqw (= 5mm proporcional ao tamanho real do label)
-   Na impressão usa 5mm exatos (regra em @media print)
-   ═══════════════════════════════════════════════════════════ */
-.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 7.14cqw!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
+.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
@@ -183,9 +174,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview-header h3{margin:0;font-size:16px}
 .sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .preview-page-amanhecer{display:grid;grid-template-columns:70mm 70mm 70mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:210mm;height:278mm;background:#fff}
-/* ✅ margem lateral de 5mm em cada etiqueta da pré-visualização da folha */
-.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important;padding:2px 5mm!important}
-.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
+.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 .preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:max(5mm,var(--margin-left))!important}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important}
@@ -198,23 +188,21 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.mobile-tab-bar{display:none!important}
   #printZone{display:block!important;margin:0!important;padding:0!important}
   #printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
-
-  /* ✅ TODAS as etiquetas em impressão: 5mm de margem lateral em cada lado */
-  #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important}
-
+  #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
   .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
   .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
   .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
-  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important;overflow:hidden!important}
+  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  /* ✅ Margens laterais — mínimo GARANTIDO de 5mm */
   #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:max(5mm,var(--margin-left))!important;position:relative!important;top:var(--col-left-y)!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important;position:relative!important;top:var(--col-right-y)!important}
   .print-page-generic{display:grid!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important}
   .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
-  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important;box-sizing:border-box!important}
+  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
   .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
   .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
   .calib-sheet .calib-cell:nth-child(3n+1){margin-left:max(5mm,var(--margin-left))!important;transform:translateY(var(--col-left-y))!important}
@@ -345,7 +333,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .tipo-selector .tipo-icon{font-size:32px}
   .offset-row{grid-template-columns:56px 1fr 56px}
   .offset-value{font-size:11px}
-  .offset-quick-btns button{padding:14px 6px;font-size:14px;min-height:52px;border-radius:12px}
 }
 .toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
 .toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
@@ -561,19 +548,15 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <div class="offset-section-title">🌐 Deslocamento global</div>
             <div class="offset-row"><label for="offsetXRange">↔ X</label><input id="offsetXRange" type="range" min="-30" max="30" step="0.5" value="0"><span class="offset-value" id="offsetXVal">0 mm</span></div>
             <div class="offset-row"><label for="offsetYRange">↕ Y</label><input id="offsetYRange" type="range" min="-30" max="30" step="0.5" value="6"><span class="offset-value" id="offsetYVal">6 mm</span></div>
-            <div class="offset-quick-btns">
-              <button type="button" id="yUp3Btn" title="Move a folha 3 mm para cima">⬆️ Subir 3 mm</button>
-              <button type="button" id="yDown3Btn" title="Move a folha 3 mm para baixo">⬇️ Baixar 3 mm</button>
-            </div>
             <div class="offset-divider"></div>
             <div class="offset-section-title">🔧 Ajuste por lado (corrige inclinação)</div>
             <div class="offset-row"><label for="colLeftYRange">↕ Esq</label><input id="colLeftYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colLeftYVal">0 mm</span></div>
             <div class="offset-row"><label for="colRightYRange">↕ Dir</label><input id="colRightYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colRightYVal">0 mm</span></div>
             <div class="offset-divider"></div>
-            <div class="offset-section-title">📏 Margens laterais da folha (mínimo 5 mm)</div>
+            <div class="offset-section-title">📏 Margens laterais (mínimo 5 mm)</div>
             <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginLeftVal">15 mm</span></div>
             <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginRightVal">15 mm</span></div>
-            <div class="offset-hint">💡 Cada etiqueta tem SEMPRE 5 mm de margem lateral interna. Aqui só ajustas a margem extra das colunas nas bordas da folha.</div>
+            <div class="offset-hint">💡 As margens laterais nunca ficam abaixo de 5 mm (garantido). Recomendado: 15 mm.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
               <button class="warn-btn" id="printCalibBtn" type="button">📏 Calibração</button>
               <button class="secondary" id="resetOffsetBtn" type="button">↺ Reset</button>
@@ -865,20 +848,25 @@ async function api(fn, payload){
   if(!j.ok) throw new Error(j.error || 'Erro API');
   return j.data;
 }
+
 const $ = function(id){return document.getElementById(id)};
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, photoToken = 0;
 let fotoBancoModo = false;
 function escapeHTML(s){return String(s||"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+
 const Storage = {
   get:function(k,f){try{const v=localStorage.getItem(k);return v===null?f:v}catch(e){return f}},
   set:function(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
 };
+
+/* ============= CALIBRAÇÃO (6 parâmetros) ============= */
 let offsetX    = parseFloat(Storage.get("balcao_offset_x","0"));    if(!isFinite(offsetX)) offsetX = 0;
 let offsetY    = parseFloat(Storage.get("balcao_offset_y","6"));    if(!isFinite(offsetY)) offsetY = 6;
 let colLeftY   = parseFloat(Storage.get("balcao_col_left_y","0"));  if(!isFinite(colLeftY)) colLeftY = 0;
 let colRightY  = parseFloat(Storage.get("balcao_col_right_y","0")); if(!isFinite(colRightY)) colRightY = 0;
 let marginLeft = parseFloat(Storage.get("balcao_margin_left","15"));  if(!isFinite(marginLeft)  || marginLeft  < 5) marginLeft  = 15;
 let marginRight= parseFloat(Storage.get("balcao_margin_right","15")); if(!isFinite(marginRight) || marginRight < 5) marginRight = 15;
+
 function applyOffsets(){
   document.documentElement.style.setProperty("--offset-x",    offsetX + "mm");
   document.documentElement.style.setProperty("--offset-y",    offsetY + "mm");
@@ -899,10 +887,13 @@ function applyOffsets(){
   if($("marginLeftVal")) $("marginLeftVal").textContent = marginLeft + " mm";
   if($("marginRightVal"))$("marginRightVal").textContent= marginRight + " mm";
 }
+
 let printQueue = [];
 let savedProducts = [];
 let bancoFruta = [];
 let bancoTipoFiltro = 'all';
+
+/* ════ CARREGAR TUDO — não engole erros ════ */
 async function carregarTudo(){
   setStatus('A carregar do Drive…');
   let p = [], f = [];
@@ -912,10 +903,15 @@ async function carregarTudo(){
   savedProducts = p || [];
   bancoFruta = f || [];
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-  if(errProd && errBanco){ setStatus('❌ Erro ao ler do Drive: '+errProd, 'error'); }
-  else if(errProd || errBanco){ setStatus('⚠️ Ligação parcial. '+(errProd||'')+(errBanco||''), 'error'); }
-  else { setStatus('✅ Dados carregados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success'); }
+  if(errProd && errBanco){
+    setStatus('❌ Erro ao ler do Drive: '+errProd, 'error');
+  } else if(errProd || errBanco){
+    setStatus('⚠️ Ligação parcial. '+(errProd||'')+(errBanco||''), 'error');
+  } else {
+    setStatus('✅ Dados carregados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success');
+  }
 }
+
 function getFormData(){return{
   presetSizes:$("presetSizes").value,customWidth:$("customWidth").value,customHeight:$("customHeight").value,
   store:$("store").value,
@@ -1050,6 +1046,8 @@ function buildProdutoPayload(d){
     fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || ''
   };
 }
+
+/* ══════════ ENCONTRAR PRODUTO NA LISTA ══════════ */
 function procurarNaLista(lista, payload){
   if(!lista || !lista.length) return null;
   const cod  = String(payload.codigo || '').trim();
@@ -1062,6 +1060,7 @@ function procurarNaLista(lista, payload){
     return false;
   }) || null;
 }
+
 window.saveQueueItem = async function(i){
   const item = printQueue[i]; if(!item){ toast("Item da fila não encontrado.", "error"); return; }
   const d = item.data;
@@ -1086,6 +1085,7 @@ window.saveQueueItem = async function(i){
     await api('guardarProduto', payload);
     item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
     item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
+    /* Verificar */
     const lista = await api('listarProdutos');
     const achado = procurarNaLista(lista, payload);
     if(!achado){ setStatus("⚠️ Item \""+(d.product||d.internalCode)+"\" NÃO apareceu na Sheet após gravar.","error"); return; }
@@ -1093,6 +1093,7 @@ window.saveQueueItem = async function(i){
     setStatus("✅ \""+(d.product||d.internalCode)+"\" guardado e verificado.", "success", 3500);
   }catch(e){ setStatus("Erro ao guardar: "+e.message, "error"); }
 };
+
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
 window.duplicateQueue = function(i){
   const item = printQueue[i]; if(!item) return;
@@ -1114,11 +1115,17 @@ function renderDb(){
     c.appendChild(div);
   });
 }
+
+/* ══════════ SAVE TO DB — com verificação ══════════ */
 async function saveToDb(){
   const data = getFormData();
-  if(!data.product && !data.internalCode){ setStatus("Preencha um nome ou código.","error"); return; }
+  if(!data.product && !data.internalCode){
+    setStatus("Preencha um nome ou código.","error");
+    return;
+  }
   setStatus("A guardar no Drive…");
   try{
+    /* 1) Upload foto se necessário */
     const foto = data.processedPhoto || data.originalPhoto;
     if(foto && foto.indexOf('http')!==0){
       setStatus("A enviar foto…");
@@ -1128,19 +1135,26 @@ async function saveToDb(){
       data.fotoId = up.id; data.fotoUrl = up.url;
       globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
     }
+
+    /* 2) Enviar dados para a Sheet */
     const payload = buildProdutoPayload(data);
     setStatus("A enviar dados para o Drive…");
     const respGuardar = await api('guardarProduto', payload);
     console.log("[saveToDb] resp guardarProduto:", respGuardar);
+
+    /* 3) VERIFICAR: reler lista e confirmar que o produto está lá */
     setStatus("A verificar se ficou guardado…");
     const lista = await api('listarProdutos');
     const achado = procurarNaLista(lista, payload);
+
     if(!achado){
       console.error("[saveToDb] Produto NÃO encontrado na lista após gravar.", {payload, lista});
       setStatus("⚠️ O servidor aceitou mas o produto NÃO aparece na Sheet. Verifique se o Apps Script foi atualizado com o código novo.", "error");
       toast("Verifica a Sheet: o produto não aparece depois de gravar.", "error", 8000);
       return;
     }
+
+    /* 4) Sucesso confirmado */
     savedProducts = lista;
     renderDb();
     setStatus("✅ Guardado e verificado no Drive.","success");
@@ -1206,15 +1220,19 @@ $("syncBancoBtn").addEventListener("click",async function(){
     setStatus("✅ Sincronizado. "+r.novos+" novos, "+r.removidos+" removidos, total "+r.total+".","success");
   }catch(e){setStatus("Erro: "+e.message,"error")}
 });
+
+/* ══════════ 🩺 DIAGNÓSTICO ══════════ */
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
   box.innerHTML = "🩺 <b>A diagnosticar…</b>";
   box.classList.add("show");
   setStatus("🩺 A testar ligação…");
+
   const linhas = [];
   linhas.push("API_URL: " + API_URL);
   linhas.push("Token: " + API_TOKEN.slice(0,20) + "…");
   linhas.push("");
+
   try{
     const t0 = Date.now();
     const ping = await api('ping');
@@ -1225,6 +1243,7 @@ $("diagnosticoBtn").addEventListener("click", async function(){
     setStatus("Erro na ligação ao servidor.","error");
     return;
   }
+
   try{
     const t1 = Date.now();
     const prod = await api('listarProdutos');
@@ -1244,6 +1263,7 @@ $("diagnosticoBtn").addEventListener("click", async function(){
   }catch(e){
     linhas.push('<span class="err">✘ listarProdutos FALHOU</span> → ' + e.message);
   }
+
   try{
     const t2 = Date.now();
     const banco = await api('listarBancoFruta');
@@ -1251,9 +1271,11 @@ $("diagnosticoBtn").addEventListener("click", async function(){
   }catch(e){
     linhas.push('<span class="err">✘ listarBancoFruta FALHOU</span> → ' + e.message);
   }
+
   box.innerHTML = linhas.join("\n");
   setStatus("✅ Diagnóstico concluído.","success");
 });
+
 function updateBancoCounts(){
   let all=0, fruta=0, legume=0;
   bancoFruta.forEach(function(f){ all++; if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
@@ -1927,21 +1949,6 @@ bindSlider("colLeftYRange",    function(v){ colLeftY = v; },     "balcao_col_lef
 bindSlider("colRightYRange",   function(v){ colRightY = v; },    "balcao_col_right_y");
 bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(5, v); },   "balcao_margin_left");
 bindSlider("marginRightRange", function(v){ marginRight = Math.max(5, v); },  "balcao_margin_right");
-
-/* ⬆️⬇️ Botões rápidos: subir/baixar a folha 3 mm */
-$("yUp3Btn").addEventListener("click", function(){
-  offsetY = Math.max(-30, Math.min(30, offsetY - 3));
-  applyOffsets();
-  Storage.set("balcao_offset_y", String(offsetY));
-  setStatus("⬆️ Folha subiu → Y = " + offsetY + " mm", "info", 1500);
-});
-$("yDown3Btn").addEventListener("click", function(){
-  offsetY = Math.max(-30, Math.min(30, offsetY + 3));
-  applyOffsets();
-  Storage.set("balcao_offset_y", String(offsetY));
-  setStatus("⬇️ Folha baixou → Y = " + offsetY + " mm", "info", 1500);
-});
-
 $("resetOffsetBtn").addEventListener("click",function(){
   offsetX = 0; offsetY = 6;
   colLeftY = 0; colRightY = 0;
