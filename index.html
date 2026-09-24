@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#c8102e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Gerador de Etiquetas — Balcão Agrícola</title>
+<title>Etiquetas de Preços</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{--red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;--text:#222;--text-soft:#666;--offset-x:0mm;--offset-y:6mm}
@@ -14,7 +14,8 @@
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
 .app{max-width:1400px;margin:0 auto;padding:20px}
 .top-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 24px;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:20px;gap:16px;flex-wrap:wrap}
-.top-header h1{margin:0;font-size:20px;font-weight:800}
+.top-header h1{margin:0;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.4px;text-transform:uppercase;color:#1a1f28}
+.h1-tag{display:inline-block;font-size:1em;margin:0;transform:translateY(-1px)}
 .top-logos{display:flex;align-items:center;gap:14px}
 .top-logos img{height:40px;max-width:150px;object-fit:contain}
 .top-logos .divider{width:1px;height:30px;background:#e0e0e0}
@@ -27,14 +28,19 @@ input[type=file]{padding:6px}
 input[type=range]{padding:0;height:6px}
 .uppercase-input{text-transform:uppercase}
 input.input-error,select.input-error{border-color:#e74c3c!important;background:#fff5f5!important}
-button{cursor:pointer;font-weight:700;width:100%;padding:9px 12px;border-radius:7px;border:1px solid #bbb;font-size:14px;transition:filter .15s}
-button:hover{filter:brightness(.95)}
+button{cursor:pointer;font-weight:700;width:100%;padding:9px 12px;border-radius:10px;border:1px solid #bbb;font-size:14px;transition:all .18s cubic-bezier(.4,0,.2,1);letter-spacing:.2px;position:relative;overflow:hidden}
+button:hover{filter:brightness(.96)}
 button:disabled{opacity:.5;cursor:not-allowed}
-.primary{background:var(--red);color:#fff;border-color:var(--red);font-size:15px;padding:12px}
-.success-btn{background:#176b3a;color:#fff;border-color:#176b3a;font-size:15px;padding:12px}
-.save-btn{background:#084298;color:#fff;border-color:#084298;font-size:14px;padding:10px}
-.secondary{background:var(--panel-soft);border:1px solid #ced6e0;color:var(--text)}
-.warn-btn{background:#fff3cd;color:#664d03;border:1px solid #ffe69c;font-size:13px;padding:9px}
+button:active:not(:disabled){transform:scale(.97)}
+.primary{background:linear-gradient(135deg,#d4162f 0%,#a80d24 100%);color:#fff;border:none;font-size:15px;padding:12px;box-shadow:0 3px 12px rgba(200,16,46,.28)}
+.primary:hover{box-shadow:0 5px 18px rgba(200,16,46,.38)}
+.success-btn{background:linear-gradient(135deg,#1e8a4a 0%,#0d5a2f 100%);color:#fff;border:none;font-size:15px;padding:12px;box-shadow:0 3px 12px rgba(23,107,58,.28)}
+.success-btn:hover{box-shadow:0 5px 18px rgba(23,107,58,.38)}
+.save-btn{background:linear-gradient(135deg,#0a52b8 0%,#053780 100%);color:#fff;border:none;font-size:14px;padding:10px;box-shadow:0 3px 12px rgba(8,66,152,.28)}
+.save-btn:hover{box-shadow:0 5px 18px rgba(8,66,152,.38)}
+.secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.secondary:hover{border-color:#c8d0dc;background:#fafbfc}
+.warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#fff3c4 100%);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .actions-full{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
 .actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
@@ -92,22 +98,82 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .logo-wrapper-2{justify-content:center}
 .header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:4mm}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain}
-.main-content{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0}
-.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px}
-.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 3px;justify-self:center;align-self:center}
+.main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) auto minmax(0,0.85fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0}
+.label-card.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1.1fr) auto minmax(0,0.9fr)}
+.label-card.img-tight .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.8fr)}
+.label-card.img-mini .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.6fr)}
+.label-card.img-hidden .col-image{display:none!important}
+.label-card.img-hidden .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
+.label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+.label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
+.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:2px}
+.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 4px;justify-self:center;align-self:center}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,75%);max-height:var(--img-scale,75%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-.product{font-size:clamp(8px,3.2cqw,18px);font-weight:bold;color:#000;line-height:1.05;overflow:hidden;text-align:left;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;max-height:100%;min-width:0;width:100%}
-.product .w{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.unit-price-text{font-size:clamp(6px,2cqw,10px);color:#444;font-weight:800;line-height:1.1;margin-top:2px}
+
+.product{
+  font-weight:900;
+  color:#000;
+  line-height:1.02;
+  overflow:hidden;
+  text-align:left;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:center;
+  align-items:center;
+  justify-content:flex-start;
+  column-gap:.28em;
+  row-gap:.06em;
+  max-height:100%;
+  min-width:0;
+  width:100%;
+  font-size:clamp(9px,3.4cqw,20px);
+  word-break:normal;
+  overflow-wrap:anywhere;
+}
+.product .w{
+  display:inline-block;
+  white-space:nowrap;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.unit-price-text{
+  font-size:clamp(7px,2.3cqw,13px);
+  color:#c8102e;
+  font-weight:900;
+  line-height:1.1;
+  margin-top:1px;
+  letter-spacing:.2px;
+  text-transform:uppercase;
+}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:1px}
 .old-price{font-size:clamp(6px,2cqw,12px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
-.promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 3px}
-.price{font-size:clamp(14px,6.5cqw,36px);font-weight:bold;color:#000;line-height:1;white-space:nowrap}
+.promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 4px}
+.price{
+  font-size:clamp(20px,9cqw,52px);
+  font-weight:900;
+  color:#000;
+  line-height:1;
+  white-space:nowrap;
+  letter-spacing:-.02em;
+  display:inline-flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:.08em;
+}
+.price .unit-inline{
+  font-size:.42em;
+  font-weight:800;
+  color:#333;
+  letter-spacing:0;
+  line-height:1;
+}
 .deposit-box{font-size:clamp(5.5px,1.8cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.1;margin-top:1px;display:inline-block}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2.1cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:14%;overflow:hidden}
@@ -128,42 +194,48 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fp-label{font-size:clamp(7px,2cqw,13px);font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;line-height:1.05}
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
-.fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.85}
+.fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
 .label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important}
+
 .label-card.size-tiny{--header-h:18%;--img-scale:70%}
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
-.label-card.size-tiny .product{font-size:clamp(6px,5cqw,12px)!important}
-.label-card.size-tiny .price{font-size:clamp(11px,9cqw,20px)!important}
+.label-card.size-tiny .product{font-size:clamp(7px,5.5cqw,14px)!important;line-height:1.02}
+.label-card.size-tiny .price{font-size:clamp(13px,10cqw,24px)!important}
+.label-card.size-tiny .price .unit-inline{font-size:.45em}
 .label-card.size-tiny .item-code{font-size:clamp(5px,2.6cqw,9px)!important}
 .label-card.size-tiny .store-text{font-size:clamp(5px,2.8cqw,9px)!important}
 .label-card.size-tiny .brand-logo{max-height:95%}
 .label-card.size-small{--img-scale:70%}
+.label-card.size-small .product{font-size:clamp(9px,3.6cqw,20px)!important}
+.label-card.size-small .price{font-size:clamp(18px,8.5cqw,46px)!important}
 .label-card.size-medium{--img-scale:82%}
-.label-card.size-medium .product{font-size:clamp(10px,3.5cqw,22px)!important}
-.label-card.size-medium .price{font-size:clamp(18px,7cqw,42px)!important}
+.label-card.size-medium .product{font-size:clamp(11px,3.8cqw,24px)!important}
+.label-card.size-medium .price{font-size:clamp(24px,9cqw,58px)!important}
 .label-card.size-medium .store-text{font-size:clamp(8px,2.3cqw,14px)!important}
 .label-card.size-medium .item-code{font-size:clamp(7px,2cqw,12px)!important}
+.label-card.size-medium .unit-price-text{font-size:clamp(9px,2.4cqw,16px)!important}
 .label-card.size-large{--header-h:14%;--gap-main:6px;--img-pad:2px;--img-scale:94%}
-.label-card.size-large .product{font-size:clamp(14px,4cqw,30px)!important}
-.label-card.size-large .price{font-size:clamp(24px,8cqw,62px)!important}
+.label-card.size-large .product{font-size:clamp(15px,4.2cqw,32px)!important}
+.label-card.size-large .price{font-size:clamp(30px,10cqw,72px)!important}
 .label-card.size-large .store-text{font-size:clamp(10px,2.6cqw,18px)!important}
 .label-card.size-large .item-code{font-size:clamp(9px,2.3cqw,16px)!important}
-.label-card.size-large .unit-price-text{font-size:clamp(8px,2cqw,14px)!important}
-.label-card.size-large .promo-tag{font-size:clamp(10px,3cqw,20px)!important;padding:2px 5px}
+.label-card.size-large .unit-price-text{font-size:clamp(10px,2.6cqw,20px)!important}
+.label-card.size-large .promo-tag{font-size:clamp(10px,3cqw,20px)!important;padding:2px 6px}
 .label-card.size-large .old-price{font-size:clamp(9px,2.6cqw,17px)!important}
 .label-card.size-large .fruit-full-bar{font-size:clamp(9px,2.2cqw,15px)!important}
 .label-card.size-xl{--header-h:12%;--gap-main:10px;--img-pad:3px;--img-scale:100%}
-.label-card.size-xl .product{font-size:clamp(20px,4.5cqw,48px)!important}
-.label-card.size-xl .price{font-size:clamp(36px,9cqw,96px)!important}
+.label-card.size-xl .product{font-size:clamp(22px,4.8cqw,52px)!important}
+.label-card.size-xl .price{font-size:clamp(44px,11cqw,110px)!important}
 .label-card.size-xl .store-text{font-size:clamp(14px,2.7cqw,26px)!important}
 .label-card.size-xl .item-code{font-size:clamp(12px,2.4cqw,22px)!important}
-.label-card.size-xl .unit-price-text{font-size:clamp(11px,2.2cqw,20px)!important}
-.label-card.size-xl .promo-tag{font-size:clamp(14px,3.2cqw,32px)!important;padding:3px 8px;border-radius:6px}
+.label-card.size-xl .unit-price-text{font-size:clamp(13px,2.6cqw,24px)!important}
+.label-card.size-xl .promo-tag{font-size:clamp(14px,3.2cqw,32px)!important;padding:3px 10px;border-radius:6px}
 .label-card.size-xl .old-price{font-size:clamp(12px,2.8cqw,24px)!important}
 .label-card.size-xl .fruit-full-bar{font-size:clamp(12px,2.5cqw,22px)!important}
 .label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
 .label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
 .label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
+
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -208,7 +280,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .cam-actions button{width:auto;padding:10px 22px}
 @media(max-width:600px){.bf-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.bf-card img{height:85px}}
 
-/* ============ Mobile design melhorado ============ */
 .mobile-tab-bar{display:none}
 .tab-el{display:block}
 .tab-badge{display:none;background:#c8102e;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
@@ -219,60 +290,64 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
   .app{max-width:100%;padding:0 12px 12px 12px}
 
-  .top-header{padding:10px 14px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap}
-  .top-header h1{font-size:14px;line-height:1.15;font-weight:800;flex:1;letter-spacing:.1px}
-  .top-logos{flex-shrink:0}
-  .top-logos img{height:26px;max-width:90px}
-  .top-logos .divider{height:20px}
+  .top-header{padding:12px 16px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;background:#fff}
+  .top-header h1{font-size:14px;line-height:1.15;font-weight:900;flex:1;letter-spacing:.6px;color:#1a1f28;display:flex;align-items:center;gap:6px;text-transform:uppercase}
+  .h1-tag{font-size:1.05em;transform:translateY(-1px)}
+  .top-logos{flex-shrink:0;gap:8px;padding:5px 10px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:12px;border:1px solid #eef1f5;box-shadow:inset 0 1px 2px rgba(0,0,0,.02)}
+  .top-logos img{height:24px;max-width:80px;filter:contrast(1.05)}
+  .top-logos .divider{height:18px;background:#dfe3e8}
 
-  .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:#fff;border-bottom:1px solid #e8e8e8;margin:0 -12px 14px -12px;padding:0;box-shadow:0 2px 12px rgba(0,0,0,.06);padding-top:env(safe-area-inset-top,0px)}
-  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:700;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;transition:all .18s;letter-spacing:.2px}
-  .mobile-tab-bar button.active{color:#c8102e;border-bottom-color:#c8102e;background:linear-gradient(to bottom,rgba(200,16,46,.04),transparent)}
-  .tab-badge{position:absolute;top:6px;right:calc(50% - 26px);background:#c8102e;color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:10px;margin:0;min-width:16px;text-align:center}
+  .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
+  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;transition:all .25s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;gap:2px}
+  .mobile-tab-bar button.active{color:#c8102e;border-bottom-color:transparent}
+  .mobile-tab-bar button.active::before{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:3px;background:linear-gradient(90deg,#c8102e 0%,#e83a55 100%);border-radius:3px 3px 0 0;box-shadow:0 -2px 8px rgba(200,16,46,.4)}
+  .mobile-tab-bar button.active::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center bottom,rgba(200,16,46,.08) 0%,transparent 70%);pointer-events:none}
+  .tab-badge{position:absolute;top:5px;right:calc(50% - 26px);background:linear-gradient(135deg,#e83a55,#c8102e);box-shadow:0 2px 6px rgba(200,16,46,.4);border:1.5px solid #fff;font-size:9px;padding:1px 5px;border-radius:9px;margin:0;min-width:18px;height:18px;line-height:15px;text-align:center}
 
   .tab-el{display:none!important}
   body[data-mobile-tab="editar"] .tab-editar{display:block!important}
   body[data-mobile-tab="ver"]    .tab-ver{display:flex!important}
   body[data-mobile-tab="fila"]   .tab-fila{display:block!important}
 
-  .panel{border-radius:14px;padding:14px;margin-bottom:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);background:#fff}
-
+  .panel{border-radius:16px;padding:14px;margin-bottom:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);background:#fff}
   label{font-size:11px;margin:10px 0 4px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
-
   input,select,textarea{padding:13px 14px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc;transition:all .15s}
   input:focus,select:focus,textarea:focus{outline:none;border-color:#c8102e;background:#fff;box-shadow:0 0 0 3px rgba(200,16,46,.1)}
   input[type=range]{padding:0;height:8px;background:transparent;border:none}
   input[type=date]{font-size:15px}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
 
-  button{padding:14px 14px;font-size:15px;border-radius:12px;min-height:48px;font-weight:700}
-  .primary,.success-btn{font-size:16px;padding:15px 14px;font-weight:800;letter-spacing:.3px;box-shadow:0 2px 8px rgba(200,16,46,.2)}
-  .primary:active,.success-btn:active{transform:scale(.98)}
-  .save-btn{font-size:15px;padding:14px;box-shadow:0 2px 8px rgba(8,66,152,.2)}
-  .secondary{font-size:14px;padding:12px 14px}
-  .actions{gap:8px;margin-top:14px}
-  .actions-3{gap:6px;margin-top:8px}
-  .actions-3 button{font-size:11px;padding:10px 4px;min-height:44px;letter-spacing:.1px}
+  button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800;letter-spacing:.2px}
+  .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;letter-spacing:.5px;padding:18px 16px;min-height:60px;box-shadow:0 4px 14px rgba(200,16,46,.35),inset 0 1px 0 rgba(255,255,255,.2);border-radius:16px;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+  .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(23,107,58,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
+  .save-btn{background:linear-gradient(135deg,#0a5ecb 0%,#084298 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;box-shadow:0 3px 12px rgba(8,66,152,.3),inset 0 1px 0 rgba(255,255,255,.15);border-radius:15px}
+  .secondary{background:#fff;border:1.5px solid #e6eaf0;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.05),0 0 0 0.5px rgba(0,0,0,.02);font-size:12px;font-weight:800;padding:13px 8px;min-height:50px;border-radius:13px;letter-spacing:.15px}
+  .secondary:active:not(:disabled){background:#f7f9fb;border-color:#d0d8e0;transform:scale(.98)}
+  .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#ffeaa3 100%);border:1.5px solid #ffd54f;color:#7a5c00;font-weight:800;min-height:50px;border-radius:13px;box-shadow:0 1px 3px rgba(255,213,79,.25)}
 
-  details.drawer{border-radius:14px;margin-top:10px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
-  details.drawer summary{padding:15px;font-size:14px;font-weight:800}
-  .drawer-content{padding:14px}
+  details.drawer{border-radius:16px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);overflow:hidden;background:#fff}
+  details.drawer summary{padding:16px 18px;font-size:14.5px;font-weight:800;color:#1a1f28;background:#fff;position:relative;letter-spacing:.15px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  details.drawer summary::after{content:"▾";font-size:14px;color:#a8b2be;font-weight:900;transition:transform .2s;margin-left:auto;flex-shrink:0}
+  details.drawer[open] summary::after{transform:rotate(180deg);color:#c8102e}
+  details.drawer[open] summary{border-bottom:1px solid #f0f2f5;background:linear-gradient(to bottom,#fff,#fcfdfe)}
+  details.quick-drawer{padding:12px 14px;border-radius:12px;border:1px solid #eef1f5;background:linear-gradient(to bottom,#fbfcfe,#f4f6f9)}
+  details.quick-drawer summary{font-size:13px;font-weight:800;color:#4a5560}
 
-  .chip-btn{padding:8px 12px;font-size:12px;border-radius:8px;min-height:32px;font-weight:700}
-  .chips-group{gap:6px;margin-top:8px}
-  .chips-label{font-size:10px;margin-top:12px;color:#7a8391}
-  details.quick-drawer{padding:10px 12px;border-radius:10px}
-
-  .preview-container{position:relative!important;top:0!important;min-height:calc(100vh - 160px)!important;padding:16px 12px!important;border-radius:14px;background:#e6eaef}
-  .preview-wrap{padding:4px!important}
-  #mainLabelCard{max-width:100%!important;box-shadow:0 10px 30px rgba(0,0,0,.16)!important}
-  .sheet-badge{font-size:11px;padding:7px 14px;margin-bottom:14px;font-weight:800}
+  .chip-btn{padding:9px 14px;font-size:12.5px;border-radius:10px;min-height:36px;font-weight:800;background:#fff;border:1.5px solid #e4e8ee;color:#3a4552;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:all .15s}
+  .chip-btn:active{transform:scale(.94);background:#f0f2f5}
+  .chip-btn[data-field=origem]{background:linear-gradient(135deg,#eaf4ff,#dceeff);border-color:#b6d4fe;color:#084298}
+  .chip-btn[data-field=categoria]{background:linear-gradient(135deg,#fff6e8,#ffedd5);border-color:#f5c98b;color:#8a4b00}
+  .chip-btn[data-field=calibre]{background:linear-gradient(135deg,#f0fbe9,#e3f7d5);border-color:#b5d99f;color:#2d6b1f}
 
   .list-item{padding:12px;border-radius:12px;gap:10px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:8px}
   .list-item-info strong{font-size:14px;font-weight:800}
   .list-item-info span{font-size:11.5px;margin-top:3px;color:#7a8391}
   .list-item-actions{gap:5px}
-  .list-item-actions button{padding:9px 10px;font-size:14px;border-radius:9px;min-width:40px;min-height:40px;border:none;font-weight:700}
+  .list-item-actions button{padding:9px 10px;font-size:14px;border-radius:11px;min-width:44px;min-height:44px;border-width:1px;font-weight:700;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .list-item-actions button:active:not(:disabled){transform:scale(.92)}
+  .btn-load{background:linear-gradient(135deg,#e8f7ee,#d4f0df);border-color:#a3cb38;color:#176b3a}
+  .btn-dup{background:linear-gradient(135deg,#eef1ff,#dfe5ff);border-color:#a5b0e8;color:#4c5fd5}
+  .btn-remove{background:linear-gradient(135deg,#fff0f0,#ffe4e0);border-color:#fab1a0;color:#c0392b}
   .copies-input{width:56px;padding:8px 6px;font-size:14px;border-radius:9px;background:#f0f2f5;border:1.5px solid #d8dee5}
 
   .modal{padding:0;gap:12px}
@@ -281,7 +356,9 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   #reader{width:100vw;max-width:100vw;border-radius:0;background:#000}
   #camVideo{max-width:100vw;max-height:65vh;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
   .cam-actions{padding:0 16px 16px;width:100%;gap:8px}
-  .cam-actions button{flex:1;padding:15px 16px;font-size:15px;min-height:52px}
+  .cam-actions button{flex:1;padding:15px 16px;font-size:16px;min-height:56px;border-radius:15px;font-weight:900;letter-spacing:.3px}
+  .cam-actions .primary{background:linear-gradient(135deg,#e61937,#c8102e);box-shadow:0 4px 16px rgba(200,16,46,.4)}
+  .cam-actions .secondary{background:rgba(255,255,255,.95);border:none;color:#2c3440;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
   .bf-card{border-radius:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -304,18 +381,32 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
   .sheet-preview-header h3{font-size:14px;line-height:1.2}
   .sheet-preview-header .secondary{padding:10px 14px;font-size:13px;min-height:44px}
 
+  .preview-container{position:relative!important;top:0!important;min-height:calc(100vh - 160px)!important;padding:16px 12px!important;border-radius:14px;background:#e6eaef}
+  .preview-wrap{padding:4px!important}
+  #mainLabelCard{max-width:100%!important;box-shadow:0 10px 30px rgba(0,0,0,.16)!important}
+  .sheet-badge{font-size:11px;padding:7px 14px;margin-bottom:14px;font-weight:800}
+
   .pro-print-box{padding:22px;border-radius:18px;min-width:260px}
+
+  #abrirBancoFrutaBtn{background:linear-gradient(135deg,#fff5f5,#ffe8e8);border:1.5px solid #fed7d7!important;color:#c8102e!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(200,16,46,.08)}
+  #abrirBancoFrutaBtn:active{background:linear-gradient(135deg,#ffe8e8,#ffd6d6);transform:scale(.98)}
+  #scanEanBtn{background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px solid #b6d4fe!important;color:#084298!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(8,66,152,.08)}
+  #scanEanBtn:active{background:linear-gradient(135deg,#dee9ff,#cdddff);transform:scale(.98)}
+  #openCameraBtn{background:linear-gradient(135deg,#edfaf2,#dbf5e5);border:1.5px solid #a3d9b8!important;color:#176b3a!important;font-weight:900;min-height:52px;border-radius:14px;box-shadow:0 1px 3px rgba(23,107,58,.08)}
+  #openCameraBtn:active{background:linear-gradient(135deg,#dbf5e5,#c7efd6);transform:scale(.98)}
+  #recarregarDbBtn,#syncBancoBtn{border-radius:12px;min-height:48px;font-weight:800;background:linear-gradient(135deg,#f8fafc,#eef1f5);border:1.5px solid #e0e5eb;color:#2c3440;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  #recarregarDbBtn:active,#syncBancoBtn:active{background:linear-gradient(135deg,#eef1f5,#e2e7ee);transform:scale(.98)}
 }
 
 @media(max-width:400px){
-  .top-header h1{font-size:13px}
-  .top-logos img{height:22px;max-width:76px}
+  .top-header h1{font-size:13px;letter-spacing:.4px}
+  .top-logos img{height:20px;max-width:66px}
+  .top-logos{padding:4px 8px;gap:8px}
   .mobile-tab-bar button{font-size:10px;padding:11px 2px}
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr))}
   .bf-card img{height:85px}
 }
 
-/* ============ Toast ============ */
 .toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
 .toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
 .toast.show{opacity:1;transform:translateX(0)}
@@ -324,7 +415,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 .toast.warning{border-left-color:#f6c23e;color:#7c5a0c}
 .toast.info{border-left-color:#084298;color:#052c66}
 
-/* ============ Confirm dialog ============ */
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
 .confirm-overlay.show{display:flex}
 .confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
@@ -343,7 +433,7 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
     <button type="button" data-tab="fila">🛒 Fila <span class="tab-badge" id="tabQueueBadge">0</span></button>
   </nav>
   <header class="top-header">
-    <h1>Gerador de Etiquetas de Preço — Balcão Agrícola</h1>
+    <h1><span class="h1-tag">🏷️</span> ETIQUETAS DE PREÇOS</h1>
     <div class="top-logos">
       <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=.3">
       <div class="divider"></div>
@@ -450,8 +540,24 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
             </div>
             <div style="margin-top:8px">
               <div class="size-row">
-                <div><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001"></div>
-                <div><label for="capacityUnit">Unidade de Medida</label><select id="capacityUnit"><option value="peso" selected>Quilos (KG)</option><option value="lt">Litros (LT)</option><option value="g">Gramas (g)</option><option value="un">Unidade (UN)</option></select></div>
+                <div>
+                  <label for="capacity">Quantidade / Medida</label>
+                  <input id="capacity" type="number" min="0.001" step="0.001">
+                  <div id="capacityHint" style="font-size:11.5px;color:#084298;margin-top:5px;font-weight:800;display:none;padding:4px 8px;background:#eef4ff;border-radius:6px;border-left:3px solid #084298"></div>
+                </div>
+                <div>
+                  <label for="capacityUnit">Unidade de Medida</label>
+                  <select id="capacityUnit">
+                    <option value="peso" selected>⚖️ Quilos (KG)</option>
+                    <option value="g">⚖️ Gramas (g)</option>
+                    <option value="lt">🥤 Litros (LT)</option>
+                    <option value="cl">🍷 Centilitros (cl)</option>
+                    <option value="ml">💧 Mililitros (ml)</option>
+                    <option value="un">🔢 Unidade (UN)</option>
+                    <option value="dz">🥚 Dúzia (12 un.)</option>
+                    <option value="dose">🍽️ Dose</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div style="margin-top:8px">
@@ -543,7 +649,7 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
           <div class="main-content">
             <div class="col-desc">
               <div class="item-code" id="cardCode" style="display:none"></div>
-              <div class="product" id="cardProduct"><span class="w">NOME DO</span><span class="w">PRODUTO</span></div>
+              <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
               <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
               <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
               <div id="cardExtraUnit" style="display:none;color:#333"></div>
@@ -551,7 +657,7 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
             <div class="col-price">
               <div class="price-wrapper">
                 <div class="promo-top-row" id="cardPromoTopRow" style="display:none"><span class="old-price" id="cardOldPrice"></span><span class="promo-tag" id="cardPromoTag"></span></div>
-                <div class="price" id="cardPrice">0,00 €</div>
+                <div class="price" id="cardPrice">0,00<span class="unit-inline">€/KG</span></div>
               </div>
             </div>
             <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt=""></div>
@@ -636,7 +742,6 @@ html,body{margin:0!important;padding:0!important;background:#fff!important;width
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
 
-/* ============ Toast ============ */
 function toast(msg, type, duration) {
   type = type || 'info';
   duration = duration || (type === 'error' ? 5000 : 3000);
@@ -653,7 +758,6 @@ function toast(msg, type, duration) {
   }, duration);
 }
 
-/* ============ Confirm dialog ============ */
 function confirmDialog(msg) {
   return new Promise(function(resolve){
     const ov = document.getElementById('confirmOverlay');
@@ -672,7 +776,6 @@ function confirmDialog(msg) {
   });
 }
 
-/* ============ Compressão de imagem ============ */
 function compressImage(dataUrl, maxSize, quality) {
   maxSize = maxSize || 1000;
   quality = quality || 0.85;
@@ -778,6 +881,7 @@ function setFormData(d){
   $("oldPrice").value = d.oldPrice||"";
   $("capacity").value = d.capacity||d.capacidade||"";
   $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
+  $("capacityUnit").dataset.last = $("capacityUnit").value;
   $("depositFeeSelect").value = d.depositFeeSelect||"";
   $("customDepositInput").value = d.customDepositInput||d.deposito||"";
   $("unit").value = d.unit||"";
@@ -816,15 +920,34 @@ function setProductText(el,text){
   el.innerHTML = "";
   const raw = String(text||"").trim();
   if(!raw){
-    ["NOME DO","PRODUTO"].forEach(function(t){var s=document.createElement("span");s.className="w";s.textContent=t;el.appendChild(s)});
+    ["NOME","DO","PRODUTO"].forEach(function(t){
+      var s=document.createElement("span");
+      s.className="w";
+      s.textContent=t;
+      el.appendChild(s);
+    });
     return;
   }
   const words = raw.split(/\s+/).filter(Boolean);
-  for(let i=0;i<words.length;i+=2){
+  words.forEach(function(word){
     const s = document.createElement("span");
     s.className = "w";
-    s.textContent = words.slice(i,i+2).join(" ");
+    s.textContent = word;
     el.appendChild(s);
+  });
+}
+
+function calcUnitInfo(capUnit){
+  switch(capUnit){
+    case "peso": return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
+    case "g":    return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1/1000   };
+    case "lt":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1        };
+    case "cl":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/100    };
+    case "ml":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/1000   };
+    case "un":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:1        };
+    case "dz":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:12       };
+    case "dose": return { unitSuffix:"€/DOSE",unitLabel:"€/DOSE", normalizar:1        };
+    default:     return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
   }
 }
 
@@ -1112,7 +1235,6 @@ function formatPromoDate(s,e){
   }catch(err){ return "Preço sujeito às condições comerciais em vigor." }
 }
 
-/* ============ Remoção de fundo — simples ============ */
 function removeBackgroundSimple(dataUrl,cb){
   const token = ++photoToken; const img = new Image();
   img.crossOrigin = "anonymous";
@@ -1142,7 +1264,6 @@ function removeBackgroundSimple(dataUrl,cb){
   img.src = dataUrl;
 }
 
-/* ============ Remoção de fundo — IA ============ */
 let _bgAIModule = null;
 let _bgAILoading = null;
 
@@ -1298,10 +1419,10 @@ function autoFitTextSync(el){
   el.style.fontSize = "";
   const parent = el.parentElement; if(!parent) return;
   let i = 0; void el.offsetHeight;
-  while(parent.scrollHeight > parent.clientHeight+1 && i<14){
+  while(parent.scrollHeight > parent.clientHeight+1 && i<18){
     const cur = parseFloat(getComputedStyle(el).fontSize);
     if(!cur || cur<4) break;
-    el.style.fontSize = (cur*0.92)+"px"; i++; void el.offsetHeight;
+    el.style.fontSize = (cur*0.94)+"px"; i++; void el.offsetHeight;
   }
 }
 function autoAdaptImage(card){
@@ -1322,6 +1443,87 @@ function autoAdaptImage(card){
   if(!isCut()) return;
   card.classList.remove("img-mini"); card.classList.add("img-hidden");
 }
+
+function updateCapacityHint(){
+  const hint = document.getElementById("capacityHint");
+  if(!hint) return;
+  const capUnit = $("capacityUnit").value;
+  const capNum = parseFloat($("capacity").value)||0;
+  const priceNum = parsePrice($("price").value);
+
+  if(capNum<=0 || priceNum===null){ hint.style.display="none"; return; }
+
+  const info = calcUnitInfo(capUnit);
+  const precoUnit = priceNum / (capNum * info.normalizar);
+  hint.textContent = "→ " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
+  hint.style.display = "block";
+
+  const ratio = precoUnit / priceNum;
+  if(ratio > 100 || ratio < 0.01){
+    hint.style.background = "#fff5e6";
+    hint.style.borderLeftColor = "#f6c23e";
+    hint.style.color = "#7c5a0c";
+    hint.textContent = "⚠️ Verifique a quantidade → " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
+  }else{
+    hint.style.background = "#eef4ff";
+    hint.style.borderLeftColor = "#084298";
+    hint.style.color = "#084298";
+  }
+}
+
+/* ============ Conversão automática ao mudar de unidade ============ */
+$("capacityUnit").dataset.last = $("capacityUnit").value;
+
+$("capacityUnit").addEventListener("change", function(){
+  const prev = this.dataset.last || this.value;
+  this.dataset.last = this.value;
+  const capInput = $("capacity");
+  const cur = parseFloat(capInput.value);
+
+  const grupo = function(u){
+    if(u==="g")    return "massa-pequena";
+    if(u==="peso") return "massa-grande";
+    if(u==="ml")   return "volume-ml";
+    if(u==="cl")   return "volume-cl";
+    if(u==="lt")   return "volume-grande";
+    return "especial";
+  };
+  const g1 = grupo(prev), g2 = grupo(this.value);
+
+  const isMassa  = function(g){ return g.indexOf("massa")===0; };
+  const isVolume = function(g){ return g.indexOf("volume")===0; };
+
+  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){
+    /* Dimensão diferente (massa ↔ volume) → limpa */
+    capInput.value = "";
+  }
+  else if(cur > 0 && g1 !== g2){
+    /* Mesma dimensão, escala diferente → converte */
+    let novo = cur;
+    if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
+    if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
+    if(g1==="volume-ml" && g2==="volume-grande")   novo = cur / 1000;
+    if(g1==="volume-ml" && g2==="volume-cl")       novo = cur / 10;
+    if(g1==="volume-cl" && g2==="volume-grande")   novo = cur / 100;
+    if(g1==="volume-cl" && g2==="volume-ml")       novo = cur * 10;
+    if(g1==="volume-grande" && g2==="volume-ml")   novo = cur * 1000;
+    if(g1==="volume-grande" && g2==="volume-cl")   novo = cur * 100;
+    if(novo > 0){
+      capInput.value = String(Number(novo.toFixed(4)));
+    }
+  }
+  else if(!cur || cur <= 0){
+    /* Campo vazio → sugestão típica */
+    switch(this.value){
+      case "g":    capInput.value = "500"; break;
+      case "cl":   capInput.value = "75";  break;
+      case "ml":   capInput.value = "500"; break;
+      case "dz":   capInput.value = "1";   break;
+      case "dose": capInput.value = "1";   break;
+    }
+  }
+  updateCard();
+});
 
 function updateCardUnsafe(){
   const storeVal = $("store").value||"PATAIAS";
@@ -1363,6 +1565,7 @@ function updateCardUnsafe(){
 
   if(priceNum!==null){
     const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
+
     if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
       $("cardPromoTopRow").style.display = "flex";
       $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -1370,25 +1573,20 @@ function updateCardUnsafe(){
       $("cardPromoTag").textContent = "-"+disc+"%";
     }else $("cardPromoTopRow").style.display = "none";
 
-    let unitSuffix = "€/KG";
-    if(capUnit==="lt") unitSuffix = "€/LT";
-    else if(capUnit==="g") unitSuffix = "€/KG";
-    else if(capUnit==="un") unitSuffix = "€/UN";
+    const info = calcUnitInfo(capUnit);
 
     if(capNum>0){
       $("cardPrice").textContent = fmt+" €";
-      let unitPrice = priceNum;
-      if(capUnit==="lt")        unitPrice = priceNum/capNum;
-      else if(capUnit==="g")    unitPrice = priceNum/(capNum/1000);
-      else                      unitPrice = priceNum/capNum;
-      $("cardUnitPrice").textContent = unitPrice.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+unitSuffix;
+      const precoUnit = priceNum / (capNum * info.normalizar);
+      $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.unitLabel;
       $("cardUnitPrice").style.display = "block";
     }else{
-      $("cardPrice").innerHTML = fmt+' <span style="font-size:0.45em;color:#333">'+unitSuffix+'</span>';
+      $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.unitSuffix+'</span>';
       $("cardUnitPrice").style.display = "none";
     }
   }else{
-    $("cardPrice").textContent = "0,00 €";
+    const infoFb = calcUnitInfo(capUnit);
+    $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>';
     $("cardPromoTopRow").style.display = "none";
     $("cardUnitPrice").style.display = "none";
   }
@@ -1450,7 +1648,7 @@ let _t = null;
 function updateCard(){
   if(_t) clearTimeout(_t);
   _t = setTimeout(function(){
-    try{ updateCardUnsafe(); setValidationState(); updateEanBadge() }
+    try{ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }
     catch(err){ console.error("updateCard:",err) }
   },16);
 }
@@ -1507,7 +1705,7 @@ $("isPromoActive").addEventListener("change",function(){$("promoBox").style.disp
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty"].forEach(function(id){
   const el = $(id); if(el) el.addEventListener("input",updateCard);
 });
-["store","capacityUnit","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(function(id){
+["store","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(function(id){
   const el = $(id); if(el) el.addEventListener("change",updateCard);
 });
 $("autoRemoveBg").addEventListener("change",updateCard);
@@ -1539,7 +1737,9 @@ $("photo").addEventListener("change", async function(e){
 $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){if($(id))$(id).value=""});
-  $("depositFeeSelect").value=""; $("capacityUnit").value="peso";
+  $("depositFeeSelect").value="";
+  $("capacityUnit").value="peso";
+  $("capacityUnit").dataset.last = "peso";
   $("isPromoActive").checked = false; $("promoBox").style.display="none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
