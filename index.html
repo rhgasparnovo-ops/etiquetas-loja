@@ -105,7 +105,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:20px}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;padding:10px;overflow:hidden}
-.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
+
+/* ═══════════════════════════════════════════════════════════
+   LABEL CARD — margens laterais internas de 5 mm
+   No ecrã usa 7.14cqw (= 5mm proporcional ao tamanho real do label)
+   Na impressão usa 5mm exatos (regra em @media print)
+   ═══════════════════════════════════════════════════════════ */
+.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 7.14cqw!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
@@ -177,8 +183,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview-header h3{margin:0;font-size:16px}
 .sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .preview-page-amanhecer{display:grid;grid-template-columns:70mm 70mm 70mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:210mm;height:278mm;background:#fff}
-.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
-.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
+/* ✅ margem lateral de 5mm em cada etiqueta da pré-visualização da folha */
+.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important;padding:2px 5mm!important}
+.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 .preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:max(5mm,var(--margin-left))!important}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important}
@@ -191,11 +198,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.mobile-tab-bar{display:none!important}
   #printZone{display:block!important;margin:0!important;padding:0!important}
   #printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
-  #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
+
+  /* ✅ TODAS as etiquetas em impressão: 5mm de margem lateral em cada lado */
+  #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important}
+
   .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
   .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
   .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
-  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
+  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important;overflow:hidden!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
@@ -204,7 +214,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important;position:relative!important;top:var(--col-right-y)!important}
   .print-page-generic{display:grid!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important}
   .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
-  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
+  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding-top:2px!important;padding-bottom:2px!important;padding-left:5mm!important;padding-right:5mm!important;box-sizing:border-box!important}
   .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
   .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
   .calib-sheet .calib-cell:nth-child(3n+1){margin-left:max(5mm,var(--margin-left))!important;transform:translateY(var(--col-left-y))!important}
@@ -560,10 +570,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <div class="offset-row"><label for="colLeftYRange">↕ Esq</label><input id="colLeftYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colLeftYVal">0 mm</span></div>
             <div class="offset-row"><label for="colRightYRange">↕ Dir</label><input id="colRightYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colRightYVal">0 mm</span></div>
             <div class="offset-divider"></div>
-            <div class="offset-section-title">📏 Margens laterais (mínimo 5 mm)</div>
+            <div class="offset-section-title">📏 Margens laterais da folha (mínimo 5 mm)</div>
             <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginLeftVal">15 mm</span></div>
             <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginRightVal">15 mm</span></div>
-            <div class="offset-hint">💡 As margens laterais nunca ficam abaixo de 5 mm (garantido). Recomendado: 15 mm.</div>
+            <div class="offset-hint">💡 Cada etiqueta tem SEMPRE 5 mm de margem lateral interna. Aqui só ajustas a margem extra das colunas nas bordas da folha.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
               <button class="warn-btn" id="printCalibBtn" type="button">📏 Calibração</button>
               <button class="secondary" id="resetOffsetBtn" type="button">↺ Reset</button>
@@ -1336,4 +1346,838 @@ $("processarBancoBtn").addEventListener("click", async function(){
       }
       const comprimida = await compressSmart(semFundo, 700, 0.72);
       const r = await api('substituirFotoBanco', { fotoId: f.fotoId, base64: comprimida, nome: f.nome, tipo: f.tipo || 'fruta' });
-      f.foto
+      f.fotoId = r.id; f.fotoUrl = r.url;
+      if(r.tipo) f.tipo = r.tipo;
+      ok++;
+    }catch(e){ console.error("Erro em " + f.nome + ":", e); falhas++; falhados.push(f.nome); }
+  }
+  barra.style.width = "100%";
+  texto.textContent = "✅ Concluído — " + ok + " processadas, " + falhas + " falhadas.";
+  $("processarBancoBtn").disabled = false;
+  try{ await carregarTudo(); }catch(e){}
+  renderBancoFruta($("buscaBancoFruta").value);
+  setTimeout(function(){ progresso.style.display = "none"; barra.style.width = "0%"; }, 6000);
+  if(falhas > 0) toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length>3?"...":"") + ")", "warning", 9000);
+  else toast("🎉 " + ok + " imagens recortadas e comprimidas!", "success", 5000);
+});
+$("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.target.value)});
+$("fecharBancoFruta").addEventListener("click",function(){$("bancoFrutaModal").classList.remove("show")});
+$("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("bancoFrutaModal"))$("bancoFrutaModal").classList.remove("show")});
+
+let camStream = null;
+async function openCamera(){
+  if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
+  const modal = $("cameraModal"); modal.classList.add("show");
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} }, audio:false });
+    $("camVideo").srcObject = camStream;
+  }catch(e){ toast("Não foi possível aceder à câmara: "+e.message, "error"); closeCamera(); }
+}
+function closeCamera(){
+  if(camStream){ camStream.getTracks().forEach(function(t){t.stop()}); camStream = null }
+  $("camVideo").srcObject = null;
+  $("cameraModal").classList.remove("show");
+  setTimeout(function(){ fotoBancoModo = false; }, 300);
+}
+$("fotoBancoBtn").addEventListener("click", function(){ fotoBancoModo = true; openCamera(); });
+$("openCameraBtn").addEventListener("click",openCamera);
+$("camClose").addEventListener("click",closeCamera);
+$("camSnap").addEventListener("click", async function(){
+  const v = $("camVideo"), c = $("camCanvas");
+  const maxW = 1400;
+  let w = v.videoWidth, h = v.videoHeight;
+  if(w > maxW){ h = Math.round(h * maxW/w); w = maxW }
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(v,0,0,w,h);
+  const dataUrl = c.toDataURL("image/jpeg",0.92);
+  if(fotoBancoModo){
+    fotoBancoModo = false; closeCamera();
+    setStatus("Foto capturada. A remover fundo…");
+    let fotoFinal = dataUrl;
+    if($("autoRemoveBg").checked){
+      try{ fotoFinal = await removeBackgroundSmart(dataUrl); toast("✅ Fundo removido!", "success"); }
+      catch(e){ toast("IA falhou, guardo foto original.", "warning"); }
+    }
+    const nomeSugerido = ($("product").value || "").trim().toUpperCase();
+    const tipoSugerido = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
+    const info = await pedirNomeTipoArtigo(nomeSugerido, tipoSugerido);
+    if(!info){ setStatus("Guardar no banco cancelado.", "info"); return; }
+    const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
+    if(existe){
+      const substituir = await confirmDialog("Já existe uma imagem \"" + info.nome + "\" no banco. Substituir pela nova?");
+      if(!substituir) return;
+    }
+    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); setStatus("✅ Guardado no banco.", "success"); }
+    catch(e){ setStatus("Erro: " + e.message, "error"); }
+    return;
+  }
+  globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
+  updateCard(); closeCamera(); setStatus("Foto capturada.","success");
+  if($("autoRemoveBg").checked){
+    try {
+      const semFundo = await removeBackgroundSmart(dataUrl);
+      globalProcessedPhoto = semFundo; updateCard();
+      toast("✅ Fundo removido!", "success");
+      await perguntarGuardarNoBanco();
+    } catch(e) { toast("Erro a remover fundo: " + e.message, "error"); }
+  }
+});
+async function perguntarGuardarNoBanco(){
+  if(!globalProcessedPhoto) return;
+  const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
+  if(!querGuardar) return;
+  const nomeBase = ($("product").value || "").trim().toUpperCase();
+  const tipoSug = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
+  const info = await pedirNomeTipoArtigo(nomeBase, tipoSug);
+  if(!info) return;
+  const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
+  if(existe){
+    const substituir = await confirmDialog("Já existe uma imagem \""+info.nome+"\" no banco. Substituir pela nova?");
+    if(!substituir) return;
+  }
+  try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
+}
+let scanner = null;
+async function openScanner(){
+  $("scannerModal").classList.add("show");
+  scanner = new Html5Qrcode("reader");
+  try{
+    await scanner.start(
+      { facingMode:"environment" },
+      { fps:10, qrbox:{width:280,height:180}, formatsToSupport:[ Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.UPC_A, Html5QrcodeSupportedFormats.UPC_E, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.QR_CODE ]},
+      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido: "+decoded,"success"); closeScanner(); },
+      function(){}
+    );
+  }catch(e){ toast("Câmara indisponível: "+e.message, "error"); closeScanner(); }
+}
+async function closeScanner(){
+  try{ if(scanner){ await scanner.stop(); await scanner.clear() } }catch(e){}
+  scanner = null; $("scannerModal").classList.remove("show");
+}
+$("scanEanBtn").addEventListener("click",openScanner);
+$("scanClose").addEventListener("click",closeScanner);
+function parsePrice(v){
+  if(v==null || String(v).trim()==="") return null;
+  let c = String(v).trim().replace(/€|\s/g,"");
+  if(c.indexOf(",")>-1 && c.indexOf(".")>-1) c = c.replace(/\./g,"").replace(",",".");
+  else c = c.replace(",",".");
+  const n = Number(c); return isFinite(n)?n:null;
+}
+function formatPromoDate(s,e){
+  if(!s && !e) return "Preço sujeito às condições comerciais em vigor.";
+  const m = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  try{
+    if(s && e){
+      const d1 = new Date(s), d2 = new Date(e);
+      if(d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear())
+        return "Oportunidade de "+d1.getDate()+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+      return "Oportunidade de "+d1.getDate()+" de "+m[d1.getMonth()]+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+    }else if(e){
+      const d2 = new Date(e); return "Oportunidade válida até "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+    }else{
+      const d1 = new Date(s); return "Oportunidade a partir de "+d1.getDate()+" de "+m[d1.getMonth()]+" de "+d1.getFullYear();
+    }
+  }catch(err){ return "Preço sujeito às condições comerciais em vigor." }
+}
+function removeBackgroundSimple(dataUrl,cb){
+  const token = ++photoToken; const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = function(){
+    try{
+      const cv = document.createElement("canvas");
+      cv.width = img.naturalWidth||img.width; cv.height = img.naturalHeight||img.height;
+      if(!cv.width||!cv.height) throw new Error("sem dim");
+      const ctx = cv.getContext("2d",{willReadFrequently:true}); ctx.drawImage(img,0,0);
+      const iData = ctx.getImageData(0,0,cv.width,cv.height); const d = iData.data;
+      const corners = [0,(cv.width-1)*4,((cv.height-1)*cv.width)*4,((cv.height-1)*cv.width+(cv.width-1))*4];
+      let bgR=0,bgG=0,bgB=0;
+      corners.forEach(function(i){bgR+=d[i];bgG+=d[i+1];bgB+=d[i+2]});
+      bgR=Math.round(bgR/4); bgG=Math.round(bgG/4); bgB=Math.round(bgB/4);
+      const tol = 48;
+      for(let i=0;i<d.length;i+=4){
+        const r=d[i],g=d[i+1],b=d[i+2];
+        const dist = Math.sqrt((r-bgR)*(r-bgR)+(g-bgG)*(g-bgG)+(b-bgB)*(b-bgB));
+        if(dist<tol || (r>240&&g>240&&b>240)) d[i+3] = 0;
+        else if(dist<tol+15) d[i+3] = Math.round(d[i+3]*((dist-tol)/15));
+      }
+      ctx.putImageData(iData,0,0);
+      if(token===photoToken) cb(cv.toDataURL("image/png"));
+    }catch(err){ if(token===photoToken) cb(dataUrl) }
+  };
+  img.onerror = function(){ if(token===photoToken) cb(dataUrl) };
+  img.src = dataUrl;
+}
+let _bgAIModule = null;
+let _bgAILoading = null;
+async function loadBgAI() {
+  if (_bgAIModule) return _bgAIModule;
+  if (_bgAILoading) return _bgAILoading;
+  _bgAILoading = (async function(){
+    try { const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm'); _bgAIModule = mod; return mod; }
+    finally { _bgAILoading = null; }
+  })();
+  return _bgAILoading;
+}
+async function removeBackgroundAI(dataUrl, onProgress) {
+  const mod = await loadBgAI();
+  const blob = await mod.removeBackground(dataUrl, { output: { format: 'image/png' }, progress: function(key, current, total) { if (onProgress) onProgress(key, current, total); } });
+  return new Promise(function(resolve, reject){ const reader = new FileReader(); reader.onloadend = function(){ resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(blob); });
+}
+async function removeBackgroundSmart(dataUrl) {
+  const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
+  if (useAI) {
+    try {
+      return await removeBackgroundAI(dataUrl, function(key, cur, total){
+        if (String(key).indexOf('fetch') === 0) { const pct = total > 0 ? Math.round((cur / total) * 100) : 0; setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…"); }
+        else { setStatus("🤖 A processar imagem com IA…"); }
+      });
+    } catch(e) { console.warn("IA falhou, uso algoritmo simples:", e); toast("IA indisponível, uso remoção simples.", "warning"); }
+  }
+  return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); }); });
+}
+const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+function onlyDigits(v){return String(v||"").replace(/\D/g,"")}
+function ean13CheckDigit(f12){const d=onlyDigits(f12).slice(0,12);if(d.length!==12)return null;let s=0;for(let i=0;i<12;i++)s+=Number(d[i])*(i%2===0?1:3);return String((10-(s%10))%10)}
+function isValidEAN13(v){const d=onlyDigits(v);return d.length===13 && ean13CheckDigit(d.slice(0,12))===d[12]}
+function isValidEAN14(v){const d=onlyDigits(v);if(d.length!==14)return false;let s=0;for(let i=13,p=0;i>=0;i--,p++)s+=Number(d[i])*(p%2===0?3:1);return s%10===0}
+function normalizeBarcode(v){return String(v||"").trim().replace(/\s+/g,"")}
+function drawBarcode(svg,value){
+  if(!svg) return; svg.innerHTML = "";
+  const clean = normalizeBarcode(value); if(!clean) return;
+  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){drawEAN13(svg,clean);return}
+  if(/^\d{14}$/.test(clean)){drawCode128(svg,clean);return}
+  if(/^[\x20-\x7E]+$/.test(clean)) drawCode128(svg,clean);
+}
+function drawEAN13(svg,value){
+  const dg = onlyDigits(value); const first = Number(dg[0]);
+  const L = dg.slice(1,7), R = dg.slice(7); const par = EAN_P[first];
+  let bits = "101";
+  for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
+  bits += "01010";
+  for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])];
+  bits += "101";
+  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
+  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
+}
+function drawCode128(svg,text){
+  const clean = String(text||""); if(!/^[\x20-\x7E]+$/.test(clean)) return;
+  const C128=["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"];
+  const codes = [104]; for(let i=0;i<clean.length;i++) codes.push(clean.charCodeAt(i)-32);
+  let sum = codes[0]; for(let i=1;i<codes.length;i++) sum += codes[i]*i; codes.push(sum%103);
+  const seq = codes.map(String); seq.push("STOP"); let bits = "";
+  for(let k=0;k<seq.length;k++){
+    const c = seq[k]; const pat = c==="STOP" ? "2331112" : C128[Number(c)]; if(!pat) return;
+    let isBar = true;
+    for(let j=0;j<pat.length;j++){ bits += (isBar?"1":"0").repeat(Number(pat[j])); isBar = !isBar }
+  }
+  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
+  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
+}
+function isLargeFormat(v){
+  if(["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1) return true;
+  if(v==="custom"){ const w = parseFloat($("customWidth").value)||0, h = parseFloat($("customHeight").value)||0; return w>=90 || h>=65; }
+  return false;
+}
+function isFruitPromoFormat(v){return v==="frutaPromo125x80"||v==="frutaPromoA6"}
+function getDimensionsFor(fv,cw,ch){
+  let w=70,h=38;
+  switch(fv){
+    case"amanhecer":w=70;h=38;break;case"125x80":w=125;h=80;break;case"A6":w=148;h=105;break;
+    case"A5":w=210;h=148;break;case"105x38":w=105;h=38;break;case"70x38":w=70;h=38;break;
+    case"65x38":w=65;h=38;break;case"52x30":w=52;h=30;break;case"100x70":w=100;h=70;break;
+    case"50x30":w=50;h=30;break;case"frutaPromo125x80":w=125;h=80;break;case"frutaPromoA6":w=148;h=105;break;
+    case"custom":w=parseFloat(cw)||70;h=parseFloat(ch)||38;break;
+  }
+  return {width:w,height:h};
+}
+function getDimensions(){return getDimensionsFor($("presetSizes").value,$("customWidth").value,$("customHeight").value)}
+function getSizeClass(w,h){const m=Math.max(w,h);if(m<55)return"size-tiny";if(m<82)return"size-small";if(m<115)return"size-medium";if(m<165)return"size-large";return"size-xl"}
+function applySizeClass(el,w,h){if(!el)return;el.classList.remove("size-tiny","size-small","size-medium","size-large","size-xl");el.classList.add(getSizeClass(w,h))}
+function setField(id,val){const el=$(id);if(el){el.value=val;updateCard()}}
+window.setField = setField;
+function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
+document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.body.setAttribute('data-mobile-tab', btn.dataset.tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+function applyPrintSizes(card, dims){
+  if(!card || !dims || !dims.width) return;
+  const scale = dims.width / 70;
+  const set = function(sel, mm){ const el = card.querySelector(sel); if(el) el.style.setProperty("font-size", (mm * scale).toFixed(3) + "mm", "important"); };
+  set(".store-text", 2.8); set(".item-code", 2.4); set(".product", 3.2);
+  set(".unit-price-text", 2.4); set(".price", 6.5); set(".price .unit-inline", 2.7);
+  set(".promo-tag", 2.8); set(".old-price", 2.6); set(".deposit-box", 1.9);
+  set(".extra-unit", 2.4); set(".fruit-full-bar", 2.4); set(".ean-text", 1.9);
+  set(".promo-text", 1.9); set(".print-date", 1.7);
+  set(".fp-label", 2.4); set(".fp-price", 6.5); set(".fp-unit", 2.4);
+}
+function autoFitTextSync(el){
+  if(!el) return;
+  el.style.fontSize = "";
+  const parent = el.parentElement; if(!parent) return;
+  let i = 0; void el.offsetHeight;
+  while(parent.scrollHeight > parent.clientHeight+1 && i<24){
+    const cur = parseFloat(getComputedStyle(el).fontSize);
+    if(!cur || cur<3) break;
+    el.style.fontSize = (cur*0.94)+"px"; i++; void el.offsetHeight;
+  }
+}
+function autoAdaptImage(card){
+  if(!card || !card.classList.contains("has-image")) return;
+  if(card.classList.contains("size-tiny")) return;
+  card.classList.remove("img-tight","img-mini","img-hidden");
+  void card.offsetWidth;
+  const desc = card.querySelector(".col-desc");
+  const prod = card.querySelector(".product");
+  if(prod) autoFitTextSync(prod);
+  const isCut = function(){return desc ? desc.scrollHeight>desc.clientHeight+1 : false};
+  if(!isCut()) return;
+  card.classList.add("img-tight"); void card.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  card.classList.remove("img-tight"); card.classList.add("img-mini"); void card.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  card.classList.remove("img-mini"); card.classList.add("img-hidden");
+}
+function reAdaptClone(clone){
+  if(!clone) return;
+  clone.classList.remove("img-tight","img-mini","img-hidden");
+  const prod = clone.querySelector(".product");
+  if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
+  if(!clone.classList.contains("has-image")) return;
+  if(clone.classList.contains("size-tiny")) return;
+  const desc = clone.querySelector(".col-desc");
+  if(!desc) return;
+  const isCut = function(){ return desc.scrollHeight > desc.clientHeight + 1; };
+  if(!isCut()) return;
+  clone.classList.add("img-tight"); void clone.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  clone.classList.remove("img-tight"); clone.classList.add("img-mini"); void clone.offsetWidth;
+  if(prod) autoFitTextSync(prod);
+  if(!isCut()) return;
+  clone.classList.remove("img-mini"); clone.classList.add("img-hidden");
+}
+function updateCapacityHint(){
+  const hint = document.getElementById("capacityHint"); if(!hint) return;
+  const capUnit = $("capacityUnit").value;
+  const capNum = parseFloat($("capacity").value)||0;
+  const priceNum = parsePrice($("price").value);
+  if(capNum<=0 || priceNum===null){ hint.style.display="none"; return; }
+  const info = calcUnitInfo(capUnit);
+  const precoUnit = priceNum / (capNum * info.normalizar);
+  hint.textContent = "→ " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
+  hint.style.display = "block";
+  const ratio = precoUnit / priceNum;
+  if(ratio > 100 || ratio < 0.01){
+    hint.style.background = "#fff5e6"; hint.style.borderLeftColor = "#f6c23e"; hint.style.color = "#7c5a0c";
+    hint.textContent = "⚠️ Verifique a quantidade → " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
+  }else{ hint.style.background = "#eef4ff"; hint.style.borderLeftColor = "#084298"; hint.style.color = "#084298"; }
+}
+$("capacityUnit").dataset.last = $("capacityUnit").value;
+$("capacityUnit").addEventListener("change", function(){
+  const prev = this.dataset.last || this.value;
+  this.dataset.last = this.value;
+  const capInput = $("capacity");
+  const cur = parseFloat(capInput.value);
+  const grupo = function(u){ if(u==="g")return"massa-pequena"; if(u==="peso")return"massa-grande"; if(u==="ml")return"volume-ml"; if(u==="cl")return"volume-cl"; if(u==="lt")return"volume-grande"; return"especial"; };
+  const g1 = grupo(prev), g2 = grupo(this.value);
+  const isMassa = function(g){ return g.indexOf("massa")===0; };
+  const isVolume = function(g){ return g.indexOf("volume")===0; };
+  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){ capInput.value = ""; }
+  else if(cur > 0 && g1 !== g2){
+    let novo = cur;
+    if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
+    if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
+    if(g1==="volume-ml" && g2==="volume-grande") novo = cur / 1000;
+    if(g1==="volume-ml" && g2==="volume-cl") novo = cur / 10;
+    if(g1==="volume-cl" && g2==="volume-grande") novo = cur / 100;
+    if(g1==="volume-cl" && g2==="volume-ml") novo = cur * 10;
+    if(g1==="volume-grande" && g2==="volume-ml") novo = cur * 1000;
+    if(g1==="volume-grande" && g2==="volume-cl") novo = cur * 100;
+    if(novo > 0){ capInput.value = String(Number(novo.toFixed(4))); }
+  } else if(!cur || cur <= 0){
+    switch(this.value){ case "g": capInput.value = "500"; break; case "cl": capInput.value = "75"; break; case "ml": capInput.value = "500"; break; case "dz": capInput.value = "1"; break; case "dose": capInput.value = "1"; break; }
+  }
+  updateCard();
+});
+(function(){ const eanInput = $("ean"); if(!eanInput) return; eanInput.addEventListener("input", function(){ const pos = this.selectionStart; const upper = this.value.toUpperCase(); if(this.value !== upper){ this.value = upper; try { this.setSelectionRange(pos, pos); } catch(e){} } }); })();
+function updateCardUnsafe(){
+  const storeVal = $("store").value||"PATAIAS";
+  const productVal = ($("product").value||"").trim().toUpperCase();
+  const codeVal = ($("internalCode").value||"").trim().toUpperCase();
+  const barcodeToDraw = ($("ean").value||"").trim().toUpperCase();
+  const priceNum = parsePrice($("price").value);
+  const oldPriceNum = parsePrice($("oldPrice").value);
+  const promoPriceNum = parsePrice($("promoPrice").value);
+  const isPromo = $("isPromoActive").checked;
+  const fv = $("presetSizes").value;
+  const isAmanhecer = fv==="amanhecer";
+  const isFP = isFruitPromoFormat(fv);
+  const dims = getDimensions();
+  const capUnit = $("capacityUnit").value;
+  const capNum = parseFloat($("capacity").value)||0;
+  const card = $("mainLabelCard");
+  if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
+  if(isAmanhecer){
+    card.style.width="380px"; card.style.height="214px";
+    applySizeClass(card,70,38);
+    $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
+  }else{
+    const scale = 3.2;
+    card.style.width = (dims.width*scale)+"px";
+    card.style.height = (dims.height*scale)+"px";
+    applySizeClass(card,dims.width,dims.height);
+    const prefix = isFP ? "💡 Fruta/Legumes Oportunidade" : "📐 Formato";
+    $("badgeSheet").textContent = prefix + ": " + dims.width + " × " + dims.height + " mm";
+  }
+  $("cardStore").textContent = storeVal;
+  setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
+  if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal } else $("cardCode").style.display = "none";
+  if(priceNum!==null){
+    const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
+    if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
+      $("cardPromoTopRow").style.display = "flex";
+      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+      const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
+      $("cardPromoTag").textContent = "-"+disc+"%";
+    } else $("cardPromoTopRow").style.display = "none";
+    const info = calcUnitInfo(capUnit);
+    if(capNum>0){
+      $("cardPrice").textContent = fmt+" €";
+      const precoUnit = priceNum / (capNum * info.normalizar);
+      $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.unitLabel;
+      $("cardUnitPrice").style.display = "block";
+    } else {
+      $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.unitSuffix+'</span>';
+      $("cardUnitPrice").style.display = "none";
+    }
+  } else {
+    const infoFb = calcUnitInfo(capUnit);
+    $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>';
+    $("cardPromoTopRow").style.display = "none";
+    $("cardUnitPrice").style.display = "none";
+  }
+  if(isFP){
+    const pu = $("promoUnit").value||"KG";
+    const pm = $("promoMinQty").value||"2";
+    $("cardFpNormalPrice").textContent = (priceNum!==null) ? priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
+    $("cardFpNormalUnit").textContent = "/ "+pu;
+    $("cardFpPromoPrice").textContent = (promoPriceNum!==null) ? promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
+    $("cardFpPromoUnit").textContent = "/ "+pu;
+    $("cardFpPromoLabel").textContent = (pu==="KG") ? "LEVE "+pm+" KG OU MAIS" : "LEVE "+pm+" UN OU MAIS";
+  }
+  const org = ($("origem").value||"").trim().toUpperCase();
+  const cat = ($("categoria").value||"").trim().toUpperCase();
+  const cal = ($("calibre").value||"").trim().toUpperCase();
+  const parts = [];
+  if(org) parts.push("Origem: "+org);
+  if(cat) parts.push("Cat. "+cat);
+  if(cal) parts.push("Cal. "+cal);
+  if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • ") } else $("cardFruit").style.display = "none";
+  const dep = $("depositFeeSelect").value;
+  const depVal = dep==="custom" ? $("customDepositInput").value.trim() : dep;
+  if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal } else $("cardDeposit").style.display = "none";
+  const eu = ($("unit").value||"").trim();
+  if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu } else $("cardExtraUnit").style.display = "none";
+  const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
+  const photoBox = $("cardPhotoBox");
+  if(activePhoto && !card.classList.contains("size-tiny")){
+    card.classList.add("has-image"); photoBox.classList.add("show"); $("cardPhotoImg").src = activePhoto;
+  } else {
+    card.classList.remove("has-image","img-tight","img-mini","img-hidden"); photoBox.classList.remove("show");
+  }
+  const bcBox = $("cardBarcodeBox");
+  if(barcodeToDraw && !card.classList.contains("size-tiny")){
+    bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
+  } else bcBox.classList.remove("show");
+  $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
+  $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
+  autoAdaptImage(card);
+}
+let _t = null;
+function updateCard(){
+  if(_t) clearTimeout(_t);
+  _t = setTimeout(function(){
+    try{ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }
+    catch(err){ console.error("updateCard:",err) }
+  },16);
+}
+let _statusToastMsg = '', _statusToastTime = 0;
+function setStatus(msg,type){
+  const el = $("appStatus"); if(!el) return;
+  el.textContent = msg||""; el.dataset.type = type||"";
+  el.style.display = msg ? "block" : "none";
+  if(msg && (type==="error" || type==="success")){
+    const now = Date.now();
+    const isSame = (msg === _statusToastMsg) && (now - _statusToastTime < 4000);
+    if(!isSame){ toast(msg, type); _statusToastMsg = msg; _statusToastTime = now; }
+  }
+  if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none" },3500);
+}
+function setValidationState(){
+  clearFieldErrors();
+  const price = parsePrice($("price").value);
+  const oldPrice = parsePrice($("oldPrice").value);
+  const promoPrice = parsePrice($("promoPrice").value);
+  const ean = normalizeBarcode($("ean").value);
+  const errors = [];
+  const fv = $("presetSizes").value;
+  const isFP = isFruitPromoFormat(fv);
+  if($("price").value.trim() && price===null){ errors.push("Preço inválido."); markFieldError("price",true) }
+  if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice===null){ errors.push("Preço anterior inválido."); markFieldError("oldPrice",true) }
+  if($("isPromoActive").checked && !isFP && price!==null && oldPrice!==null && oldPrice<=price){ errors.push("Preço anterior deve ser superior."); markFieldError("oldPrice",true) }
+  if(isFP){
+    if($("promoPrice").value.trim() && promoPrice===null){ errors.push("Preço especial inválido."); markFieldError("promoPrice",true) }
+    if(price!==null && promoPrice!==null && promoPrice>=price){ errors.push("Preço especial deve ser inferior."); markFieldError("promoPrice",true) }
+  }
+  if(ean){
+    const valid = (/^\d{13}$/.test(ean)&&isValidEAN13(ean)) || (/^\d{14}$/.test(ean)&&isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
+    if(!valid){ errors.push("Código de barras inválido."); markFieldError("ean",true) }
+  }
+  setStatus(errors.join(" "), errors.length?"error":"");
+}
+function updateOrientationVisibility(){
+  const fv = $("presetSizes").value;
+  const show = isLargeFormat(fv);
+  const isFP = isFruitPromoFormat(fv);
+  $("fruitPanel").style.display = (show||fv==="A6"||fv==="125x80"||fv==="frutaPromo125x80"||fv==="frutaPromoA6") ? "block" : "none";
+  $("fruitPromoPanel").style.display = isFP ? "block" : "none";
+  const lbl = $("isPromoActive").closest("label");
+  if(lbl) lbl.style.display = isFP ? "none" : "flex";
+  if(isFP) $("promoBox").style.display = "none";
+}
+$("presetSizes").addEventListener("change",function(){
+  const val = this.value;
+  $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
+  $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
+  updateOrientationVisibility(); updateCard();
+});
+$("customWidth").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
+$("customHeight").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
+$("isPromoActive").addEventListener("change",function(){$("promoBox").style.display=this.checked?"block":"none";updateCard()});
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty"].forEach(function(id){
+  const el = $(id); if(el) el.addEventListener("input",updateCard);
+});
+["store","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(function(id){
+  const el = $(id); if(el) el.addEventListener("change",updateCard);
+});
+$("autoRemoveBg").addEventListener("change",updateCard);
+$("photo").addEventListener("change", async function(e){
+  const file = e.target.files[0];
+  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
+  if(!file){ updateCard(); return }
+  if(file.type.indexOf("image/")!==0){ setStatus("Imagem inválida.","error"); e.target.value=""; updateCard(); return }
+  if(file.size > 12*1024*1024){ setStatus("Imagem muito grande (máx 12 MB).","error"); e.target.value=""; updateCard(); return }
+  const r = new FileReader();
+  r.onerror = function(){ setStatus("Erro a ler imagem.","error"); };
+  r.onload = async function(evt){
+    globalOriginalPhoto = evt.target.result; updateCard();
+    if($("autoRemoveBg").checked){
+      try {
+        const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
+        globalProcessedPhoto = semFundo; updateCard();
+        toast("✅ Fundo removido!", "success");
+        await perguntarGuardarNoBanco();
+      } catch(e) { toast("Erro: " + e.message, "error"); }
+    }
+  };
+  r.readAsDataURL(file);
+});
+$("clearBtn").addEventListener("click", async function(){
+  if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
+  ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){if($(id))$(id).value=""});
+  $("depositFeeSelect").value="";
+  $("capacityUnit").value="peso"; $("capacityUnit").dataset.last = "peso";
+  $("isPromoActive").checked = false; $("promoBox").style.display="none";
+  $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
+  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
+  $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
+  $("store").value = "PATAIAS";
+  $("customWidth").value = "70"; $("customHeight").value = "38";
+  $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
+  $("copiesCount").value = "21";
+  updateOrientationVisibility(); updateCard();
+  toast("Editor limpo.", "info");
+});
+function bindSlider(id, setter, storageKey){
+  const el = $(id); if(!el) return;
+  el.addEventListener("input", function(){
+    const v = parseFloat(this.value); if(!isFinite(v)) return;
+    setter(v);
+    const valId = id.replace("Range","Val");
+    if($(valId)) $(valId).textContent = v + " mm";
+    applyOffsets();
+    Storage.set(storageKey, String(v));
+  });
+}
+bindSlider("offsetXRange",     function(v){ offsetX = v; },      "balcao_offset_x");
+bindSlider("offsetYRange",     function(v){ offsetY = v; },      "balcao_offset_y");
+bindSlider("colLeftYRange",    function(v){ colLeftY = v; },     "balcao_col_left_y");
+bindSlider("colRightYRange",   function(v){ colRightY = v; },    "balcao_col_right_y");
+bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(5, v); },   "balcao_margin_left");
+bindSlider("marginRightRange", function(v){ marginRight = Math.max(5, v); },  "balcao_margin_right");
+
+/* ⬆️⬇️ Botões rápidos: subir/baixar a folha 3 mm */
+$("yUp3Btn").addEventListener("click", function(){
+  offsetY = Math.max(-30, Math.min(30, offsetY - 3));
+  applyOffsets();
+  Storage.set("balcao_offset_y", String(offsetY));
+  setStatus("⬆️ Folha subiu → Y = " + offsetY + " mm", "info", 1500);
+});
+$("yDown3Btn").addEventListener("click", function(){
+  offsetY = Math.max(-30, Math.min(30, offsetY + 3));
+  applyOffsets();
+  Storage.set("balcao_offset_y", String(offsetY));
+  setStatus("⬇️ Folha baixou → Y = " + offsetY + " mm", "info", 1500);
+});
+
+$("resetOffsetBtn").addEventListener("click",function(){
+  offsetX = 0; offsetY = 6;
+  colLeftY = 0; colRightY = 0;
+  marginLeft = 15; marginRight = 15;
+  applyOffsets();
+  Storage.set("balcao_offset_x","0");  Storage.set("balcao_offset_y","6");
+  Storage.set("balcao_col_left_y","0"); Storage.set("balcao_col_right_y","0");
+  Storage.set("balcao_margin_left","15"); Storage.set("balcao_margin_right","15");
+  setStatus("Ajustes restaurados (X=0, Y=6, Esq=0, Dir=0, Margens=15mm).","success");
+});
+$("printCalibBtn").addEventListener("click",function(){
+  const pz = $("printZone"); pz.innerHTML = "";
+  const page = document.createElement("div"); page.className = "calib-sheet";
+  for(let i=1;i<=21;i++){const cell = document.createElement("div");cell.className = "calib-cell";cell.textContent = "• "+i+" •";page.appendChild(cell)}
+  pz.appendChild(page);
+  setTimeout(function(){ window.print(); setTimeout(function(){pz.innerHTML=""},1500) },80);
+});
+function buildLabelClone(data, dims, forPrint){
+  const backup = getFormData();
+  setFormData(data); updateCardUnsafe();
+  const card = $("mainLabelCard");
+  const clone = card.cloneNode(true);
+  clone.removeAttribute("id");
+  const ids = clone.querySelectorAll("[id]");
+  for(let k=0;k<ids.length;k++) ids[k].removeAttribute("id");
+  applySizeClass(clone,dims.width,dims.height);
+  const eanVal = normalizeBarcode(data.ean);
+  const svg = clone.querySelector("svg");
+  if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg,eanVal) }
+  const prodEl = clone.querySelector(".product");
+  if(prodEl) autoFitTextSync(prodEl);
+  if(forPrint) applyPrintSizes(clone, dims);
+  setFormData(backup); updateCardUnsafe();
+  return clone;
+}
+$("printBtn").addEventListener("click",function(){window.triggerPrint()});
+function validateBeforePrint(){
+  setValidationState();
+  if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false }
+  if(printQueue.length===0){
+    const price = parsePrice($("price").value);
+    if(price===null){ setStatus("Introduza um preço válido.","error"); $("price").focus(); return false }
+    const fv = $("presetSizes").value;
+    if(isFruitPromoFormat(fv)){
+      const pp = parsePrice($("promoPrice").value);
+      if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false }
+    }
+    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
+    if(fv==="amanhecer" && copies>21){ setStatus("Máximo 21 etiquetas por folha.","error"); return false }
+  }
+  return true;
+}
+let _restoreQueueAfterPrint = null;
+function cleanupAfterPrint(){
+  printInProgress = false;
+  $("printBtn").disabled = false;
+  $("printBtn").innerHTML = printQueue.length>0
+    ? '🖨️ Imprimir Fila ('+printQueue.reduce(function(a,b){return a+b.copies},0)+' etiq.) [F9]'
+    : "🖨️ Imprimir [F9]";
+  $("printZone").innerHTML = "";
+  $("proPrintOverlay").classList.remove("show");
+  if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
+}
+function getItemsPerPage(dims){
+  const pageW = 210, pageH = 290;
+  const cols = Math.max(1, Math.floor(pageW / dims.width));
+  const rows = Math.max(1, Math.floor(pageH / dims.height));
+  return cols * rows;
+}
+function triggerPrint(){
+  if(printInProgress) return;
+  if(!validateBeforePrint()) return;
+  printInProgress = true;
+  $("printBtn").disabled = true; $("printBtn").textContent = "⏳ A preparar...";
+  $("proPrintOverlay").classList.add("show");
+  const pz = $("printZone"); pz.innerHTML = "";
+  const editorFmt = $("presetSizes").value;
+  const items = [];
+  if(printQueue.length===0){
+    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
+    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:editorFmt});
+  }else{
+    printQueue.forEach(function(q){
+      const fmt = q.data.presetSizes||editorFmt;
+      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
+    });
+  }
+  const groups = [];
+  items.forEach(function(it){
+    const last = groups[groups.length-1];
+    if(last && last.format===it.format) last.items.push(it.data);
+    else groups.push({format:it.format,items:[it.data]});
+  });
+  const amanhecerQueue = [];
+  groups.forEach(function(g){
+    if(g.format==="amanhecer"){
+      g.items.forEach(function(d){amanhecerQueue.push(d)});
+    }else{
+      const first = g.items[0];
+      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
+      const perPage = getItemsPerPage(dims);
+      const perRow = Math.max(1, Math.floor(210 / dims.width));
+      for(let i=0;i<g.items.length;i+=perPage){
+        const chunk = g.items.slice(i,i+perPage);
+        const page = document.createElement("div"); page.className = "print-page-generic";
+        page.style.display = "grid";
+        page.style.gridTemplateColumns = "repeat("+perRow+", "+dims.width+"mm)";
+        page.style.gridAutoRows = dims.height + "mm";
+        page.style.justifyContent = "start"; page.style.alignContent = "start";
+        chunk.forEach(function(d){
+          const c = buildLabelClone(d,dims,true);
+          c.style.setProperty("width",  dims.width  + "mm", "important");
+          c.style.setProperty("height", dims.height + "mm", "important");
+          c.style.setProperty("box-sizing", "border-box", "important");
+          page.appendChild(c);
+        });
+        pz.appendChild(page);
+      }
+    }
+  });
+  for(let i=0;i<amanhecerQueue.length;i+=21){
+    const chunk = amanhecerQueue.slice(i,i+21);
+    const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
+    chunk.forEach(function(data,idx){
+      const dims = {width:70,height:idx<3?38:40};
+      const c = buildLabelClone(data,dims,true);
+      c.style.setProperty("width",  "70mm", "important");
+      c.style.setProperty("height", idx<3?"38mm":"40mm", "important");
+      c.style.setProperty("box-sizing","border-box", "important");
+      page.appendChild(c);
+    });
+    for(let j=chunk.length;j<21;j++){
+      const empty = document.createElement("div");
+      empty.className = "label-card size-small";
+      empty.style.visibility = "hidden";
+      empty.style.setProperty("width",  "70mm", "important");
+      empty.style.setProperty("height", j<3?"38mm":"40mm", "important");
+      page.appendChild(empty);
+    }
+    pz.appendChild(page);
+  }
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      window.print();
+      setTimeout(function(){ if(printInProgress) cleanupAfterPrint() },3000);
+    });
+  });
+}
+window.triggerPrint = triggerPrint;
+window.cleanupAfterPrint = cleanupAfterPrint;
+window.addEventListener("afterprint",cleanupAfterPrint);
+window.addEventListener("beforeunload",function(ev){if(printQueue.length>0){ev.preventDefault();ev.returnValue=""}});
+$("printDbBtn").addEventListener("click", async function(){
+  if(savedProducts.length===0){ setStatus("Sem produtos guardados.","error"); return }
+  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?"))) return;
+  if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
+  _restoreQueueAfterPrint = printQueue.slice();
+  printQueue = savedProducts.map(function(p){return {data:JSON.parse(JSON.stringify(p)),copies:1}});
+  renderQueue();
+  setTimeout(function(){ window.triggerPrint(); }, 100);
+});
+$("previewSheetBtn").addEventListener("click",function(){
+  const content = $("sheetPreviewContent"); content.innerHTML = "";
+  const items = [];
+  if(printQueue.length===0){
+    const copies = Math.max(1,Math.min(21,Number($("copiesCount").value)||1));
+    const fv = $("presetSizes").value;
+    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:fv});
+  }else{
+    printQueue.forEach(function(q){
+      const fmt = q.data.presetSizes||"amanhecer";
+      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
+    });
+  }
+  if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return }
+  const groups = [];
+  items.forEach(function(it){
+    const last = groups[groups.length-1];
+    if(last && last.format===it.format) last.items.push(it.data);
+    else groups.push({format:it.format,items:[it.data]});
+  });
+  let totalPreviewed = 0;
+  groups.forEach(function(g){
+    if(g.format==="amanhecer"){
+      for(let i=0;i<g.items.length;i+=21){
+        const chunk = g.items.slice(i,i+21);
+        const page = document.createElement("div"); page.className = "preview-page-amanhecer";
+        chunk.forEach(function(d,idx){
+          const dims = {width:70,height:idx<3?38:40};
+          const clone = buildLabelClone(d,dims,true);
+          clone.style.width = "70mm"; clone.style.height = idx<3?"38mm":"40mm";
+          page.appendChild(clone);
+        });
+        for(let j=chunk.length;j<21;j++){
+          const empty = document.createElement("div"); empty.className = "label-card size-small empty"; page.appendChild(empty);
+        }
+        content.appendChild(page);
+        page.querySelectorAll(".label-card:not(.empty)").forEach(function(c){ reAdaptClone(c); });
+        totalPreviewed += chunk.length;
+      }
+    }else{
+      const first = g.items[0];
+      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
+      const grp = document.createElement("div"); grp.className = "preview-group-flex";
+      g.items.forEach(function(d){
+        const clone = buildLabelClone(d,dims,true);
+        const scale = 3.2;
+        clone.style.width = (dims.width*scale)+"px";
+        clone.style.height = (dims.height*scale)+"px";
+        grp.appendChild(clone);
+      });
+      content.appendChild(grp);
+      grp.querySelectorAll(".label-card").forEach(function(c){ reAdaptClone(c); });
+      totalPreviewed += g.items.length;
+    }
+  });
+  $("sheetPreviewTitle").textContent = "👁️ Pré-visualização ("+totalPreviewed+" etiqueta"+(totalPreviewed>1?"s":"")+")";
+  $("sheetPreview").classList.add("show");
+});
+$("sheetPreviewClose").addEventListener("click",function(){$("sheetPreview").classList.remove("show")});
+$("sheetPreview").addEventListener("click",function(e){if(e.target===$("sheetPreview"))$("sheetPreview").classList.remove("show")});
+document.addEventListener("keydown",function(ev){
+  if(ev.key==="F9"){ ev.preventDefault(); window.triggerPrint() }
+  if(ev.key==="Escape"){ $("sheetPreview").classList.remove("show"); closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); }
+});
+(async function boot(){
+  try{
+    applyOffsets();
+    updateOrientationVisibility();
+    updateCard();
+    renderQueue();
+    const fvInicial = $("presetSizes").value;
+    $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
+    await carregarTudo();
+  }catch(err){ console.error("Erro arranque:",err) }
+})();
+</script>
+</body>
+</html>
