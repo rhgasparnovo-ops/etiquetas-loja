@@ -41,8 +41,6 @@ button:active:not(:disabled){transform:scale(.97)}
 .secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .secondary:hover{border-color:#c8d0dc;background:#fafbfc}
 .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#fff3c4 100%);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
-
-/* ============ Seletor de formato elegante ============ */
 .format-select{
   margin-bottom:10px;
   background:linear-gradient(135deg,#fffdf5 0%,#fff9db 100%);
@@ -73,28 +71,9 @@ button:active:not(:disabled){transform:scale(.97)}
     linear-gradient(135deg,#fffdf5 0%,#fff9db 100%),
     url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
 }
-.format-select optgroup{
-  background:#fff;
-  color:#7a5c00;
-  font-weight:800;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  padding:6px 8px 2px 8px;
-}
-.format-select option{
-  background:#fff;
-  color:#1a1f28;
-  font-weight:600;
-  font-size:14px;
-  padding:8px 12px;
-}
-.format-select option:checked{
-  background:linear-gradient(135deg,#fff5f5 0%,#ffe8e8 100%);
-  color:#c8102e;
-  font-weight:800;
-}
-
+.format-select optgroup{background:#fff;color:#7a5c00;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px 2px 8px}
+.format-select option{background:#fff;color:#1a1f28;font-weight:600;font-size:14px;padding:8px 12px}
+.format-select option:checked{background:linear-gradient(135deg,#fff5f5 0%,#ffe8e8 100%);color:#c8102e;font-weight:800}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .actions-full{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
 .actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
@@ -167,65 +146,15 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,75%);max-height:var(--img-scale,75%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-.product{
-  font-weight:900;
-  color:#000;
-  line-height:1.02;
-  overflow:hidden;
-  text-align:left;
-  display:flex;
-  flex-wrap:wrap;
-  align-content:center;
-  align-items:center;
-  justify-content:flex-start;
-  column-gap:.28em;
-  row-gap:.06em;
-  max-height:100%;
-  min-width:0;
-  width:100%;
-  font-size:clamp(9px,3.4cqw,20px);
-  word-break:normal;
-  overflow-wrap:anywhere;
-}
-.product .w{
-  display:inline-block;
-  white-space:nowrap;
-  max-width:100%;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.unit-price-text{
-  font-size:clamp(7px,2.3cqw,13px);
-  color:#c8102e;
-  font-weight:900;
-  line-height:1.1;
-  margin-top:1px;
-  letter-spacing:.2px;
-  text-transform:uppercase;
-}
+.product{font-weight:900;color:#000;line-height:1.02;overflow:hidden;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.06em;max-height:100%;min-width:0;width:100%;font-size:clamp(9px,3.4cqw,20px);word-break:normal;overflow-wrap:anywhere}
+.product .w{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.unit-price-text{font-size:clamp(7px,2.3cqw,13px);color:#c8102e;font-weight:900;line-height:1.1;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:1px}
 .old-price{font-size:clamp(6px,2cqw,12px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
 .promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 4px}
-.price{
-  font-size:clamp(20px,9cqw,52px);
-  font-weight:900;
-  color:#000;
-  line-height:1;
-  white-space:nowrap;
-  letter-spacing:-.02em;
-  display:inline-flex;
-  align-items:baseline;
-  justify-content:center;
-  gap:.08em;
-}
-.price .unit-inline{
-  font-size:.42em;
-  font-weight:800;
-  color:#333;
-  letter-spacing:0;
-  line-height:1;
-}
+.price{font-size:clamp(20px,9cqw,52px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em}
+.price .unit-inline{font-size:.42em;font-weight:800;color:#333;letter-spacing:0;line-height:1}
 .deposit-box{font-size:clamp(5.5px,1.8cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.1;margin-top:1px;display:inline-block}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2.1cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:14%;overflow:hidden}
@@ -813,6 +742,7 @@ function confirmDialog(msg) {
   });
 }
 
+/* ============ Compressão simples (compatibilidade) ============ */
 function compressImage(dataUrl, maxSize, quality) {
   maxSize = maxSize || 1000;
   quality = quality || 0.85;
@@ -831,6 +761,58 @@ function compressImage(dataUrl, maxSize, quality) {
       ctx.fillRect(0, 0, w, h);
       ctx.drawImage(img, 0, 0, w, h);
       resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = function(){ resolve(dataUrl); };
+    img.src = dataUrl;
+  });
+}
+
+/* ============ Compressão inteligente ============ */
+/* Detecta transparência:
+   - Com transparência → WebP q=0.72 (10-20x mais leve)
+   - Sem transparência → JPEG q=0.75 (2-3x mais leve) */
+function compressSmart(dataUrl, maxSize, quality) {
+  maxSize = maxSize || 700;
+  quality = quality || 0.72;
+  return new Promise(function(resolve){
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function(){
+      let w = img.width, h = img.height;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else       { w = Math.round(w * maxSize / h); h = maxSize; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      /* Detectar transparência real */
+      let temTransparencia = false;
+      try {
+        const tmp = document.createElement('canvas');
+        tmp.width = Math.min(w, 80);
+        tmp.height = Math.min(h, 80);
+        const tctx = tmp.getContext('2d');
+        tctx.drawImage(img, 0, 0, tmp.width, tmp.height);
+        const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data;
+        for (let i = 3; i < px.length; i += 4) {
+          if (px[i] < 250) { temTransparencia = true; break; }
+        }
+      } catch(e) { /* crossOrigin pode bloquear */ }
+
+      if (temTransparencia) {
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        let out = canvas.toDataURL('image/webp', quality);
+        if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png');
+        resolve(out);
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      }
     };
     img.onerror = function(){ resolve(dataUrl); };
     img.src = dataUrl;
@@ -1048,7 +1030,7 @@ async function saveToDb(){
     const foto = data.processedPhoto || data.originalPhoto;
     if(foto && foto.indexOf('http')!==0){
       const nome = (data.internalCode||'artigo')+'_'+Date.now()+'.jpg';
-      const fotoOtimizada = await compressImage(foto, 1000, 0.85);
+      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
       const up = await api('uploadFoto',{ base64:fotoOtimizada, nomeFicheiro:nome });
       data.fotoId  = up.id;
       data.fotoUrl = up.url;
@@ -1234,7 +1216,7 @@ async function perguntarGuardarNoBanco(){
 
   setStatus("A guardar foto no banco…");
   try{
-    const comprimida = await compressImage(globalProcessedPhoto, 800, 0.85);
+    const comprimida = await compressSmart(globalProcessedPhoto, 700, 0.72);
     const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome });
     bancoFruta = bancoFruta.filter(function(f){
       return String(f.nome||"").toUpperCase() !== nome;
