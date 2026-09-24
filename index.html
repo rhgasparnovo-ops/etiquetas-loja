@@ -101,7 +101,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;padding:10px;overflow:hidden}
 
-/* ============ LABEL CARD ============ */
+/* ========== LABEL CARD (BASE) ========== */
 .label-card{
   background:#fff!important;
   border:1px solid #333;
@@ -118,17 +118,17 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   --header-h:12%;
   --img-pad:1px;
   --gap-main:4px;
-  --img-scale:75%;
+  --img-scale:100%;
 }
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
-.header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:4mm;min-width:0}
+.header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain}
 
 .main-content{
   display:grid!important;
-  grid-template-columns:minmax(0,1.15fr) auto minmax(0,0.85fr);
+  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);
   align-items:center!important;
   width:100%;
   flex:1 1 auto;
@@ -137,68 +137,41 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   margin:1px 0;
   min-height:0;
 }
-.label-card.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1.1fr) auto minmax(0,0.9fr)}
-.label-card.img-tight .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.8fr)}
-.label-card.img-mini .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.6fr)}
-.label-card.img-hidden .col-image{display:none!important}
-.label-card.img-hidden .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
 
-.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:2px}
-.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 4px;justify-self:center;align-self:center}
+.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px}
+.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 1px;justify-self:center;align-self:center}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
-.col-image img{
-  width:100%;height:100%;
-  max-width:var(--img-scale,75%);
-  max-height:var(--img-scale,75%);
-  object-fit:contain;
-  object-position:center;
-  display:block;
-  margin:auto;
-  background:transparent;
-}
-.store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
-.item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-.product{
-  font-weight:900;color:#000;line-height:1.02;
-  overflow:hidden;text-align:left;
-  display:flex;flex-wrap:wrap;
-  align-content:center;align-items:center;justify-content:flex-start;
-  column-gap:.28em;row-gap:.06em;
-  max-height:100%;min-width:0;width:100%;
-  font-size:clamp(9px,3.4cqw,20px);
-  word-break:normal;overflow-wrap:anywhere;
-}
+.col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
+
+.store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
+.item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:1px}
+.product{font-weight:900;color:#000;line-height:1.05;overflow:hidden;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;max-height:100%;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);word-break:normal;overflow-wrap:anywhere}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.unit-price-text{font-size:clamp(7px,2.3cqw,13px);color:#c8102e;font-weight:900;line-height:1.1;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
+.unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:#c8102e;font-weight:900;line-height:1.05;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
-.promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:1px}
-.old-price{font-size:clamp(6px,2cqw,12px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
+.promo-top-row{display:flex;align-items:center;justify-content:center;gap:3px;line-height:1;margin-bottom:1px}
+.old-price{font-size:clamp(6px,2cqw,11px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
 .promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 4px}
-.price{
-  font-size:clamp(20px,9cqw,52px);
-  font-weight:900;color:#000;line-height:1;
-  white-space:nowrap;letter-spacing:-.02em;
-  display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;
-}
+.price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em}
 .price .unit-inline{font-size:.42em;font-weight:800;color:#333;letter-spacing:0;line-height:1}
-.deposit-box{font-size:clamp(5.5px,1.8cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.1;margin-top:1px;display:inline-block}
-#cardExtraUnit{font-size:clamp(7px,2.1cqw,13px);font-weight:700;line-height:1.15;margin-top:1px}
-.fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2.1cqw,11px);flex-shrink:0;margin:1px 0}
-.barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:14%;overflow:hidden}
+.deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block}
+.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:1px;color:#333}
+.fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
+.barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
 .barcode-container.show{display:flex!important}
-.svg-container{width:100%;height:70%;display:flex;justify-content:center;overflow:hidden}
-.svg-container svg{width:85%;height:100%}
+.svg-container{width:100%;height:72%;display:flex;justify-content:center;overflow:hidden}
+.svg-container svg{width:80%;height:100%}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
-.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #bbb;padding-top:1px;flex-shrink:0;height:10%;overflow:hidden}
-.promo-text{font-size:clamp(5px,1.6cqw,8px);color:#444;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:4px}
-.print-date{font-size:clamp(5px,1.5cqw,7.5px);color:#666;white-space:nowrap;line-height:1;flex-shrink:0}
-.fruit-promo-prices{display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:5px;padding:3px 0;align-items:stretch;flex-shrink:0}
+.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #bbb;padding-top:1px;flex-shrink:0;height:9%;overflow:hidden}
+.promo-text{font-size:clamp(5px,1.5cqw,8px);color:#444;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:3px}
+.print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#666;white-space:nowrap;line-height:1;flex-shrink:0}
+.fruit-promo-prices{display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:4px;padding:2px 0;align-items:stretch;flex-shrink:0}
 .label-card.layout-fruit-promo .col-price{display:none!important}
 .label-card.layout-fruit-promo .fruit-promo-prices{display:flex!important}
-.fp-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 7px;border-radius:6px;text-align:center;line-height:1;min-width:0;overflow:hidden}
+.fp-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 6px;border-radius:6px;text-align:center;line-height:1;min-width:0;overflow:hidden}
 .fp-box.fp-normal{flex:1;background:#fff;border:2px solid #222;color:#222}
 .fp-box.fp-promo{flex:1.4;background:#c8102e;border:2px solid #c8102e;color:#fff;position:relative}
 .fp-box.fp-promo::before{content:"💡";position:absolute;top:3px;right:5px;font-size:clamp(10px,2.8cqw,18px);line-height:1}
@@ -208,49 +181,26 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
 .label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important}
 
-/* Size variants */
-.label-card.size-tiny{--header-h:18%;--img-scale:70%}
+/* Size variants (para screen) */
+.label-card.size-tiny{--header-h:18%}
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
-.label-card.size-tiny .product{font-size:clamp(7px,5.5cqw,14px)!important;line-height:1.02}
-.label-card.size-tiny .price{font-size:clamp(13px,10cqw,24px)!important}
+.label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
+.label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 .label-card.size-tiny .price .unit-inline{font-size:.45em}
 .label-card.size-tiny .item-code{font-size:clamp(5px,2.6cqw,9px)!important}
 .label-card.size-tiny .store-text{font-size:clamp(5px,2.8cqw,9px)!important}
 .label-card.size-tiny .brand-logo{max-height:95%}
-.label-card.size-small{--img-scale:70%}
-.label-card.size-small .product{font-size:clamp(9px,3.6cqw,20px)!important}
-.label-card.size-small .price{font-size:clamp(18px,8.5cqw,46px)!important}
-.label-card.size-medium{--img-scale:82%}
-.label-card.size-medium .product{font-size:clamp(11px,3.8cqw,24px)!important}
-.label-card.size-medium .price{font-size:clamp(24px,9cqw,58px)!important}
+.label-card.size-small .product{font-size:clamp(9px,3.4cqw,18px)!important}
+.label-card.size-small .price{font-size:clamp(15px,7cqw,38px)!important}
+.label-card.size-medium .product{font-size:clamp(11px,3.6cqw,24px)!important}
+.label-card.size-medium .price{font-size:clamp(22px,8cqw,52px)!important}
 .label-card.size-medium .store-text{font-size:clamp(8px,2.3cqw,14px)!important}
-.label-card.size-medium .item-code{font-size:clamp(7px,2cqw,12px)!important}
-.label-card.size-medium .unit-price-text{font-size:clamp(9px,2.4cqw,16px)!important}
-.label-card.size-large{--header-h:14%;--gap-main:6px;--img-pad:2px;--img-scale:94%}
-.label-card.size-large .product{font-size:clamp(15px,4.2cqw,32px)!important}
-.label-card.size-large .price{font-size:clamp(30px,10cqw,72px)!important}
-.label-card.size-large .store-text{font-size:clamp(10px,2.6cqw,18px)!important}
-.label-card.size-large .item-code{font-size:clamp(9px,2.3cqw,16px)!important}
-.label-card.size-large .unit-price-text{font-size:clamp(10px,2.6cqw,20px)!important}
-.label-card.size-large .promo-tag{font-size:clamp(10px,3cqw,20px)!important;padding:2px 6px}
-.label-card.size-large .old-price{font-size:clamp(9px,2.6cqw,17px)!important}
-.label-card.size-large .fruit-full-bar{font-size:clamp(9px,2.2cqw,15px)!important}
-.label-card.size-large #cardExtraUnit{font-size:clamp(9px,2.4cqw,18px)!important}
-.label-card.size-xl{--header-h:12%;--gap-main:10px;--img-pad:3px;--img-scale:100%}
-.label-card.size-xl .product{font-size:clamp(22px,4.8cqw,52px)!important}
-.label-card.size-xl .price{font-size:clamp(44px,11cqw,110px)!important}
-.label-card.size-xl .store-text{font-size:clamp(14px,2.7cqw,26px)!important}
-.label-card.size-xl .item-code{font-size:clamp(12px,2.4cqw,22px)!important}
-.label-card.size-xl .unit-price-text{font-size:clamp(13px,2.6cqw,24px)!important}
-.label-card.size-xl .promo-tag{font-size:clamp(14px,3.2cqw,32px)!important;padding:3px 10px;border-radius:6px}
-.label-card.size-xl .old-price{font-size:clamp(12px,2.8cqw,24px)!important}
-.label-card.size-xl .fruit-full-bar{font-size:clamp(12px,2.5cqw,22px)!important}
-.label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
-.label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
-.label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
-.label-card.size-xl #cardExtraUnit{font-size:clamp(11px,2.3cqw,20px)!important}
+.label-card.size-large .product{font-size:clamp(15px,4cqw,32px)!important}
+.label-card.size-large .price{font-size:clamp(28px,9cqw,68px)!important}
+.label-card.size-xl .product{font-size:clamp(22px,4.5cqw,52px)!important}
+.label-card.size-xl .price{font-size:clamp(40px,10cqw,100px)!important}
 
-/* Sheet preview */
+/* Sheet preview (modal on screen) */
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -259,7 +209,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .preview-page-amanhecer{display:grid;grid-template-columns:70mm 70mm 70mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:210mm;height:278mm;background:#fff}
 .preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
-.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+.preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 .preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
@@ -271,38 +221,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 /* ==================== PRINT ==================== */
 @media print{
   @page{size:210mm 297mm;margin:0!important}
-
-  html,body{
-    margin:0!important;padding:0!important;
-    background:#fff!important;
-    width:210mm!important;
-    min-height:0!important;max-height:none!important;
-    overflow:visible!important;
-    -webkit-print-color-adjust:exact!important;
-    print-color-adjust:exact!important;
-  }
-
-  .app,
-  .sheet-preview,
-  .pro-print-overlay,
-  .modal,
-  .toast-container,
-  .confirm-overlay,
-  .name-modal,
-  .mobile-tab-bar { display:none!important }
-
+  html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;min-height:0!important;max-height:none!important;overflow:visible!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.mobile-tab-bar{display:none!important}
   #printZone{display:block!important;margin:0!important;padding:0!important}
+  #printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
 
-  #printZone *{
-    transform:none!important;
-    -webkit-transform:none!important;
-    zoom:1!important;
-    animation:none!important;
-    transition:none!important;
-  }
-
-  /* ✅ Mantém container-type para os cqw funcionarem (crucial!) */
+  /* Aplica container-type=inline-size a TODAS as etiquetas dentro do printZone */
   #printZone .label-card{
+    container-type:inline-size!important;
     box-shadow:none!important;
     border-radius:0!important;
     box-sizing:border-box!important;
@@ -315,10 +241,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     display:grid!important;
     grid-template-columns:70mm 70mm 70mm!important;
     grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    gap:0!important;
-    padding:0!important;
-    width:210mm!important;
-    height:278mm!important;
+    gap:0!important;padding:0!important;
+    width:210mm!important;height:278mm!important;
     margin-left:var(--offset-x)!important;
     margin-top:var(--offset-y)!important;
     page-break-inside:avoid!important;
@@ -335,85 +259,27 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     padding:2px 4px!important;
     overflow:hidden!important;
   }
-
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3){
-    height:38mm!important;
-    padding-top:3mm!important;
-  }
-  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){
-    height:40mm!important;
-  }
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){
-    padding-left:9.5mm!important;
-  }
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){
-    padding-right:9.5mm!important;
-  }
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
 
   /* ============ GENÉRICOS ============ */
-  .print-page-generic{
-    display:grid!important;
-    gap:0!important;
-    width:210mm!important;
-    margin-left:var(--offset-x)!important;
-    margin-top:var(--offset-y)!important;
-    page-break-after:always!important;
-    break-after:page!important;
-    box-sizing:border-box!important;
-    overflow:hidden!important;
-  }
-  .print-page-generic:last-child{
-    page-break-after:avoid!important;
-    break-after:avoid!important;
-    margin-bottom:0!important;
-  }
-  #printZone .print-page-generic .label-card{
-    border:1px solid #222!important;
-    box-shadow:none!important;
-    overflow:hidden!important;
-    page-break-inside:avoid!important;
-    break-inside:avoid!important;
-    margin:0!important;
-    padding:2px 4px!important;
-    box-sizing:border-box!important;
-  }
+  .print-page-generic{display:grid!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important}
+  .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
+  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
 
   /* ============ CALIBRAÇÃO ============ */
-  .calib-sheet{
-    display:grid!important;
-    grid-template-columns:70mm 70mm 70mm!important;
-    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    gap:0!important;
-    padding:0!important;
-    width:210mm!important;
-    height:278mm!important;
-    margin-left:var(--offset-x)!important;
-    margin-top:var(--offset-y)!important;
-    overflow:hidden!important;
-  }
-  .calib-cell{
-    border:1px dashed #d33!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    font:900 14px Arial!important;
-    color:#c8102e!important;
-    background:#fff5f5!important;
-  }
+  .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
+  .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
   .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
   .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
-
-  #printZone > *:last-child{
-    page-break-after:avoid!important;
-    break-after:avoid!important;
-    margin-bottom:0!important;
-    padding-bottom:0!important;
-  }
+  #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
 }
 
-/* ==================== OVERLAYS/MODAIS ==================== */
+/* ============ MODAIS E OVERLAYS ============ */
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
 .pro-print-box{min-width:300px;padding:24px;border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);display:grid;gap:10px;text-align:center}
@@ -512,10 +378,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .list-item-info span{font-size:11.5px;margin-top:3px;color:#7a8391}
   .list-item-actions{gap:5px}
   .list-item-actions button{padding:9px 10px;font-size:14px;border-radius:11px;min-width:44px;min-height:44px;font-weight:700}
-  .btn-load{background:linear-gradient(135deg,#e8f7ee,#d4f0df);border-color:#a3cb38;color:#176b3a}
-  .btn-save-queue{background:linear-gradient(135deg,#e6f9ec,#c8f0d7);border-color:#6cbf8b;color:#0d5a2f}
-  .btn-dup{background:linear-gradient(135deg,#eef1ff,#dfe5ff);border-color:#a5b0e8;color:#4c5fd5}
-  .btn-remove{background:linear-gradient(135deg,#fff0f0,#ffe4e0);border-color:#fab1a0;color:#c0392b}
   .copies-input{width:56px;padding:8px 6px;font-size:14px;border-radius:9px}
   .modal{padding:0;gap:12px}
   .modal-panel{border-radius:0;max-height:100vh;height:100vh;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
@@ -815,7 +677,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
               <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
               <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
               <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
-              <div id="cardExtraUnit" style="display:none;color:#333"></div>
+              <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
             </div>
             <div class="col-price">
               <div class="price-wrapper">
@@ -951,10 +813,7 @@ function toast(msg, type, duration) {
   el.textContent = msg;
   c.appendChild(el);
   requestAnimationFrame(function(){ el.classList.add('show'); });
-  setTimeout(function(){
-    el.classList.remove('show');
-    setTimeout(function(){ el.remove(); }, 300);
-  }, duration);
+  setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, duration);
 }
 
 function confirmDialog(msg) {
@@ -962,13 +821,7 @@ function confirmDialog(msg) {
     const ov = document.getElementById('confirmOverlay');
     document.getElementById('confirmMsg').textContent = msg;
     ov.classList.add('show');
-    function cleanup(result) {
-      ov.classList.remove('show');
-      document.getElementById('confirmYes').onclick = null;
-      document.getElementById('confirmNo').onclick = null;
-      ov.onclick = null;
-      resolve(result);
-    }
+    function cleanup(r){ ov.classList.remove('show'); document.getElementById('confirmYes').onclick=null; document.getElementById('confirmNo').onclick=null; ov.onclick=null; resolve(r); }
     document.getElementById('confirmYes').onclick = function(){ cleanup(true); };
     document.getElementById('confirmNo').onclick  = function(){ cleanup(false); };
     ov.onclick = function(e){ if (e.target === ov) cleanup(false); };
@@ -982,40 +835,26 @@ function pedirNomeTipoArtigo(valorInicial, tipoInicial){
     const boxTipo = document.getElementById("saveBancoTipo");
     input.value = String(valorInicial || "").toUpperCase();
     let tipoSel = (tipoInicial === 'legume') ? 'legume' : 'fruta';
-
-    function marcar(){
-      boxTipo.querySelectorAll('button').forEach(function(b){
-        b.classList.toggle('active', b.dataset.tipo === tipoSel);
-      });
-    }
+    function marcar(){ boxTipo.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.tipo === tipoSel); }); }
     marcar();
-    boxTipo.querySelectorAll('button').forEach(function(b){
-      b.onclick = function(){ tipoSel = b.dataset.tipo; marcar(); input.focus(); };
-    });
-
+    boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ tipoSel = b.dataset.tipo; marcar(); input.focus(); }; });
     modal.classList.add("show");
     setTimeout(function(){ input.focus(); input.select(); }, 50);
-
-    function fechar(resultado){
+    function fechar(r){
       modal.classList.remove("show");
       document.getElementById("saveBancoConfirm").onclick = null;
       document.getElementById("saveBancoCancel").onclick = null;
-      input.onkeydown = null;
-      modal.onclick = null;
+      input.onkeydown = null; modal.onclick = null;
       boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = null; });
-      resolve(resultado);
+      resolve(r);
     }
-
     document.getElementById("saveBancoConfirm").onclick = function(){
       const v = (input.value || "").trim().toUpperCase();
       if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
       fechar({ nome: v, tipo: tipoSel });
     };
     document.getElementById("saveBancoCancel").onclick = function(){ fechar(null); };
-    input.onkeydown = function(e){
-      if(e.key === "Enter"){ e.preventDefault(); document.getElementById("saveBancoConfirm").click(); }
-      if(e.key === "Escape"){ e.preventDefault(); fechar(null); }
-    };
+    input.onkeydown = function(e){ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("saveBancoConfirm").click(); } if(e.key==="Escape"){ e.preventDefault(); fechar(null); } };
     modal.onclick = function(e){ if(e.target === modal) fechar(null); };
   });
 }
@@ -1025,22 +864,16 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
   try{
     const comprimida = await compressSmart(dataUrl, 700, 0.72);
     const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome, tipo: tipo });
-    bancoFruta = bancoFruta.filter(function(f){
-      return String(f.nome||"").toUpperCase() !== nome;
-    });
+    bancoFruta = bancoFruta.filter(function(f){ return String(f.nome||"").toUpperCase() !== nome; });
     bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url, tipo: r.tipo || tipo });
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     renderBancoFruta($("buscaBancoFruta").value);
     toast("✅ Foto guardada em " + ((tipo==='legume')?'Legumes':'Frutas') + ": " + r.nome, "success", 4500);
-  }catch(e){
-    toast("Erro ao guardar no banco: " + e.message, "error");
-    throw e;
-  }
+  }catch(e){ toast("Erro ao guardar no banco: " + e.message, "error"); throw e; }
 }
 
 function compressSmart(dataUrl, maxSize, quality) {
-  maxSize = maxSize || 700;
-  quality = quality || 0.72;
+  maxSize = maxSize || 700; quality = quality || 0.72;
   return new Promise(function(resolve){
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -1053,30 +886,22 @@ function compressSmart(dataUrl, maxSize, quality) {
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
-
       let temTransparencia = false;
       try {
         const tmp = document.createElement('canvas');
-        tmp.width = Math.min(w, 80);
-        tmp.height = Math.min(h, 80);
+        tmp.width = Math.min(w, 80); tmp.height = Math.min(h, 80);
         const tctx = tmp.getContext('2d');
         tctx.drawImage(img, 0, 0, tmp.width, tmp.height);
         const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data;
-        for (let i = 3; i < px.length; i += 4) {
-          if (px[i] < 250) { temTransparencia = true; break; }
-        }
-      } catch(e) { }
-
+        for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { temTransparencia = true; break; } }
+      } catch(e) {}
       if (temTransparencia) {
-        ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(img, 0, 0, w, h);
+        ctx.clearRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
         let out = canvas.toDataURL('image/webp', quality);
         if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png');
         resolve(out);
       } else {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(img, 0, 0, w, h);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL('image/jpeg', quality));
       }
     };
@@ -1087,11 +912,7 @@ function compressSmart(dataUrl, maxSize, quality) {
 
 async function api(fn, payload){
   payload = payload || {};
-  const resp = await fetch(API_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload })
-  });
+  const resp = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload }) });
   if(!resp.ok) throw new Error('HTTP '+resp.status);
   const j = await resp.json();
   if(!j.ok) throw new Error(j.error || 'Erro API');
@@ -1115,8 +936,8 @@ function applyOffsets(){
   document.documentElement.style.setProperty("--offset-y",offsetY+"mm");
   if($("offsetXRange")) $("offsetXRange").value = String(offsetX);
   if($("offsetYRange")) $("offsetYRange").value = String(offsetY);
-  if($("offsetXVal"))   $("offsetXVal").textContent = offsetX+" mm";
-  if($("offsetYVal"))   $("offsetYVal").textContent = offsetY+" mm";
+  if($("offsetXVal")) $("offsetXVal").textContent = offsetX+" mm";
+  if($("offsetYVal")) $("offsetYVal").textContent = offsetY+" mm";
 }
 
 let printQueue = [];
@@ -1133,9 +954,7 @@ async function carregarTudo(){
     bancoFruta = f || [];
     renderDb(); renderBancoFruta($("buscaBancoFruta").value);
     setStatus('✅ Dados carregados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success');
-  }catch(e){
-    setStatus('⚠️ Erro a ligar ao Drive: '+e.message,'error');
-  }
+  }catch(e){ setStatus('⚠️ Erro a ligar ao Drive: '+e.message,'error'); }
 }
 
 function getFormData(){return{
@@ -1165,32 +984,21 @@ function setFormData(d){
   $("calibre").value = d.calibre||"";
   $("price").value = d.price||d.preco||"";
   $("oldPrice").value = d.oldPrice||"";
-
-  const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true' || d.isPromoActive === 'TRUE')
-                  || (d.isPromoActive === undefined && !!d.oldPrice);
+  const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true' || d.isPromoActive === 'TRUE') || (d.isPromoActive === undefined && !!d.oldPrice);
   $("isPromoActive").checked = isPromo;
   $("promoBox").style.display = isPromo ? "block" : "none";
-
   $("capacity").value = d.capacity||d.capacidade||"";
   $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
   $("capacityUnit").dataset.last = $("capacityUnit").value;
-
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
   const depFixos = ['', 'Acresce 0,10 € Volta'];
   if(depFixos.indexOf(depSalvo) >= 0){
-    $("depositFeeSelect").value = depSalvo;
-    $("customDepositInput").value = "";
-    $("customDepositInput").style.display = "none";
+    $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
   }else if(depSalvo){
-    $("depositFeeSelect").value = "custom";
-    $("customDepositInput").value = depSalvo;
-    $("customDepositInput").style.display = "block";
+    $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block";
   }else{
-    $("depositFeeSelect").value = "";
-    $("customDepositInput").value = "";
-    $("customDepositInput").style.display = "none";
+    $("depositFeeSelect").value = ""; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
   }
-
   $("unit").value = d.unit||"";
   $("promoStart").value = d.promoStart||"";
   $("promoEnd").value = d.promoEnd||"";
@@ -1203,7 +1011,6 @@ function setFormData(d){
   globalOriginalPhoto = d.originalPhoto||d.fotoUrl||"";
   globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
   $("photo").value = "";
-
   $("customDimensionsRow").style.display = ($("presetSizes").value==="custom") ? "grid" : "none";
   updateOrientationVisibility();
   updateCard();
@@ -1226,22 +1033,9 @@ function setProductText(el,text){
   if(!el) return;
   el.innerHTML = "";
   const raw = String(text||"").trim();
-  if(!raw){
-    ["NOME","DO","PRODUTO"].forEach(function(t){
-      var s=document.createElement("span");
-      s.className="w";
-      s.textContent=t;
-      el.appendChild(s);
-    });
-    return;
-  }
+  if(!raw){ ["NOME","DO","PRODUTO"].forEach(function(t){ var s=document.createElement("span"); s.className="w"; s.textContent=t; el.appendChild(s); }); return; }
   const words = raw.split(/\s+/).filter(Boolean);
-  words.forEach(function(word){
-    const s = document.createElement("span");
-    s.className = "w";
-    s.textContent = word;
-    el.appendChild(s);
-  });
+  words.forEach(function(word){ const s = document.createElement("span"); s.className = "w"; s.textContent = word; el.appendChild(s); });
 }
 
 function calcUnitInfo(capUnit){
@@ -1275,9 +1069,7 @@ function renderQueue(){
     total += item.copies;
     const div = document.createElement("div"); div.className = "list-item";
     const fmt = (item.data.presetSizes==="amanhecer")?"Amanhecer":item.data.presetSizes;
-    const jaGuardado = savedProducts.some(function(p){
-      return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode);
-    });
+    const jaGuardado = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
     const iconeGuardar = jaGuardado ? "✅" : "💾";
     const tituloGuardar = jaGuardado ? "Já guardado no Drive (clica para atualizar)" : "Guardar este produto no Drive";
     div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
@@ -1285,6 +1077,7 @@ function renderQueue(){
   });
   $("printBtn").innerHTML = '🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
 }
+
 function addToQueue(){
   setValidationState();
   if($("appStatus").dataset.type==="error"){setStatus("Corrija os erros antes.","error");return}
@@ -1296,74 +1089,44 @@ function addToQueue(){
 
 function buildProdutoPayload(d){
   return {
-    codigo:      d.internalCode,
-    nome:        d.product,
-    preco:       d.price,
-    oldPrice:    d.oldPrice,
-    isPromoActive: d.isPromoActive,
-    promoPrice:  d.promoPrice,
-    promoMinQty: d.promoMinQty,
-    promoUnit:   d.promoUnit,
-    promoStart:  d.promoStart,
-    promoEnd:    d.promoEnd,
-    unit:        d.unit,
-    origem:      d.origem,
-    categoria:   d.categoria,
-    calibre:     d.calibre,
-    ean:         d.ean,
-    loja:        d.store,
-    unidade:     d.capacityUnit,
-    capacidade:  d.capacity,
-    deposito:    d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect,
-    formato:     d.presetSizes,
-    customWidth: d.customWidth,
-    customHeight:d.customHeight,
-    fotoId:      d.fotoId  || '',
-    fotoUrl:     d.fotoUrl || ''
+    codigo: d.internalCode, nome: d.product, preco: d.price, oldPrice: d.oldPrice,
+    isPromoActive: d.isPromoActive, promoPrice: d.promoPrice, promoMinQty: d.promoMinQty,
+    promoUnit: d.promoUnit, promoStart: d.promoStart, promoEnd: d.promoEnd,
+    unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre,
+    ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity,
+    deposito: d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect,
+    formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight,
+    fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || ''
   };
 }
 
 window.saveQueueItem = async function(i){
-  const item = printQueue[i];
-  if(!item){ toast("Item da fila não encontrado.", "error"); return; }
+  const item = printQueue[i]; if(!item){ toast("Item da fila não encontrado.", "error"); return; }
   const d = item.data;
-  if(!d.product && !d.internalCode){
-    toast("Item sem nome nem código — preenche primeiro.", "warning", 5000);
-    return;
-  }
-  const existente = savedProducts.find(function(p){
-    return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode);
-  });
+  if(!d.product && !d.internalCode){ toast("Item sem nome nem código — preenche primeiro.", "warning", 5000); return; }
+  const existente = savedProducts.find(function(p){ return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode); });
   if(existente){
     const substituir = await confirmDialog("Já existe um produto \""+d.product+"\" no Drive. Substituir os dados pelo item da fila?");
     if(!substituir) return;
   }
   setStatus("A guardar \""+(d.product||d.internalCode)+"\" no Drive…");
   try{
-    let fotoId  = d.fotoId  || "";
-    let fotoUrl = d.fotoUrl || "";
-    const foto  = d.processedPhoto || d.originalPhoto;
+    let fotoId = d.fotoId || "", fotoUrl = d.fotoUrl || "";
+    const foto = d.processedPhoto || d.originalPhoto;
     if(foto && foto.indexOf('http') !== 0){
       const nomeFic = (d.internalCode||'artigo') + '_' + Date.now() + '.jpg';
       const fotoOtimizada = await compressSmart(foto, 700, 0.72);
       const up = await api('uploadFoto', { base64:fotoOtimizada, nomeFicheiro:nomeFic });
-      fotoId  = up.id;
-      fotoUrl = up.url;
+      fotoId = up.id; fotoUrl = up.url;
     }
     const payload = buildProdutoPayload(d);
-    payload.fotoId = fotoId;
-    payload.fotoUrl = fotoUrl;
+    payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
     await api('guardarProduto', payload);
-    item.data.fotoId  = fotoId;
-    item.data.fotoUrl = fotoUrl;
-    item.data.processedPhoto = fotoUrl;
-    item.data.originalPhoto  = fotoUrl;
-    await carregarTudo();
-    renderQueue();
+    item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
+    item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
+    await carregarTudo(); renderQueue();
     setStatus("✅ \""+(d.product||d.internalCode)+"\" guardado no Drive.", "success", 3500);
-  }catch(e){
-    setStatus("Erro ao guardar: "+e.message, "error");
-  }
+  }catch(e){ setStatus("Erro ao guardar: "+e.message, "error"); }
 };
 
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
@@ -1398,10 +1161,8 @@ async function saveToDb(){
       const nome = (data.internalCode||'artigo')+'_'+Date.now()+'.jpg';
       const fotoOtimizada = await compressSmart(foto, 700, 0.72);
       const up = await api('uploadFoto',{ base64:fotoOtimizada, nomeFicheiro:nome });
-      data.fotoId  = up.id;
-      data.fotoUrl = up.url;
-      globalOriginalPhoto = up.url;
-      globalProcessedPhoto = up.url;
+      data.fotoId = up.id; data.fotoUrl = up.url;
+      globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
     }
     const payload = buildProdutoPayload(data);
     await api('guardarProduto', payload);
@@ -1428,11 +1189,8 @@ window.loadFromDb = function(i){
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   if(!(await confirmDialog("Eliminar produto '"+d.nome+"'?"))) return;
-  try{
-    await api('apagarProduto',{ codigo:d.codigo });
-    await carregarTudo();
-    setStatus("Produto eliminado.","success");
-  }catch(e){setStatus("Erro: "+e.message,"error")}
+  try{ await api('apagarProduto',{ codigo:d.codigo }); await carregarTudo(); setStatus("Produto eliminado.","success"); }
+  catch(e){setStatus("Erro: "+e.message,"error")}
 };
 window.queueFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
@@ -1473,14 +1231,10 @@ $("syncBancoBtn").addEventListener("click",async function(){
 
 function updateBancoCounts(){
   let all=0, fruta=0, legume=0;
-  bancoFruta.forEach(function(f){
-    all++;
-    if(f.tipo === 'legume') legume++;
-    else if(f.tipo === 'fruta') fruta++;
-  });
-  if($("bfCountAll"))   $("bfCountAll").textContent   = all;
+  bancoFruta.forEach(function(f){ all++; if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
+  if($("bfCountAll")) $("bfCountAll").textContent = all;
   if($("bfCountFruta")) $("bfCountFruta").textContent = fruta;
-  if($("bfCountLegume"))$("bfCountLegume").textContent= legume;
+  if($("bfCountLegume")) $("bfCountLegume").textContent = legume;
 }
 
 function renderBancoFruta(filtro){
@@ -1492,41 +1246,28 @@ function renderBancoFruta(filtro){
     if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false;
     return true;
   });
-
   updateBancoCounts();
-
   if(lista.length===0){
     let msg;
-    if(bancoFruta.length === 0){
-      msg = 'Nenhuma imagem no banco ainda.<br>Usa <b>📷 Fotografar para o banco</b> ou carrega fotos nas pastas <b>BancoFruta</b> / <b>BancoLegumes</b> do Drive e clica em <b>Sincronizar</b>.';
-    } else if(bancoTipoFiltro === 'fruta'){
-      msg = 'Sem frutas no banco com esse filtro.';
-    } else if(bancoTipoFiltro === 'legume'){
-      msg = 'Sem legumes no banco com esse filtro.';
-    } else {
-      msg = 'Sem resultados para «' + escapeHTML(filtro) + '».';
-    }
+    if(bancoFruta.length === 0) msg = 'Nenhuma imagem no banco ainda.<br>Usa <b>📷 Fotografar para o banco</b> ou carrega fotos nas pastas <b>BancoFruta</b> / <b>BancoLegumes</b> do Drive e clica em <b>Sincronizar</b>.';
+    else if(bancoTipoFiltro === 'fruta') msg = 'Sem frutas no banco com esse filtro.';
+    else if(bancoTipoFiltro === 'legume') msg = 'Sem legumes no banco com esse filtro.';
+    else msg = 'Sem resultados para «' + escapeHTML(filtro) + '».';
     c.innerHTML = '<div class="bf-empty">'+msg+'</div>';
     return;
   }
-
   c.innerHTML = lista.map(function(f){
     const tipo = (f.tipo==='legume') ? 'legume' : (f.tipo==='fruta' ? 'fruta' : '');
     const tag = tipo ? '<span class="bf-tag '+tipo+'">'+(tipo==='legume'?'🥬 Legume':'🍎 Fruta')+'</span>' : '';
     return '<div class="bf-card" data-url="'+escapeHTML(f.fotoUrl)+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'">'
-         +   '<img src="'+escapeHTML(f.fotoUrl)+'" loading="lazy" alt="">'
-         +   tag
-         +   '<div class="bf-nome">'+escapeHTML(f.nome)+'</div>'
-         + '</div>';
+         + '<img src="'+escapeHTML(f.fotoUrl)+'" loading="lazy" alt="">' + tag
+         + '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
   }).join('');
-
   c.querySelectorAll('.bf-card').forEach(function(el){
     el.addEventListener('click',function(){
-      globalOriginalPhoto = el.dataset.url;
-      globalProcessedPhoto = el.dataset.url;
+      globalOriginalPhoto = el.dataset.url; globalProcessedPhoto = el.dataset.url;
       if(!$('product').value.trim()) $('product').value = el.dataset.nome;
-      updateCard();
-      $('bancoFrutaModal').classList.remove('show');
+      updateCard(); $('bancoFrutaModal').classList.remove('show');
       setStatus('Imagem aplicada.','success');
     });
   });
@@ -1549,9 +1290,9 @@ let _abrirBancoHandler = async function(e){
       await carregarTudo();
       renderBancoFruta($('buscaBancoFruta').value);
       if(r.removidos > 0) toast('🧹 '+r.removidos+' imagem(ns) órfã(s) removida(s).', 'info', 3500);
-      if(r.novos > 0)    toast('🆕 '+r.novos+' imagem(ns) nova(s).', 'info', 3500);
+      if(r.novos > 0) toast('🆕 '+r.novos+' imagem(ns) nova(s).', 'info', 3500);
     }
-  }catch(err){ }
+  }catch(err){}
 };
 $("abrirBancoFrutaBtn").addEventListener("click", _abrirBancoHandler);
 
@@ -1560,83 +1301,46 @@ $("processarBancoBtn").addEventListener("click", async function(){
   const total = bancoFruta.length;
   const confirmar = await confirmDialog("Recortar e comprimir as " + total + " imagens do banco?\n\nPode demorar vários minutos.\nNÃO feches a página durante o processo.");
   if(!confirmar) return;
-
-  const progresso = $("bancoProgress");
-  const barra = $("bancoProgressBar");
-  const texto = $("bancoProgressText");
+  const progresso = $("bancoProgress"); const barra = $("bancoProgressBar"); const texto = $("bancoProgressText");
   progresso.style.display = "block";
   $("processarBancoBtn").disabled = true;
-
-  let ok = 0, falhas = 0;
-  const falhados = [];
+  let ok = 0, falhas = 0; const falhados = [];
   const usarIA = $("useAI") && $("useAI").checked;
-
   for(let i = 0; i < bancoFruta.length; i++){
     const f = bancoFruta[i];
     const pct = Math.round((i / total) * 100);
     barra.style.width = pct + "%";
     texto.textContent = "🎨 " + (i + 1) + " / " + total + "  ·  " + f.nome;
-
     try{
       const resp = await fetch(f.fotoUrl);
       if(!resp.ok) throw new Error("HTTP " + resp.status);
       const blob = await resp.blob();
       const dataUrl = await new Promise(function(res, rej){
         const r = new FileReader();
-        r.onloadend = function(){ res(r.result); };
-        r.onerror = rej;
-        r.readAsDataURL(blob);
+        r.onloadend = function(){ res(r.result); }; r.onerror = rej; r.readAsDataURL(blob);
       });
-
       let semFundo = dataUrl;
       if(usarIA){
-        try{
-          semFundo = await removeBackgroundAI(dataUrl, null);
-        }catch(e){
-          console.warn("IA falhou em " + f.nome + ", uso simples:", e);
-          semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
-        }
-      }else{
+        try{ semFundo = await removeBackgroundAI(dataUrl, null); }
+        catch(e){ semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); }); }
+      } else {
         semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
       }
-
       const comprimida = await compressSmart(semFundo, 700, 0.72);
-
-      const r = await api('substituirFotoBanco', {
-        fotoId: f.fotoId,
-        base64: comprimida,
-        nome: f.nome,
-        tipo: f.tipo || 'fruta'
-      });
-
-      f.fotoId  = r.id;
-      f.fotoUrl = r.url;
+      const r = await api('substituirFotoBanco', { fotoId: f.fotoId, base64: comprimida, nome: f.nome, tipo: f.tipo || 'fruta' });
+      f.fotoId = r.id; f.fotoUrl = r.url;
       if(r.tipo) f.tipo = r.tipo;
       ok++;
-    }catch(e){
-      console.error("Erro em " + f.nome + ":", e);
-      falhas++;
-      falhados.push(f.nome);
-    }
+    }catch(e){ console.error("Erro em " + f.nome + ":", e); falhas++; falhados.push(f.nome); }
   }
-
   barra.style.width = "100%";
   texto.textContent = "✅ Concluído — " + ok + " processadas, " + falhas + " falhadas.";
   $("processarBancoBtn").disabled = false;
-
   try{ await carregarTudo(); }catch(e){}
   renderBancoFruta($("buscaBancoFruta").value);
-
-  setTimeout(function(){
-    progresso.style.display = "none";
-    barra.style.width = "0%";
-  }, 6000);
-
-  if(falhas > 0){
-    toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length>3?"...":"") + ")", "warning", 9000);
-  }else{
-    toast("🎉 " + ok + " imagens recortadas e comprimidas!", "success", 5000);
-  }
+  setTimeout(function(){ progresso.style.display = "none"; barra.style.width = "0%"; }, 6000);
+  if(falhas > 0) toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length>3?"...":"") + ")", "warning", 9000);
+  else toast("🎉 " + ok + " imagens recortadas e comprimidas!", "success", 5000);
 });
 
 $("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.target.value)});
@@ -1645,21 +1349,12 @@ $("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("banco
 
 let camStream = null;
 async function openCamera(){
-  if(camStream){
-    closeCamera();
-    await new Promise(function(r){ setTimeout(r, 200); });
-  }
+  if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
   const modal = $("cameraModal"); modal.classList.add("show");
   try{
-    camStream = await navigator.mediaDevices.getUserMedia({
-      video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} },
-      audio:false
-    });
+    camStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} }, audio:false });
     $("camVideo").srcObject = camStream;
-  }catch(e){
-    toast("Não foi possível aceder à câmara: "+e.message, "error");
-    closeCamera();
-  }
+  }catch(e){ toast("Não foi possível aceder à câmara: "+e.message, "error"); closeCamera(); }
 }
 function closeCamera(){
   if(camStream){ camStream.getTracks().forEach(function(t){t.stop()}); camStream = null }
@@ -1667,10 +1362,7 @@ function closeCamera(){
   $("cameraModal").classList.remove("show");
   setTimeout(function(){ fotoBancoModo = false; }, 300);
 }
-$("fotoBancoBtn").addEventListener("click", function(){
-  fotoBancoModo = true;
-  openCamera();
-});
+$("fotoBancoBtn").addEventListener("click", function(){ fotoBancoModo = true; openCamera(); });
 $("openCameraBtn").addEventListener("click",openCamera);
 $("camClose").addEventListener("click",closeCamera);
 
@@ -1682,59 +1374,36 @@ $("camSnap").addEventListener("click", async function(){
   c.width = w; c.height = h;
   c.getContext("2d").drawImage(v,0,0,w,h);
   const dataUrl = c.toDataURL("image/jpeg",0.92);
-
   if(fotoBancoModo){
-    fotoBancoModo = false;
-    closeCamera();
+    fotoBancoModo = false; closeCamera();
     setStatus("Foto capturada. A remover fundo…");
-
     let fotoFinal = dataUrl;
     if($("autoRemoveBg").checked){
-      try{
-        fotoFinal = await removeBackgroundSmart(dataUrl);
-        toast("✅ Fundo removido!", "success");
-      }catch(e){
-        toast("IA falhou, guardo foto original.", "warning");
-      }
+      try{ fotoFinal = await removeBackgroundSmart(dataUrl); toast("✅ Fundo removido!", "success"); }
+      catch(e){ toast("IA falhou, guardo foto original.", "warning"); }
     }
-
     const nomeSugerido = ($("product").value || "").trim().toUpperCase();
     const tipoSugerido = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
     const info = await pedirNomeTipoArtigo(nomeSugerido, tipoSugerido);
     if(!info){ setStatus("Guardar no banco cancelado.", "info"); return; }
-
-    const existe = bancoFruta.some(function(f){
-      return String(f.nome||"").toUpperCase() === info.nome;
-    });
+    const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
     if(existe){
       const substituir = await confirmDialog("Já existe uma imagem \"" + info.nome + "\" no banco. Substituir pela nova?");
       if(!substituir) return;
     }
-
-    try{
-      await guardarFotoBanco(info.nome, fotoFinal, info.tipo);
-      setStatus("✅ Guardado no banco.", "success");
-    }catch(e){
-      setStatus("Erro: " + e.message, "error");
-    }
+    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); setStatus("✅ Guardado no banco.", "success"); }
+    catch(e){ setStatus("Erro: " + e.message, "error"); }
     return;
   }
-
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
-  updateCard();
-  closeCamera();
-  setStatus("Foto capturada.","success");
-
+  updateCard(); closeCamera(); setStatus("Foto capturada.","success");
   if($("autoRemoveBg").checked){
     try {
       const semFundo = await removeBackgroundSmart(dataUrl);
-      globalProcessedPhoto = semFundo;
-      updateCard();
+      globalProcessedPhoto = semFundo; updateCard();
       toast("✅ Fundo removido!", "success");
       await perguntarGuardarNoBanco();
-    } catch(e) {
-      toast("Erro a remover fundo: " + e.message, "error");
-    }
+    } catch(e) { toast("Erro a remover fundo: " + e.message, "error"); }
   }
 });
 
@@ -1742,23 +1411,16 @@ async function perguntarGuardarNoBanco(){
   if(!globalProcessedPhoto) return;
   const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
   if(!querGuardar) return;
-
   const nomeBase = ($("product").value || "").trim().toUpperCase();
   const tipoSug = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
   const info = await pedirNomeTipoArtigo(nomeBase, tipoSug);
   if(!info) return;
-
-  const existe = bancoFruta.some(function(f){
-    return String(f.nome||"").toUpperCase() === info.nome;
-  });
+  const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
   if(existe){
     const substituir = await confirmDialog("Já existe uma imagem \""+info.nome+"\" no banco. Substituir pela nova?");
     if(!substituir) return;
   }
-
-  try{
-    await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo);
-  }catch(e){ }
+  try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
 }
 
 let scanner = null;
@@ -1768,32 +1430,15 @@ async function openScanner(){
   try{
     await scanner.start(
       { facingMode:"environment" },
-      { fps:10, qrbox:{width:280,height:180},
-        formatsToSupport:[
-          Html5QrcodeSupportedFormats.EAN_13,
-          Html5QrcodeSupportedFormats.EAN_8,
-          Html5QrcodeSupportedFormats.UPC_A,
-          Html5QrcodeSupportedFormats.UPC_E,
-          Html5QrcodeSupportedFormats.CODE_128,
-          Html5QrcodeSupportedFormats.QR_CODE
-        ]},
-      function(decoded){
-        $("ean").value = String(decoded).toUpperCase();
-        updateEanBadge(); updateCard();
-        setStatus("Código lido: "+decoded,"success");
-        closeScanner();
-      },
+      { fps:10, qrbox:{width:280,height:180}, formatsToSupport:[ Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.UPC_A, Html5QrcodeSupportedFormats.UPC_E, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.QR_CODE ]},
+      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido: "+decoded,"success"); closeScanner(); },
       function(){}
     );
-  }catch(e){
-    toast("Câmara indisponível: "+e.message, "error");
-    closeScanner();
-  }
+  }catch(e){ toast("Câmara indisponível: "+e.message, "error"); closeScanner(); }
 }
 async function closeScanner(){
   try{ if(scanner){ await scanner.stop(); await scanner.clear() } }catch(e){}
-  scanner = null;
-  $("scannerModal").classList.remove("show");
+  scanner = null; $("scannerModal").classList.remove("show");
 }
 $("scanEanBtn").addEventListener("click",openScanner);
 $("scanClose").addEventListener("click",closeScanner);
@@ -1853,58 +1498,31 @@ function removeBackgroundSimple(dataUrl,cb){
 
 let _bgAIModule = null;
 let _bgAILoading = null;
-
 async function loadBgAI() {
   if (_bgAIModule) return _bgAIModule;
   if (_bgAILoading) return _bgAILoading;
   _bgAILoading = (async function(){
-    try {
-      const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');
-      _bgAIModule = mod;
-      return mod;
-    } finally {
-      _bgAILoading = null;
-    }
+    try { const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm'); _bgAIModule = mod; return mod; }
+    finally { _bgAILoading = null; }
   })();
   return _bgAILoading;
 }
-
 async function removeBackgroundAI(dataUrl, onProgress) {
   const mod = await loadBgAI();
-  const blob = await mod.removeBackground(dataUrl, {
-    output: { format: 'image/png' },
-    progress: function(key, current, total) {
-      if (onProgress) onProgress(key, current, total);
-    }
-  });
-  return new Promise(function(resolve, reject){
-    const reader = new FileReader();
-    reader.onloadend = function(){ resolve(reader.result); };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+  const blob = await mod.removeBackground(dataUrl, { output: { format: 'image/png' }, progress: function(key, current, total) { if (onProgress) onProgress(key, current, total); } });
+  return new Promise(function(resolve, reject){ const reader = new FileReader(); reader.onloadend = function(){ resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(blob); });
 }
-
 async function removeBackgroundSmart(dataUrl) {
   const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
   if (useAI) {
     try {
       return await removeBackgroundAI(dataUrl, function(key, cur, total){
-        if (String(key).indexOf('fetch') === 0) {
-          const pct = total > 0 ? Math.round((cur / total) * 100) : 0;
-          setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…");
-        } else {
-          setStatus("🤖 A processar imagem com IA…");
-        }
+        if (String(key).indexOf('fetch') === 0) { const pct = total > 0 ? Math.round((cur / total) * 100) : 0; setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…"); }
+        else { setStatus("🤖 A processar imagem com IA…"); }
       });
-    } catch(e) {
-      console.warn("IA falhou, uso algoritmo simples:", e);
-      toast("IA indisponível, uso remoção simples.", "warning");
-    }
+    } catch(e) { console.warn("IA falhou, uso algoritmo simples:", e); toast("IA indisponível, uso remoção simples.", "warning"); }
   }
-  return new Promise(function(resolve){
-    removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); });
-  });
+  return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); }); });
 }
 
 const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
@@ -1934,12 +1552,7 @@ function drawEAN13(svg,value){
   bits += "101";
   const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
   svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){
-    if(bits[i]!=="1") continue;
-    const r = document.createElementNS(ns,"rect");
-    r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black");
-    svg.appendChild(r);
-  }
+  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
 }
 function drawCode128(svg,text){
   const clean = String(text||""); if(!/^[\x20-\x7E]+$/.test(clean)) return;
@@ -1954,20 +1567,12 @@ function drawCode128(svg,text){
   }
   const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
   svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){
-    if(bits[i]!=="1") continue;
-    const r = document.createElementNS(ns,"rect");
-    r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black");
-    svg.appendChild(r);
-  }
+  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
 }
 
 function isLargeFormat(v){
   if(["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1) return true;
-  if(v==="custom"){
-    const w = parseFloat($("customWidth").value)||0, h = parseFloat($("customHeight").value)||0;
-    return w>=90 || h>=65;
-  }
+  if(v==="custom"){ const w = parseFloat($("customWidth").value)||0, h = parseFloat($("customHeight").value)||0; return w>=90 || h>=65; }
   return false;
 }
 function isFruitPromoFormat(v){return v==="frutaPromo125x80"||v==="frutaPromoA6"}
@@ -1988,10 +1593,7 @@ function applySizeClass(el,w,h){if(!el)return;el.classList.remove("size-tiny","s
 function setField(id,val){const el=$(id);if(el){el.value=val;updateCard()}}
 window.setField = setField;
 
-function switchMobileTab(tab) {
-  const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]');
-  if (btn) btn.click();
-}
+function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
 document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   btn.addEventListener('click', function(){
     document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
@@ -2001,9 +1603,40 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   });
 });
 
-/* ======================================================
-   AUTO-FIT: garante que o texto nunca corta nem sobrepõe
-   ====================================================== */
+/* ============================================================
+   ✅ APLICA TAMANHOS EM mm ÀS ETIQUETAS DE IMPRESSÃO
+   Isto GARANTE que o tamanho é sempre correto no papel, porque
+   não depende de container queries (que falham em @media print
+   em muitos browsers). Calcula tudo a partir da largura da etiqueta.
+   ============================================================ */
+function applyPrintSizes(card, dims){
+  if(!card || !dims || !dims.width) return;
+  const scale = dims.width / 70;   /* base = formato Amanhecer 70mm */
+  const set = function(sel, mm){
+    const el = card.querySelector(sel);
+    if(el) el.style.setProperty("font-size", (mm * scale).toFixed(3) + "mm", "important");
+  };
+  set(".store-text", 2.8);
+  set(".item-code", 2.4);
+  set(".product", 3.2);
+  set(".unit-price-text", 2.4);
+  set(".price", 6.5);
+  set(".price .unit-inline", 2.7);
+  set(".promo-tag", 2.8);
+  set(".old-price", 2.6);
+  set(".deposit-box", 1.9);
+  set(".extra-unit", 2.4);
+  set(".fruit-full-bar", 2.4);
+  set(".ean-text", 1.9);
+  set(".promo-text", 1.9);
+  set(".print-date", 1.7);
+  set(".fp-label", 2.4);
+  set(".fp-price", 6.5);
+  set(".fp-unit", 2.4);
+  set(".deposit-box", 1.9);
+}
+
+/* Auto-fit produto (encolhe se o texto não couber) */
 function autoFitTextSync(el){
   if(!el) return;
   el.style.fontSize = "";
@@ -2013,24 +1646,6 @@ function autoFitTextSync(el){
     const cur = parseFloat(getComputedStyle(el).fontSize);
     if(!cur || cur<3) break;
     el.style.fontSize = (cur*0.94)+"px"; i++; void el.offsetHeight;
-  }
-}
-function autoFitAll(card){
-  if(!card) return;
-  /* product */
-  const prod = card.querySelector(".product");
-  if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
-  /* price */
-  const price = card.querySelector(".price");
-  if(price){
-    price.style.fontSize = "";
-    const wrap = price.parentElement;
-    let i = 0;
-    while(wrap && wrap.scrollWidth > wrap.clientWidth + 1 && i < 20){
-      const cur = parseFloat(getComputedStyle(price).fontSize);
-      if(!cur || cur<4) break;
-      price.style.fontSize = (cur*0.93)+"px"; i++; void price.offsetHeight;
-    }
   }
 }
 function autoAdaptImage(card){
@@ -2056,8 +1671,6 @@ function reAdaptClone(clone){
   clone.classList.remove("img-tight","img-mini","img-hidden");
   const prod = clone.querySelector(".product");
   if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
-  const price = clone.querySelector(".price");
-  if(price){ price.style.fontSize = ""; autoFitAll(clone); }
   if(!clone.classList.contains("has-image")) return;
   if(clone.classList.contains("size-tiny")) return;
   const desc = clone.querySelector(".col-desc");
@@ -2074,93 +1687,51 @@ function reAdaptClone(clone){
 }
 
 function updateCapacityHint(){
-  const hint = document.getElementById("capacityHint");
-  if(!hint) return;
+  const hint = document.getElementById("capacityHint"); if(!hint) return;
   const capUnit = $("capacityUnit").value;
   const capNum = parseFloat($("capacity").value)||0;
   const priceNum = parsePrice($("price").value);
-
   if(capNum<=0 || priceNum===null){ hint.style.display="none"; return; }
-
   const info = calcUnitInfo(capUnit);
   const precoUnit = priceNum / (capNum * info.normalizar);
   hint.textContent = "→ " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
   hint.style.display = "block";
-
   const ratio = precoUnit / priceNum;
   if(ratio > 100 || ratio < 0.01){
-    hint.style.background = "#fff5e6";
-    hint.style.borderLeftColor = "#f6c23e";
-    hint.style.color = "#7c5a0c";
+    hint.style.background = "#fff5e6"; hint.style.borderLeftColor = "#f6c23e"; hint.style.color = "#7c5a0c";
     hint.textContent = "⚠️ Verifique a quantidade → " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
-  }else{
-    hint.style.background = "#eef4ff";
-    hint.style.borderLeftColor = "#084298";
-    hint.style.color = "#084298";
-  }
+  }else{ hint.style.background = "#eef4ff"; hint.style.borderLeftColor = "#084298"; hint.style.color = "#084298"; }
 }
 
 $("capacityUnit").dataset.last = $("capacityUnit").value;
-
 $("capacityUnit").addEventListener("change", function(){
   const prev = this.dataset.last || this.value;
   this.dataset.last = this.value;
   const capInput = $("capacity");
   const cur = parseFloat(capInput.value);
-
-  const grupo = function(u){
-    if(u==="g")    return "massa-pequena";
-    if(u==="peso") return "massa-grande";
-    if(u==="ml")   return "volume-ml";
-    if(u==="cl")   return "volume-cl";
-    if(u==="lt")   return "volume-grande";
-    return "especial";
-  };
+  const grupo = function(u){ if(u==="g")return"massa-pequena"; if(u==="peso")return"massa-grande"; if(u==="ml")return"volume-ml"; if(u==="cl")return"volume-cl"; if(u==="lt")return"volume-grande"; return"especial"; };
   const g1 = grupo(prev), g2 = grupo(this.value);
-  const isMassa  = function(g){ return g.indexOf("massa")===0; };
+  const isMassa = function(g){ return g.indexOf("massa")===0; };
   const isVolume = function(g){ return g.indexOf("volume")===0; };
-
-  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){
-    capInput.value = "";
-  }
+  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){ capInput.value = ""; }
   else if(cur > 0 && g1 !== g2){
     let novo = cur;
     if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
     if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
-    if(g1==="volume-ml" && g2==="volume-grande")   novo = cur / 1000;
-    if(g1==="volume-ml" && g2==="volume-cl")       novo = cur / 10;
-    if(g1==="volume-cl" && g2==="volume-grande")   novo = cur / 100;
-    if(g1==="volume-cl" && g2==="volume-ml")       novo = cur * 10;
-    if(g1==="volume-grande" && g2==="volume-ml")   novo = cur * 1000;
-    if(g1==="volume-grande" && g2==="volume-cl")   novo = cur * 100;
-    if(novo > 0){
-      capInput.value = String(Number(novo.toFixed(4)));
-    }
-  }
-  else if(!cur || cur <= 0){
-    switch(this.value){
-      case "g":    capInput.value = "500"; break;
-      case "cl":   capInput.value = "75";  break;
-      case "ml":   capInput.value = "500"; break;
-      case "dz":   capInput.value = "1";   break;
-      case "dose": capInput.value = "1";   break;
-    }
+    if(g1==="volume-ml" && g2==="volume-grande") novo = cur / 1000;
+    if(g1==="volume-ml" && g2==="volume-cl") novo = cur / 10;
+    if(g1==="volume-cl" && g2==="volume-grande") novo = cur / 100;
+    if(g1==="volume-cl" && g2==="volume-ml") novo = cur * 10;
+    if(g1==="volume-grande" && g2==="volume-ml") novo = cur * 1000;
+    if(g1==="volume-grande" && g2==="volume-cl") novo = cur * 100;
+    if(novo > 0){ capInput.value = String(Number(novo.toFixed(4))); }
+  } else if(!cur || cur <= 0){
+    switch(this.value){ case "g": capInput.value = "500"; break; case "cl": capInput.value = "75"; break; case "ml": capInput.value = "500"; break; case "dz": capInput.value = "1"; break; case "dose": capInput.value = "1"; break; }
   }
   updateCard();
 });
 
-(function(){
-  const eanInput = $("ean");
-  if(!eanInput) return;
-  eanInput.addEventListener("input", function(){
-    const pos = this.selectionStart;
-    const upper = this.value.toUpperCase();
-    if(this.value !== upper){
-      this.value = upper;
-      try { this.setSelectionRange(pos, pos); } catch(e){}
-    }
-  });
-})();
+(function(){ const eanInput = $("ean"); if(!eanInput) return; eanInput.addEventListener("input", function(){ const pos = this.selectionStart; const upper = this.value.toUpperCase(); if(this.value !== upper){ this.value = upper; try { this.setSelectionRange(pos, pos); } catch(e){} } }); })();
 
 function updateCardUnsafe(){
   const storeVal = $("store").value||"PATAIAS";
@@ -2178,9 +1749,7 @@ function updateCardUnsafe(){
   const capUnit = $("capacityUnit").value;
   const capNum = parseFloat($("capacity").value)||0;
   const card = $("mainLabelCard");
-
   if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
-
   if(isAmanhecer){
     card.style.width="380px"; card.style.height="214px";
     applySizeClass(card,70,38);
@@ -2193,41 +1762,33 @@ function updateCardUnsafe(){
     const prefix = isFP ? "💡 Fruta/Legumes Oportunidade" : "📐 Formato";
     $("badgeSheet").textContent = prefix + ": " + dims.width + " × " + dims.height + " mm";
   }
-
   $("cardStore").textContent = storeVal;
   setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
-
-  if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal }
-  else $("cardCode").style.display = "none";
-
+  if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal } else $("cardCode").style.display = "none";
   if(priceNum!==null){
     const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
-
     if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
       $("cardPromoTopRow").style.display = "flex";
       $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
       const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
       $("cardPromoTag").textContent = "-"+disc+"%";
-    }else $("cardPromoTopRow").style.display = "none";
-
+    } else $("cardPromoTopRow").style.display = "none";
     const info = calcUnitInfo(capUnit);
-
     if(capNum>0){
       $("cardPrice").textContent = fmt+" €";
       const precoUnit = priceNum / (capNum * info.normalizar);
       $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.unitLabel;
       $("cardUnitPrice").style.display = "block";
-    }else{
+    } else {
       $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.unitSuffix+'</span>';
       $("cardUnitPrice").style.display = "none";
     }
-  }else{
+  } else {
     const infoFb = calcUnitInfo(capUnit);
     $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>';
     $("cardPromoTopRow").style.display = "none";
     $("cardUnitPrice").style.display = "none";
   }
-
   if(isFP){
     const pu = $("promoUnit").value||"KG";
     const pm = $("promoMinQty").value||"2";
@@ -2237,7 +1798,6 @@ function updateCardUnsafe(){
     $("cardFpPromoUnit").textContent = "/ "+pu;
     $("cardFpPromoLabel").textContent = (pu==="KG") ? "LEVE "+pm+" KG OU MAIS" : "LEVE "+pm+" UN OU MAIS";
   }
-
   const org = ($("origem").value||"").trim().toUpperCase();
   const cat = ($("categoria").value||"").trim().toUpperCase();
   const cal = ($("calibre").value||"").trim().toUpperCase();
@@ -2245,41 +1805,31 @@ function updateCardUnsafe(){
   if(org) parts.push("Origem: "+org);
   if(cat) parts.push("Cat. "+cat);
   if(cal) parts.push("Cal. "+cal);
-  if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • ") }
-  else $("cardFruit").style.display = "none";
-
+  if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • ") } else $("cardFruit").style.display = "none";
   const dep = $("depositFeeSelect").value;
   const depVal = dep==="custom" ? $("customDepositInput").value.trim() : dep;
-  if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal }
-  else $("cardDeposit").style.display = "none";
-
+  if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal } else $("cardDeposit").style.display = "none";
   const eu = ($("unit").value||"").trim();
-  if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu }
-  else $("cardExtraUnit").style.display = "none";
-
+  if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu } else $("cardExtraUnit").style.display = "none";
   const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
   const photoBox = $("cardPhotoBox");
   if(activePhoto && !card.classList.contains("size-tiny")){
     card.classList.add("has-image");
     photoBox.classList.add("show");
     $("cardPhotoImg").src = activePhoto;
-  }else{
+  } else {
     card.classList.remove("has-image","img-tight","img-mini","img-hidden");
     photoBox.classList.remove("show");
   }
-
   const bcBox = $("cardBarcodeBox");
   if(barcodeToDraw && !card.classList.contains("size-tiny")){
     bcBox.classList.add("show");
     $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase();
     drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
-  }else bcBox.classList.remove("show");
-
+  } else bcBox.classList.remove("show");
   $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
   $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
-
   autoAdaptImage(card);
-  autoFitAll(card);
 }
 
 let _t = null;
@@ -2300,11 +1850,7 @@ function setStatus(msg,type){
   if(msg && (type==="error" || type==="success")){
     const now = Date.now();
     const isSame = (msg === _statusToastMsg) && (now - _statusToastTime < 4000);
-    if(!isSame){
-      toast(msg, type);
-      _statusToastMsg = msg;
-      _statusToastTime = now;
-    }
+    if(!isSame){ toast(msg, type); _statusToastMsg = msg; _statusToastTime = now; }
   }
   if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none" },3500);
 }
@@ -2371,13 +1917,10 @@ $("photo").addEventListener("change", async function(e){
     if($("autoRemoveBg").checked){
       try {
         const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
-        globalProcessedPhoto = semFundo;
-        updateCard();
+        globalProcessedPhoto = semFundo; updateCard();
         toast("✅ Fundo removido!", "success");
         await perguntarGuardarNoBanco();
-      } catch(e) {
-        toast("Erro: " + e.message, "error");
-      }
+      } catch(e) { toast("Erro: " + e.message, "error"); }
     }
   };
   r.readAsDataURL(file);
@@ -2387,8 +1930,7 @@ $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){if($(id))$(id).value=""});
   $("depositFeeSelect").value="";
-  $("capacityUnit").value="peso";
-  $("capacityUnit").dataset.last = "peso";
+  $("capacityUnit").value="peso"; $("capacityUnit").dataset.last = "peso";
   $("isPromoActive").checked = false; $("promoBox").style.display="none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
@@ -2401,19 +1943,9 @@ $("clearBtn").addEventListener("click", async function(){
   toast("Editor limpo.", "info");
 });
 
-$("offsetXRange").addEventListener("input",function(){
-  offsetX = parseFloat(this.value)||0; $("offsetXVal").textContent = offsetX+" mm";
-  applyOffsets(); Storage.set("balcao_offset_x",String(offsetX));
-});
-$("offsetYRange").addEventListener("input",function(){
-  offsetY = parseFloat(this.value)||0; $("offsetYVal").textContent = offsetY+" mm";
-  applyOffsets(); Storage.set("balcao_offset_y",String(offsetY));
-});
-$("resetOffsetBtn").addEventListener("click",function(){
-  offsetX = 0; offsetY = 6; applyOffsets();
-  Storage.set("balcao_offset_x","0"); Storage.set("balcao_offset_y","6");
-  setStatus("Ajustes restaurados (X=0, Y=6mm).","success");
-});
+$("offsetXRange").addEventListener("input",function(){ offsetX = parseFloat(this.value)||0; $("offsetXVal").textContent = offsetX+" mm"; applyOffsets(); Storage.set("balcao_offset_x",String(offsetX)); });
+$("offsetYRange").addEventListener("input",function(){ offsetY = parseFloat(this.value)||0; $("offsetYVal").textContent = offsetY+" mm"; applyOffsets(); Storage.set("balcao_offset_y",String(offsetY)); });
+$("resetOffsetBtn").addEventListener("click",function(){ offsetX = 0; offsetY = 6; applyOffsets(); Storage.set("balcao_offset_x","0"); Storage.set("balcao_offset_y","6"); setStatus("Ajustes restaurados (X=0, Y=6mm).","success"); });
 $("printCalibBtn").addEventListener("click",function(){
   const pz = $("printZone"); pz.innerHTML = "";
   const page = document.createElement("div"); page.className = "calib-sheet";
@@ -2422,7 +1954,8 @@ $("printCalibBtn").addEventListener("click",function(){
   setTimeout(function(){ window.print(); setTimeout(function(){pz.innerHTML=""},1500) },80);
 });
 
-function buildLabelClone(data,dims){
+/* buildLabelClone com forPrint -> aplica tamanhos em mm */
+function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
   setFormData(data); updateCardUnsafe();
   const card = $("mainLabelCard");
@@ -2436,6 +1969,8 @@ function buildLabelClone(data,dims){
   if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg,eanVal) }
   const prodEl = clone.querySelector(".product");
   if(prodEl) autoFitTextSync(prodEl);
+  /* ✅ Se for para imprimir, aplica tamanhos mm exatos */
+  if(forPrint) applyPrintSizes(clone, dims);
   setFormData(backup); updateCardUnsafe();
   return clone;
 }
@@ -2469,11 +2004,7 @@ function cleanupAfterPrint(){
     : "🖨️ Imprimir [F9]";
   $("printZone").innerHTML = "";
   $("proPrintOverlay").classList.remove("show");
-  if(_restoreQueueAfterPrint){
-    printQueue = _restoreQueueAfterPrint;
-    _restoreQueueAfterPrint = null;
-    renderQueue();
-  }
+  if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
 
 function getItemsPerPage(dims){
@@ -2526,7 +2057,7 @@ function triggerPrint(){
         page.style.justifyContent = "start";
         page.style.alignContent = "start";
         chunk.forEach(function(d){
-          const c = buildLabelClone(d,dims);
+          const c = buildLabelClone(d,dims,true); /* ✅ forPrint=true */
           c.style.setProperty("width",  dims.width  + "mm", "important");
           c.style.setProperty("height", dims.height + "mm", "important");
           c.style.setProperty("box-sizing", "border-box", "important");
@@ -2541,7 +2072,7 @@ function triggerPrint(){
     const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
     chunk.forEach(function(data,idx){
       const dims = {width:70,height:idx<3?38:40};
-      const c = buildLabelClone(data,dims);
+      const c = buildLabelClone(data,dims,true); /* ✅ forPrint=true */
       c.style.setProperty("width",  "70mm", "important");
       c.style.setProperty("height", idx<3?"38mm":"40mm", "important");
       c.style.setProperty("box-sizing","border-box", "important");
@@ -2607,7 +2138,7 @@ $("previewSheetBtn").addEventListener("click",function(){
         const page = document.createElement("div"); page.className = "preview-page-amanhecer";
         chunk.forEach(function(d,idx){
           const dims = {width:70,height:idx<3?38:40};
-          const clone = buildLabelClone(d,dims);
+          const clone = buildLabelClone(d,dims,true); /* pré-visualização usa mesmos tamanhos mm para ser fiel */
           clone.style.width = "70mm"; clone.style.height = idx<3?"38mm":"40mm";
           page.appendChild(clone);
         });
@@ -2625,7 +2156,7 @@ $("previewSheetBtn").addEventListener("click",function(){
       const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
       const grp = document.createElement("div"); grp.className = "preview-group-flex";
       g.items.forEach(function(d){
-        const clone = buildLabelClone(d,dims);
+        const clone = buildLabelClone(d,dims,true); /* idem */
         const scale = 3.2;
         clone.style.width = (dims.width*scale)+"px";
         clone.style.height = (dims.height*scale)+"px";
@@ -2651,28 +2182,19 @@ document.addEventListener("keydown",function(ev){
   }
 });
 
-/* ✅ BOOT — garante copies=21 para Amanhecer */
+/* ✅ BOOT */
 (async function boot(){
   try{
     applyOffsets();
     updateOrientationVisibility();
     updateCard();
     renderQueue();
-
-    /* FIX: sincroniza o nº de etiquetas com o formato inicial */
+    /* Garante nº de etiquetas correto no arranque */
     const fvInicial = $("presetSizes").value;
     $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
-
     await carregarTudo();
   }catch(err){ console.error("Erro arranque:",err) }
 })();
-
-/* Re-aplicar auto-fit quando a fonte/imagem muda */
-document.addEventListener("load", function(e){
-  if(e.target && e.target.tagName === "IMG" && e.target.id === "cardPhotoImg"){
-    autoAdaptImage($("mainLabelCard"));
-  }
-}, true);
 </script>
 </body>
 </html>
