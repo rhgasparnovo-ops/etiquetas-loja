@@ -190,7 +190,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
 .label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
 .label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
-/* Extra unit + deposit + fruit bar das small formats */
 #cardExtraUnit{font-size:clamp(7px,2.1cqw,13px);font-weight:700;line-height:1.15;margin-top:1px}
 .label-card.size-xl #cardExtraUnit{font-size:clamp(11px,2.3cqw,20px)!important}
 .label-card.size-large #cardExtraUnit{font-size:clamp(9px,2.4cqw,18px)!important}
@@ -208,7 +207,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+
 @media screen{#printZone{display:none!important}}
+
 @media print{
 .app{display:none!important}
 .sheet-preview,.pro-print-overlay{display:none!important}
@@ -217,25 +218,35 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 body{min-height:0!important;max-height:none!important;overflow:visible!important}
 #printZone,#printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
-#printZone .label-card{container-type:normal!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
+
+/* ✅ CORREÇÃO #1 — removido o padding desta regra genérica para não sobrepor às regras por coluna */
+#printZone .label-card{container-type:normal!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
+
 .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
 .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
 .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
 .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
-.print-sheet-amanhecer .label-card:nth-child(1),.print-sheet-amanhecer .label-card:nth-child(2),.print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
-.print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-.print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
-.print-sheet-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
-/* NOVO: paginação genérica por página */
+
+/* ✅ CORREÇÃO #2 — regras com #printZone prefixo para ganharem sempre (especificidade 1,3,0) */
+#printZone .print-sheet-amanhecer .label-card:nth-child(1),
+#printZone .print-sheet-amanhecer .label-card:nth-child(2),
+#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+#printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+#printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
+#printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
+
+/* ✅ CORREÇÃO #3 — paginação genérica mantém o padding padrão do label-card */
 .print-page-generic{display:grid!important;grid-auto-rows:auto!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important}
 .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
-.print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;flex:0 0 auto!important}
+.print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;flex:0 0 auto!important;padding:2px 4px!important;box-sizing:border-box!important}
+
 .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
 .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
 .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
 #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
 }
+
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
 .pro-print-box{min-width:300px;padding:24px;border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);display:grid;gap:10px;text-align:center}
@@ -263,7 +274,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .tab-badge{display:none;background:#c8102e;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
 .tab-badge.show{display:inline-block}
 
-/* ================= BANCO FRUTA/LEGUME - TABS ================= */
 .bf-modal-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .bf-modal-header h3{margin:0;font-size:17px;font-weight:900;color:#1a1f28}
 .bf-modal-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -277,7 +287,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .bf-search-row{margin-bottom:12px}
 .bf-empty{text-align:center;padding:30px 10px;color:#9aa4b0;font-style:italic;font-size:13px;line-height:1.5}
 
-/* ================= FOTOGRAFIA + BANCO ================= */
 .photo-action-btn{background:#fff;border:1.5px solid #176b3a;color:#176b3a;font-weight:800;margin-top:6px}
 .photo-action-btn:hover{background:#eaf7ef}
 .photo-bank-panel{margin-top:12px;padding:14px;background:linear-gradient(135deg,#eef4ff 0%,#dee9ff 100%);border:1.5px dashed #b6d4fe;border-radius:12px}
@@ -288,7 +297,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
 .pb-actions button:hover{background:#084298;color:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(8,66,152,.22);filter:none}
 .pb-hint{font-size:11px;color:#084298;margin-top:9px;line-height:1.4;opacity:.85}
 
-/* ================= TIPO SELECTOR MODAL ================= */
 .tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .tipo-selector button{background:#f8f9fa;border:2px solid #e0e5ea;border-radius:12px;padding:14px 10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;color:#5a6470;font-weight:800;font-size:13px;min-height:auto;width:auto;letter-spacing:.2px}
 .tipo-selector button:hover{border-color:#c8d0dc;background:#f0f2f5;transform:none;filter:none}
@@ -557,7 +565,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
           <input id="ean" type="text" style="text-transform:uppercase;border-color:#b6d4fe;background:#f8fbff">
           <button type="button" class="secondary" id="scanEanBtn" style="margin-top:6px;border-color:#084298;color:#084298">📷 Ler código de barras com a câmara</button>
 
-          <!-- ============== FOTOGRAFIA + BANCO (reorganizado) ============== -->
           <label for="photo">Fotografia do Produto</label>
           <input id="photo" type="file" accept="image/*">
           <button type="button" class="photo-action-btn" id="openCameraBtn">📷 Tirar foto agora</button>
@@ -684,7 +691,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
   </div>
 </div>
 
-<!-- Modal unificado: nome + tipo (fruta/legume) -->
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3 id="saveBancoTitle">📷 Guardar foto no banco</h3>
@@ -717,7 +723,6 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
   <button id="scanClose" class="secondary" style="width:auto;padding:10px 22px">✕ Fechar</button>
 </div>
 
-<!-- ======== BANCO DE FRUTAS E LEGUMES COM TABS ======== -->
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div class="bf-modal-header">
@@ -803,10 +808,6 @@ function confirmDialog(msg) {
   });
 }
 
-/**
- * Pede nome + tipo (fruta/legume) para guardar no banco.
- * Devolve {nome, tipo} ou null se cancelar.
- */
 function pedirNomeTipoArtigo(valorInicial, tipoInicial){
   return new Promise(function(resolve){
     const modal = document.getElementById("saveBancoModal");
@@ -921,7 +922,7 @@ function compressSmart(dataUrl, maxSize, quality) {
         for (let i = 3; i < px.length; i += 4) {
           if (px[i] < 250) { temTransparencia = true; break; }
         }
-      } catch(e) { /* crossOrigin pode bloquear */ }
+      } catch(e) { }
 
       if (temTransparencia) {
         ctx.clearRect(0, 0, w, h);
@@ -1022,7 +1023,6 @@ function setFormData(d){
   $("price").value = d.price||d.preco||"";
   $("oldPrice").value = d.oldPrice||"";
 
-  /* isPromoActive: aceita true/'true', ou inferir de oldPrice existente (retrocompatibilidade) */
   const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true')
                   || (d.isPromoActive === undefined && !!d.oldPrice);
   $("isPromoActive").checked = isPromo;
@@ -1032,7 +1032,6 @@ function setFormData(d){
   $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
   $("capacityUnit").dataset.last = $("capacityUnit").value;
 
-  /* Deposito: aceita 'depositFeeSelect' OU 'deposito' (nome antigo no backend) */
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
   const depFixos = ['', 'Acresce 0,10 € Volta'];
   if(depFixos.indexOf(depSalvo) >= 0){
@@ -1152,7 +1151,6 @@ function addToQueue(){
   printQueue.push({data:data,copies:copies}); renderQueue(); setStatus("Adicionado à fila!","success");
 }
 
-/* Payload completo para o backend (com todos os campos novos) */
 function buildProdutoPayload(d){
   return {
     codigo:      d.internalCode,
@@ -1330,7 +1328,6 @@ $("syncBancoBtn").addEventListener("click",async function(){
   }catch(e){setStatus("Erro: "+e.message,"error")}
 });
 
-/* ============ BANCO FRUTA / LEGUME (com tabs) ============ */
 function updateBancoCounts(){
   let all=0, fruta=0, legume=0;
   bancoFruta.forEach(function(f){
@@ -1399,7 +1396,6 @@ $("bfTabs").addEventListener("click", function(e){
   renderBancoFruta($("buscaBancoFruta").value);
 });
 
-/* Abrir banco: faz sync silencioso + abre modal */
 let _abrirBancoHandler = async function(e){
   if(e) e.preventDefault();
   $('bancoFrutaModal').classList.add('show');
@@ -1412,13 +1408,10 @@ let _abrirBancoHandler = async function(e){
       if(r.removidos > 0) toast('🧹 '+r.removidos+' imagem(ns) órfã(s) removida(s).', 'info', 3500);
       if(r.novos > 0)    toast('🆕 '+r.novos+' imagem(ns) nova(s).', 'info', 3500);
     }
-  }catch(err){ /* silencioso */ }
+  }catch(err){ }
 };
 $("abrirBancoFrutaBtn").addEventListener("click", _abrirBancoHandler);
 
-/* ============================================================
-   🎨 Processar TODAS as fotos do banco: recortar fundo + comprimir
-   ============================================================ */
 $("processarBancoBtn").addEventListener("click", async function(){
   if(bancoFruta.length === 0){ toast("Banco vazio — não há fotos para processar.", "warning"); return; }
   const total = bancoFruta.length;
@@ -1507,7 +1500,6 @@ $("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.tar
 $("fecharBancoFruta").addEventListener("click",function(){$("bancoFrutaModal").classList.remove("show")});
 $("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("bancoFrutaModal"))$("bancoFrutaModal").classList.remove("show")});
 
-/* ============ CÂMARA ============ */
 let camStream = null;
 async function openCamera(){
   if(camStream){
@@ -1563,7 +1555,6 @@ $("camSnap").addEventListener("click", async function(){
       }
     }
 
-    /* sugerir nome já escrito + tipo conforme a tab ativa */
     const nomeSugerido = ($("product").value || "").trim().toUpperCase();
     const tipoSugerido = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
     const info = await pedirNomeTipoArtigo(nomeSugerido, tipoSugerido);
@@ -1624,10 +1615,9 @@ async function perguntarGuardarNoBanco(){
 
   try{
     await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo);
-  }catch(e){ /* toast já mostrado */ }
+  }catch(e){ }
 }
 
-/* ============ SCANNER ============ */
 let scanner = null;
 async function openScanner(){
   $("scannerModal").classList.add("show");
@@ -1774,7 +1764,6 @@ async function removeBackgroundSmart(dataUrl) {
   });
 }
 
-/* ============ CÓDIGO DE BARRAS ============ */
 const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
 const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
 const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
@@ -2140,7 +2129,6 @@ function updateCard(){
   },16);
 }
 
-/* setStatus com anti-spam (evita repetir o mesmo toast em <4s) */
 let _statusToastMsg = '', _statusToastTime = 0;
 function setStatus(msg,type){
   const el = $("appStatus"); if(!el) return;
@@ -2309,7 +2297,6 @@ function validateBeforePrint(){
   return true;
 }
 
-/* Guarda fila da BD para restaurar em cleanupAfterPrint (fix #8) */
 let _restoreQueueAfterPrint = null;
 
 function cleanupAfterPrint(){
@@ -2327,9 +2314,8 @@ function cleanupAfterPrint(){
   }
 }
 
-/* Calcula quantas etiquetas cabem numa página A4 (210×297) para um dado formato */
 function getItemsPerPage(dims){
-  const pageW = 210, pageH = 290; /* margem de segurança 7mm em baixo */
+  const pageW = 210, pageH = 290;
   const cols = Math.max(1, Math.floor(pageW / dims.width));
   const rows = Math.max(1, Math.floor(pageH / dims.height));
   return cols * rows;
