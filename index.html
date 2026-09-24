@@ -100,13 +100,43 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:20px}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;padding:10px;overflow:hidden}
-.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:75%}
+
+/* ============ LABEL CARD ============ */
+.label-card{
+  background:#fff!important;
+  border:1px solid #333;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  position:relative!important;
+  border-radius:2px;
+  padding:2px 4px!important;
+  container-type:inline-size;
+  --header-h:12%;
+  --img-pad:1px;
+  --gap-main:4px;
+  --img-scale:75%;
+}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
-.header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:4mm}
+.header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:4mm;min-width:0}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain}
-.main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) auto minmax(0,0.85fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0}
+
+.main-content{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) auto minmax(0,0.85fr);
+  align-items:center!important;
+  width:100%;
+  flex:1 1 auto;
+  gap:var(--gap-main);
+  overflow:hidden;
+  margin:1px 0;
+  min-height:0;
+}
 .label-card.has-image:not(.size-tiny) .main-content{grid-template-columns:minmax(0,1.1fr) auto minmax(0,0.9fr)}
 .label-card.img-tight .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.8fr)}
 .label-card.img-mini .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,0.6fr)}
@@ -114,23 +144,48 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.img-hidden .main-content{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
+
 .col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:2px}
 .col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 4px;justify-self:center;align-self:center}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
-.col-image img{width:100%;height:100%;max-width:var(--img-scale,75%);max-height:var(--img-scale,75%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
+.col-image img{
+  width:100%;height:100%;
+  max-width:var(--img-scale,75%);
+  max-height:var(--img-scale,75%);
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  margin:auto;
+  background:transparent;
+}
 .store-text{font-size:clamp(7px,2.2cqw,11px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:2px}
-.product{font-weight:900;color:#000;line-height:1.02;overflow:hidden;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.06em;max-height:100%;min-width:0;width:100%;font-size:clamp(9px,3.4cqw,20px);word-break:normal;overflow-wrap:anywhere}
+.product{
+  font-weight:900;color:#000;line-height:1.02;
+  overflow:hidden;text-align:left;
+  display:flex;flex-wrap:wrap;
+  align-content:center;align-items:center;justify-content:flex-start;
+  column-gap:.28em;row-gap:.06em;
+  max-height:100%;min-width:0;width:100%;
+  font-size:clamp(9px,3.4cqw,20px);
+  word-break:normal;overflow-wrap:anywhere;
+}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .unit-price-text{font-size:clamp(7px,2.3cqw,13px);color:#c8102e;font-weight:900;line-height:1.1;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:1px}
 .old-price{font-size:clamp(6px,2cqw,12px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
 .promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 4px}
-.price{font-size:clamp(20px,9cqw,52px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em}
+.price{
+  font-size:clamp(20px,9cqw,52px);
+  font-weight:900;color:#000;line-height:1;
+  white-space:nowrap;letter-spacing:-.02em;
+  display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;
+}
 .price .unit-inline{font-size:.42em;font-weight:800;color:#333;letter-spacing:0;line-height:1}
 .deposit-box{font-size:clamp(5.5px,1.8cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.1;margin-top:1px;display:inline-block}
+#cardExtraUnit{font-size:clamp(7px,2.1cqw,13px);font-weight:700;line-height:1.15;margin-top:1px}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2.1cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:14%;overflow:hidden}
 .barcode-container.show{display:flex!important}
@@ -152,6 +207,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
 .label-card.layout-fruit-promo .product{font-size:clamp(12px,3.6cqw,26px)!important}
+
+/* Size variants */
 .label-card.size-tiny{--header-h:18%;--img-scale:70%}
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5.5cqw,14px)!important;line-height:1.02}
@@ -178,6 +235,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-large .promo-tag{font-size:clamp(10px,3cqw,20px)!important;padding:2px 6px}
 .label-card.size-large .old-price{font-size:clamp(9px,2.6cqw,17px)!important}
 .label-card.size-large .fruit-full-bar{font-size:clamp(9px,2.2cqw,15px)!important}
+.label-card.size-large #cardExtraUnit{font-size:clamp(9px,2.4cqw,18px)!important}
 .label-card.size-xl{--header-h:12%;--gap-main:10px;--img-pad:3px;--img-scale:100%}
 .label-card.size-xl .product{font-size:clamp(22px,4.8cqw,52px)!important}
 .label-card.size-xl .price{font-size:clamp(44px,11cqw,110px)!important}
@@ -190,9 +248,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-xl .ean-text{font-size:clamp(10px,1.8cqw,14px)!important}
 .label-card.size-xl .promo-text{font-size:clamp(9px,1.6cqw,14px)!important}
 .label-card.size-xl .print-date{font-size:clamp(9px,1.5cqw,13px)!important}
-#cardExtraUnit{font-size:clamp(7px,2.1cqw,13px);font-weight:700;line-height:1.15;margin-top:1px}
 .label-card.size-xl #cardExtraUnit{font-size:clamp(11px,2.3cqw,20px)!important}
-.label-card.size-large #cardExtraUnit{font-size:clamp(9px,2.4cqw,18px)!important}
+
+/* Sheet preview */
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -210,43 +268,152 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 
 @media screen{#printZone{display:none!important}}
 
+/* ==================== PRINT ==================== */
 @media print{
-.app{display:none!important}
-.sheet-preview,.pro-print-overlay{display:none!important}
-#printZone{display:block!important;margin:0!important;padding:0!important}
-@page{margin:0!important;size:210mm 297mm!important}
-html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-body{min-height:0!important;max-height:none!important;overflow:visible!important}
-#printZone,#printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
+  @page{size:210mm 297mm;margin:0!important}
 
-/* ✅ CORREÇÃO #1 — removido o padding desta regra genérica para não sobrepor às regras por coluna */
-#printZone .label-card{container-type:normal!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
+  html,body{
+    margin:0!important;padding:0!important;
+    background:#fff!important;
+    width:210mm!important;
+    min-height:0!important;max-height:none!important;
+    overflow:visible!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
 
-.print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
-.print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
-.print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
-.print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
+  .app,
+  .sheet-preview,
+  .pro-print-overlay,
+  .modal,
+  .toast-container,
+  .confirm-overlay,
+  .name-modal,
+  .mobile-tab-bar { display:none!important }
 
-/* ✅ CORREÇÃO #2 — regras com #printZone prefixo para ganharem sempre (especificidade 1,3,0) */
-#printZone .print-sheet-amanhecer .label-card:nth-child(1),
-#printZone .print-sheet-amanhecer .label-card:nth-child(2),
-#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
-#printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-#printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:9.5mm!important}
-#printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:9.5mm!important}
+  #printZone{display:block!important;margin:0!important;padding:0!important}
 
-/* ✅ CORREÇÃO #3 — paginação genérica mantém o padding padrão do label-card */
-.print-page-generic{display:grid!important;grid-auto-rows:auto!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important}
-.print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
-.print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;flex:0 0 auto!important;padding:2px 4px!important;box-sizing:border-box!important}
+  #printZone *{
+    transform:none!important;
+    -webkit-transform:none!important;
+    zoom:1!important;
+    animation:none!important;
+    transition:none!important;
+  }
 
-.calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
-.calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
-.calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
-.calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
-#printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
+  /* ✅ Mantém container-type para os cqw funcionarem (crucial!) */
+  #printZone .label-card{
+    box-shadow:none!important;
+    border-radius:0!important;
+    box-sizing:border-box!important;
+    page-break-inside:avoid!important;
+    break-inside:avoid!important;
+  }
+
+  /* ============ AMANHECER ============ */
+  .print-sheet-amanhecer{
+    display:grid!important;
+    grid-template-columns:70mm 70mm 70mm!important;
+    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
+    gap:0!important;
+    padding:0!important;
+    width:210mm!important;
+    height:278mm!important;
+    margin-left:var(--offset-x)!important;
+    margin-top:var(--offset-y)!important;
+    page-break-inside:avoid!important;
+    overflow:hidden!important;
+  }
+  .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
+  .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
+
+  #printZone .print-sheet-amanhecer .label-card{
+    width:70mm!important;
+    border:1px solid transparent!important;
+    box-shadow:none!important;
+    margin:0!important;
+    padding:2px 4px!important;
+    overflow:hidden!important;
+  }
+
+  #printZone .print-sheet-amanhecer .label-card:nth-child(1),
+  #printZone .print-sheet-amanhecer .label-card:nth-child(2),
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3){
+    height:38mm!important;
+    padding-top:3mm!important;
+  }
+  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){
+    height:40mm!important;
+  }
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){
+    padding-left:9.5mm!important;
+  }
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){
+    padding-right:9.5mm!important;
+  }
+
+  /* ============ GENÉRICOS ============ */
+  .print-page-generic{
+    display:grid!important;
+    gap:0!important;
+    width:210mm!important;
+    margin-left:var(--offset-x)!important;
+    margin-top:var(--offset-y)!important;
+    page-break-after:always!important;
+    break-after:page!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  .print-page-generic:last-child{
+    page-break-after:avoid!important;
+    break-after:avoid!important;
+    margin-bottom:0!important;
+  }
+  #printZone .print-page-generic .label-card{
+    border:1px solid #222!important;
+    box-shadow:none!important;
+    overflow:hidden!important;
+    page-break-inside:avoid!important;
+    break-inside:avoid!important;
+    margin:0!important;
+    padding:2px 4px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* ============ CALIBRAÇÃO ============ */
+  .calib-sheet{
+    display:grid!important;
+    grid-template-columns:70mm 70mm 70mm!important;
+    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
+    gap:0!important;
+    padding:0!important;
+    width:210mm!important;
+    height:278mm!important;
+    margin-left:var(--offset-x)!important;
+    margin-top:var(--offset-y)!important;
+    overflow:hidden!important;
+  }
+  .calib-cell{
+    border:1px dashed #d33!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    font:900 14px Arial!important;
+    color:#c8102e!important;
+    background:#fff5f5!important;
+  }
+  .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
+  .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
+
+  #printZone > *:last-child{
+    page-break-after:avoid!important;
+    break-after:avoid!important;
+    margin-bottom:0!important;
+    padding-bottom:0!important;
+  }
 }
 
+/* ==================== OVERLAYS/MODAIS ==================== */
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
 .pro-print-box{min-width:300px;padding:24px;border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);display:grid;gap:10px;text-align:center}
@@ -599,7 +766,7 @@ body{min-height:0!important;max-height:none!important;overflow:visible!important
       </details>
 
       <section class="panel tab-el tab-editar">
-        <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="1"></div></div>
+        <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="21"></div></div>
         <div id="appStatus" role="status" aria-live="polite"></div>
         <div class="actions">
           <button class="success-btn" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
@@ -871,30 +1038,6 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
   }
 }
 
-function compressImage(dataUrl, maxSize, quality) {
-  maxSize = maxSize || 1000;
-  quality = quality || 0.85;
-  return new Promise(function(resolve){
-    const img = new Image();
-    img.onload = function(){
-      let w = img.width, h = img.height;
-      if (w > maxSize || h > maxSize) {
-        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
-        else       { w = Math.round(w * maxSize / h); h = maxSize; }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.onerror = function(){ resolve(dataUrl); };
-    img.src = dataUrl;
-  });
-}
-
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || 700;
   quality = quality || 0.72;
@@ -1023,7 +1166,7 @@ function setFormData(d){
   $("price").value = d.price||d.preco||"";
   $("oldPrice").value = d.oldPrice||"";
 
-  const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true')
+  const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true' || d.isPromoActive === 'TRUE')
                   || (d.isPromoActive === undefined && !!d.oldPrice);
   $("isPromoActive").checked = isPromo;
   $("promoBox").style.display = isPromo ? "block" : "none";
@@ -1858,15 +2001,36 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   });
 });
 
+/* ======================================================
+   AUTO-FIT: garante que o texto nunca corta nem sobrepõe
+   ====================================================== */
 function autoFitTextSync(el){
   if(!el) return;
   el.style.fontSize = "";
   const parent = el.parentElement; if(!parent) return;
   let i = 0; void el.offsetHeight;
-  while(parent.scrollHeight > parent.clientHeight+1 && i<18){
+  while(parent.scrollHeight > parent.clientHeight+1 && i<24){
     const cur = parseFloat(getComputedStyle(el).fontSize);
-    if(!cur || cur<4) break;
+    if(!cur || cur<3) break;
     el.style.fontSize = (cur*0.94)+"px"; i++; void el.offsetHeight;
+  }
+}
+function autoFitAll(card){
+  if(!card) return;
+  /* product */
+  const prod = card.querySelector(".product");
+  if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
+  /* price */
+  const price = card.querySelector(".price");
+  if(price){
+    price.style.fontSize = "";
+    const wrap = price.parentElement;
+    let i = 0;
+    while(wrap && wrap.scrollWidth > wrap.clientWidth + 1 && i < 20){
+      const cur = parseFloat(getComputedStyle(price).fontSize);
+      if(!cur || cur<4) break;
+      price.style.fontSize = (cur*0.93)+"px"; i++; void price.offsetHeight;
+    }
   }
 }
 function autoAdaptImage(card){
@@ -1887,29 +2051,26 @@ function autoAdaptImage(card){
   if(!isCut()) return;
   card.classList.remove("img-mini"); card.classList.add("img-hidden");
 }
-
 function reAdaptClone(clone){
   if(!clone) return;
   clone.classList.remove("img-tight","img-mini","img-hidden");
   const prod = clone.querySelector(".product");
   if(prod){ prod.style.fontSize = ""; autoFitTextSync(prod); }
+  const price = clone.querySelector(".price");
+  if(price){ price.style.fontSize = ""; autoFitAll(clone); }
   if(!clone.classList.contains("has-image")) return;
   if(clone.classList.contains("size-tiny")) return;
   const desc = clone.querySelector(".col-desc");
   if(!desc) return;
   const isCut = function(){ return desc.scrollHeight > desc.clientHeight + 1; };
   if(!isCut()) return;
-  clone.classList.add("img-tight");
-  void clone.offsetWidth;
+  clone.classList.add("img-tight"); void clone.offsetWidth;
   if(prod) autoFitTextSync(prod);
   if(!isCut()) return;
-  clone.classList.remove("img-tight");
-  clone.classList.add("img-mini");
-  void clone.offsetWidth;
+  clone.classList.remove("img-tight"); clone.classList.add("img-mini"); void clone.offsetWidth;
   if(prod) autoFitTextSync(prod);
   if(!isCut()) return;
-  clone.classList.remove("img-mini");
-  clone.classList.add("img-hidden");
+  clone.classList.remove("img-mini"); clone.classList.add("img-hidden");
 }
 
 function updateCapacityHint(){
@@ -2118,6 +2279,7 @@ function updateCardUnsafe(){
   $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
 
   autoAdaptImage(card);
+  autoFitAll(card);
 }
 
 let _t = null;
@@ -2361,6 +2523,8 @@ function triggerPrint(){
         page.style.display = "grid";
         page.style.gridTemplateColumns = "repeat("+perRow+", "+dims.width+"mm)";
         page.style.gridAutoRows = dims.height + "mm";
+        page.style.justifyContent = "start";
+        page.style.alignContent = "start";
         chunk.forEach(function(d){
           const c = buildLabelClone(d,dims);
           c.style.setProperty("width",  dims.width  + "mm", "important");
@@ -2487,15 +2651,28 @@ document.addEventListener("keydown",function(ev){
   }
 });
 
+/* ✅ BOOT — garante copies=21 para Amanhecer */
 (async function boot(){
   try{
     applyOffsets();
     updateOrientationVisibility();
     updateCard();
     renderQueue();
+
+    /* FIX: sincroniza o nº de etiquetas com o formato inicial */
+    const fvInicial = $("presetSizes").value;
+    $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
+
     await carregarTudo();
   }catch(err){ console.error("Erro arranque:",err) }
 })();
+
+/* Re-aplicar auto-fit quando a fonte/imagem muda */
+document.addEventListener("load", function(e){
+  if(e.target && e.target.tagName === "IMG" && e.target.id === "cardPhotoImg"){
+    autoAdaptImage($("mainLabelCard"));
+  }
+}, true);
 </script>
 </body>
 </html>
