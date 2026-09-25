@@ -42,6 +42,7 @@ button:active:not(:disabled){transform:scale(.97)}
 .save-btn:hover{box-shadow:0 5px 18px rgba(8,66,152,.38)}
 .email-btn{background:linear-gradient(135deg,#6b21a8 0%,#4c1d95 100%);color:#fff;border:none;font-size:14px;padding:11px;box-shadow:0 3px 12px rgba(107,33,168,.28)}
 .email-btn:hover{box-shadow:0 5px 18px rgba(107,33,168,.38)}
+.email-btn:disabled{opacity:.6;cursor:wait}
 .secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .secondary:hover{border-color:#c8d0dc;background:#fafbfc}
 .warn-btn{background:linear-gradient(135deg,#fff8e1 0%,#fff3c4 100%);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
@@ -121,7 +122,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .col-image.show{display:flex!important}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
-.item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1;margin-bottom:1px}
+/* v22 — código interno mais pequeno, mais acima e com espaço */
+.item-code{font-size:clamp(4.5px,1.4cqw,7.5px);font-weight:900;color:#111;line-height:1;margin-bottom:5px;letter-spacing:.3px;opacity:.85;align-self:flex-start;padding-bottom:1px}
 .product{font-weight:900;color:#000;line-height:1.05;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);word-break:normal;overflow-wrap:anywhere}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%}
 .unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:#c8102e;font-weight:900;line-height:1.05;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
@@ -159,7 +161,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 .label-card.size-tiny .price .unit-inline{font-size:.45em}
-.label-card.size-tiny .item-code{font-size:clamp(5px,2.6cqw,9px)!important}
+.label-card.size-tiny .item-code{font-size:clamp(4px,2.1cqw,7px)!important;margin-bottom:3px}
 .label-card.size-tiny .store-text{font-size:clamp(5px,2.8cqw,9px)!important}
 .label-card.size-tiny .brand-logo{max-height:95%}
 .label-card.size-small .product{font-size:clamp(9px,3.4cqw,18px)!important}
@@ -544,7 +546,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
               <div class="size-row">
                 <div>
                   <label for="capacity">Quantidade / Medida</label>
-                  <input id="capacity" type="number" min="0.001" step="0.001" value="1">
+                  <input id="capacity" type="number" min="0.001" step="0.001" value="">
                   <div id="capacityHint" style="font-size:11.5px;color:#084298;margin-top:5px;font-weight:800;display:none;padding:4px 8px;background:#eef4ff;border-radius:6px;border-left:3px solid #084298"></div>
                 </div>
                 <div>
@@ -651,9 +653,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
       <details class="drawer tab-el tab-fila" open>
         <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)</summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
             <button class="secondary" id="recarregarDbBtn" type="button" style="font-size:12px">🔄 Recarregar</button>
             <button class="secondary" id="syncBancoBtn" type="button" style="font-size:12px">🔄 Sincronizar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
             <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
@@ -796,11 +801,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v19';
+const CACHE_KEY = 'balcao_cache_v22';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
 const THUMB_SIZE   = 200;
+
+/* v22 — funções não-idempotentes (nunca repetir em caso de timeout) */
+const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 
@@ -855,6 +863,7 @@ function pedirEmail(){
     const inpTo = document.getElementById("emailDestino");
     const inpSub = document.getElementById("emailAssunto");
     const inpBody = document.getElementById("emailCorpo");
+    let fechado = false;
     try {
       inpTo.value = localStorage.getItem('balcao_email_destino') || '';
       inpSub.value = localStorage.getItem('balcao_email_assunto') || 'Etiquetas de Preços';
@@ -862,6 +871,8 @@ function pedirEmail(){
     }catch(e){}
     modal.classList.add("show"); setTimeout(function(){ inpTo.focus(); }, 50);
     function fechar(r){
+      if(fechado) return;
+      fechado = true;
       modal.classList.remove("show");
       document.getElementById("emailCancel").onclick = null;
       document.getElementById("emailConfirm").onclick = null;
@@ -887,6 +898,11 @@ function pedirEmail(){
 }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
 function thumbUrl(fotoId, size){ if(!fotoId) return ''; const s = size || THUMB_SIZE; return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s; }
+function extrairFotoIdDoUrl(url){
+  if(!url || url.indexOf('http') !== 0) return '';
+  const m = String(url).match(/\/d\/([^=\/?#]+)/);
+  return m ? m[1] : '';
+}
 
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || IMG_MAX_SIZE; quality = quality || IMG_QUALITY;
@@ -943,7 +959,9 @@ async function removeBackgroundSmart(dataUrl){
 }
 async function api(fn, payload, retries){
   payload = payload || {};
-  if(retries === undefined) retries = 2;
+  if(retries === undefined){
+    retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
+  }
   try {
     const resp = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload }) });
     const texto = await resp.text();
@@ -1021,7 +1039,8 @@ function getFormData(){
     unit:$("unit").value, promoStart:$("promoStart").value, promoEnd:$("promoEnd").value,
     ean:$("ean").value.trim().toUpperCase(), autoRemoveBg:$("autoRemoveBg").checked, useAI:$("useAI").checked,
     originalPhoto:globalOriginalPhoto, processedPhoto:globalProcessedPhoto,
-    promoMinQty:$("promoMinQty").value, promoUnit:$("promoUnit").value, promoPrice:$("promoPrice").value
+    promoMinQty:$("promoMinQty").value, promoUnit:$("promoUnit").value, promoPrice:$("promoPrice").value,
+    fotoId: '', fotoUrl: ''
   };
 }
 function setFormData(d){
@@ -1038,7 +1057,7 @@ function setFormData(d){
   const unidade = d.capacityUnit||d.unidade||"peso";
   $("capacityUnit").value = unidade;
   const capSalva = (d.capacity !== undefined && d.capacity !== "") ? d.capacity : (d.capacidade !== undefined && d.capacidade !== "" ? d.capacidade : "");
-  $("capacity").value = capSalva !== "" ? capSalva : (DEFAULTS_UNIDADE[unidade] || "1");
+  $("capacity").value = capSalva !== "" ? capSalva : "";
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
   if(['', 'Acresce 0,10 € Volta'].indexOf(depSalvo) >= 0){ $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none"; }
   else if(depSalvo){ $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block"; }
@@ -1143,7 +1162,8 @@ function calcUnitInfo(capUnit){
     default:        return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
   }
 }
-const DEFAULTS_UNIDADE = { peso:"1", g:"1", lt:"1", cl:"0.75", ml:"1", un:"1", dz:"1", meia_dz:"1", dose:"1" };
+/* v22 — KG e gramas ficam em branco por defeito */
+const DEFAULTS_UNIDADE = { peso:"", g:"", lt:"1", cl:"0.75", ml:"1", un:"1", dz:"1", meia_dz:"1", dose:"1" };
 function renderQueue(){
   const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
   const tb = document.getElementById("tabQueueBadge");
@@ -1191,6 +1211,22 @@ async function verificarProdutoEmBackground(){
 }
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
 window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
+
+/* v22 — preserva fotoUrl/fotoId quando a foto já vem do Drive (banco) */
+async function resolverFotoParaPayload(d){
+  let fotoId = d.fotoId || "";
+  let fotoUrl = d.fotoUrl || "";
+  const foto = d.processedPhoto || d.originalPhoto;
+  if(!foto) return { fotoId: "", fotoUrl: "" };
+  if(foto.indexOf('http') === 0){
+    fotoUrl = foto;
+    if(!fotoId){ const extra = extrairFotoIdDoUrl(foto); if(extra) fotoId = extra; }
+    return { fotoId: fotoId, fotoUrl: fotoUrl };
+  }
+  const up = await api('uploadFoto', { base64: await compressSmart(foto), nomeFicheiro:(d.internalCode||'artigo')+'_'+Date.now()+'.jpg' });
+  return { fotoId: up.id, fotoUrl: up.url };
+}
+
 window.saveQueueItem = async function(i){
   const item = printQueue[i]; if(!item){ toast("Item não encontrado.", "error"); return; }
   const d = item.data;
@@ -1199,16 +1235,12 @@ window.saveQueueItem = async function(i){
   if(existente){ const substituir = await confirmDialog("Já existe um produto \""+d.product+"\". Substituir?"); if(!substituir) return; }
   const t0 = Date.now(); setStatus("A guardar…");
   try{
-    let fotoId = d.fotoId || "", fotoUrl = d.fotoUrl || "";
-    const foto = d.processedPhoto || d.originalPhoto;
-    if(foto && foto.indexOf('http') !== 0){
-      const up = await api('uploadFoto', { base64: await compressSmart(foto), nomeFicheiro:(d.internalCode||'artigo')+'_'+Date.now()+'.jpg' });
-      fotoId = up.id; fotoUrl = up.url;
-    }
-    const payload = buildProdutoPayload(d); payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
+    const { fotoId, fotoUrl } = await resolverFotoParaPayload(d);
+    const payload = buildProdutoPayload(d);
+    payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
     await api('guardarProduto', payload);
     item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
-    item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
+    if(fotoUrl){ item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl; }
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
@@ -1232,13 +1264,12 @@ async function saveToDb(){
   if(!data.product && !data.internalCode){ setStatus("Preencha um nome ou código.","error"); return; }
   const t0 = Date.now(); setStatus("A guardar…");
   try{
-    const foto = data.processedPhoto || data.originalPhoto;
-    if(foto && foto.indexOf('http')!==0){
-      setStatus("A enviar foto…");
-      const up = await api('uploadFoto',{ base64: await compressSmart(foto), nomeFicheiro:(data.internalCode||'artigo')+'_'+Date.now()+'.jpg' });
-      data.fotoId = up.id; data.fotoUrl = up.url; globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
-    }
-    const payload = buildProdutoPayload(data); setStatus("A gravar…");
+    setStatus("A preparar foto…");
+    const { fotoId, fotoUrl } = await resolverFotoParaPayload(data);
+    if(fotoUrl){ globalOriginalPhoto = fotoUrl; globalProcessedPhoto = fotoUrl; }
+    const payload = buildProdutoPayload(data);
+    payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
+    setStatus("A gravar…");
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
@@ -1287,7 +1318,9 @@ function renderBancoFruta(filtro){
     const tipo = (f.tipo==='legume') ? 'legume' : 'fruta';
     const tag = '<span class="bf-tag '+tipo+'">'+(tipo==='legume'?'🥬 Legume':'🍎 Fruta')+'</span>';
     const thumb = f.fotoId ? thumbUrl(f.fotoId, THUMB_SIZE) : f.fotoUrl;
-    return '<div class="bf-card" data-url="'+escapeHTML(f.fotoUrl)+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'"><img src="'+escapeHTML(thumb)+'" loading="lazy" decoding="async" alt="" onerror="this.onerror=null;this.src=\''+escapeHTML(f.fotoUrl)+'\'">' + tag + '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
+    /* v22 — aplicar sempre a versão redimensionada (600px) na etiqueta */
+    const applyUrl = f.fotoId ? thumbUrl(f.fotoId, 600) : f.fotoUrl;
+    return '<div class="bf-card" data-url="'+escapeHTML(applyUrl)+'" data-fotoid="'+escapeHTML(f.fotoId||'')+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'"><img src="'+escapeHTML(thumb)+'" loading="lazy" decoding="async" alt="" onerror="this.onerror=null;this.src=\''+escapeHTML(f.fotoUrl)+'\'">' + tag + '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
   }).join('');
   c.querySelectorAll('.bf-card').forEach(function(el){
     el.addEventListener('click',function(){
@@ -1407,7 +1440,7 @@ function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
   const s = Math.min(dims.width/70, dims.height/38) * (card.classList.contains("layout-fruit-promo") ? 0.8 : 1);
   const set = function(sel, mm){ const el = card.querySelector(sel); if(el) el.style.setProperty("font-size", (mm * s).toFixed(3) + "mm", "important"); };
-  set(".store-text", 2.8); set(".item-code", 2.4); set(".product", 3.2);
+  set(".store-text", 2.8); set(".item-code", 1.9); set(".product", 3.2);
   set(".unit-price-text", 2.2); set(".price", 6.5); set(".price .unit-inline", 2.7);
   set(".promo-tag", 2.8); set(".old-price", 2.6); set(".deposit-box", 1.7);
   set(".extra-unit", 2.2); set(".fruit-full-bar", 2.2); set(".ean-text", 1.8);
@@ -1657,6 +1690,9 @@ function construirPaginasA4(container, groups, amanhecerQueue){
     container.appendChild(wrapper);
   }
 }
+/* v22 — respeita sempre o formato de cada produto guardado */
+function _fmtDoItem(q, editorFmt){ return q.data.presetSizes || q.data.formato || editorFmt; }
+
 function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
@@ -1672,7 +1708,7 @@ function triggerPrint(){
     for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:editorFmt });
   } else {
     printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||editorFmt;
+      const fmt = _fmtDoItem(q, editorFmt);
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
@@ -1768,7 +1804,7 @@ async function gerarPDFBlob(){
     for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:editorFmt });
   } else {
     printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||editorFmt;
+      const fmt = _fmtDoItem(q, editorFmt);
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
@@ -1900,44 +1936,65 @@ function blobToBase64(blob){
     reader.readAsDataURL(blob);
   });
 }
+
+/* Envio de email — sem duplicados */
+let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
+  if(_emailSending){
+    toast("Email já está a ser enviado…", "warning");
+    return;
+  }
   const info = await pedirEmail();
   if(!info) return;
-  setStatus("A gerar PDF… aguarde.");
-  toast("📄 A gerar o PDF das etiquetas…", "info", 4000);
-  let blob;
-  try { blob = await gerarPDFBlob(); }
-  catch(e){
-    setStatus("Erro a gerar PDF: " + e.message, "error");
-    toast("Não foi possível gerar o PDF: " + e.message, "error", 6000);
-    return;
-  }
-  if(!blob || blob.size < 500){
-    setStatus("O PDF saiu vazio.", "error");
-    toast("O PDF não foi gerado corretamente.", "error", 6000);
-    return;
-  }
-  setStatus("A converter o PDF…");
-  let base64;
-  try { base64 = await blobToBase64(blob); }
-  catch(e){ setStatus("Erro a preparar o PDF: " + e.message, "error"); return; }
-  setStatus("A enviar o email…");
-  toast("📧 A enviar o email para " + info.destino + "…", "info", 8000);
+
+  _emailSending = true;
+  const btn = $("emailLabelsBtn");
+  const btnTxtOriginal = btn ? btn.textContent : '';
+  if(btn){ btn.disabled = true; btn.textContent = "⏳ A enviar email…"; }
+
   try {
-    await api('enviarEtiquetasEmail', {
-      destino: info.destino,
-      assunto: info.assunto,
-      corpo: info.corpo,
-      pdfBase64: base64,
-      nomeFicheiro: "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf"
-    });
-    setStatus("✅ Email enviado para " + info.destino, "success");
-    toast("✅ Email enviado com sucesso para " + info.destino, "success", 7000);
-  } catch(e){
-    setStatus("Erro a enviar email: " + e.message, "error");
-    toast("Erro a enviar email: " + e.message, "error", 7000);
+    setStatus("A gerar PDF… aguarde.");
+    toast("📄 A gerar o PDF das etiquetas…", "info", 4000);
+    let blob;
+    try { blob = await gerarPDFBlob(); }
+    catch(e){
+      setStatus("Erro a gerar PDF: " + e.message, "error");
+      toast("Não foi possível gerar o PDF: " + e.message, "error", 6000);
+      return;
+    }
+    if(!blob || blob.size < 500){
+      setStatus("O PDF saiu vazio.", "error");
+      toast("O PDF não foi gerado corretamente.", "error", 6000);
+      return;
+    }
+    setStatus("A converter o PDF…");
+    let base64;
+    try { base64 = await blobToBase64(blob); }
+    catch(e){ setStatus("Erro a preparar o PDF: " + e.message, "error"); return; }
+
+    setStatus("A enviar o email…");
+    toast("📧 A enviar o email para " + info.destino + "…", "info", 8000);
+
+    try {
+      await api('enviarEtiquetasEmail', {
+        destino: info.destino,
+        assunto: info.assunto,
+        corpo: info.corpo,
+        pdfBase64: base64,
+        nomeFicheiro: "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf"
+      });
+      setStatus("✅ Email enviado para " + info.destino, "success");
+      toast("✅ Email enviado com sucesso para " + info.destino, "success", 7000);
+    } catch(e){
+      setStatus("Erro a enviar email: " + e.message, "error");
+      toast("Erro a enviar email: " + e.message, "error", 7000);
+    }
+  } finally {
+    _emailSending = false;
+    if(btn){ btn.disabled = false; btn.textContent = btnTxtOriginal || "📧 Enviar etiquetas por Email (PDF)"; }
   }
 }
+
 let _statusToastMsg = '', _statusToastTime = 0;
 function setStatus(msg, type){
   const el = $("appStatus"); if(!el) return;
@@ -2016,6 +2073,28 @@ $("syncBancoBtn").addEventListener("click", async function(){
   try{ setStatus("A sincronizar banco…"); await api('sincronizarBancoFruta'); await carregarTudo(); setStatus("✅ Sincronizado.","success"); }
   catch(e){ setStatus("Erro: "+e.message,"error"); }
 });
+
+/* v22 — NOVO botão: otimizar todas as imagens do banco */
+$("otimizarBancoBtn").addEventListener("click", async function(){
+  if(!(await confirmDialog("Otimizar TODAS as imagens do banco?\n\nAs fotos serão redimensionadas (máx. 320 px) e recomprimidas, tornando o carregamento muito mais rápido.\n\nAs imagens originais serão substituídas no Drive."))) return;
+  const btn = this; const t0 = btn.textContent;
+  btn.disabled = true; btn.textContent = "⏳ A otimizar…";
+  setStatus("A otimizar imagens do banco… aguarde (pode demorar 1-2 min).");
+  toast("📉 A otimizar imagens…", "info", 6000);
+  try{
+    const r = await api('otimizarBancoFruta');
+    const msg = r && r.mensagem ? r.mensagem : ('Otimizadas: ' + ((r && r.total) || 0));
+    setStatus("✅ " + msg, "success");
+    toast("✅ " + msg, "success", 6000);
+    await carregarTudo();
+  } catch(e){
+    setStatus("Erro: " + e.message, "error");
+    toast("Erro a otimizar: " + e.message, "error", 7000);
+  } finally {
+    btn.disabled = false; btn.textContent = t0;
+  }
+});
+
 $("clearQueueBtn").addEventListener("click", async function(){
   if(await confirmDialog("Limpar fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
 });
@@ -2094,7 +2173,8 @@ $("previewSheetBtn").addEventListener("click", function(){
     for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:$("presetSizes").value });
   } else {
     printQueue.forEach(function(q){
-      for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:q.data.presetSizes||"amanhecer" });
+      const fmt = _fmtDoItem(q, "amanhecer");
+      for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
   if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return; }
@@ -2171,7 +2251,8 @@ $("isPromoActive").addEventListener("change", function(){ $("promoBox").style.di
 $("depositFeeSelect").addEventListener("change", function(){ $("customDepositInput").style.display = (this.value === "custom") ? "block" : "none"; updateCard(); });
 $("capacityUnit").addEventListener("change", function(){
   const capInput = $("capacity"); const def = DEFAULTS_UNIDADE[this.value];
-  capInput.value = (def !== undefined) ? def : "1"; updateCard();
+  capInput.value = (def !== undefined) ? def : "";
+  updateCard();
 });
 $("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
@@ -2198,7 +2279,7 @@ $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre"].forEach(function(id){ if($(id)) $(id).value = ""; });
   $("depositFeeSelect").value = "";
-  $("capacityUnit").value = "peso"; $("capacity").value = DEFAULTS_UNIDADE["peso"];
+  $("capacityUnit").value = "peso"; $("capacity").value = "";
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -2285,7 +2366,9 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
     renderQueue();
     const fvInicial = $("presetSizes").value;
     $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
-    if(!$("capacity").value){ $("capacity").value = DEFAULTS_UNIDADE[$("capacityUnit").value] || "1"; }
+    if(!$("capacity").value && DEFAULTS_UNIDADE[$("capacityUnit").value]){
+      $("capacity").value = DEFAULTS_UNIDADE[$("capacityUnit").value];
+    }
     await carregarTudo();
   }catch(err){ console.error("Erro no arranque:", err); }
 })();
