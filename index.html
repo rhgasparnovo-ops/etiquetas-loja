@@ -183,35 +183,98 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+
 @media screen{#printZone{display:none!important}}
+
+/* ============== OTIMIZAÇÃO DA FOLHA DE IMPRESSÃO ============== */
 @media print{
-  @page{size:210mm 297mm;margin:0!important}
+  @page{size:A4 portrait; margin:0!important}
   html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;min-height:0!important;max-height:none!important;overflow:visible!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.mobile-tab-bar{display:none!important}
   #printZone{display:block!important;margin:0!important;padding:0!important}
   #printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
-  .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
-  .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
-  .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
-  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
-  #printZone .print-sheet-amanhecer .label-card:nth-child(1),
-  #printZone .print-sheet-amanhecer .label-card:nth-child(2),
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
-  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important;position:relative!important;top:var(--col-left-y)!important}
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important;position:relative!important;top:var(--col-right-y)!important}
-  .print-page-generic{display:grid!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important;justify-content:center!important;align-content:start!important}
-  .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
-  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
-  .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
+  
+  /* Folha Oficial Amanhecer - Com Paddings para evitar cortes */
+  .print-sheet-amanhecer {
+     width: 210mm !important;
+     height: 297mm !important;
+     box-sizing: border-box !important;
+     padding-top: var(--offset-y) !important;
+     padding-left: var(--offset-x) !important;
+     page-break-inside: avoid !important;
+     page-break-after: always !important;
+     break-after: page !important;
+     overflow: hidden !important;
+     background: #fff !important;
+  }
+  .print-sheet-amanhecer-grid {
+     display: grid !important;
+     grid-template-columns: 70mm 70mm 70mm !important;
+     grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+     width: 210mm !important;
+     height: 278mm !important;
+  }
+  .print-sheet-amanhecer-grid .label-card{border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
+  .print-sheet-amanhecer-grid .label-card:nth-child(1),
+  .print-sheet-amanhecer-grid .label-card:nth-child(2),
+  .print-sheet-amanhecer-grid .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+  .print-sheet-amanhecer-grid .label-card:nth-child(n+4){height:40mm!important}
+  
+  /* Ajustes independentes de cada coluna para a folha Amanhecer */
+  .print-sheet-amanhecer-grid .label-card:nth-child(3n+1) { transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
+  .print-sheet-amanhecer-grid .label-card:nth-child(3n) { transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
+
+  /* Impressão Formatos Genéricos */
+  .print-page-generic {
+     display: flex !important;
+     flex-direction: column !important;
+     align-items: center !important;
+     width: 210mm !important;
+     height: 297mm !important;
+     box-sizing: border-box !important;
+     padding-top: calc(3mm + var(--offset-y)) !important;
+     padding-left: var(--offset-x) !important;
+     page-break-inside: avoid !important;
+     page-break-after: always !important;
+     break-after: page !important;
+     overflow: hidden !important;
+     background: #fff !important;
+  }
+  .generic-grid {
+     display: grid !important;
+     justify-content: center !important;
+     align-content: start !important;
+  }
+  .generic-grid .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
+
+  /* Folha de Calibração */
+  .calib-sheet {
+     width: 210mm !important;
+     height: 297mm !important;
+     box-sizing: border-box !important;
+     padding-top: var(--offset-y) !important;
+     padding-left: var(--offset-x) !important;
+     page-break-inside: avoid !important;
+     page-break-after: always !important;
+     break-after: page !important;
+     overflow: hidden !important;
+     background: #fff !important;
+  }
+  .calib-grid {
+     display: grid !important;
+     grid-template-columns: 70mm 70mm 70mm !important;
+     grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+     width: 210mm !important;
+     height: 278mm !important;
+  }
   .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
-  .calib-sheet .calib-cell:nth-child(3n+1){margin-left:var(--margin-left)!important;transform:translateY(var(--col-left-y))!important}
-  .calib-sheet .calib-cell:nth-child(3n){margin-right:var(--margin-right)!important;transform:translateY(var(--col-right-y))!important}
-  .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
-  .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
-  #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
+  .calib-grid .calib-cell:nth-child(3n+1) { transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
+  .calib-grid .calib-cell:nth-child(3n) { transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
+  
+  #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;}
 }
+
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
 .pro-print-box{min-width:300px;padding:24px;border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);display:grid;gap:10px;text-align:center}
@@ -736,1494 +799,439 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v3';
+const CACHE_KEY = 'balcao_cache_v5'; 
 
 function toast(msg, type, duration) {
-  type = type || 'info';
-  duration = duration || (type === 'error' ? 5000 : 3000);
-  const c = document.getElementById('toastContainer');
-  if (!c) return;
-  const el = document.createElement('div');
-  el.className = 'toast ' + type;
-  el.textContent = msg;
-  c.appendChild(el);
-  requestAnimationFrame(function(){ el.classList.add('show'); });
-  setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, duration);
+  type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
+  const c = document.getElementById('toastContainer'); if (!c) return;
+  const el = document.createElement('div'); el.className = 'toast ' + type; el.textContent = msg;
+  c.appendChild(el); requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, duration);
 }
+
 function confirmDialog(msg) {
-  return new Promise(function(resolve){
+  return new Promise(resolve => {
     const ov = document.getElementById('confirmOverlay');
     document.getElementById('confirmMsg').textContent = msg;
     ov.classList.add('show');
-    function cleanup(r){ ov.classList.remove('show'); document.getElementById('confirmYes').onclick=null; document.getElementById('confirmNo').onclick=null; ov.onclick=null; resolve(r); }
-    document.getElementById('confirmYes').onclick = function(){ cleanup(true); };
-    document.getElementById('confirmNo').onclick  = function(){ cleanup(false); };
-    ov.onclick = function(e){ if (e.target === ov) cleanup(false); };
+    const cleanup = (r) => { ov.classList.remove('show'); document.getElementById('confirmYes').onclick=null; document.getElementById('confirmNo').onclick=null; ov.onclick=null; resolve(r); };
+    document.getElementById('confirmYes').onclick = () => cleanup(true);
+    document.getElementById('confirmNo').onclick  = () => cleanup(false);
+    ov.onclick = (e) => { if (e.target === ov) cleanup(false); };
   });
 }
+
 function pedirNomeTipoArtigo(valorInicial, tipoInicial){
-  return new Promise(function(resolve){
-    const modal = document.getElementById("saveBancoModal");
-    const input = document.getElementById("saveBancoName");
-    const boxTipo = document.getElementById("saveBancoTipo");
+  return new Promise(resolve => {
+    const modal = document.getElementById("saveBancoModal"), input = document.getElementById("saveBancoName"), boxTipo = document.getElementById("saveBancoTipo");
     input.value = String(valorInicial || "").toUpperCase();
     let tipoSel = (tipoInicial === 'legume') ? 'legume' : 'fruta';
-    function marcar(){ boxTipo.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.tipo === tipoSel); }); }
+    const marcar = () => boxTipo.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.tipo === tipoSel));
     marcar();
-    boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ tipoSel = b.dataset.tipo; marcar(); input.focus(); }; });
-    modal.classList.add("show");
-    setTimeout(function(){ input.focus(); input.select(); }, 50);
-    function fechar(r){
-      modal.classList.remove("show");
-      document.getElementById("saveBancoConfirm").onclick = null;
-      document.getElementById("saveBancoCancel").onclick = null;
-      input.onkeydown = null; modal.onclick = null;
-      boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = null; });
-      resolve(r);
-    }
-    document.getElementById("saveBancoConfirm").onclick = function(){
-      const v = (input.value || "").trim().toUpperCase();
-      if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
-      fechar({ nome: v, tipo: tipoSel });
-    };
-    document.getElementById("saveBancoCancel").onclick = function(){ fechar(null); };
-    input.onkeydown = function(e){ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("saveBancoConfirm").click(); } if(e.key==="Escape"){ e.preventDefault(); fechar(null); } };
-    modal.onclick = function(e){ if(e.target === modal) fechar(null); };
+    boxTipo.querySelectorAll('button').forEach(b => b.onclick = () => { tipoSel = b.dataset.tipo; marcar(); input.focus(); });
+    modal.classList.add("show"); setTimeout(() => { input.focus(); input.select(); }, 50);
+    const fechar = (r) => { modal.classList.remove("show"); resolve(r); };
+    document.getElementById("saveBancoConfirm").onclick = () => { const v = input.value.trim().toUpperCase(); if(!v) return toast("Escreva um nome.", "warning"); fechar({ nome: v, tipo: tipoSel }); };
+    document.getElementById("saveBancoCancel").onclick = () => fechar(null);
+    input.onkeydown = (e) => { if(e.key==="Enter") document.getElementById("saveBancoConfirm").click(); if(e.key==="Escape") fechar(null); };
   });
 }
+
 async function guardarFotoBanco(nome, dataUrl, tipo){
   setStatus("A guardar foto no banco…");
   try{
     const comprimida = await compressSmart(dataUrl, 700, 0.72);
     const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome, tipo: tipo });
-    bancoFruta = bancoFruta.filter(function(f){ return String(f.nome||"").toUpperCase() !== nome; });
+    bancoFruta = bancoFruta.filter(f => String(f.nome||"").toUpperCase() !== nome);
     bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url, tipo: r.tipo || tipo });
-    bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
-    renderBancoFruta($("buscaBancoFruta").value);
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
-    toast("✅ Foto guardada em " + ((tipo==='legume')?'Legumes':'Frutas') + ": " + r.nome, "success", 4500);
-  }catch(e){ toast("Erro ao guardar no banco: " + e.message, "error"); throw e; }
+    bancoFruta.sort((a,b) => String(a.nome).localeCompare(String(b.nome),'pt'));
+    renderBancoFruta(document.getElementById("buscaBancoFruta").value);
+    toast("✅ Foto guardada: " + r.nome, "success");
+  }catch(e){ toast("Erro: " + e.message, "error"); throw e; }
 }
-function compressSmart(dataUrl, maxSize, quality) {
-  maxSize = maxSize || 700; quality = quality || 0.72;
-  return new Promise(function(resolve){
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
+
+function compressSmart(dataUrl, maxSize = 700, quality = 0.72) {
+  return new Promise(resolve => {
+    const img = new Image(); img.crossOrigin = "anonymous";
+    img.onload = () => {
       let w = img.width, h = img.height;
-      if (w > maxSize || h > maxSize) {
-        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
-        else       { w = Math.round(w * maxSize / h); h = maxSize; }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
+      if (w > maxSize || h > maxSize) { if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; } else { w = Math.round(w * maxSize / h); h = maxSize; } }
+      const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
-      let temTransparencia = false;
-      try {
-        const tmp = document.createElement('canvas');
-        tmp.width = Math.min(w, 80); tmp.height = Math.min(h, 80);
-        const tctx = tmp.getContext('2d');
-        tctx.drawImage(img, 0, 0, tmp.width, tmp.height);
-        const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data;
-        for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { temTransparencia = true; break; } }
-      } catch(e) {}
-      if (temTransparencia) {
-        ctx.clearRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
-        let out = canvas.toDataURL('image/webp', quality);
-        if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png');
-        resolve(out);
-      } else {
-        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      }
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
     };
-    img.onerror = function(){ resolve(dataUrl); };
-    img.src = dataUrl;
+    img.onerror = () => resolve(dataUrl); img.src = dataUrl;
   });
 }
-/* ═══════════ API COM PROTEÇÃO DE ERROS DA GOOGLE ═══════════ */
-async function api(fn, payload, retries = 2) {
-  payload = payload || {};
+
+async function api(fn, payload = {}, retries = 2) {
   try {
-    const resp = await fetch(API_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload })
-    });
+    const resp = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload }) });
     const texto = await resp.text();
-    if(!resp.ok){
-      const amostra = texto.slice(0, 160).replace(/\s+/g,' ').trim();
-      throw new Error('HTTP ' + resp.status + (amostra ? ' — ' + amostra : ''));
-    }
-    if(texto.charAt(0) !== '{'){
-      const amostra = texto.slice(0, 200).replace(/\s+/g,' ').trim();
-      throw new Error('Resposta não-JSON (' + texto.length + ' bytes). Início: ' + (amostra || '(vazio)'));
-    }
-    let j;
-    try { j = JSON.parse(texto); }
-    catch(e){ throw new Error('JSON inválido: ' + e.message); }
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const j = JSON.parse(texto);
     if(!j.ok) throw new Error(j.error || 'Erro API');
     return j.data;
   } catch(e) {
-    // Se a Google bloquear o pedido, tenta novamente de forma silenciosa
-    if(retries > 0) {
-      console.warn(`[API] Google bloqueou pedido (${fn}). A tentar novamente em 1s...`);
-      await new Promise(r => setTimeout(r, 1000));
-      return api(fn, payload, retries - 1);
-    }
+    if(retries > 0) { await new Promise(r => setTimeout(r, 1000)); return api(fn, payload, retries - 1); }
     throw e;
   }
 }
 
-const $ = function(id){return document.getElementById(id)};
-let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, photoToken = 0;
-let fotoBancoModo = false;
-function escapeHTML(s){return String(s||"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
-
-const Storage = {
-  get:function(k,f){try{const v=localStorage.getItem(k);return v===null?f:v}catch(e){return f}},
-  set:function(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
-};
+const $ = id => document.getElementById(id);
+let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, photoToken = 0, fotoBancoModo = false;
+const escapeHTML = s => String(s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const Storage = { get: (k,f) => localStorage.getItem(k) || f, set: (k,v) => localStorage.setItem(k,v) };
 
 /* ============= CALIBRAÇÃO ============= */
-let offsetX    = parseFloat(Storage.get("balcao_offset_x","0"));    if(!isFinite(offsetX)) offsetX = 0;
-let offsetY    = parseFloat(Storage.get("balcao_offset_y","6"));    if(!isFinite(offsetY)) offsetY = 6;
-let colLeftY   = parseFloat(Storage.get("balcao_col_left_y","0"));  if(!isFinite(colLeftY)) colLeftY = 0;
-let colRightY  = parseFloat(Storage.get("balcao_col_right_y","0")); if(!isFinite(colRightY)) colRightY = 0;
-let marginLeft = parseFloat(Storage.get("balcao_margin_left_v2","4"));
-if(!isFinite(marginLeft)  || marginLeft  < 0 || marginLeft  > 15) marginLeft  = 4;
-let marginRight= parseFloat(Storage.get("balcao_margin_right_v2","4"));
-if(!isFinite(marginRight) || marginRight < 0 || marginRight > 15) marginRight = 4;
+let offsetX = parseFloat(Storage.get("balcao_offset_x","0")) || 0;
+let offsetY = parseFloat(Storage.get("balcao_offset_y","6")) || 6;
+let colLeftY = parseFloat(Storage.get("balcao_col_left_y","0")) || 0;
+let colRightY = parseFloat(Storage.get("balcao_col_right_y","0")) || 0;
+let marginLeft = Math.max(0, Math.min(15, parseFloat(Storage.get("balcao_margin_left_v2","4")) || 4));
+let marginRight= Math.max(0, Math.min(15, parseFloat(Storage.get("balcao_margin_right_v2","4")) || 4));
 
 function applyOffsets(){
-  document.documentElement.style.setProperty("--offset-x",    offsetX + "mm");
-  document.documentElement.style.setProperty("--offset-y",    offsetY + "mm");
-  document.documentElement.style.setProperty("--col-left-y",  colLeftY + "mm");
-  document.documentElement.style.setProperty("--col-right-y", colRightY + "mm");
-  document.documentElement.style.setProperty("--margin-left", marginLeft + "mm");
-  document.documentElement.style.setProperty("--margin-right",marginRight + "mm");
-  if($("offsetXRange"))    $("offsetXRange").value    = String(offsetX);
-  if($("offsetYRange"))    $("offsetYRange").value    = String(offsetY);
-  if($("colLeftYRange"))   $("colLeftYRange").value   = String(colLeftY);
-  if($("colRightYRange"))  $("colRightYRange").value  = String(colRightY);
-  if($("marginLeftRange")) $("marginLeftRange").value = String(marginLeft);
-  if($("marginRightRange"))$("marginRightRange").value= String(marginRight);
-  if($("offsetXVal"))    $("offsetXVal").textContent    = offsetX + " mm";
-  if($("offsetYVal"))    $("offsetYVal").textContent    = offsetY + " mm";
-  if($("colLeftYVal"))   $("colLeftYVal").textContent   = colLeftY + " mm";
-  if($("colRightYVal"))  $("colRightYVal").textContent  = colRightY + " mm";
-  if($("marginLeftVal")) $("marginLeftVal").textContent = marginLeft + " mm";
-  if($("marginRightVal"))$("marginRightVal").textContent= marginRight + " mm";
+  const s = document.documentElement.style;
+  s.setProperty("--offset-x", offsetX + "mm"); s.setProperty("--offset-y", offsetY + "mm");
+  s.setProperty("--col-left-y", colLeftY + "mm"); s.setProperty("--col-right-y", colRightY + "mm");
+  s.setProperty("--margin-left", marginLeft + "mm"); s.setProperty("--margin-right", marginRight + "mm");
+  ["offsetX","offsetY","colLeftY","colRightY","marginLeft","marginRight"].forEach(k => {
+    if($(`${k}Range`)) $(`${k}Range`).value = eval(k);
+    if($(`${k}Val`)) $(`${k}Val`).textContent = eval(k) + " mm";
+  });
 }
 
-let printQueue = [];
-let savedProducts = [];
-let bancoFruta = [];
-let bancoTipoFiltro = 'all';
+let printQueue = [], savedProducts = [], bancoFruta = [], bancoTipoFiltro = 'all';
 
-/* ═════════ CARREGAMENTO RÁPIDO ═════════ */
 async function carregarTudo(){
-  try{
-    const raw = localStorage.getItem(CACHE_KEY);
-    if(raw){
-      const c = JSON.parse(raw);
-      if(Array.isArray(c.produtos)){ savedProducts = c.produtos; renderDb(); }
-      if(Array.isArray(c.banco)){ bancoFruta = c.banco; renderBancoFruta($("buscaBancoFruta").value); }
-      if(c.t) setStatus('⚡ Cache de ' + new Date(c.t).toLocaleTimeString('pt-PT') + ' — a atualizar…');
-    }
-  }catch(e){}
-
+  try{ const raw = localStorage.getItem(CACHE_KEY); if(raw){ const c = JSON.parse(raw); savedProducts = c.produtos||[]; bancoFruta = c.banco||[]; renderDb(); renderBancoFruta($("buscaBancoFruta").value); } }catch(e){}
   setStatus('A atualizar do Drive…');
   let errProd = null, errBanco = null;
-  
-  // Agora faz um de cada vez para evitar bloquear a API da Google
-  const p = await api('listarProdutos').catch(function(e){ errProd = e.message; return null; });
-  await new Promise(r => setTimeout(r, 600)); // Pequena pausa de segurança
-  const f = await api('listarBancoFruta').catch(function(e){ errBanco = e.message; return null; });
-  
-  if(p) savedProducts = p;
-  if(f) bancoFruta = f;
+  const p = await api('listarProdutos').catch(e => { errProd = e.message; return null; });
+  await new Promise(r => setTimeout(r, 600)); 
+  const f = await api('listarBancoFruta').catch(e => { errBanco = e.message; return null; });
+  if(p) savedProducts = p; if(f) bancoFruta = f;
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-
   try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
-
-  if(errProd && errBanco) setStatus('❌ Erro ao ler do Drive: '+errProd, 'error');
-  else if(errProd || errBanco) setStatus('⚠️ Ligação parcial. '+(errProd||'')+(errBanco||''), 'error');
-  else setStatus('✅ Dados atualizados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success');
+  if(errProd && errBanco) setStatus('❌ Erro Drive: '+errProd, 'error'); else if(errProd || errBanco) setStatus('⚠️ Ligação parcial.', 'error'); else setStatus('✅ Dados atualizados.','success');
 }
 
-function getFormData(){return{
-  presetSizes:$("presetSizes").value,customWidth:$("customWidth").value,customHeight:$("customHeight").value,
-  store:$("store").value,
-  internalCode:$("internalCode").value.trim().toUpperCase(),product:$("product").value.trim().toUpperCase(),
-  origem:$("origem").value.trim().toUpperCase(),categoria:$("categoria").value.trim().toUpperCase(),
-  calibre:$("calibre").value.trim().toUpperCase(),
-  price:$("price").value,isPromoActive:$("isPromoActive").checked,oldPrice:$("oldPrice").value,
-  capacity:$("capacity").value,capacityUnit:$("capacityUnit").value,
-  depositFeeSelect:$("depositFeeSelect").value,customDepositInput:$("customDepositInput").value,
-  unit:$("unit").value,promoStart:$("promoStart").value,promoEnd:$("promoEnd").value,
-  ean:$("ean").value.trim().toUpperCase(),autoRemoveBg:$("autoRemoveBg").checked,useAI:$("useAI").checked,
-  originalPhoto:globalOriginalPhoto,processedPhoto:globalProcessedPhoto,
-  promoMinQty:$("promoMinQty").value,promoUnit:$("promoUnit").value,promoPrice:$("promoPrice").value
-}}
+function getFormData(){
+  return {
+    presetSizes:$("presetSizes").value, customWidth:$("customWidth").value, customHeight:$("customHeight").value,
+    store:$("store").value, internalCode:$("internalCode").value.trim().toUpperCase(), product:$("product").value.trim().toUpperCase(),
+    origem:$("origem").value.trim().toUpperCase(), categoria:$("categoria").value.trim().toUpperCase(), calibre:$("calibre").value.trim().toUpperCase(),
+    price:$("price").value, isPromoActive:$("isPromoActive").checked, oldPrice:$("oldPrice").value, capacity:$("capacity").value, capacityUnit:$("capacityUnit").value,
+    depositFeeSelect:$("depositFeeSelect").value, customDepositInput:$("customDepositInput").value, unit:$("unit").value, promoStart:$("promoStart").value, promoEnd:$("promoEnd").value,
+    ean:$("ean").value.trim().toUpperCase(), autoRemoveBg:$("autoRemoveBg").checked, useAI:$("useAI").checked,
+    originalPhoto:globalOriginalPhoto, processedPhoto:globalProcessedPhoto, promoMinQty:$("promoMinQty").value, promoUnit:$("promoUnit").value, promoPrice:$("promoPrice").value
+  };
+}
+
 function setFormData(d){
   if(!d) return;
-  $("presetSizes").value = d.presetSizes||d.formato||"amanhecer";
-  $("customWidth").value = d.customWidth||"70"; $("customHeight").value = d.customHeight||"38";
-  $("store").value = d.store||d.loja||"PATAIAS";
-  $("internalCode").value = d.internalCode||d.codigo||"";
-  $("product").value = d.product||d.nome||"";
-  $("origem").value = d.origem||"";
-  $("categoria").value = d.categoria||"";
-  $("calibre").value = d.calibre||"";
-  $("price").value = d.price||d.preco||"";
-  $("oldPrice").value = d.oldPrice||"";
+  $("presetSizes").value = d.presetSizes||d.formato||"amanhecer"; $("customWidth").value = d.customWidth||"70"; $("customHeight").value = d.customHeight||"38";
+  $("store").value = d.store||d.loja||"PATAIAS"; $("internalCode").value = d.internalCode||d.codigo||""; $("product").value = d.product||d.nome||"";
+  $("origem").value = d.origem||""; $("categoria").value = d.categoria||""; $("calibre").value = d.calibre||"";
+  $("price").value = d.price||d.preco||""; $("oldPrice").value = d.oldPrice||"";
   const isPromo = (d.isPromoActive === true || d.isPromoActive === 'true' || d.isPromoActive === 'TRUE') || (d.isPromoActive === undefined && !!d.oldPrice);
-  $("isPromoActive").checked = isPromo;
-  $("promoBox").style.display = isPromo ? "block" : "none";
-  $("capacity").value = d.capacity||d.capacidade||"";
-  $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
-  $("capacityUnit").dataset.last = $("capacityUnit").value;
+  $("isPromoActive").checked = isPromo; $("promoBox").style.display = isPromo ? "block" : "none";
+  $("capacity").value = d.capacity||d.capacidade||""; $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
-  const depFixos = ['', 'Acresce 0,10 € Volta'];
-  if(depFixos.indexOf(depSalvo) >= 0){
-    $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
-  }else if(depSalvo){
-    $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block";
-  }else{
-    $("depositFeeSelect").value = ""; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
-  }
-  $("unit").value = d.unit||"";
-  $("promoStart").value = d.promoStart||"";
-  $("promoEnd").value = d.promoEnd||"";
-  $("ean").value = (d.ean||"").toUpperCase();
-  $("autoRemoveBg").checked = d.autoRemoveBg!==false;
-  $("useAI").checked = d.useAI!==false;
-  $("promoMinQty").value = d.promoMinQty||"2";
-  $("promoUnit").value = d.promoUnit||"KG";
-  $("promoPrice").value = d.promoPrice||"";
-  globalOriginalPhoto = d.originalPhoto||d.fotoUrl||"";
-  globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
-  $("photo").value = "";
-  $("customDimensionsRow").style.display = ($("presetSizes").value==="custom") ? "grid" : "none";
-  updateOrientationVisibility();
-  updateCard();
+  if(['', 'Acresce 0,10 € Volta'].includes(depSalvo)){ $("depositFeeSelect").value = depSalvo; $("customDepositInput").style.display = "none"; }
+  else { $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block"; }
+  $("unit").value = d.unit||""; $("promoStart").value = d.promoStart||""; $("promoEnd").value = d.promoEnd||"";
+  $("ean").value = (d.ean||"").toUpperCase(); $("promoMinQty").value = d.promoMinQty||"2"; $("promoUnit").value = d.promoUnit||"KG"; $("promoPrice").value = d.promoPrice||"";
+  globalOriginalPhoto = d.originalPhoto||d.fotoUrl||""; globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
+  $("customDimensionsRow").style.display = ($("presetSizes").value==="custom") ? "grid" : "none"; updateOrientationVisibility(); updateCard();
 }
-function markFieldError(id,has){const el=$(id);if(!el)return;if(has)el.classList.add("input-error");else el.classList.remove("input-error")}
-function clearFieldErrors(){document.querySelectorAll(".input-error").forEach(function(el){el.classList.remove("input-error")})}
+
 function updateEanBadge(){
-  const badge = $("eanBadge"); const raw = $("ean").value.trim();
-  if(!raw){badge.style.display="none";return}
-  const clean = normalizeBarcode(raw); badge.style.display="inline-block";
-  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){badge.textContent="EAN-13 ✓";badge.className="bc-badge ok"}
-  else if(/^\d{14}$/.test(clean) && isValidEAN14(clean)){badge.textContent="EAN-14 ✓";badge.className="bc-badge ok"}
-  else if(/^[\x20-\x7E]+$/.test(clean)){badge.textContent="Code128";badge.className="bc-badge warn"}
-  else{badge.textContent="Inválido";badge.className="bc-badge err"}
+  const badge = $("eanBadge"), raw = normalizeBarcode($("ean").value);
+  if(!raw) return badge.style.display="none";
+  badge.style.display="inline-block";
+  if(/^\d{13}$/.test(raw) && isValidEAN13(raw)){ badge.textContent="EAN-13 ✓"; badge.className="bc-badge ok"; }
+  else if(/^\d{14}$/.test(raw) && isValidEAN14(raw)){ badge.textContent="EAN-14 ✓"; badge.className="bc-badge ok"; }
+  else if(/^[\x20-\x7E]+$/.test(raw)){ badge.textContent="Code128"; badge.className="bc-badge warn"; }
+  else { badge.textContent="Inválido"; badge.className="bc-badge err"; }
 }
-function setProductText(el,text){
-  if(!el) return;
-  el.innerHTML = "";
-  const raw = String(text||"").trim();
-  if(!raw){ ["NOME","DO","PRODUTO"].forEach(function(t){ var s=document.createElement("span"); s.className="w"; s.textContent=t; el.appendChild(s); }); return; }
-  const words = raw.split(/\s+/).filter(Boolean);
-  words.forEach(function(word){ const s = document.createElement("span"); s.className = "w"; s.textContent = word; el.appendChild(s); });
-}
+
 function calcUnitInfo(capUnit){
-  switch(capUnit){
-    case "peso": return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
-    case "g":    return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1/1000   };
-    case "lt":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1        };
-    case "cl":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/100    };
-    case "ml":   return { unitSuffix:"€/LT",  unitLabel:"€/LT",   normalizar:1/1000   };
-    case "un":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:1        };
-    case "dz":   return { unitSuffix:"€/UN",  unitLabel:"€/UN",   normalizar:12       };
-    case "dose": return { unitSuffix:"€/DOSE",unitLabel:"€/DOSE", normalizar:1        };
-    default:     return { unitSuffix:"€/KG",  unitLabel:"€/KG",   normalizar:1        };
-  }
+  const u = { "peso":["€/KG",1], "g":["€/KG",1/1000], "lt":["€/LT",1], "cl":["€/LT",1/100], "ml":["€/LT",1/1000], "un":["€/UN",1], "dz":["€/UN",12], "dose":["€/DOSE",1] };
+  const conf = u[capUnit] || u["peso"]; return { unitSuffix:conf[0], unitLabel:conf[0], normalizar:conf[1] };
 }
+
 function renderQueue(){
-  const c = $("queueListContainer");
-  $("queueBadge").textContent = printQueue.length;
-  const tb = document.getElementById("tabQueueBadge");
-  if (tb) { tb.textContent = printQueue.length; tb.classList.toggle("show", printQueue.length > 0); }
-  if(printQueue.length===0){
-    c.innerHTML = '<div class="empty-msg">A fila está vazia.</div>';
-    $("clearQueueBtn").style.display = "none";
-    $("printBtn").textContent = "🖨️ Imprimir [F9]";
-    return;
-  }
-  $("clearQueueBtn").style.display = "block";
-  let total = 0; c.innerHTML = "";
-  printQueue.forEach(function(item,i){
+  const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
+  if($("tabQueueBadge")) { $("tabQueueBadge").textContent = printQueue.length; $("tabQueueBadge").classList.toggle("show", printQueue.length > 0); }
+  if(printQueue.length===0){ c.innerHTML = '<div class="empty-msg">A fila está vazia.</div>'; $("clearQueueBtn").style.display = "none"; $("printBtn").textContent = "🖨️ Imprimir [F9]"; return; }
+  $("clearQueueBtn").style.display = "block"; let total = 0; c.innerHTML = "";
+  printQueue.forEach((item,i) => {
     total += item.copies;
     const div = document.createElement("div"); div.className = "list-item";
-    const fmt = (item.data.presetSizes==="amanhecer")?"Amanhecer":item.data.presetSizes;
-    const jaGuardado = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
-    const iconeGuardar = jaGuardado ? "✅" : "💾";
-    const tituloGuardar = jaGuardado ? "Já guardado no Drive (clica para atualizar)" : "Guardar este produto no Drive";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
+    const jaGuardado = savedProducts.some(p => p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode));
+    div.innerHTML = `<div class="list-item-info"><strong>${escapeHTML(item.data.product||"Sem Nome")}</strong><span>Ref: ${escapeHTML(item.data.internalCode||"N/A")} | ${item.data.price?escapeHTML(item.data.price)+"€":""}</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="${item.copies}" min="1" max="500" data-action="copies" data-index="${i}"><button class="btn-save-queue" data-action="save-queue" data-index="${i}">${jaGuardado?'✅':'💾'}</button><button class="btn-remove" data-action="remove-queue" data-index="${i}">❌</button></div>`;
     c.appendChild(div);
   });
-  $("printBtn").innerHTML = '🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
+  $("printBtn").innerHTML = `🖨️ Imprimir Fila (${total} etiq.) [F9]`;
 }
+
 function addToQueue(){
-  setValidationState();
-  if($("appStatus").dataset.type==="error"){setStatus("Corrija os erros antes.","error");return}
-  const copies = Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
-  const data = getFormData();
-  if(!data.product && !data.price && !data.internalCode){setStatus("Preencha os dados primeiro.","error");return}
-  printQueue.push({data:data,copies:copies}); renderQueue(); setStatus("Adicionado à fila!","success");
+  setValidationState(); if($("appStatus").dataset.type==="error") return setStatus("Corrija os erros antes.","error");
+  const data = getFormData(); if(!data.product && !data.price && !data.internalCode) return setStatus("Preencha dados.","error");
+  printQueue.push({data:data, copies: Math.max(1,parseInt($("copiesCount").value)||1)}); renderQueue(); setStatus("Adicionado à fila!","success");
 }
-function buildProdutoPayload(d){
-  return {
-    codigo: d.internalCode, nome: d.product, preco: d.price, oldPrice: d.oldPrice,
-    isPromoActive: d.isPromoActive, promoPrice: d.promoPrice, promoMinQty: d.promoMinQty,
-    promoUnit: d.promoUnit, promoStart: d.promoStart, promoEnd: d.promoEnd,
-    unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre,
-    ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity,
-    deposito: d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect,
-    formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight,
-    fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || ''
-  };
-}
-function procurarNaLista(lista, payload){
-  if(!lista || !lista.length) return null;
-  const cod  = String(payload.codigo || '').trim();
-  const nome = String(payload.nome   || '').trim().toUpperCase();
-  return lista.find(function(p){
-    const c = String(p.codigo||'').trim();
-    const n = String(p.nome  ||'').trim().toUpperCase();
-    if(cod && c === cod) return true;
-    if(!cod && nome && n === nome) return true;
-    return false;
-  }) || null;
-}
+
 window.saveQueueItem = async function(i){
-  const item = printQueue[i]; if(!item){ toast("Item da fila não encontrado.", "error"); return; }
-  const d = item.data;
-  if(!d.product && !d.internalCode){ toast("Item sem nome nem código — preenche primeiro.", "warning", 5000); return; }
-  const existente = savedProducts.find(function(p){ return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode); });
-  if(existente){
-    const substituir = await confirmDialog("Já existe um produto \""+d.product+"\" no Drive. Substituir os dados pelo item da fila?");
-    if(!substituir) return;
-  }
-  setStatus("A guardar \""+(d.product||d.internalCode)+"\" no Drive…");
-  try{
-    let fotoId = d.fotoId || "", fotoUrl = d.fotoUrl || "";
-    const foto = d.processedPhoto || d.originalPhoto;
-    if(foto && foto.indexOf('http') !== 0){
-      const nomeFic = (d.internalCode||'artigo') + '_' + Date.now() + '.jpg';
-      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
-      const up = await api('uploadFoto', { base64:fotoOtimizada, nomeFicheiro:nomeFic });
-      fotoId = up.id; fotoUrl = up.url;
-    }
-    const payload = buildProdutoPayload(d);
-    payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
-    await api('guardarProduto', payload);
-    item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
-    item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
-    const lista = await api('listarProdutos');
-    const achado = procurarNaLista(lista, payload);
-    if(!achado){ setStatus("⚠️ Item \""+(d.product||d.internalCode)+"\" NÃO apareceu na Sheet após gravar.","error"); return; }
-    savedProducts = lista; renderDb(); renderQueue();
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
-    setStatus("✅ \""+(d.product||d.internalCode)+"\" guardado e verificado.", "success", 3500);
-  }catch(e){ setStatus("Erro ao guardar: "+e.message, "error"); }
-};
-window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
-window.duplicateQueue = function(i){
-  const item = printQueue[i]; if(!item) return;
-  printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies});
-  renderQueue(); setStatus("Item duplicado.","success");
-};
-$("clearQueueBtn").addEventListener("click", async function(){
-  if(await confirmDialog("Limpar toda a fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
-});
-function renderDb(){
-  const c = $("dbListContainer");
-  $("dbBadge").textContent = savedProducts.length;
-  if(savedProducts.length===0){c.innerHTML='<div class="empty-msg">Nenhum produto guardado ainda.</div>';return}
-  c.innerHTML = "";
-  savedProducts.map(function(p,i){return {p:p,i:i}}).sort(function(a,b){return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt")}).forEach(function(obj){
-    const d = obj.p, i = obj.i;
-    const div = document.createElement("div"); div.className = "list-item";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+(d.preco?escapeHTML(d.preco)+"€":"")+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Editar">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Eliminar">❌</button></div>';
-    c.appendChild(div);
-  });
-}
-async function saveToDb(){
-  const data = getFormData();
-  if(!data.product && !data.internalCode){ setStatus("Preencha um nome ou código.","error"); return; }
+  const d = printQueue[i].data;
   setStatus("A guardar no Drive…");
   try{
-    const foto = data.processedPhoto || data.originalPhoto;
-    if(foto && foto.indexOf('http')!==0){
-      setStatus("A enviar foto…");
-      const nome = (data.internalCode||'artigo')+'_'+Date.now()+'.jpg';
-      const fotoOtimizada = await compressSmart(foto, 700, 0.72);
-      const up = await api('uploadFoto',{ base64:fotoOtimizada, nomeFicheiro:nome });
-      data.fotoId = up.id; data.fotoUrl = up.url;
-      globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
+    if(d.processedPhoto && d.processedPhoto.indexOf('http') !== 0){
+      const up = await api('uploadFoto', { base64: await compressSmart(d.processedPhoto), nomeFicheiro: (d.internalCode||'artigo') + '.jpg' });
+      d.fotoId = up.id; d.fotoUrl = up.url; d.processedPhoto = up.url;
     }
-    const payload = buildProdutoPayload(data);
-    setStatus("A enviar dados para o Drive…");
-    const respGuardar = await api('guardarProduto', payload);
-    console.log("[saveToDb] resp guardarProduto:", respGuardar);
-    setStatus("A verificar se ficou guardado…");
-    const lista = await api('listarProdutos');
-    const achado = procurarNaLista(lista, payload);
-    if(!achado){
-      console.error("[saveToDb] Produto NÃO encontrado na lista após gravar.", {payload, lista});
-      setStatus("⚠️ O servidor aceitou mas o produto NÃO aparece na Sheet. Verifique se o Apps Script foi atualizado com o código novo.", "error");
-      toast("Verifica a Sheet: o produto não aparece depois de gravar.", "error", 8000);
-      return;
-    }
-    savedProducts = lista;
-    renderDb();
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
-    setStatus("✅ Guardado e verificado no Drive.","success");
-    toast("✅ \""+(payload.nome||payload.codigo)+"\" guardado na Sheet.", "success", 4000);
-  }catch(e){
-    console.error("[saveToDb] erro:", e);
-    setStatus("Erro ao guardar: "+e.message,"error");
-  }
+    await api('guardarProduto', { codigo: d.internalCode, nome: d.product, preco: d.price, oldPrice: d.oldPrice, isPromoActive: d.isPromoActive, promoPrice: d.promoPrice, promoMinQty: d.promoMinQty, promoUnit: d.promoUnit, promoStart: d.promoStart, promoEnd: d.promoEnd, unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre, ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity, deposito: d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect, formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight, fotoId: d.fotoId||'', fotoUrl: d.fotoUrl||'' });
+    savedProducts = await api('listarProdutos'); renderDb(); renderQueue(); setStatus("Guardado!", "success");
+  }catch(e){ setStatus("Erro: "+e.message, "error"); }
+};
+
+window.removeFromQueue = i => { printQueue.splice(i,1); renderQueue(); };
+$("clearQueueBtn").addEventListener("click", async () => { if(await confirmDialog("Limpar fila?")){ printQueue=[]; renderQueue(); } });
+
+function renderDb(){
+  const c = $("dbListContainer"); $("dbBadge").textContent = savedProducts.length;
+  if(savedProducts.length===0) return c.innerHTML='<div class="empty-msg">Nenhum produto.</div>';
+  c.innerHTML = "";
+  savedProducts.map((p,i)=>({p,i})).sort((a,b)=>String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt")).forEach(obj => {
+    const div = document.createElement("div"); div.className = "list-item";
+    div.innerHTML = `<div class="list-item-info"><strong>${escapeHTML(obj.p.nome)}</strong><span>Ref: ${escapeHTML(obj.p.codigo)} | ${obj.p.preco?obj.p.preco+"€":""}</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="${obj.i}">📥</button><button class="btn-dup" data-action="queue-db" data-index="${obj.i}">➕</button><button class="btn-remove" data-action="remove-db" data-index="${obj.i}">❌</button></div>`;
+    c.appendChild(div);
+  });
 }
-window.duplicateFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  const copia = JSON.parse(JSON.stringify(d));
-  copia.codigo = (d.codigo || 'NOVO') + '-COPIA';
-  setFormData(copia);
-  if(copia.fotoUrl){ globalOriginalPhoto = copia.fotoUrl; globalProcessedPhoto = copia.fotoUrl; updateCard(); }
-  switchMobileTab('editar');
-  toast('Produto carregado como cópia. Edite o código antes de guardar.', 'info', 4500);
-};
-window.loadFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  setFormData(d);
-  if(d.fotoUrl){globalOriginalPhoto=d.fotoUrl;globalProcessedPhoto=d.fotoUrl;updateCard()}
-  switchMobileTab('editar');
-  setStatus("Produto carregado.","success");
-};
+
+async function saveToDb(){
+  const d = getFormData(); if(!d.product && !d.internalCode) return setStatus("Preencha nome/código.","error");
+  setStatus("A guardar...");
+  try{
+    if(d.processedPhoto && !d.processedPhoto.startsWith('http')){
+      const up = await api('uploadFoto',{ base64: await compressSmart(d.processedPhoto), nomeFicheiro: (d.internalCode||'artigo')+'.jpg' });
+      d.fotoId = up.id; d.fotoUrl = up.url; globalProcessedPhoto = up.url;
+    }
+    await api('guardarProduto', { codigo: d.internalCode, nome: d.product, preco: d.price, oldPrice: d.oldPrice, isPromoActive: d.isPromoActive, promoPrice: d.promoPrice, promoMinQty: d.promoMinQty, promoUnit: d.promoUnit, promoStart: d.promoStart, promoEnd: d.promoEnd, unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre, ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity, deposito: d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect, formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight, fotoId: d.fotoId||'', fotoUrl: d.fotoUrl||'' });
+    savedProducts = await api('listarProdutos'); renderDb(); setStatus("✅ Guardado!", "success");
+  }catch(e){ setStatus("Erro: "+e.message, "error"); }
+}
+
+window.loadFromDb = i => { const d = savedProducts[i]; if(d){ setFormData(d); switchMobileTab('editar'); setStatus("Carregado","success"); } };
+
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
-  if(!(await confirmDialog("Eliminar produto '"+d.nome+"'?"))) return;
-  try{ await api('apagarProduto',{ codigo:d.codigo }); await carregarTudo(); setStatus("Produto eliminado.","success"); }
-  catch(e){setStatus("Erro: "+e.message,"error")}
+  const targetName = d.nome || d.codigo || "produto sem nome";
+  if(!(await confirmDialog(`Eliminar produto '${targetName}'?`))) return;
+  setStatus("A apagar produto no Drive...", "info");
+  try{ 
+    await api('apagarProduto', { codigo: d.codigo, nome: d.nome }); 
+    await carregarTudo(); 
+    setStatus("✅ Produto eliminado.", "success"); 
+  } catch(e){ setStatus("Erro ao apagar: "+e.message, "error"); }
 };
-window.queueFromDb = function(i){
-  const d = savedProducts[i]; if(!d) return;
-  const copies = Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
-  printQueue.push({data:JSON.parse(JSON.stringify(d)),copies:copies});
-  renderQueue(); setStatus("Adicionado à fila.","success");
-};
-document.addEventListener("click",function(e){
-  const chip = e.target.closest(".chip-btn[data-field]");
-  if(chip){ setField(chip.dataset.field,chip.dataset.val); return }
+
+window.queueFromDb = i => { printQueue.push({data:JSON.parse(JSON.stringify(savedProducts[i])), copies: parseInt($("copiesCount").value)||1}); renderQueue(); setStatus("Adicionado!","success"); };
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest(".chip-btn[data-field]"); if(chip) return setField(chip.dataset.field, chip.dataset.val);
   const btn = e.target.closest("[data-action]"); if(!btn) return;
   const a = btn.dataset.action, i = parseInt(btn.dataset.index,10);
-  if(a==="remove-queue" && isFinite(i)) window.removeFromQueue(i);
-  if(a==="dup-queue"    && isFinite(i)) window.duplicateQueue(i);
-  if(a==="save-queue"   && isFinite(i)) window.saveQueueItem(i);
-  if(a==="load-db"      && isFinite(i)) window.loadFromDb(i);
-  if(a==="dup-db"       && isFinite(i)) window.duplicateFromDb(i);
-  if(a==="queue-db"     && isFinite(i)) window.queueFromDb(i);
-  if(a==="remove-db"    && isFinite(i)) window.removeFromDb(i);
-});
-document.addEventListener("change",function(e){
-  const inp = e.target.closest('input[data-action="copies"]'); if(!inp) return;
-  const i = parseInt(inp.dataset.index,10); if(!isFinite(i)) return;
-  const v = Math.max(1,Math.min(500,parseInt(inp.value)||1));
-  if(printQueue[i]){printQueue[i].copies=v;inp.value=v;renderQueue()}
-});
-$("addToQueueBtn").addEventListener("click",addToQueue);
-$("saveDbBtn").addEventListener("click",saveToDb);
-$("recarregarDbBtn").addEventListener("click",carregarTudo);
-$("syncBancoBtn").addEventListener("click",async function(){
-  try{ setStatus("A sincronizar banco…"); const r = await api('sincronizarBancoFruta');
-    await carregarTudo();
-    setStatus("✅ Sincronizado. "+r.novos+" novos, "+r.removidos+" removidos, total "+r.total+".","success");
-  }catch(e){setStatus("Erro: "+e.message,"error")}
+  if(a==="remove-queue") window.removeFromQueue(i);
+  if(a==="save-queue") window.saveQueueItem(i);
+  if(a==="load-db") window.loadFromDb(i);
+  if(a==="queue-db") window.queueFromDb(i);
+  if(a==="remove-db") window.removeFromDb(i);
 });
 
-/* ══════════ 🩺 DIAGNÓSTICO COM PAUSAS DE SEGURANÇA ══════════ */
-$("diagnosticoBtn").addEventListener("click", async function(){
-  const box = $("diagBox");
-  box.innerHTML = "🩺 <b>A diagnosticar…</b>";
-  box.classList.add("show");
-  setStatus("🩺 A testar ligação…");
-
-  const linhas = [];
-  linhas.push("API_URL: " + API_URL);
-  linhas.push("");
-
-  try{
-    const t0 = Date.now();
-    const ping = await api('ping');
-    linhas.push('<span class="ok">✔ ping OK</span> → ' + ping + " (" + (Date.now()-t0) + "ms)");
-  }catch(e){
-    linhas.push('<span class="err">✘ ping FALHOU</span> → ' + e.message);
-    box.innerHTML = linhas.join("\n");
-    setStatus("Erro na ligação ao servidor.","error");
-    return;
-  }
-
-  await new Promise(r => setTimeout(r, 800)); // Pausa para não bloquear a API da Google
-
-  try{
-    const t1 = Date.now();
-    const prod = await api('listarProdutos');
-    const dur = Date.now()-t1;
-    linhas.push('<span class="ok">✔ listarProdutos OK</span> → ' + (prod?prod.length:0) + " produto(s) na Sheet (" + dur + "ms)");
-  }catch(e){
-    linhas.push('<span class="err">✘ listarProdutos FALHOU</span> → ' + e.message);
-  }
-
-  await new Promise(r => setTimeout(r, 800)); // Pausa para não bloquear a API da Google
-
-  try{
-    const t2 = Date.now();
-    const banco = await api('listarBancoFruta');
-    linhas.push('<span class="ok">✔ listarBancoFruta OK</span> → ' + (banco?banco.length:0) + " imagem(ns) (" + (Date.now()-t2) + "ms)");
-  }catch(e){
-    linhas.push('<span class="err">✘ listarBancoFruta FALHOU</span> → ' + e.message);
-  }
-
-  box.innerHTML = linhas.join("\n");
-  setStatus("✅ Diagnóstico concluído.","success");
+document.addEventListener("change", e => {
+  const inp = e.target.closest('input[data-action="copies"]');
+  if(inp && printQueue[inp.dataset.index]){ printQueue[inp.dataset.index].copies = Math.max(1, parseInt(inp.value)||1); renderQueue(); }
 });
 
-function updateBancoCounts(){
-  let all=0, fruta=0, legume=0;
-  bancoFruta.forEach(function(f){ all++; if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
-  if($("bfCountAll")) $("bfCountAll").textContent = all;
-  if($("bfCountFruta")) $("bfCountFruta").textContent = fruta;
-  if($("bfCountLegume")) $("bfCountLegume").textContent = legume;
+$("addToQueueBtn").addEventListener("click", addToQueue); $("saveDbBtn").addEventListener("click", saveToDb); $("recarregarDbBtn").addEventListener("click", carregarTudo);
+$("syncBancoBtn").addEventListener("click", async () => { try{ setStatus("A sincronizar..."); await api('sincronizarBancoFruta'); await carregarTudo(); setStatus("Sincronizado!","success"); }catch(e){} });
+
+/* DIAGNÓSTICO */
+$("diagnosticoBtn").addEventListener("click", async () => {
+  $("diagBox").innerHTML = "🩺 Testando..."; $("diagBox").classList.add("show");
+  try{ await api('ping'); $("diagBox").innerHTML += "<br>✔ Ligação OK"; }catch(e){ return $("diagBox").innerHTML += "<br>✘ Falha: "+e.message; }
+  await new Promise(r=>setTimeout(r,500));
+  try{ const p = await api('listarProdutos'); $("diagBox").innerHTML += `<br>✔ ${p.length} Produtos`; }catch(e){ $("diagBox").innerHTML += "<br>✘ Erro Produtos: "+e.message; }
+});
+
+function renderBancoFruta(filtro=""){
+  const c = $("gradeBancoFruta"), q = filtro.toUpperCase();
+  const list = bancoFruta.filter(f => (bancoTipoFiltro === 'all' || f.tipo === bancoTipoFiltro) && (!q || String(f.nome||'').toUpperCase().includes(q)));
+  $("bfCountAll").textContent = bancoFruta.length; $("bfCountFruta").textContent = bancoFruta.filter(f=>f.tipo==='fruta').length; $("bfCountLegume").textContent = bancoFruta.filter(f=>f.tipo==='legume').length;
+  if(!list.length) return c.innerHTML = '<div class="bf-empty">Sem resultados.</div>';
+  c.innerHTML = list.map(f => `<div class="bf-card" data-url="${escapeHTML(f.fotoUrl)}" data-nome="${escapeHTML(f.nome)}"><img src="${escapeHTML(f.fotoUrl)}" loading="lazy"><div class="bf-nome">${escapeHTML(f.nome)}</div></div>`).join('');
+  c.querySelectorAll('.bf-card').forEach(el => el.onclick = () => { globalOriginalPhoto = el.dataset.url; globalProcessedPhoto = el.dataset.url; if(!$('product').value) $('product').value = el.dataset.nome; updateCard();$('bancoFrutaModal').classList.remove('show'); });
 }
-function renderBancoFruta(filtro){
-  filtro = filtro || '';
-  const c = $("gradeBancoFruta"); if(!c) return;
-  const q = filtro.toUpperCase();
-  const lista = bancoFruta.filter(function(f){
-    if(bancoTipoFiltro !== 'all' && (f.tipo||'') !== bancoTipoFiltro) return false;
-    if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false;
-    return true;
-  });
-  updateBancoCounts();
-  if(lista.length===0){
-    let msg;
-    if(bancoFruta.length === 0) msg = 'Nenhuma imagem no banco ainda.<br>Usa <b>📷 Fotografar para o banco</b> ou carrega fotos nas pastas <b>BancoFruta</b> / <b>BancoLegumes</b> do Drive e clica em <b>Sincronizar</b>.';
-    else if(bancoTipoFiltro === 'fruta') msg = 'Sem frutas no banco com esse filtro.';
-    else if(bancoTipoFiltro === 'legume') msg = 'Sem legumes no banco com esse filtro.';
-    else msg = 'Sem resultados para «' + escapeHTML(filtro) + '».';
-    c.innerHTML = '<div class="bf-empty">'+msg+'</div>';
-    return;
-  }
-  c.innerHTML = lista.map(function(f){
-    const tipo = (f.tipo==='legume') ? 'legume' : (f.tipo==='fruta' ? 'fruta' : '');
-    const tag = tipo ? '<span class="bf-tag '+tipo+'">'+(tipo==='legume'?'🥬 Legume':'🍎 Fruta')+'</span>' : '';
-    return '<div class="bf-card" data-url="'+escapeHTML(f.fotoUrl)+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'">' +
-           '<img src="'+escapeHTML(f.fotoUrl)+'" loading="lazy" alt="">' + tag +
-           '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
-  }).join('');
-  c.querySelectorAll('.bf-card').forEach(function(el){
-    el.addEventListener('click',function(){
-      globalOriginalPhoto = el.dataset.url; globalProcessedPhoto = el.dataset.url;
-      if(!$('product').value.trim()) $('product').value = el.dataset.nome;
-      updateCard(); $('bancoFrutaModal').classList.remove('show');
-      setStatus('Imagem aplicada.','success');
-    });
-  });
-}
-$("bfTabs").addEventListener("click", function(e){
-  const btn = e.target.closest("button[data-tipo]"); if(!btn) return;
-  bancoTipoFiltro = btn.dataset.tipo;
-  $("bfTabs").querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b === btn); });
-  renderBancoFruta($("buscaBancoFruta").value);
-});
-let _abrirBancoHandler = async function(e){
-  if(e) e.preventDefault();
-  $('bancoFrutaModal').classList.add('show');
-  renderBancoFruta($('buscaBancoFruta').value);
-  try{
-    const r = await api('sincronizarBancoFruta');
-    if(r.removidos > 0 || r.novos > 0){
-      await carregarTudo();
-      renderBancoFruta($('buscaBancoFruta').value);
-      if(r.removidos > 0) toast('🧹 '+r.removidos+' imagem(ns) órfã(s) removida(s).', 'info', 3500);
-      if(r.novos > 0) toast('🆕 '+r.novos+' imagem(ns) nova(s).', 'info', 3500);
-    }
-  }catch(err){}
-};
-$("abrirBancoFrutaBtn").addEventListener("click", _abrirBancoHandler);
-$("processarBancoBtn").addEventListener("click", async function(){
-  if(bancoFruta.length === 0){ toast("Banco vazio — não há fotos para processar.", "warning"); return; }
-  const total = bancoFruta.length;
-  const confirmar = await confirmDialog("Recortar e comprimir as " + total + " imagens do banco?\n\nPode demorar vários minutos.\nNÃO feches a página durante o processo.");
-  if(!confirmar) return;
-  const progresso = $("bancoProgress"); const barra = $("bancoProgressBar"); const texto = $("bancoProgressText");
-  progresso.style.display = "block";
-  $("processarBancoBtn").disabled = true;
-  let ok = 0, falhas = 0; const falhados = [];
-  const usarIA = $("useAI") && $("useAI").checked;
-  for(let i = 0; i < bancoFruta.length; i++){
-    const f = bancoFruta[i];
-    const pct = Math.round((i / total) * 100);
-    barra.style.width = pct + "%";
-    texto.textContent = "🎨 " + (i + 1) + " / " + total + "  ·  " + f.nome;
-    try{
-      const resp = await fetch(f.fotoUrl);
-      if(!resp.ok) throw new Error("HTTP " + resp.status);
-      const blob = await resp.blob();
-      const dataUrl = await new Promise(function(res, rej){ const r = new FileReader(); r.onloadend = function(){ res(r.result); }; r.onerror = rej; r.readAsDataURL(blob); });
-      let semFundo = dataUrl;
-      if(usarIA){
-        try{ semFundo = await removeBackgroundAI(dataUrl, null); }
-        catch(e){ semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); }); }
-      } else {
-        semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
-      }
-      const comprimida = await compressSmart(semFundo, 700, 0.72);
-      const r = await api('substituirFotoBanco', { fotoId: f.fotoId, base64: comprimida, nome: f.nome, tipo: f.tipo || 'fruta' });
-      f.fotoId = r.id; f.fotoUrl = r.url;
-      if(r.tipo) f.tipo = r.tipo;
-      ok++;
-    }catch(e){ console.error("Erro em " + f.nome + ":", e); falhas++; falhados.push(f.nome); }
-  }
-  barra.style.width = "100%";
-  texto.textContent = "✅ Concluído — " + ok + " processadas, " + falhas + " falhadas.";
-  $("processarBancoBtn").disabled = false;
-  try{ await carregarTudo(); }catch(e){}
-  renderBancoFruta($("buscaBancoFruta").value);
-  setTimeout(function(){ progresso.style.display = "none"; barra.style.width = "0%"; }, 6000);
-  if(falhas > 0) toast("Processadas: " + ok + ". Falharam: " + falhas + " (" + falhados.slice(0,3).join(", ") + (falhados.length>3?"...":"") + ")", "warning", 9000);
-  else toast("🎉 " + ok + " imagens recortadas e comprimidas!", "success", 5000);
-});
-$("buscaBancoFruta").addEventListener("input",function(e){renderBancoFruta(e.target.value)});
-$("fecharBancoFruta").addEventListener("click",function(){$("bancoFrutaModal").classList.remove("show")});
-$("bancoFrutaModal").addEventListener("click",function(e){if(e.target===$("bancoFrutaModal"))$("bancoFrutaModal").classList.remove("show")});
+$("bfTabs").addEventListener("click", e => { const btn = e.target.closest("button[data-tipo]"); if(btn){ bancoTipoFiltro = btn.dataset.tipo; $("bfTabs").querySelectorAll("button").forEach(b => b.classList.toggle("active", b===btn)); renderBancoFruta($("buscaBancoFruta").value); }});
+$("abrirBancoFrutaBtn").addEventListener("click", () => { $('bancoFrutaModal').classList.add('show'); renderBancoFruta(); });$("buscaBancoFruta").addEventListener("input", e => renderBancoFruta(e.target.value)); $("fecharBancoFruta").addEventListener("click", () => $("bancoFrutaModal").classList.remove("show"));
 
 let camStream = null;
-async function openCamera(){
-  if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
-  const modal = $("cameraModal"); modal.classList.add("show");
-  try{
-    camStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} }, audio:false });
-    $("camVideo").srcObject = camStream;
-  }catch(e){ toast("Não foi possível aceder à câmara: "+e.message, "error"); closeCamera(); }
-}
-function closeCamera(){
-  if(camStream){ camStream.getTracks().forEach(function(t){t.stop()}); camStream = null }
-  $("camVideo").srcObject = null;
-  $("cameraModal").classList.remove("show");
-  setTimeout(function(){ fotoBancoModo = false; }, 300);
-}
-$("fotoBancoBtn").addEventListener("click", function(){ fotoBancoModo = true; openCamera(); });
-$("openCameraBtn").addEventListener("click",openCamera);
-$("camClose").addEventListener("click",closeCamera);
-$("camSnap").addEventListener("click", async function(){
-  const v = $("camVideo"), c = $("camCanvas");
-  const maxW = 1400;
-  let w = v.videoWidth, h = v.videoHeight;
-  if(w > maxW){ h = Math.round(h * maxW/w); w = maxW }
-  c.width = w; c.height = h;
-  c.getContext("2d").drawImage(v,0,0,w,h);
-  const dataUrl = c.toDataURL("image/jpeg",0.92);
-  if(fotoBancoModo){
-    fotoBancoModo = false; closeCamera();
-    setStatus("Foto capturada. A remover fundo…");
-    let fotoFinal = dataUrl;
-    if($("autoRemoveBg").checked){
-      try{ fotoFinal = await removeBackgroundSmart(dataUrl); toast("✅ Fundo removido!", "success"); }
-      catch(e){ toast("IA falhou, guardo foto original.", "warning"); }
-    }
-    const nomeSugerido = ($("product").value || "").trim().toUpperCase();
-    const tipoSugerido = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
-    const info = await pedirNomeTipoArtigo(nomeSugerido, tipoSugerido);
-    if(!info){ setStatus("Guardar no banco cancelado.", "info"); return; }
-    const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
-    if(existe){
-      const substituir = await confirmDialog("Já existe uma imagem \"" + info.nome + "\" no banco. Substituir pela nova?");
-      if(!substituir) return;
-    }
-    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); setStatus("✅ Guardado no banco.", "success"); }
-    catch(e){ setStatus("Erro: " + e.message, "error"); }
-    return;
-  }
-  globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
-  updateCard(); closeCamera(); setStatus("Foto capturada.","success");
-  if($("autoRemoveBg").checked){
-    try {
-      const semFundo = await removeBackgroundSmart(dataUrl);
-      globalProcessedPhoto = semFundo; updateCard();
-      toast("✅ Fundo removido!", "success");
-      await perguntarGuardarNoBanco();
-    } catch(e) { toast("Erro a remover fundo: " + e.message, "error"); }
-  }
+async function openCamera(){ if(camStream){ closeCamera(); await new Promise(r=>setTimeout(r,200)); } try{ $("cameraModal").classList.add("show"); camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}); $("camVideo").srcObject = camStream; }catch(e){ toast("Erro câmara","error"); closeCamera(); } }
+function closeCamera(){ if(camStream) camStream.getTracks().forEach(t=>t.stop()); camStream=null; $("camVideo").srcObject=null; $("cameraModal").classList.remove("show"); fotoBancoModo=false; }
+$("fotoBancoBtn").addEventListener("click", () => { fotoBancoModo = true; openCamera(); }); $("openCameraBtn").addEventListener("click", openCamera); $("camClose").addEventListener("click", closeCamera);
+$("camSnap").addEventListener("click", async () => {
+  const v = $("camVideo"), c = $("camCanvas"), maxW = 1400; let w = v.videoWidth, h = v.videoHeight; if(w > maxW){ h = Math.round(h * maxW/w); w = maxW; }
+  c.width = w; c.height = h; c.getContext("2d").drawImage(v,0,0,w,h); const dataUrl = c.toDataURL("image/jpeg",0.92); closeCamera();
+  if(fotoBancoModo){ const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro); if(info) guardarFotoBanco(info.nome, dataUrl, info.tipo); return; }
+  globalOriginalPhoto = dataUrl; globalProcessedPhoto = dataUrl; updateCard(); setStatus("Capturado","success");
 });
-async function perguntarGuardarNoBanco(){
-  if(!globalProcessedPhoto) return;
-  const querGuardar = await confirmDialog("Guardar esta foto no banco para usar em etiquetas futuras?");
-  if(!querGuardar) return;
-  const nomeBase = ($("product").value || "").trim().toUpperCase();
-  const tipoSug = (bancoTipoFiltro === 'legume') ? 'legume' : 'fruta';
-  const info = await pedirNomeTipoArtigo(nomeBase, tipoSug);
-  if(!info) return;
-  const existe = bancoFruta.some(function(f){ return String(f.nome||"").toUpperCase() === info.nome; });
-  if(existe){
-    const substituir = await confirmDialog("Já existe uma imagem \""+info.nome+"\" no banco. Substituir pela nova?");
-    if(!substituir) return;
-  }
-  try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
-}
+
 let scanner = null;
-async function openScanner(){
-  $("scannerModal").classList.add("show");
-  scanner = new Html5Qrcode("reader");
-  try{
-    await scanner.start(
-      { facingMode:"environment" },
-      { fps:10, qrbox:{width:280,height:180}, formatsToSupport:[ Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.UPC_A, Html5QrcodeSupportedFormats.UPC_E, Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.QR_CODE ]},
-      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido: "+decoded,"success"); closeScanner(); },
-      function(){}
-    );
-  }catch(e){ toast("Câmara indisponível: "+e.message, "error"); closeScanner(); }
-}
-async function closeScanner(){
-  try{ if(scanner){ await scanner.stop(); await scanner.clear() } }catch(e){}
-  scanner = null; $("scannerModal").classList.remove("show");
-}
-$("scanEanBtn").addEventListener("click",openScanner);
-$("scanClose").addEventListener("click",closeScanner);
-function parsePrice(v){
-  if(v==null || String(v).trim()==="") return null;
-  let c = String(v).trim().replace(/€|\s/g,"");
-  if(c.indexOf(",")>-1 && c.indexOf(".")>-1) c = c.replace(/\./g,"").replace(",",".");
-  else c = c.replace(",",".");
-  const n = Number(c); return isFinite(n)?n:null;
-}
-function formatPromoDate(s,e){
-  if(!s && !e) return "Preço sujeito às condições comerciais em vigor.";
-  const m = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  try{
-    if(s && e){
-      const d1 = new Date(s), d2 = new Date(e);
-      if(d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear())
-        return "Oportunidade de "+d1.getDate()+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-      return "Oportunidade de "+d1.getDate()+" de "+m[d1.getMonth()]+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-    }else if(e){
-      const d2 = new Date(e); return "Oportunidade válida até "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-    }else{
-      const d1 = new Date(s); return "Oportunidade a partir de "+d1.getDate()+" de "+m[d1.getMonth()]+" de "+d1.getFullYear();
-    }
-  }catch(err){ return "Preço sujeito às condições comerciais em vigor." }
-}
-function removeBackgroundSimple(dataUrl,cb){
-  const token = ++photoToken; const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.onload = function(){
-    try{
-      const cv = document.createElement("canvas");
-      cv.width = img.naturalWidth||img.width; cv.height = img.naturalHeight||img.height;
-      if(!cv.width||!cv.height) throw new Error("sem dim");
-      const ctx = cv.getContext("2d",{willReadFrequently:true}); ctx.drawImage(img,0,0);
-      const iData = ctx.getImageData(0,0,cv.width,cv.height); const d = iData.data;
-      const corners = [0,(cv.width-1)*4,((cv.height-1)*cv.width)*4,((cv.height-1)*cv.width+(cv.width-1))*4];
-      let bgR=0,bgG=0,bgB=0;
-      corners.forEach(function(i){bgR+=d[i];bgG+=d[i+1];bgB+=d[i+2]});
-      bgR=Math.round(bgR/4); bgG=Math.round(bgG/4); bgB=Math.round(bgB/4);
-      const tol = 48;
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i],g=d[i+1],b=d[i+2];
-        const dist = Math.sqrt((r-bgR)*(r-bgR)+(g-bgG)*(g-bgG)+(b-bgB)*(b-bgB));
-        if(dist<tol || (r>240&&g>240&&b>240)) d[i+3] = 0;
-        else if(dist<tol+15) d[i+3] = Math.round(d[i+3]*((dist-tol)/15));
-      }
-      ctx.putImageData(iData,0,0);
-      if(token===photoToken) cb(cv.toDataURL("image/png"));
-    }catch(err){ if(token===photoToken) cb(dataUrl) }
-  };
-  img.onerror = function(){ if(token===photoToken) cb(dataUrl) };
-  img.src = dataUrl;
-}
-let _bgAIModule = null;
-let _bgAILoading = null;
-async function loadBgAI() {
-  if (_bgAIModule) return _bgAIModule;
-  if (_bgAILoading) return _bgAILoading;
-  _bgAILoading = (async function(){
-    try { const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm'); _bgAIModule = mod; return mod; }
-    finally { _bgAILoading = null; }
-  })();
-  return _bgAILoading;
-}
-async function removeBackgroundAI(dataUrl, onProgress) {
-  const mod = await loadBgAI();
-  const blob = await mod.removeBackground(dataUrl, { output: { format: 'image/png' }, progress: function(key, current, total) { if (onProgress) onProgress(key, current, total); } });
-  return new Promise(function(resolve, reject){ const reader = new FileReader(); reader.onloadend = function(){ resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(blob); });
-}
-async function removeBackgroundSmart(dataUrl) {
-  const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
-  if (useAI) {
-    try {
-      return await removeBackgroundAI(dataUrl, function(key, cur, total){
-        if (String(key).indexOf('fetch') === 0) { const pct = total > 0 ? Math.round((cur / total) * 100) : 0; setStatus("⬇️ A carregar IA (1ª vez só): " + pct + "%…"); }
-        else { setStatus("🤖 A processar imagem com IA…"); }
-      });
-    } catch(e) { console.warn("IA falhou, uso algoritmo simples:", e); toast("IA indisponível, uso remoção simples.", "warning"); }
-  }
-  return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, function(p){ resolve(p || dataUrl); }); });
-}
-const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
-const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
-const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
-const EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+async function openScanner(){ $("scannerModal").classList.add("show"); scanner = new Html5Qrcode("reader"); try{ await scanner.start({facingMode:"environment"}, {fps:10, qrbox:{width:280,height:180}}, (d) => { $("ean").value = String(d).toUpperCase(); updateCard(); closeScanner(); }, ()=>{}); }catch(e){ toast("Erro scanner","error"); closeScanner(); } }
+async function closeScanner(){ try{ if(scanner) await scanner.stop(); }catch(e){} scanner=null; $("scannerModal").classList.remove("show"); }
+$("scanEanBtn").addEventListener("click",openScanner); $("scanClose").addEventListener("click",closeScanner);
+
+function parsePrice(v){ if(!v) return null; let c = String(v).trim().replace(/€|\s/g,""); if(c.includes(",") && c.includes(".")) c = c.replace(/\./g,"").replace(",","."); else c = c.replace(",","."); const n = Number(c); return isFinite(n)?n:null; }
 function onlyDigits(v){return String(v||"").replace(/\D/g,"")}
-function ean13CheckDigit(f12){const d=onlyDigits(f12).slice(0,12);if(d.length!==12)return null;let s=0;for(let i=0;i<12;i++)s+=Number(d[i])*(i%2===0?1:3);return String((10-(s%10))%10)}
-function isValidEAN13(v){const d=onlyDigits(v);return d.length===13 && ean13CheckDigit(d.slice(0,12))===d[12]}
-function isValidEAN14(v){const d=onlyDigits(v);if(d.length!==14)return false;let s=0;for(let i=13,p=0;i>=0;i--,p++)s+=Number(d[i])*(p%2===0?3:1);return s%10===0}
+function isValidEAN13(v){const d=onlyDigits(v); if(d.length!==13) return false; let s=0; for(let i=0;i<12;i++) s+=Number(d[i])*(i%2===0?1:3); return String((10-(s%10))%10)===d[12]; }
+function isValidEAN14(v){const d=onlyDigits(v); if(d.length!==14) return false; let s=0; for(let i=13,p=0;i>=0;i--,p++) s+=Number(d[i])*(p%2===0?3:1); return s%10===0; }
 function normalizeBarcode(v){return String(v||"").trim().replace(/\s+/g,"")}
-function drawBarcode(svg,value){
-  if(!svg) return; svg.innerHTML = "";
-  const clean = normalizeBarcode(value); if(!clean) return;
-  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){drawEAN13(svg,clean);return}
-  if(/^\d{14}$/.test(clean)){drawCode128(svg,clean);return}
-  if(/^[\x20-\x7E]+$/.test(clean)) drawCode128(svg,clean);
+const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"], EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"], EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"], EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+function drawBarcode(svg, value){
+  if(!svg) return; svg.innerHTML = ""; const clean = normalizeBarcode(value); if(!clean) return;
+  if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){ const dg = onlyDigits(clean), first = Number(dg[0]), L = dg.slice(1,7), R = dg.slice(7), par = EAN_P[first]; let bits = "101"; for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])]; bits += "01010"; for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])]; bits += "101"; const tw = bits.length + 22, ns = "http://www.w3.org/2000/svg"; svg.setAttribute("viewBox",`0 0 ${tw} 72`); svg.setAttribute("preserveAspectRatio","none"); for(let i=0;i<bits.length;i++){ if(bits[i]==="1"){ const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+11); r.setAttribute("y",0); r.setAttribute("width",1); r.setAttribute("height",62); r.setAttribute("fill","black"); svg.appendChild(r); } } }
 }
-function drawEAN13(svg,value){
-  const dg = onlyDigits(value); const first = Number(dg[0]);
-  const L = dg.slice(1,7), R = dg.slice(7); const par = EAN_P[first];
-  let bits = "101";
-  for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
-  bits += "01010";
-  for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])];
-  bits += "101";
-  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
-}
-function drawCode128(svg,text){
-  const clean = String(text||""); if(!/^[\x20-\x7E]+$/.test(clean)) return;
-  const C128=["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"];
-  const codes = [104]; for(let i=0;i<clean.length;i++) codes.push(clean.charCodeAt(i)-32);
-  let sum = codes[0]; for(let i=1;i<codes.length;i++) sum += codes[i]*i; codes.push(sum%103);
-  const seq = codes.map(String); seq.push("STOP"); let bits = "";
-  for(let k=0;k<seq.length;k++){
-    const c = seq[k]; const pat = c==="STOP" ? "2331112" : C128[Number(c)]; if(!pat) return;
-    let isBar = true;
-    for(let j=0;j<pat.length;j++){ bits += (isBar?"1":"0").repeat(Number(pat[j])); isBar = !isBar }
-  }
-  const qz = 11, tw = bits.length + qz*2, ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
-  for(let i=0;i<bits.length;i++){ if(bits[i]!=="1") continue; const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+qz);r.setAttribute("y",0);r.setAttribute("width",1);r.setAttribute("height",62);r.setAttribute("fill","black"); svg.appendChild(r); }
-}
-function isLargeFormat(v){
-  if(["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1) return true;
-  if(v==="custom"){ const w = parseFloat($("customWidth").value)||0, h = parseFloat($("customHeight").value)||0; return w>=90 || h>=65; }
-  return false;
-}
-function isFruitPromoFormat(v){return v==="frutaPromo125x80"||v==="frutaPromoA6"}
-function getDimensionsFor(fv,cw,ch){
-  let w=70,h=38;
-  switch(fv){
-    case"amanhecer":w=70;h=38;break;case"125x80":w=125;h=80;break;case"A6":w=148;h=105;break;
-    case"A5":w=210;h=148;break;case"105x38":w=105;h=38;break;case"70x38":w=70;h=38;break;
-    case"65x38":w=65;h=38;break;case"100x70":w=100;h=70;break;
-    case"frutaPromo125x80":w=125;h=80;break;case"frutaPromoA6":w=148;h=105;break;
-    case"custom":w=parseFloat(cw)||70;h=parseFloat(ch)||38;break;
-  }
-  return {width:w,height:h};
-}
-function getDimensions(){return getDimensionsFor($("presetSizes").value,$("customWidth").value,$("customHeight").value)}
-function getSizeClass(w,h){const m=Math.max(w,h);if(m<55)return"size-tiny";if(m<82)return"size-small";if(m<115)return"size-medium";if(m<165)return"size-large";return"size-xl"}
-function applySizeClass(el,w,h){if(!el)return;el.classList.remove("size-tiny","size-small","size-medium","size-large","size-xl");el.classList.add(getSizeClass(w,h))}
-function setField(id,val){const el=$(id);if(el){el.value=val;updateCard()}}
-window.setField = setField;
-function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
-document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    document.body.setAttribute('data-mobile-tab', btn.dataset.tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-});
 
-/* ══════════ ESCALA E AUTO-AJUSTE ══════════ */
+function getDimensionsFor(fv, cw, ch){
+  const map = { amanhecer:[70,38], "125x80":[125,80], A6:[148,105], A5:[210,148], "105x38":[105,38], "70x38":[70,38], "65x38":[65,38], "100x70":[100,70], frutaPromo125x80:[125,80], frutaPromoA6:[148,105] };
+  if(fv==="custom") return { width: parseFloat(cw)||70, height: parseFloat(ch)||38 };
+  return { width: map[fv]?.[0]||70, height: map[fv]?.[1]||38 };
+}
+
 function applyPrintSizes(card, dims){
-  if(!card || !dims || !dims.width) return;
-  const scaleW = dims.width / 70;
-  const scaleH = dims.height / 38;
-  const base = Math.min(scaleW, scaleH);
-  const isFP = card.classList.contains("layout-fruit-promo");
-  const s = base * (isFP ? 0.80 : 1);
-  const set = function(sel, mm){
-    const el = card.querySelector(sel);
-    if(el) el.style.setProperty("font-size", (mm * s).toFixed(3) + "mm", "important");
-  };
-  set(".store-text", 2.8); set(".item-code", 2.4); set(".product", 3.2);
-  set(".unit-price-text", 2.2); set(".price", 6.5); set(".price .unit-inline", 2.7);
-  set(".promo-tag", 2.8); set(".old-price", 2.6); set(".deposit-box", 1.7);
-  set(".extra-unit", 2.2); set(".fruit-full-bar", 2.2); set(".ean-text", 1.8);
-  set(".promo-text", 1.8); set(".print-date", 1.6);
-  if(isFP){
-    set(".fp-label", 2.1); set(".fp-price", 7.0); set(".fp-unit", 2.1);
-  } else {
-    set(".fp-label", 2.4); set(".fp-price", 6.5); set(".fp-unit", 2.4);
-  }
+  if(!card || !dims) return; const base = Math.min(dims.width/70, dims.height/38), s = base * (card.classList.contains("layout-fruit-promo") ? 0.8 : 1);
+  const set = (sel, mm) => { const el = card.querySelector(sel); if(el) el.style.setProperty("font-size", (mm*s).toFixed(3)+"mm", "important"); };
+  set(".product", 3.2); set(".price", 6.5); set(".item-code", 2.4); set(".unit-price-text", 2.2);
 }
-function _hasOverflow(parent){
-  if(!parent) return false;
-  const pr = parent.getBoundingClientRect();
-  if(!pr.height) return false;
-  const kids = parent.children;
-  for(let i=0;i<kids.length;i++){
-    const ch = kids[i];
-    if(ch.style.display === "none" || ch.offsetParent === null) continue;
-    const cr = ch.getBoundingClientRect();
-    if(cr.height === 0) continue;
-    if(cr.top < pr.top - 0.5 || cr.bottom > pr.bottom + 0.5) return true;
-  }
-  return false;
-}
-function autoFitTextSync(el){
-  if(!el) return;
-  el.style.removeProperty("font-size");
-  const parent = el.parentElement;
-  if(!parent) return;
-  void el.offsetHeight;
-  if(!_hasOverflow(parent)) return;
-  let i = 0;
-  while(i < 40){
-    const cur = parseFloat(getComputedStyle(el).fontSize);
-    if(!cur || cur < 2.5) break;
-    el.style.setProperty("font-size", (cur * 0.92) + "px", "important");
-    i++;
-    void el.offsetHeight;
-    if(!_hasOverflow(parent)) break;
-  }
-}
-function autoAdaptImage(card){
-  if(!card || !card.classList.contains("has-image")) return;
-  if(card.classList.contains("size-tiny")) return;
-  card.classList.remove("img-tight","img-mini","img-hidden");
-  void card.offsetWidth;
-  const desc = card.querySelector(".col-desc");
-  const prod = card.querySelector(".product");
-  if(prod) autoFitTextSync(prod);
-  if(!_hasOverflow(desc)) return;
-  card.classList.add("img-tight"); void card.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!_hasOverflow(desc)) return;
-  card.classList.remove("img-tight"); card.classList.add("img-mini"); void card.offsetWidth;
-  if(prod) autoFitTextSync(prod);
-  if(!_hasOverflow(desc)) return;
-  card.classList.remove("img-mini"); card.classList.add("img-hidden");
-}
-function reAdaptClone(clone){ autoAdaptImage(clone); }
 
-function updateCapacityHint(){
-  const hint = document.getElementById("capacityHint"); if(!hint) return;
-  const capUnit = $("capacityUnit").value;
-  const capNum = parseFloat($("capacity").value)||0;
-  const priceNum = parsePrice($("price").value);
-  if(capNum<=0 || priceNum===null){ hint.style.display="none"; return; }
-  const info = calcUnitInfo(capUnit);
-  const precoUnit = priceNum / (capNum * info.normalizar);
-  hint.textContent = "→ " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
-  hint.style.display = "block";
-  const ratio = precoUnit / priceNum;
-  if(ratio > 100 || ratio < 0.01){
-    hint.style.background = "#fff5e6"; hint.style.borderLeftColor = "#f6c23e"; hint.style.color = "#7c5a0c";
-    hint.textContent = "⚠️ Verifique a quantidade → " + precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
-  }else{ hint.style.background = "#eef4ff"; hint.style.borderLeftColor = "#084298"; hint.style.color = "#084298"; }
+function autoFitTextSync(el){
+  if(!el || !el.parentElement) return; el.style.removeProperty("font-size");
+  const parent = el.parentElement, hasOverflow = () => { const pr = parent.getBoundingClientRect(); return Array.from(parent.children).some(c => c.style.display!=="none" && c.offsetParent && (c.getBoundingClientRect().top < pr.top-0.5 || c.getBoundingClientRect().bottom > pr.bottom+0.5)); };
+  if(!hasOverflow()) return;
+  for(let i=0; i<40; i++){ const cur = parseFloat(getComputedStyle(el).fontSize); if(cur<2.5) break; el.style.setProperty("font-size", (cur*0.92)+"px", "important"); if(!hasOverflow()) break; }
 }
-$("capacityUnit").dataset.last = $("capacityUnit").value;
-$("capacityUnit").addEventListener("change", function(){
-  const prev = this.dataset.last || this.value;
-  this.dataset.last = this.value;
-  const capInput = $("capacity");
-  const cur = parseFloat(capInput.value);
-  const grupo = function(u){ if(u==="g")return"massa-pequena"; if(u==="peso")return"massa-grande"; if(u==="ml")return"volume-ml"; if(u==="cl")return"volume-cl"; if(u==="lt")return"volume-grande"; return"especial"; };
-  const g1 = grupo(prev), g2 = grupo(this.value);
-  const isMassa = function(g){ return g.indexOf("massa")===0; };
-  const isVolume = function(g){ return g.indexOf("volume")===0; };
-  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){ capInput.value = ""; }
-  else if(cur > 0 && g1 !== g2){
-    let novo = cur;
-    if(g1==="massa-pequena" && g2==="massa-grande") novo = cur / 1000;
-    if(g1==="massa-grande" && g2==="massa-pequena") novo = cur * 1000;
-    if(g1==="volume-ml" && g2==="volume-grande") novo = cur / 1000;
-    if(g1==="volume-ml" && g2==="volume-cl") novo = cur / 10;
-    if(g1==="volume-cl" && g2==="volume-grande") novo = cur / 100;
-    if(g1==="volume-cl" && g2==="volume-ml") novo = cur * 10;
-    if(g1==="volume-grande" && g2==="volume-ml") novo = cur * 1000;
-    if(g1==="volume-grande" && g2==="volume-cl") novo = cur * 100;
-    if(novo > 0){ capInput.value = String(Number(novo.toFixed(4))); }
-  } else if(!cur || cur <= 0){
-    switch(this.value){ case "g": capInput.value = "500"; break; case "cl": capInput.value = "75"; break; case "ml": capInput.value = "500"; break; case "dz": capInput.value = "1"; break; case "dose": capInput.value = "1"; break; }
-  }
-  updateCard();
-});
-(function(){ const eanInput = $("ean"); if(!eanInput) return; eanInput.addEventListener("input", function(){ const pos = this.selectionStart; const upper = this.value.toUpperCase(); if(this.value !== upper){ this.value = upper; try { this.setSelectionRange(pos, pos); } catch(e){} } }); })();
+
+function autoAdaptImage(card){
+  if(!card || !card.classList.contains("has-image") || card.classList.contains("size-tiny")) return;
+  card.classList.remove("img-tight","img-mini","img-hidden"); const prod = card.querySelector(".product"), desc = card.querySelector(".col-desc");
+  const check = () => { if(prod) autoFitTextSync(prod); const pr = desc.getBoundingClientRect(); return Array.from(desc.children).some(c => c.style.display!=="none" && c.offsetParent && (c.getBoundingClientRect().top < pr.top-0.5 || c.getBoundingClientRect().bottom > pr.bottom+0.5)); };
+  if(!check()) return; card.classList.add("img-tight"); if(!check()) return; card.classList.replace("img-tight","img-mini"); if(!check()) return; card.classList.replace("img-mini","img-hidden");
+}
+
 function updateCardUnsafe(){
-  const storeVal = $("store").value||"PATAIAS";
-  const productVal = ($("product").value||"").trim().toUpperCase();
-  const codeVal = ($("internalCode").value||"").trim().toUpperCase();
-  const barcodeToDraw = ($("ean").value||"").trim().toUpperCase();
-  const priceNum = parsePrice($("price").value);
-  const oldPriceNum = parsePrice($("oldPrice").value);
-  const promoPriceNum = parsePrice($("promoPrice").value);
-  const isPromo = $("isPromoActive").checked;
-  const fv = $("presetSizes").value;
-  const isAmanhecer = fv==="amanhecer";
-  const isFP = isFruitPromoFormat(fv);
-  const dims = getDimensions();
-  const capUnit = $("capacityUnit").value;
-  const capNum = parseFloat($("capacity").value)||0;
-  const card = $("mainLabelCard");
-  if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
-  if(isAmanhecer){
-    card.style.width="380px"; card.style.height="214px";
-    applySizeClass(card,70,38);
-    $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
-  }else{
-    const scale = 3.2;
-    card.style.width = (dims.width*scale)+"px";
-    card.style.height = (dims.height*scale)+"px";
-    applySizeClass(card,dims.width,dims.height);
-    const prefix = isFP ? "💡 Fruta/Legumes Oportunidade" : "📐 Formato";
-    $("badgeSheet").textContent = prefix + ": " + dims.width + " × " + dims.height + " mm";
-  }
-  $("cardStore").textContent = storeVal;
-  setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
-  if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal } else $("cardCode").style.display = "none";
-  if(priceNum!==null){
-    const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
-    if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
-      $("cardPromoTopRow").style.display = "flex";
-      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-      const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
-      $("cardPromoTag").textContent = "-"+disc+"%";
-    } else $("cardPromoTopRow").style.display = "none";
-    const info = calcUnitInfo(capUnit);
-    if(capNum>0){
-      $("cardPrice").textContent = fmt+" €";
-      const precoUnit = priceNum / (capNum * info.normalizar);
-      $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.unitLabel;
-      $("cardUnitPrice").style.display = "block";
-    } else {
-      $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.unitSuffix+'</span>';
-      $("cardUnitPrice").style.display = "none";
-    }
-  } else {
-    const infoFb = calcUnitInfo(capUnit);
-    $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>';
-    $("cardPromoTopRow").style.display = "none";
-    $("cardUnitPrice").style.display = "none";
-  }
-  if(isFP){
-    const pu = $("promoUnit").value||"KG";
-    const pm = $("promoMinQty").value||"2";
-    $("cardFpNormalPrice").textContent = (priceNum!==null) ? priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
-    $("cardFpNormalUnit").textContent = "/ "+pu;
-    $("cardFpPromoPrice").textContent = (promoPriceNum!==null) ? promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
-    $("cardFpPromoUnit").textContent = "/ "+pu;
-    $("cardFpPromoLabel").textContent = (pu==="KG") ? "LEVE "+pm+" KG OU MAIS" : "LEVE "+pm+" UN OU MAIS";
-  }
-  const org = ($("origem").value||"").trim().toUpperCase();
-  const cat = ($("categoria").value||"").trim().toUpperCase();
-  const cal = ($("calibre").value||"").trim().toUpperCase();
-  const parts = [];
-  if(org) parts.push("Origem: "+org);
-  if(cat) parts.push("Cat. "+cat);
-  if(cal) parts.push("Cal. "+cal);
-  if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • ") } else $("cardFruit").style.display = "none";
-  const dep = $("depositFeeSelect").value;
-  const depVal = dep==="custom" ? $("customDepositInput").value.trim() : dep;
-  if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal } else $("cardDeposit").style.display = "none";
-  const eu = ($("unit").value||"").trim();
-  if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu } else $("cardExtraUnit").style.display = "none";
-  const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
-  const photoBox = $("cardPhotoBox");
-  if(activePhoto && !card.classList.contains("size-tiny")){
-    card.classList.add("has-image"); photoBox.classList.add("show"); $("cardPhotoImg").src = activePhoto;
-  } else {
-    card.classList.remove("has-image","img-tight","img-mini","img-hidden"); photoBox.classList.remove("show");
-  }
-  const bcBox = $("cardBarcodeBox");
-  if(barcodeToDraw && !card.classList.contains("size-tiny")){
-    bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
-  } else bcBox.classList.remove("show");
-  $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
-  $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
+  const fv = $("presetSizes").value, dims = getDimensionsFor(fv, $("customWidth").value, $("customHeight").value), isFP = fv.includes("frutaPromo");
+  const card = $("mainLabelCard"); card.className = `label-card size-${Math.max(dims.width,dims.height)<82?"small":"large"} ${isFP?"layout-fruit-promo":""}`;
+  card.style.width = (fv==="amanhecer"?380:dims.width*3.2)+"px"; card.style.height = (fv==="amanhecer"?214:dims.height*3.2)+"px";
+  $("cardStore").textContent = $("store").value; setProductText($("cardProduct"), $("product").value);
+  $("cardCode").style.display = $("internalCode").value ? "block" : "none"; $("cardCode").textContent = $("internalCode").value;
+  const price = parsePrice($("price").value), oldPrice = parsePrice($("oldPrice").value), cap = parseFloat($("capacity").value);
+  if(price!==null){
+    $("cardPrice").innerHTML = price.toLocaleString("pt-PT",{minimumFractionDigits:2}) + (cap>0 ? " €" : `<span class="unit-inline">${calcUnitInfo($("capacityUnit").value).unitSuffix}</span>`);
+    if($("isPromoActive").checked && oldPrice > price){ $("cardPromoTopRow").style.display="flex"; $("cardOldPrice").textContent=oldPrice+" €"; $("cardPromoTag").textContent="-"+Math.round(((oldPrice-price)/oldPrice)*100)+"\%"; } else $("cardPromoTopRow").style.display="none";
+  } else { $("cardPrice").innerHTML = '0,00<span class="unit-inline">€/KG</span>'; $("cardPromoTopRow").style.display="none"; }
+  $("cardPhotoBox").classList.toggle("show", !!globalOriginalPhoto); if(globalOriginalPhoto){ card.classList.add("has-image"); $("cardPhotoImg").src = globalOriginalPhoto; } else card.classList.remove("has-image");
+  if($("ean").value){ $("cardBarcodeBox").classList.add("show"); drawBarcode($("cardBarcodeSvg"), $("ean").value); $("cardBarcodeText").textContent=$("ean").value; } else $("cardBarcodeBox").classList.remove("show");
   autoAdaptImage(card);
 }
-let _t = null;
-function updateCard(){
-  if(_t) clearTimeout(_t);
-  _t = setTimeout(function(){
-    try{ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }
-    catch(err){ console.error("updateCard:",err) }
-  },16);
-}
-let _statusToastMsg = '', _statusToastTime = 0;
-function setStatus(msg,type){
-  const el = $("appStatus"); if(!el) return;
-  el.textContent = msg||""; el.dataset.type = type||"";
-  el.style.display = msg ? "block" : "none";
-  if(msg && (type==="error" || type==="success")){
-    const now = Date.now();
-    const isSame = (msg === _statusToastMsg) && (now - _statusToastTime < 4000);
-    if(!isSame){ toast(msg, type); _statusToastMsg = msg; _statusToastTime = now; }
-  }
-  if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none" },3500);
-}
-function setValidationState(){
-  clearFieldErrors();
-  const price = parsePrice($("price").value);
-  const oldPrice = parsePrice($("oldPrice").value);
-  const promoPrice = parsePrice($("promoPrice").value);
-  const ean = normalizeBarcode($("ean").value);
-  const errors = [];
-  const fv = $("presetSizes").value;
-  const isFP = isFruitPromoFormat(fv);
-  if($("price").value.trim() && price===null){ errors.push("Preço inválido."); markFieldError("price",true) }
-  if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice===null){ errors.push("Preço anterior inválido."); markFieldError("oldPrice",true) }
-  if($("isPromoActive").checked && !isFP && price!==null && oldPrice!==null && oldPrice<=price){ errors.push("Preço anterior deve ser superior."); markFieldError("oldPrice",true) }
-  if(isFP){
-    if($("promoPrice").value.trim() && promoPrice===null){ errors.push("Preço especial inválido."); markFieldError("promoPrice",true) }
-    if(price!==null && promoPrice!==null && promoPrice>=price){ errors.push("Preço especial deve ser inferior."); markFieldError("promoPrice",true) }
-  }
-  if(ean){
-    const valid = (/^\d{13}$/.test(ean)&&isValidEAN13(ean)) || (/^\d{14}$/.test(ean)&&isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
-    if(!valid){ errors.push("Código de barras inválido."); markFieldError("ean",true) }
-  }
-  setStatus(errors.join(" "), errors.length?"error":"");
-}
-function updateOrientationVisibility(){
-  const fv = $("presetSizes").value;
-  const show = isLargeFormat(fv);
-  const isFP = isFruitPromoFormat(fv);
-  $("fruitPanel").style.display = (show||fv==="A6"||fv==="125x80"||fv==="frutaPromo125x80"||fv==="frutaPromoA6") ? "block" : "none";
-  $("fruitPromoPanel").style.display = isFP ? "block" : "none";
-  const lbl = $("isPromoActive").closest("label");
-  if(lbl) lbl.style.display = isFP ? "none" : "flex";
-  if(isFP) $("promoBox").style.display = "none";
-}
-$("presetSizes").addEventListener("change",function(){
-  const val = this.value;
-  $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
-  $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
-  updateOrientationVisibility(); updateCard();
-});
-$("customWidth").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
-$("customHeight").addEventListener("input",function(){updateOrientationVisibility();updateCard()});
-$("isPromoActive").addEventListener("change",function(){$("promoBox").style.display=this.checked?"block":"none";updateCard()});
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("input",updateCard);
-});
-["store","depositFeeSelect","promoStart","promoEnd","promoUnit"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("change",updateCard);
-});
-$("autoRemoveBg").addEventListener("change",updateCard);
-$("photo").addEventListener("change", async function(e){
-  const file = e.target.files[0];
-  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
-  if(!file){ updateCard(); return }
-  if(file.type.indexOf("image/")!==0){ setStatus("Imagem inválida.","error"); e.target.value=""; updateCard(); return }
-  if(file.size > 12*1024*1024){ setStatus("Imagem muito grande (máx 12 MB).","error"); e.target.value=""; updateCard(); return }
-  const r = new FileReader();
-  r.onerror = function(){ setStatus("Erro a ler imagem.","error"); };
-  r.onload = async function(evt){
-    globalOriginalPhoto = evt.target.result; updateCard();
-    if($("autoRemoveBg").checked){
-      try {
-        const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
-        globalProcessedPhoto = semFundo; updateCard();
-        toast("✅ Fundo removido!", "success");
-        await perguntarGuardarNoBanco();
-      } catch(e) { toast("Erro: " + e.message, "error"); }
-    }
-  };
-  r.readAsDataURL(file);
-});
-$("clearBtn").addEventListener("click", async function(){
-  if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
-  ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){if($(id))$(id).value=""});
-  $("depositFeeSelect").value="";
-  $("capacityUnit").value="peso"; $("capacityUnit").dataset.last = "peso";
-  $("isPromoActive").checked = false; $("promoBox").style.display="none";
-  $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
-  photoToken++; globalOriginalPhoto=""; globalProcessedPhoto="";
-  $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
-  $("store").value = "PATAIAS";
-  $("customWidth").value = "70"; $("customHeight").value = "38";
-  $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
-  $("copiesCount").value = "21";
-  updateOrientationVisibility(); updateCard();
-  toast("Editor limpo.", "info");
-});
-function bindSlider(id, setter, storageKey){
-  const el = $(id); if(!el) return;
-  el.addEventListener("input", function(){
-    const v = parseFloat(this.value); if(!isFinite(v)) return;
-    setter(v);
-    const valId = id.replace("Range","Val");
-    if($(valId)) $(valId).textContent = v + " mm";
-    applyOffsets();
-    Storage.set(storageKey, String(v));
-  });
-}
-bindSlider("offsetXRange",     function(v){ offsetX = v; },      "balcao_offset_x");
-bindSlider("offsetYRange",     function(v){ offsetY = v; },      "balcao_offset_y");
-bindSlider("colLeftYRange",    function(v){ colLeftY = v; },     "balcao_col_left_y");
-bindSlider("colRightYRange",   function(v){ colRightY = v; },    "balcao_col_right_y");
-bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(0, Math.min(15, v)); },   "balcao_margin_left_v2");
-bindSlider("marginRightRange", function(v){ marginRight = Math.max(0, Math.min(15, v)); },  "balcao_margin_right_v2");
-$("resetOffsetBtn").addEventListener("click",function(){
-  offsetX = 0; offsetY = 6;
-  colLeftY = 0; colRightY = 0;
-  marginLeft = 4; marginRight = 4;
-  applyOffsets();
-  Storage.set("balcao_offset_x","0");  Storage.set("balcao_offset_y","6");
-  Storage.set("balcao_col_left_y","0"); Storage.set("balcao_col_right_y","0");
-  Storage.set("balcao_margin_left_v2","4"); Storage.set("balcao_margin_right_v2","4");
-  setStatus("Ajustes reiniciados (X=0, Y=6, Esq=0, Dir=0, Margens=4 mm).","success");
-});
-$("printCalibBtn").addEventListener("click",function(){
-  const pz = $("printZone"); pz.innerHTML = "";
-  const page = document.createElement("div"); page.className = "calib-sheet";
-  for(let i=1;i<=21;i++){const cell = document.createElement("div");cell.className = "calib-cell";cell.textContent = "• "+i+" •";page.appendChild(cell)}
-  pz.appendChild(page);
-  setTimeout(function(){ window.print(); setTimeout(function(){pz.innerHTML=""},1500) },80);
-});
-function buildLabelClone(data, dims, forPrint){
-  const backup = getFormData();
-  setFormData(data); updateCardUnsafe();
-  const card = $("mainLabelCard");
-  const clone = card.cloneNode(true);
-  clone.removeAttribute("id");
-  const ids = clone.querySelectorAll("[id]");
-  for(let k=0;k<ids.length;k++) ids[k].removeAttribute("id");
-  applySizeClass(clone,dims.width,dims.height);
-  clone.classList.remove("img-tight","img-mini","img-hidden");
-  const eanVal = normalizeBarcode(data.ean);
-  const svg = clone.querySelector("svg");
-  if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg,eanVal) }
-  if(forPrint) applyPrintSizes(clone, dims);
-  const prodEl = clone.querySelector(".product");
-  if(prodEl) autoFitTextSync(prodEl);
-  setFormData(backup); updateCardUnsafe();
-  return clone;
-}
-$("printBtn").addEventListener("click",function(){window.triggerPrint()});
-function validateBeforePrint(){
-  setValidationState();
-  if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false }
-  if(printQueue.length===0){
-    const price = parsePrice($("price").value);
-    if(price===null){ setStatus("Introduza um preço válido.","error"); $("price").focus(); return false }
-    const fv = $("presetSizes").value;
-    if(isFruitPromoFormat(fv)){
-      const pp = parsePrice($("promoPrice").value);
-      if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false }
-    }
-    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
-    if(fv==="amanhecer" && copies>21){ setStatus("Máximo 21 etiquetas por folha.","error"); return false }
-  }
-  return true;
-}
-let _restoreQueueAfterPrint = null;
-function cleanupAfterPrint(){
-  printInProgress = false;
-  $("printBtn").disabled = false;
-  $("printBtn").innerHTML = printQueue.length>0
-    ? '🖨️ Imprimir Fila ('+printQueue.reduce(function(a,b){return a+b.copies},0)+' etiq.) [F9]'
-    : "🖨️ Imprimir [F9]";
-  const pz = $("printZone");
-  pz.classList.remove("measure");
-  pz.innerHTML = "";
-  $("proPrintOverlay").classList.remove("show");
-  if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
-}
-function computeLayout(labelW, labelH){
-  const PAGE_W = 210, PAGE_H = 288, SIDE = 2, GUTTER = 2;
-  const availW = PAGE_W - 2*SIDE;
-  const availH = PAGE_H - 2*SIDE;
-  const cols = Math.max(1, Math.floor((availW + GUTTER) / (labelW + GUTTER)));
-  const rows = Math.max(1, Math.floor((availH + GUTTER) / (labelH + GUTTER)));
-  return { cols: cols, rows: rows, perPage: cols*rows, gutter: GUTTER };
-}
-function getItemsPerPage(dims){ return computeLayout(dims.width, dims.height).perPage; }
-function triggerPrint(){
-  if(printInProgress) return;
-  if(!validateBeforePrint()) return;
-  printInProgress = true;
-  $("printBtn").disabled = true; $("printBtn").textContent = "⏳ A preparar...";
-  $("proPrintOverlay").classList.add("show");
-  const pz = $("printZone"); pz.innerHTML = "";
+let _t; function updateCard(){ clearTimeout(_t); _t = setTimeout(() => { updateCardUnsafe(); updateEanBadge(); }, 20); }
+["presetSizes","store","isPromoActive","capacityUnit","depositFeeSelect"].forEach(id => $(id).addEventListener("change", updateCard));
+["product","internalCode","price","oldPrice","ean","customWidth","customHeight","capacity"].forEach(id => $(id).addEventListener("input", updateCard));
 
-  const editorFmt = $("presetSizes").value;
-  const items = [];
-  if(printQueue.length===0){
-    const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
-    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:editorFmt});
-  }else{
-    printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||editorFmt;
-      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
-    });
-  }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({format:it.format,items:[it.data]});
-  });
-  const amanhecerQueue = [];
-  groups.forEach(function(g){
-    if(g.format==="amanhecer"){
-      g.items.forEach(function(d){amanhecerQueue.push(d)});
-    }else{
-      const first = g.items[0];
-      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
-      const lay = computeLayout(dims.width, dims.height);
-      for(let i=0;i<g.items.length;i+=lay.perPage){
-        const chunk = g.items.slice(i,i+lay.perPage);
-        const page = document.createElement("div"); page.className = "print-page-generic";
-        page.style.display = "grid";
-        page.style.gridTemplateColumns = "repeat("+lay.cols+", "+dims.width+"mm)";
-        page.style.gridAutoRows = dims.height + "mm";
-        page.style.gap = lay.gutter + "mm";
-        page.style.justifyContent = "center";
-        page.style.alignContent = "start";
-        chunk.forEach(function(d){
-          const c = buildLabelClone(d,dims,true);
-          c.style.setProperty("width",  dims.width  + "mm", "important");
-          c.style.setProperty("height", dims.height + "mm", "important");
-          c.style.setProperty("box-sizing", "border-box", "important");
-          page.appendChild(c);
-        });
-        pz.appendChild(page);
-      }
-    }
-  });
-  for(let i=0;i<amanhecerQueue.length;i+=21){
-    const chunk = amanhecerQueue.slice(i,i+21);
-    const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
-    chunk.forEach(function(data,idx){
-      const dims = {width:70,height:idx<3?38:40};
-      const c = buildLabelClone(data,dims,true);
-      c.style.setProperty("width",  "70mm", "important");
-      c.style.setProperty("height", idx<3?"38mm":"40mm", "important");
-      c.style.setProperty("box-sizing","border-box", "important");
-      page.appendChild(c);
-    });
-    for(let j=chunk.length;j<21;j++){
-      const empty = document.createElement("div");
-      empty.className = "label-card size-small";
-      empty.style.visibility = "hidden";
-      empty.style.setProperty("width",  "70mm", "important");
-      empty.style.setProperty("height", j<3?"38mm":"40mm", "important");
-      page.appendChild(empty);
-    }
-    pz.appendChild(page);
-  }
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      window.print();
-      setTimeout(function(){ if(printInProgress) cleanupAfterPrint() },3000);
-    });
-  });
+function buildLabelClone(d, dims, forPrint){
+  const bk = getFormData(); setFormData(d); updateCardUnsafe();
+  const clone = $("mainLabelCard").cloneNode(true); clone.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
+  clone.style.width = dims.width+"mm"; clone.style.height = dims.height+"mm";
+  if(normalizeBarcode(d.ean)) drawBarcode(clone.querySelector("svg"), d.ean);
+  if(forPrint) applyPrintSizes(clone, dims);
+  autoFitTextSync(clone.querySelector(".product")); setFormData(bk); updateCardUnsafe(); return clone;
 }
-window.triggerPrint = triggerPrint;
-window.cleanupAfterPrint = cleanupAfterPrint;
-window.addEventListener("afterprint",cleanupAfterPrint);
-window.addEventListener("beforeunload",function(ev){if(printQueue.length>0){ev.preventDefault();ev.returnValue=""}});
-$("printDbBtn").addEventListener("click", async function(){
-  if(savedProducts.length===0){ setStatus("Sem produtos guardados.","error"); return }
-  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?"))) return;
-  if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
-  _restoreQueueAfterPrint = printQueue.slice();
-  printQueue = savedProducts.map(function(p){return {data:JSON.parse(JSON.stringify(p)),copies:1}});
-  renderQueue();
-  setTimeout(function(){ window.triggerPrint(); }, 100);
-});
-$("previewSheetBtn").addEventListener("click",function(){
-  const content = $("sheetPreviewContent"); content.innerHTML = "";
-  const items = [];
-  if(printQueue.length===0){
-    const copies = Math.max(1,Math.min(21,Number($("copiesCount").value)||1));
-    const fv = $("presetSizes").value;
-    for(let i=0;i<copies;i++) items.push({data:getFormData(),format:fv});
-  }else{
-    printQueue.forEach(function(q){
-      const fmt = q.data.presetSizes||"amanhecer";
-      for(let i=0;i<q.copies;i++) items.push({data:q.data,format:fmt});
-    });
-  }
-  if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({format:it.format,items:[it.data]});
-  });
-  let totalPreviewed = 0;
-  groups.forEach(function(g){
-    if(g.format==="amanhecer"){
-      for(let i=0;i<g.items.length;i+=21){
-        const chunk = g.items.slice(i,i+21);
-        const page = document.createElement("div"); page.className = "preview-page-amanhecer";
-        chunk.forEach(function(d,idx){
-          const dims = {width:70,height:idx<3?38:40};
-          const clone = buildLabelClone(d,dims,true);
-          clone.style.width = "70mm"; clone.style.height = idx<3?"38mm":"40mm";
-          page.appendChild(clone);
+
+/* ============= IMPRESSÃO ROBUSTA ============= */
+function computeLayout(labelW, labelH){
+  const availW = 210 - offsetX, availH = 297 - offsetY - 4, gutter = 2; 
+  const cols = Math.max(1, Math.floor((availW + gutter) / (labelW + gutter)));
+  const rows = Math.max(1, Math.floor((availH + gutter) / (labelH + gutter)));
+  return { cols, rows, perPage: cols * rows, gutter };
+}
+
+$("printBtn").addEventListener("click", () => {
+  if(printInProgress) return; printInProgress = true;
+  $("printBtn").disabled = true; $("proPrintOverlay").classList.add("show");
+  const pz = $("printZone"); pz.innerHTML = "";
+  
+  let items = [];
+  if(printQueue.length === 0) { for(let i=0; i<(parseInt($("copiesCount").value)\vert{}\vert{}1); i++) items.push({data:getFormData(), format:$("presetSizes").value}); }
+  else { printQueue.forEach(q => { for(let i=0; i<q.copies; i++) items.push({data:q.data, format:q.data.presetSizes||$("presetSizes").value}); }); }
+  
+  const am = items.filter(i => i.format === "amanhecer"), gen = items.filter(i => i.format !== "amanhecer");
+  
+  if(gen.length > 0) {
+    const formatGroups = {};
+    gen.forEach(it => { if(!formatGroups[it.format]) formatGroups[it.format] = []; formatGroups[it.format].push(it.data); });
+    
+    for (const fmt in formatGroups) {
+      const arr = formatGroups[fmt], dims = getDimensionsFor(fmt, arr[0].customWidth, arr[0].customHeight);
+      const lay = computeLayout(dims.width, dims.height);
+      
+      for(let i=0; i<arr.length; i+=lay.perPage){
+        const chunk = arr.slice(i, i+lay.perPage);
+        const page = document.createElement("div"); page.className = "print-page-generic";
+        const grid = document.createElement("div"); grid.className = "generic-grid";
+        grid.style.gridTemplateColumns = `repeat(${lay.cols}, ${dims.width}mm)`;
+        grid.style.gridAutoRows = `${dims.height}mm`; grid.style.gap = `${lay.gutter}mm`;
+        
+        chunk.forEach(d => {
+          const c = buildLabelClone(d, dims, true);
+          c.style.setProperty("width", `${dims.width}mm`, "important");
+          c.style.setProperty("height", `${dims.height}mm`, "important");
+          grid.appendChild(c);
         });
-        for(let j=chunk.length;j<21;j++){
-          const empty = document.createElement("div"); empty.className = "label-card size-small empty"; page.appendChild(empty);
-        }
-        content.appendChild(page);
-        page.querySelectorAll(".label-card:not(.empty)").forEach(function(c){ reAdaptClone(c); });
-        totalPreviewed += chunk.length;
+        page.appendChild(grid); pz.appendChild(page);
       }
-    }else{
-      const first = g.items[0];
-      const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
-      const grp = document.createElement("div"); grp.className = "preview-group-flex";
-      g.items.forEach(function(d){
-        const clone = buildLabelClone(d,dims,true);
-        const scale = 3.2;
-        clone.style.width = (dims.width*scale)+"px";
-        clone.style.height = (dims.height*scale)+"px";
-        grp.appendChild(clone);
-      });
-      content.appendChild(grp);
-      grp.querySelectorAll(".label-card").forEach(function(c){ reAdaptClone(c); });
-      totalPreviewed += g.items.length;
     }
-  });
-  $("sheetPreviewTitle").textContent = "👁️ Pré-visualização ("+totalPreviewed+" etiqueta"+(totalPreviewed>1?"s":"")+")";
-  $("sheetPreview").classList.add("show");
+  }
+
+  for(let i=0; i<am.length; i+=21){
+    const chunk = am.slice(i, i+21);
+    const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
+    const grid = document.createElement("div"); grid.className = "print-sheet-amanhecer-grid";
+    chunk.forEach((d, idx) => {
+      const h = idx < 3 ? 38 : 40;
+      const c = buildLabelClone(d.data, {width:70, height:h}, true);
+      c.style.setProperty("width", "70mm", "important"); c.style.setProperty("height", `${h}mm`, "important");
+      grid.appendChild(c);
+    });
+    for(let j=chunk.length; j<21; j++){
+      const empty = document.createElement("div"); empty.className = "label-card"; empty.style.visibility = "hidden";
+      empty.style.setProperty("width", "70mm", "important"); empty.style.setProperty("height", j<3?"38mm":"40mm", "important");
+      grid.appendChild(empty);
+    }
+    page.appendChild(grid); pz.appendChild(page);
+  }
+  
+  setTimeout(() => { window.print(); setTimeout(() => { printInProgress=false; $("printBtn").disabled=false; $("proPrintOverlay").classList.remove("show"); pz.innerHTML=""; }, 3000); }, 500);
 });
-$("sheetPreviewClose").addEventListener("click",function(){$("sheetPreview").classList.remove("show")});
-$("sheetPreview").addEventListener("click",function(e){if(e.target===$("sheetPreview"))$("sheetPreview").classList.remove("show")});
-document.addEventListener("keydown",function(ev){
-  if(ev.key==="F9"){ ev.preventDefault(); window.triggerPrint() }
-  if(ev.key==="Escape"){ $("sheetPreview").classList.remove("show"); closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); }
+
+["offsetXRange","offsetYRange","colLeftYRange","colRightYRange","marginLeftRange","marginRightRange"].forEach(id => {
+  if($(id))$(id).addEventListener("input", function(){ eval(id.replace("Range","") + " = parseFloat(this.value);"); applyOffsets(); Storage.set("balcao_" + id.replace("Range","").replace(/[A-Z]/g, m=>"_"+m.toLowerCase()), this.value); });
 });
-(async function boot(){
-  try{
-    applyOffsets();
-    updateOrientationVisibility();
-    updateCard();
-    renderQueue();
-    const fvInicial = $("presetSizes").value;
-    $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
-    await carregarTudo();
-  }catch(err){ console.error("Erro arranque:",err) }
-})();
+$("resetOffsetBtn").addEventListener("click", () => { offsetX=0; offsetY=6; colLeftY=0; colRightY=0; marginLeft=4; marginRight=4; applyOffsets(); setStatus("Ajustes repostos.","success"); });
+$("clearBtn").addEventListener("click", async () => { if(await confirmDialog("Limpar editor?")){ ["internalCode","product","price","ean","oldPrice"].forEach(id => $(id).value=""); globalOriginalPhoto=""; updateCard(); } });
+
+(async function boot(){ applyOffsets(); updateOrientationVisibility(); updateCard(); renderQueue(); $("copiesCount").value = $("presetSizes").value === "amanhecer" ? "21" : "1"; await carregarTudo(); })();
 </script>
 </body>
 </html>
