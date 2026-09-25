@@ -175,8 +175,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .sheet-preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}
 .sheet-preview-header h3{margin:0;font-size:16px}
 .sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
-.preview-page-amanhecer{display:grid;grid-template-columns:70mm 70mm 70mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:210mm;height:278mm;background:#fff}
-.preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
+.preview-page-amanhecer{display:grid;grid-template-columns:66mm 66mm 66mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:198mm;height:278mm;background:#fff;margin:0 auto}
+.preview-page-amanhecer .label-card{width:66mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
 .preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 .preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important}
@@ -190,23 +190,65 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .app, .sheet-preview, .pro-print-overlay, .modal, .toast-container, .confirm-overlay, .name-modal, .mobile-tab-bar { display: none !important; }
   #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
   #printZone * { transform: none !important; -webkit-transform: none !important; zoom: 1 !important; animation: none !important; transition: none !important; }
-  .print-page-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; break-after: page !important; overflow: hidden !important; box-sizing: border-box !important; position: relative !important; background: white !important; }
+  .print-page-wrapper {
+    width: 210mm !important;
+    height: 297mm !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    background: white !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 5mm 0 5mm 0 !important;
+  }
   .print-page-wrapper:last-child { page-break-after: auto !important; break-after: auto !important; }
-  .print-sheet-amanhecer { display: grid !important; grid-template-columns: 70mm 70mm 70mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 210mm !important; height: 278mm !important; margin-top: var(--offset-y) !important; margin-left: var(--offset-x) !important; gap: 0 !important; }
-  .print-page-generic-grid { display: grid !important; justify-content: center !important; align-content: start !important; margin-top: var(--offset-y) !important; margin-left: var(--offset-x) !important; padding-top: 2mm !important; }
-  #printZone .label-card { border: 1px solid transparent !important; margin: 0 !important; box-sizing: border-box !important; page-break-inside: avoid !important; break-inside: avoid !important; padding: 2px 4px !important; }
+  .print-sheet-amanhecer {
+    display: grid !important;
+    grid-template-columns: 66mm 66mm 66mm !important;
+    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+    width: 198mm !important;
+    height: 278mm !important;
+    margin-top: var(--offset-y) !important;
+    gap: 0 !important;
+  }
+  .print-page-generic-grid {
+    display: grid !important;
+    margin-top: var(--offset-y) !important;
+  }
+  #printZone .label-card {
+    border: 1px solid transparent !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    padding: 2px 4px !important;
+  }
   #printZone .print-page-generic-grid .label-card { border: 1px solid #222 !important; }
+  #printZone .print-sheet-amanhecer .label-card { width: 66mm !important; }
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4) { height: 40mm !important; }
   .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; transform: translateY(var(--col-left-y)) !important; }
-  .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
+  .print-sheet-amanhecer .label-card:nth-child(3n)   { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
   .calib-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; }
-  .calib-sheet { display: grid !important; grid-template-columns: 70mm 70mm 70mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 210mm !important; height: 278mm !important; margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important; }
-  .calib-cell{ border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
+  .calib-sheet {
+    display: grid !important;
+    grid-template-columns: 66mm 66mm 66mm !important;
+    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+    width: 198mm !important;
+    height: 278mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: var(--offset-y) !important;
+  }
+  .calib-cell { border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
   .calib-sheet .calib-cell:nth-child(3n+1){ transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
-  .calib-sheet .calib-cell:nth-child(3n){ transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
+  .calib-sheet .calib-cell:nth-child(3n)  { transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
 }
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
 .pro-print-overlay.show{display:flex}
@@ -552,7 +594,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <div class="offset-section-title">📏 Margens laterais (0 a 15 mm)</div>
             <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginLeftVal">4 mm</span></div>
             <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginRightVal">4 mm</span></div>
-            <div class="offset-hint">💡 0 mm = encostado à borda. 4 mm é seguro para a maioria das impressoras. Máximo 15 mm.</div>
+            <div class="offset-hint">💡 A margem de segurança de 5 mm é aplicada automaticamente na impressão. Os sliders ajudam a calibrar se a impressora estiver desalinhada.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
               <button class="warn-btn" id="printCalibBtn" type="button">📏 Calibração</button>
               <button class="secondary" id="resetOffsetBtn" type="button">↺ Reiniciar</button>
@@ -733,11 +775,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v7';
+const CACHE_KEY = 'balcao_cache_v8';
 
-/* ═══════════════════════════════════════════════════════════
-   UTILITÁRIOS DE UI
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ UTILITÁRIOS DE UI ═══════════════ */
 function toast(msg, type, duration) {
   type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
   const c = document.getElementById('toastContainer'); if (!c) return;
@@ -747,7 +787,8 @@ function toast(msg, type, duration) {
 }
 function confirmDialog(msg) {
   return new Promise(function(resolve){
-    const ov = document.getElementById('confirmOverlay'); document.getElementById('confirmMsg').textContent = msg; ov.classList.add('show');
+    const ov = document.getElementById('confirmOverlay');
+    document.getElementById('confirmMsg').textContent = msg; ov.classList.add('show');
     function cleanup(r){ ov.classList.remove('show'); document.getElementById('confirmYes').onclick=null; document.getElementById('confirmNo').onclick=null; ov.onclick=null; resolve(r); }
     document.getElementById('confirmYes').onclick = function(){ cleanup(true); };
     document.getElementById('confirmNo').onclick  = function(){ cleanup(false); };
@@ -756,23 +797,34 @@ function confirmDialog(msg) {
 }
 function pedirNomeTipoArtigo(valorInicial, tipoInicial){
   return new Promise(function(resolve){
-    const modal = document.getElementById("saveBancoModal"), input = document.getElementById("saveBancoName"), boxTipo = document.getElementById("saveBancoTipo");
+    const modal = document.getElementById("saveBancoModal");
+    const input = document.getElementById("saveBancoName");
+    const boxTipo = document.getElementById("saveBancoTipo");
     input.value = String(valorInicial || "").toUpperCase();
     let tipoSel = (tipoInicial === 'legume') ? 'legume' : 'fruta';
     function marcar(){ boxTipo.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.tipo === tipoSel); }); }
     marcar(); boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ tipoSel = b.dataset.tipo; marcar(); input.focus(); }; });
     modal.classList.add("show"); setTimeout(function(){ input.focus(); input.select(); }, 50);
-    function fechar(r){ modal.classList.remove("show"); document.getElementById("saveBancoConfirm").onclick = null; document.getElementById("saveBancoCancel").onclick = null; input.onkeydown = null; modal.onclick = null; boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = null; }); resolve(r); }
-    document.getElementById("saveBancoConfirm").onclick = function(){ const v = (input.value || "").trim().toUpperCase(); if(!v){ toast("Escreva um nome.", "warning"); input.focus(); return; } fechar({ nome: v, tipo: tipoSel }); };
+    function fechar(r){
+      modal.classList.remove("show");
+      document.getElementById("saveBancoConfirm").onclick = null;
+      document.getElementById("saveBancoCancel").onclick = null;
+      input.onkeydown = null; modal.onclick = null;
+      boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = null; });
+      resolve(r);
+    }
+    document.getElementById("saveBancoConfirm").onclick = function(){
+      const v = (input.value || "").trim().toUpperCase();
+      if(!v){ toast("Escreva um nome.", "warning"); input.focus(); return; }
+      fechar({ nome: v, tipo: tipoSel });
+    };
     document.getElementById("saveBancoCancel").onclick = function(){ fechar(null); };
     input.onkeydown = function(e){ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("saveBancoConfirm").click(); } if(e.key==="Escape"){ e.preventDefault(); fechar(null); } };
     modal.onclick = function(e){ if(e.target === modal) fechar(null); };
   });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   IMAGEM — compressão e remoção de fundo
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ IMAGEM ═══════════════ */
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || 700; quality = quality || 0.72;
   return new Promise(function(resolve){
@@ -786,11 +838,12 @@ function compressSmart(dataUrl, maxSize, quality) {
       try { const tmp = document.createElement('canvas'); tmp.width = Math.min(w, 80); tmp.height = Math.min(h, 80); const tctx = tmp.getContext('2d'); tctx.drawImage(img, 0, 0, tmp.width, tmp.height); const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data; for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { temTransparencia = true; break; } } } catch(e) {}
       if (temTransparencia) { ctx.clearRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); let out = canvas.toDataURL('image/webp', quality); if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png'); resolve(out); } else { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); resolve(canvas.toDataURL('image/jpeg', quality)); }
     };
-    img.onerror = function(){ resolve(dataUrl); }; img.src = dataUrl;
+    img.onerror = function(){ resolve(dataUrl); };
+    img.src = dataUrl;
   });
 }
 let _photoToken = 0;
-function removeBackgroundSimple(dataUrl,cb){
+function removeBackgroundSimple(dataUrl, cb){
   const token = ++_photoToken; const img = new Image(); img.crossOrigin = "anonymous";
   img.onload = function(){
     try{
@@ -814,9 +867,9 @@ function removeBackgroundSimple(dataUrl,cb){
   img.onerror = function(){ if(token===_photoToken) cb(dataUrl) };
   img.src = dataUrl;
 }
-async function removeBackgroundSmart(dataUrl) {
+async function removeBackgroundSmart(dataUrl){
   const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
-  if (!useAI) return new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
+  if(!useAI) return new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
   try {
     const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');
     const blob = await mod.removeBackground(dataUrl, { output: { format: 'image/png' }});
@@ -826,37 +879,31 @@ async function removeBackgroundSmart(dataUrl) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   API
-   ═══════════════════════════════════════════════════════════ */
-async function api(fn, payload, retries = 2) {
+/* ═══════════════ API ═══════════════ */
+async function api(fn, payload, retries){
   payload = payload || {};
+  if(retries === undefined) retries = 2;
   try {
     const resp = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload }) });
     const texto = await resp.text();
     if(!resp.ok) throw new Error('HTTP ' + resp.status);
-    let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta não-JSON: ' + texto.slice(0,80)); }
+    let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta não-JSON'); }
     if(!j.ok) throw new Error(j.error || 'Erro API');
     return j.data;
   } catch(e) {
-    if(retries > 0) { await new Promise(function(r){ setTimeout(r, 900); }); return api(fn, payload, retries - 1); }
+    if(retries > 0){ await new Promise(function(r){ setTimeout(r, 900); }); return api(fn, payload, retries - 1); }
     throw e;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ESTADO GLOBAL
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ ESTADO ═══════════════ */
 const $ = function(id){ return document.getElementById(id); };
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, fotoBancoModo = false;
 let printQueue = [], savedProducts = [], bancoFruta = [], bancoTipoFiltro = 'all';
-
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
-const Storage = { get:function(k,f){try{const v=localStorage.getItem(k);return v===null?f:v}catch(e){return f}}, set:function(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}} };
+const Storage = { get:function(k,f){ try{ const v=localStorage.getItem(k); return v===null?f:v; }catch(e){ return f; } }, set:function(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } } };
 
-/* ═══════════════════════════════════════════════════════════
-   CALIBRAÇÃO
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ CALIBRAÇÃO ═══════════════ */
 let offsetX = parseFloat(Storage.get("balcao_offset_x","0")); if(!isFinite(offsetX)) offsetX = 0;
 let offsetY = parseFloat(Storage.get("balcao_offset_y","6")); if(!isFinite(offsetY)) offsetY = 6;
 let colLeftY = parseFloat(Storage.get("balcao_col_left_y","0")); if(!isFinite(colLeftY)) colLeftY = 0;
@@ -885,9 +932,7 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CARREGAMENTO DO DRIVE (com cache)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ CARREGAMENTO ═══════════════ */
 async function carregarTudo(){
   try{
     const raw = localStorage.getItem(CACHE_KEY);
@@ -903,7 +948,8 @@ async function carregarTudo(){
   const p = await api('listarProdutos').catch(function(e){ errProd = e.message; return null; });
   await new Promise(function(resolve){ setTimeout(resolve, 600); });
   const f = await api('listarBancoFruta').catch(function(e){ errBanco = e.message; return null; });
-  if(p) savedProducts = p; if(f) bancoFruta = f;
+  if(p) savedProducts = p;
+  if(f) bancoFruta = f;
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
   try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
   if(errProd && errBanco){ setStatus('❌ Erro ao ler do Drive: '+errProd, 'error'); }
@@ -911,9 +957,7 @@ async function carregarTudo(){
   else { setStatus('✅ Dados atualizados.','success'); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FORM
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ FORM ═══════════════ */
 function getFormData(){
   return {
     presetSizes:$("presetSizes").value, customWidth:$("customWidth").value, customHeight:$("customHeight").value,
@@ -958,15 +1002,12 @@ function setFormData(d){
   globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
   $("photo").value = "";
   $("customDimensionsRow").style.display = ($("presetSizes").value==="custom") ? "grid" : "none";
-  updateOrientationVisibility();
-  updateCard();
+  updateOrientationVisibility(); updateCard();
 }
 function markFieldError(id,has){ const el=$(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
 
-/* ═══════════════════════════════════════════════════════════
-   EAN / CÓDIGO DE BARRAS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ EAN ═══════════════ */
 function onlyDigits(v){ return String(v||"").replace(/\D/g,""); }
 function ean13CheckDigit(f12){ const d=onlyDigits(f12).slice(0,12); if(d.length!==12) return null; let s=0; for(let i=0;i<12;i++) s+=Number(d[i])*(i%2===0?1:3); return String((10-(s%10))%10); }
 function isValidEAN13(v){ const d=onlyDigits(v); return d.length===13 && ean13CheckDigit(d.slice(0,12))===d[12]; }
@@ -985,7 +1026,10 @@ function drawBarcode(svg,value){
   if(!svg) return; svg.innerHTML = "";
   const clean = normalizeBarcode(value); if(!clean) return;
   if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){
-    const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"], EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"], EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"], EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+    const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+    const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+    const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+    const EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
     const dg = onlyDigits(clean), first = Number(dg[0]), L = dg.slice(1,7), R = dg.slice(7), par = EAN_P[first];
     let bits = "101";
     for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
@@ -998,9 +1042,7 @@ function drawBarcode(svg,value){
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FORMATO / DIMENSÕES
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ FORMATO ═══════════════ */
 function isLargeFormat(v){ return ["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1 || (v==="custom" && (parseFloat($("customWidth").value)>=90 || parseFloat($("customHeight").value)>=65)); }
 function isFruitPromoFormat(v){ return v==="frutaPromo125x80" || v==="frutaPromoA6"; }
 function getDimensionsFor(fv,cw,ch){
@@ -1014,27 +1056,23 @@ function applySizeClass(el,w,h){ if(!el) return; el.classList.remove("size-tiny"
 window.setField = function(id,val){ const el=$(id); if(el){ el.value=val; updateCard(); } };
 function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
 
-/* ═══════════════════════════════════════════════════════════
-   CÁLCULO DE UNIDADES
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ UNIDADES ═══════════════ */
 function calcUnitInfo(capUnit){
   switch(capUnit){
-    case "peso":    return { mainSuffix:"€/KG",      refSuffix:"€/KG", normalizar:1 };
-    case "g":       return { mainSuffix:"€/UN",      refSuffix:"€/KG", normalizar:1/1000 };
-    case "lt":      return { mainSuffix:"€/LT",      refSuffix:"€/LT", normalizar:1 };
-    case "cl":      return { mainSuffix:"€/UN",      refSuffix:"€/LT", normalizar:1/100 };
-    case "ml":      return { mainSuffix:"€/UN",      refSuffix:"€/LT", normalizar:1/1000 };
-    case "un":      return { mainSuffix:"€/UN",      refSuffix:"€/UN", normalizar:1 };
-    case "dz":      return { mainSuffix:"€/DZ",      refSuffix:"€/UN", normalizar:12 };
-    case "meia_dz": return { mainSuffix:"€/½DZ",     refSuffix:"€/UN", normalizar:6 };
-    case "dose":    return { mainSuffix:"€/DOSE",    refSuffix:"€/DOSE", normalizar:1 };
-    default:        return { mainSuffix:"€/KG",      refSuffix:"€/KG", normalizar:1 };
+    case "peso":    return { mainSuffix:"€/KG",    refSuffix:"€/KG",  normalizar:1 };
+    case "g":       return { mainSuffix:"€/UN",    refSuffix:"€/KG",  normalizar:1/1000 };
+    case "lt":      return { mainSuffix:"€/LT",    refSuffix:"€/LT",  normalizar:1 };
+    case "cl":      return { mainSuffix:"€/UN",    refSuffix:"€/LT",  normalizar:1/100 };
+    case "ml":      return { mainSuffix:"€/UN",    refSuffix:"€/LT",  normalizar:1/1000 };
+    case "un":      return { mainSuffix:"€/UN",    refSuffix:"€/UN",  normalizar:1 };
+    case "dz":      return { mainSuffix:"€/DZ",    refSuffix:"€/UN",  normalizar:12 };
+    case "meia_dz": return { mainSuffix:"€/½DZ",   refSuffix:"€/UN",  normalizar:6 };
+    case "dose":    return { mainSuffix:"€/DOSE",  refSuffix:"€/DOSE",normalizar:1 };
+    default:        return { mainSuffix:"€/KG",    refSuffix:"€/KG",  normalizar:1 };
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FILA
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ FILA ═══════════════ */
 function renderQueue(){
   const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
   const tb = document.getElementById("tabQueueBadge");
@@ -1101,9 +1139,7 @@ window.saveQueueItem = async function(i){
   }catch(e){ setStatus("Erro: "+e.message, "error"); }
 };
 
-/* ═══════════════════════════════════════════════════════════
-   BD DE PRODUTOS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ BD ═══════════════ */
 function renderDb(){
   const c = $("dbListContainer"); $("dbBadge").textContent = savedProducts.length;
   if(savedProducts.length===0){ c.innerHTML='<div class="empty-msg">Nenhum produto guardado ainda.</div>'; return; }
@@ -1144,9 +1180,7 @@ window.removeFromDb = async function(i){
 };
 window.queueFromDb = function(i){ const d = savedProducts[i]; if(!d) return; printQueue.push({ data:JSON.parse(JSON.stringify(d)), copies:parseInt($("copiesCount").value)||1 }); renderQueue(); setStatus("Adicionado à fila.","success"); };
 
-/* ═══════════════════════════════════════════════════════════
-   BANCO DE IMAGENS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ BANCO ═══════════════ */
 function updateBancoCounts(){
   let all=0, fruta=0, legume=0;
   bancoFruta.forEach(function(f){ all++; if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
@@ -1207,9 +1241,7 @@ async function perguntarGuardarNoBanco(){
   try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PREÇO E DATAS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ PREÇO E DATAS ═══════════════ */
 function parsePrice(v){
   if(v==null || String(v).trim()==="") return null;
   let c = String(v).trim().replace(/€|\s/g,"");
@@ -1230,9 +1262,7 @@ function formatPromoDate(s,e){
   }catch(err){ return "Preço sujeito às condições comerciais em vigor."; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SET PRODUCT TEXT
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ SET PRODUCT TEXT ═══════════════ */
 function setProductText(el,text){
   if(!el) return; el.innerHTML = "";
   const raw = String(text||"").trim();
@@ -1241,22 +1271,15 @@ function setProductText(el,text){
   words.forEach(function(word){ const s = document.createElement("span"); s.className = "w"; s.textContent = word; el.appendChild(s); });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✨ FUNÇÕES QUE FALTAVAM — MOTOR DA ETIQUETA
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ MOTOR DA ETIQUETA ═══════════════ */
 let _updateCardTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
   _updateCardTimer = setTimeout(function(){
-    try{
-      updateCardUnsafe();
-      setValidationState();
-      updateEanBadge();
-      updateCapacityHint();
-    }catch(err){ console.error("updateCard:", err); }
+    try{ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }
+    catch(err){ console.error("updateCard:", err); }
   }, 16);
 }
-
 function setValidationState(){
   clearFieldErrors();
   const price = parsePrice($("price").value);
@@ -1279,7 +1302,6 @@ function setValidationState(){
   }
   setStatus(errors.join(" "), errors.length ? "error" : "");
 }
-
 function updateOrientationVisibility(){
   const fv = $("presetSizes").value;
   const show = isLargeFormat(fv);
@@ -1290,7 +1312,6 @@ function updateOrientationVisibility(){
   if(lbl) lbl.style.display = isFP ? "none" : "flex";
   if(isFP) $("promoBox").style.display = "none";
 }
-
 function updateCapacityHint(){
   const hint = document.getElementById("capacityHint"); if(!hint) return;
   const capUnit = $("capacityUnit").value;
@@ -1309,12 +1330,9 @@ function updateCapacityHint(){
     hint.style.background = "#eef4ff"; hint.style.borderLeftColor = "#084298"; hint.style.color = "#084298";
   }
 }
-
 function reAdaptClone(clone){ autoAdaptImage(clone); }
 
-/* ═══════════════════════════════════════════════════════════
-   AUTO-FIT
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ AUTO-FIT ═══════════════ */
 function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
   const s = Math.min(dims.width/70, dims.height/38) * (card.classList.contains("layout-fruit-promo") ? 0.8 : 1);
@@ -1327,8 +1345,7 @@ function applyPrintSizes(card, dims){
 }
 function _hasOverflow(parent){
   if(!parent) return false;
-  const pr = parent.getBoundingClientRect();
-  if(!pr.height) return false;
+  const pr = parent.getBoundingClientRect(); if(!pr.height) return false;
   const kids = parent.children;
   for(let i=0;i<kids.length;i++){
     const ch = kids[i];
@@ -1342,8 +1359,7 @@ function _hasOverflow(parent){
 function autoFitTextSync(el){
   if(!el) return;
   el.style.removeProperty("font-size");
-  const parent = el.parentElement;
-  if(!parent) return;
+  const parent = el.parentElement; if(!parent) return;
   void el.offsetHeight;
   if(!_hasOverflow(parent)) return;
   let i = 0;
@@ -1371,11 +1387,9 @@ function autoAdaptImage(card){
   card.classList.replace("img-mini","img-hidden");
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DESENHO DA ETIQUETA
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ DESENHO DA ETIQUETA ═══════════════ */
 function updateCardUnsafe(){
-  try {
+  try{
     const storeVal = $("store").value||"PATAIAS";
     const productVal = ($("product").value||"").trim().toUpperCase();
     const codeVal = ($("internalCode").value||"").trim().toUpperCase();
@@ -1394,19 +1408,17 @@ function updateCardUnsafe(){
 
     if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
     if(isAmanhecer){
-      card.style.width = "380px"; card.style.height = "214px";
-      applySizeClass(card, 70, 38);
-      $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 70x38/40 mm)";
+      card.style.width="380px"; card.style.height="214px"; applySizeClass(card,70,38);
+      $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 66×38/40 mm)";
     } else {
-      card.style.width = (dims.width*3.2)+"px";
-      card.style.height = (dims.height*3.2)+"px";
-      applySizeClass(card, dims.width, dims.height);
-      $("badgeSheet").textContent = (isFP ? "💡 Fruta/Legumes Oportunidade" : "📐 Formato") + ": " + dims.width + " × " + dims.height + " mm";
+      card.style.width = (dims.width*3.2)+"px"; card.style.height = (dims.height*3.2)+"px";
+      applySizeClass(card,dims.width,dims.height);
+      $("badgeSheet").textContent = (isFP?"💡 Fruta/Legumes Oportunidade":"📐 Formato") + ": " + dims.width + " × " + dims.height + " mm";
     }
 
     $("cardStore").textContent = storeVal;
     setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
-    if(codeVal){ $("cardCode").style.display = "block"; $("cardCode").textContent = codeVal; } else { $("cardCode").style.display = "none"; }
+    if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal; } else { $("cardCode").style.display = "none"; }
 
     const info = calcUnitInfo(capUnit);
 
@@ -1437,8 +1449,7 @@ function updateCardUnsafe(){
     }
 
     if(isFP){
-      const pu = $("promoUnit").value||"KG";
-      const pm = $("promoMinQty").value||"2";
+      const pu = $("promoUnit").value||"KG"; const pm = $("promoMinQty").value||"2";
       $("cardFpNormalPrice").textContent = (priceNum!==null) ? priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
       $("cardFpNormalUnit").textContent = "/ "+pu;
       $("cardFpPromoPrice").textContent = (promoPriceNum!==null) ? promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
@@ -1453,14 +1464,14 @@ function updateCardUnsafe(){
     if(org) parts.push("Origem: "+org);
     if(cat) parts.push("Cat. "+cat);
     if(cal) parts.push("Cal. "+cal);
-    if(parts.length>0){ $("cardFruit").style.display = "block"; $("cardFruit").textContent = parts.join(" • "); } else { $("cardFruit").style.display = "none"; }
+    if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • "); } else { $("cardFruit").style.display = "none"; }
 
     const dep = $("depositFeeSelect").value;
     const depVal = dep==="custom" ? $("customDepositInput").value.trim() : dep;
-    if(depVal){ $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depVal; } else { $("cardDeposit").style.display = "none"; }
+    if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent = depVal; } else { $("cardDeposit").style.display = "none"; }
 
     const eu = ($("unit").value||"").trim();
-    if(eu){ $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = eu; } else { $("cardExtraUnit").style.display = "none"; }
+    if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent = eu; } else { $("cardExtraUnit").style.display = "none"; }
 
     const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
     const photoBox = $("cardPhotoBox");
@@ -1473,20 +1484,16 @@ function updateCardUnsafe(){
 
     const bcBox = $("cardBarcodeBox");
     if(barcodeToDraw && !card.classList.contains("size-tiny")){
-      bcBox.classList.add("show");
-      $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase();
-      drawBarcode($("cardBarcodeSvg"), barcodeToDraw);
+      bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
     } else { bcBox.classList.remove("show"); }
 
-    $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
-    $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
+    $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
+    $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
     autoAdaptImage(card);
   } catch(err){ console.error("Falha ao desenhar a etiqueta:", err); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CLONE PARA IMPRESSÃO
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ CLONE ═══════════════ */
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
   setFormData(data); updateCardUnsafe();
@@ -1507,9 +1514,7 @@ function buildLabelClone(data, dims, forPrint){
   return clone;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   IMPRESSÃO
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ IMPRESSÃO ═══════════════ */
 function validateBeforePrint(){
   setValidationState();
   if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false; }
@@ -1535,16 +1540,37 @@ function cleanupAfterPrint(){
   $("proPrintOverlay").classList.remove("show");
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
+
+/* ═══════════════ LAYOUT PROFISSIONAL ═══════════════
+   Reserva 5 mm de margem segura em cada lado. Impressoras comuns não
+   imprimem nos 5 mm finais de cada lado do A4 — sem esta reserva, as
+   etiquetas da 1ª e última coluna saem cortadas. */
 function computeLayout(labelW, labelH){
   const PAGE_W = 210, PAGE_H = 297;
+  const SAFE_MARGIN = 5;
   const currentOffsetX = Math.max(0, parseFloat($("offsetXRange").value) || 0);
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
-  const availW = PAGE_W - currentOffsetX;
-  const availH = PAGE_H - currentOffsetY - 8;
+  const availW = PAGE_W - 2 * SAFE_MARGIN - currentOffsetX;
+  const availH = PAGE_H - 2 * SAFE_MARGIN - currentOffsetY;
   const cols = Math.max(1, Math.floor(availW / labelW));
   const rows = Math.max(1, Math.floor(availH / labelH));
   return { cols: cols, rows: rows, perPage: cols * rows };
 }
+
+/* ═══════════════ FORMATOS REAIS DE IMPRESSÃO ═══════════════
+   Encolhe automaticamente formatos que ocupavam 210 mm exatos,
+   garantindo margem lateral de pelo menos 5 mm. */
+function getPrintDimensions(format, baseDims){
+  if(format === "A5")    return { width:196, height:140 };
+  if(format === "A6" || format === "frutaPromoA6")     return { width:138, height:98 };
+  if(format === "125x80" || format === "frutaPromo125x80") return { width:120, height:76 };
+  if(format === "100x70") return { width:96,  height:68 };
+  if(format === "105x38") return { width:96,  height:36 };   /* 2×96 = 192 mm (18 mm de margem) */
+  if(format === "70x38")  return { width:66,  height:36 };   /* 3×66 = 198 mm ( 6 mm de margem) */
+  if(format === "65x38")  return { width:62,  height:36 };   /* 3×62 = 186 mm (12 mm de margem) */
+  return baseDims;
+}
+
 function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
@@ -1578,12 +1604,7 @@ function triggerPrint(){
     } else {
       const first = g.items[0];
       const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
-      let pW = baseDims.width, pH = baseDims.height;
-      if(g.format === "A5") { pW = 196; pH = 140; }
-      else if(g.format === "A6" || g.format === "frutaPromoA6") { pW = 138; pH = 98; }
-      else if(g.format === "125x80" || g.format === "frutaPromo125x80") { pW = 120; pH = 76; }
-      else if(g.format === "100x70") { pW = 96; pH = 68; }
-      const dims = { width: pW, height: pH };
+      const dims = getPrintDimensions(g.format, baseDims);
       const lay = computeLayout(dims.width, dims.height);
       for(let i=0; i<g.items.length; i+=lay.perPage){
         const chunk = g.items.slice(i, i+lay.perPage);
@@ -1594,7 +1615,7 @@ function triggerPrint(){
         grid.style.gap = "2mm";
         chunk.forEach(function(d){
           const c = buildLabelClone(d, dims, true);
-          c.style.setProperty("width", dims.width + "mm", "important");
+          c.style.setProperty("width",  dims.width  + "mm", "important");
           c.style.setProperty("height", dims.height + "mm", "important");
           grid.appendChild(c);
         });
@@ -1609,9 +1630,9 @@ function triggerPrint(){
     const wrapper = document.createElement("div"); wrapper.className = "print-page-wrapper";
     const grid = document.createElement("div"); grid.className = "print-sheet-amanhecer";
     chunk.forEach(function(data,idx){
-      const dims = { width:70, height: idx<3?38:40 };
+      const dims = { width:66, height: idx<3?38:40 };  /* 66 mm × 3 = 198 mm, com 6 mm margem cada lado */
       const c = buildLabelClone(data, dims, true);
-      c.style.setProperty("width", "70mm", "important");
+      c.style.setProperty("width",  "66mm", "important");
       c.style.setProperty("height", (idx<3?38:40)+"mm", "important");
       grid.appendChild(c);
     });
@@ -1619,7 +1640,7 @@ function triggerPrint(){
       const empty = document.createElement("div");
       empty.className = "label-card size-small";
       empty.style.visibility = "hidden";
-      empty.style.setProperty("width", "70mm", "important");
+      empty.style.setProperty("width",  "66mm", "important");
       empty.style.setProperty("height", (j<3?38:40)+"mm", "important");
       grid.appendChild(empty);
     }
@@ -1639,9 +1660,7 @@ window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 window.addEventListener("beforeunload", function(ev){ if(printQueue.length>0){ ev.preventDefault(); ev.returnValue=""; } });
 
-/* ═══════════════════════════════════════════════════════════
-   STATUS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ STATUS ═══════════════ */
 let _statusToastMsg = '', _statusToastTime = 0;
 function setStatus(msg, type){
   const el = $("appStatus"); if(!el) return;
@@ -1655,9 +1674,7 @@ function setStatus(msg, type){
   if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none"; }, 3500);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CÂMARA
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ CÂMARA ═══════════════ */
 let camStream = null;
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
@@ -1674,9 +1691,7 @@ function closeCamera(){
   setTimeout(function(){ fotoBancoModo = false; }, 300);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SCANNER EAN
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ SCANNER ═══════════════ */
 let scanner = null;
 async function openScanner(){
   $("scannerModal").classList.add("show");
@@ -1685,11 +1700,7 @@ async function openScanner(){
     await scanner.start(
       { facingMode:"environment" },
       { fps:10, qrbox:{width:280,height:180} },
-      function(decoded){
-        $("ean").value = String(decoded).toUpperCase();
-        updateEanBadge(); updateCard();
-        setStatus("Código lido.","success"); closeScanner();
-      },
+      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido.","success"); closeScanner(); },
       function(){}
     );
   } catch(e){ closeScanner(); }
@@ -1699,9 +1710,7 @@ async function closeScanner(){
   scanner = null; $("scannerModal").classList.remove("show");
 }
 
-/* ═══════════════════════════════════════════════════════════
-   EVENT LISTENERS — BOTÕES
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ EVENT LISTENERS — BOTÕES ═══════════════ */
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 $("recarregarDbBtn").addEventListener("click", carregarTudo);
@@ -1722,8 +1731,6 @@ $("syncBancoBtn").addEventListener("click", async function(){
 $("clearQueueBtn").addEventListener("click", async function(){
   if(await confirmDialog("Limpar fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
 });
-
-/* Scanner e câmara */
 $("scanEanBtn").addEventListener("click", openScanner);
 $("scanClose").addEventListener("click", closeScanner);
 $("openCameraBtn").addEventListener("click", openCamera);
@@ -1750,15 +1757,11 @@ $("camSnap").addEventListener("click", async function(){
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
   updateCard(); closeCamera(); setStatus("Foto capturada.","success");
   if($("autoRemoveBg").checked){
-    try{
-      globalProcessedPhoto = await removeBackgroundSmart(dataUrl);
-      updateCard();
-      await perguntarGuardarNoBanco();
-    }catch(e){}
+    try{ globalProcessedPhoto = await removeBackgroundSmart(dataUrl); updateCard(); await perguntarGuardarNoBanco(); }catch(e){}
   }
 });
 
-/* Banco de imagens */
+/* ═══════════════ BANCO — MODAL ═══════════════ */
 $("bfTabs").addEventListener("click", function(e){
   const btn = e.target.closest("button[data-tipo]"); if(!btn) return;
   bancoTipoFiltro = btn.dataset.tipo;
@@ -1772,26 +1775,24 @@ $("abrirBancoFrutaBtn").addEventListener("click", async function(e){
 });
 $("fecharBancoFruta").addEventListener("click", function(){ $("bancoFrutaModal").classList.remove("show"); });
 $("buscaBancoFruta").addEventListener("input", function(e){ renderBancoFruta(e.target.value); });
+$("bancoFrutaModal").addEventListener("click", function(e){ if(e.target === $("bancoFrutaModal")) $("bancoFrutaModal").classList.remove("show"); });
 $("processarBancoBtn").addEventListener("click", async function(){
   if(bancoFruta.length === 0){ toast("Banco vazio.", "warning"); return; }
   if(!await confirmDialog("Recortar todas as imagens do banco?")) return;
   const progresso = $("bancoProgress"), barra = $("bancoProgressBar"), texto = $("bancoProgressText");
-  progresso.style.display = "block";
-  $("processarBancoBtn").disabled = true;
+  progresso.style.display = "block"; $("processarBancoBtn").disabled = true;
   let ok = 0;
   for(let i = 0; i < bancoFruta.length; i++){
     const f = bancoFruta[i];
     barra.style.width = Math.round((i / bancoFruta.length) * 100) + "%";
     texto.textContent = "🎨 " + (i + 1) + " / " + bancoFruta.length;
     try{
-      const resp = await fetch(f.fotoUrl);
-      const blob = await resp.blob();
+      const resp = await fetch(f.fotoUrl); const blob = await resp.blob();
       const dataUrl = await new Promise(function(res, rej){ const r = new FileReader(); r.onloadend = function(){ res(r.result); }; r.onerror = rej; r.readAsDataURL(blob); });
       let semFundo = await new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
       const comprimida = await compressSmart(semFundo, 700, 0.72);
       const r = await api('substituirFotoBanco', { fotoId: f.fotoId, base64: comprimida, nome: f.nome, tipo: f.tipo || 'fruta' });
-      f.fotoId = r.id; f.fotoUrl = r.url;
-      ok++;
+      f.fotoId = r.id; f.fotoUrl = r.url; ok++;
     }catch(e){}
   }
   barra.style.width = "100%";
@@ -1801,10 +1802,7 @@ $("processarBancoBtn").addEventListener("click", async function(){
   setTimeout(function(){ progresso.style.display = "none"; barra.style.width = "0%"; }, 4000);
 });
 
-/* Modal banco - fecha ao clicar fora */
-$("bancoFrutaModal").addEventListener("click", function(e){ if(e.target === $("bancoFrutaModal")) $("bancoFrutaModal").classList.remove("show"); });
-
-/* Diagnóstico */
+/* ═══════════════ DIAGNÓSTICO ═══════════════ */
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
   box.innerHTML = "🩺 <b>A diagnosticar…</b>"; box.classList.add("show"); setStatus("🩺 A testar ligação…");
@@ -1820,7 +1818,7 @@ $("diagnosticoBtn").addEventListener("click", async function(){
   box.innerHTML = linhas.join("\n"); setStatus("✅ Diagnóstico concluído.","success");
 });
 
-/* Preview e fechar */
+/* ═══════════════ PREVIEW DA FOLHA ═══════════════ */
 $("previewSheetBtn").addEventListener("click", function(){
   const content = $("sheetPreviewContent"); content.innerHTML = "";
   const items = [];
@@ -1846,9 +1844,9 @@ $("previewSheetBtn").addEventListener("click", function(){
         const chunk = g.items.slice(i,i+21);
         const page = document.createElement("div"); page.className = "preview-page-amanhecer";
         chunk.forEach(function(d,idx){
-          const dims = { width:70, height:idx<3?38:40 };
-          const clone = buildLabelClone(d, dims, true);
-          clone.style.width = "70mm"; clone.style.height = idx<3?"38mm":"40mm";
+          const dims = { width:66, height: idx<3?38:40 };
+          const clone = buildLabelClone(d,dims,true);
+          clone.style.width = "66mm"; clone.style.height = idx<3?"38mm":"40mm";
           page.appendChild(clone);
         });
         for(let j=chunk.length;j<21;j++){
@@ -1861,15 +1859,10 @@ $("previewSheetBtn").addEventListener("click", function(){
     } else {
       const first = g.items[0];
       const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
-      let pW = baseDims.width, pH = baseDims.height;
-      if(g.format === "A5") { pW = 196; pH = 140; }
-      else if(g.format === "A6" || g.format === "frutaPromoA6") { pW = 138; pH = 98; }
-      else if(g.format === "125x80" || g.format === "frutaPromo125x80") { pW = 120; pH = 76; }
-      else if(g.format === "100x70") { pW = 96; pH = 68; }
-      const dims = { width: pW, height: pH };
+      const dims = getPrintDimensions(g.format, baseDims);
       const grp = document.createElement("div"); grp.className = "preview-group-flex";
       g.items.forEach(function(d){
-        const clone = buildLabelClone(d, dims, true);
+        const clone = buildLabelClone(d,dims,true);
         const scale = 3.2;
         clone.style.width = (dims.width*scale)+"px";
         clone.style.height = (dims.height*scale)+"px";
@@ -1891,9 +1884,7 @@ document.addEventListener("keydown", function(ev){
   if(ev.key==="Escape"){ $("sheetPreview").classList.remove("show"); closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   EVENT LISTENERS — INPUTS DO FORMULÁRIO
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ INPUTS ═══════════════ */
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight"].forEach(function(id){
   const el = document.getElementById(id); if(el) el.addEventListener("input", updateCard);
 });
@@ -1901,7 +1892,6 @@ document.addEventListener("keydown", function(ev){
   const el = document.getElementById(id); if(el) el.addEventListener("change", updateCard);
 });
 
-/* EAN — forçar maiúsculas */
 (function(){
   const eanInput = $("ean"); if(!eanInput) return;
   eanInput.addEventListener("input", function(){
@@ -1911,28 +1901,20 @@ document.addEventListener("keydown", function(ev){
   });
 })();
 
-/* Preset — mostra/esconde tamanho personalizado e atualiza cópias */
 $("presetSizes").addEventListener("change", function(){
   const val = this.value;
   $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
   $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
-  updateOrientationVisibility();
-  updateCard();
+  updateOrientationVisibility(); updateCard();
 });
-
-/* isPromoActive — mostra/esconde caixa oldPrice */
 $("isPromoActive").addEventListener("change", function(){
   $("promoBox").style.display = this.checked ? "block" : "none";
   updateCard();
 });
-
-/* Taxa Volta — mostra/esconde input de valor personalizado */
 $("depositFeeSelect").addEventListener("change", function(){
   $("customDepositInput").style.display = (this.value === "custom") ? "block" : "none";
   updateCard();
 });
-
-/* Capacidade — conversão automática entre unidades */
 $("capacityUnit").dataset.last = $("capacityUnit").value;
 $("capacityUnit").addEventListener("change", function(){
   const prev = this.dataset.last || this.value;
@@ -1967,8 +1949,6 @@ $("capacityUnit").addEventListener("change", function(){
   }
   updateCard();
 });
-
-/* Foto via input file */
 $("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -1978,13 +1958,11 @@ $("photo").addEventListener("change", async function(e){
   const r = new FileReader();
   r.onerror = function(){ setStatus("Erro a ler imagem.", "error"); };
   r.onload = async function(evt){
-    globalOriginalPhoto = evt.target.result;
-    updateCard();
+    globalOriginalPhoto = evt.target.result; updateCard();
     if($("autoRemoveBg").checked){
       try{
         const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
-        globalProcessedPhoto = semFundo;
-        updateCard();
+        globalProcessedPhoto = semFundo; updateCard();
         toast("✅ Fundo removido!", "success");
         await perguntarGuardarNoBanco();
       } catch(e){ toast("Erro: " + e.message, "error"); }
@@ -1992,8 +1970,6 @@ $("photo").addEventListener("change", async function(e){
   };
   r.readAsDataURL(file);
 });
-
-/* Limpar editor */
 $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){ if($(id)) $(id).value = ""; });
@@ -2002,8 +1978,7 @@ $("clearBtn").addEventListener("click", async function(){
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
-  $("photo").value = "";
-  $("autoRemoveBg").checked = true; $("useAI").checked = true;
+  $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
   $("store").value = "PATAIAS";
   $("customWidth").value = "70"; $("customHeight").value = "38";
   $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
@@ -2011,8 +1986,6 @@ $("clearBtn").addEventListener("click", async function(){
   updateOrientationVisibility(); updateCard();
   toast("Editor limpo.", "info");
 });
-
-/* Sliders de calibração */
 function bindSlider(id, setter, storageKey){
   const el = $(id); if(!el) return;
   el.addEventListener("input", function(){
@@ -2031,7 +2004,6 @@ bindSlider("colRightYRange",   function(v){ colRightY = v; },  "balcao_col_right
 bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(0, Math.min(15, v)); },  "balcao_margin_left_v2");
 bindSlider("marginRightRange", function(v){ marginRight = Math.max(0, Math.min(15, v)); }, "balcao_margin_right_v2");
 
-/* Reset */
 $("resetOffsetBtn").addEventListener("click", function(){
   offsetX = 0; offsetY = 6; colLeftY = 0; colRightY = 0;
   marginLeft = 4; marginRight = 4;
@@ -2041,8 +2013,6 @@ $("resetOffsetBtn").addEventListener("click", function(){
   Storage.set("balcao_margin_left_v2", "4"); Storage.set("balcao_margin_right_v2", "4");
   setStatus("Ajustes reiniciados (X=0, Y=6, Esq=0, Dir=0, Margens=4 mm).", "success");
 });
-
-/* Calibração */
 $("printCalibBtn").addEventListener("click", function(){
   const pz = $("printZone"); pz.innerHTML = "";
   const wrapper = document.createElement("div"); wrapper.className = "print-page-wrapper";
@@ -2058,9 +2028,7 @@ $("printCalibBtn").addEventListener("click", function(){
   setTimeout(function(){ window.print(); setTimeout(function(){ pz.innerHTML = ""; }, 1500); }, 80);
 });
 
-/* ═══════════════════════════════════════════════════════════
-   DELEGAÇÃO DE CLIQUES (chips + ações dinâmicas)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ DELEGAÇÃO ═══════════════ */
 document.addEventListener("click", function(e){
   const chip = e.target.closest(".chip-btn[data-field]");
   if(chip){ setField(chip.dataset.field, chip.dataset.val); return; }
@@ -2080,9 +2048,7 @@ document.addEventListener("change", function(e){
   if(printQueue[i]){ printQueue[i].copies = Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   MOBILE TABS
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ MOBILE TABS ═══════════════ */
 document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   btn.addEventListener('click', function(){
     document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
@@ -2092,9 +2058,7 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   });
 });
 
-/* ═══════════════════════════════════════════════════════════
-   ARRANQUE
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════ ARRANQUE ═══════════════ */
 (async function boot(){
   try{
     applyOffsets();
