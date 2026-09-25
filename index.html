@@ -40,7 +40,7 @@ button:active:not(:disabled){transform:scale(.97)}
 .success-btn:hover{box-shadow:0 5px 18px rgba(23,107,58,.38)}
 .save-btn{background:linear-gradient(135deg,#0a52b8 0%,#053780 100%);color:#fff;border:none;font-size:14px;padding:10px;box-shadow:0 3px 12px rgba(8,66,152,.28)}
 .save-btn:hover{box-shadow:0 5px 18px rgba(8,66,152,.38)}
-.email-btn{background:linear-gradient(135deg,#6b21a8 0%,#4c1d95 100%);color:#fff;border:none;font-size:14px;padding:10px;box-shadow:0 3px 12px rgba(107,33,168,.28)}
+.email-btn{background:linear-gradient(135deg,#6b21a8 0%,#4c1d95 100%);color:#fff;border:none;font-size:14px;padding:11px;box-shadow:0 3px 12px rgba(107,33,168,.28)}
 .email-btn:hover{box-shadow:0 5px 18px rgba(107,33,168,.38)}
 .secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .secondary:hover{border-color:#c8d0dc;background:#fafbfc}
@@ -186,96 +186,18 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-@media screen{
-  #printZone{display:none!important}
-  /* ✅ Zona de impressão visível fora do ecrã — permite medir texto para auto-ajuste */
-  #printZone.measure{
-    display:block!important;
-    position:fixed!important;
-    left:-99999px!important;
-    top:0!important;
-    width:210mm!important;
-    pointer-events:none!important;
-    visibility:visible!important;
-    opacity:1!important;
-    z-index:-1!important;
-  }
-}
+@media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important}}
 @media print{
   @page { size: A4 portrait; margin: 0 !important; }
-  html, body {
-    width: 210mm !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
+  html, body { width: 210mm !important; height: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
   .app, .sheet-preview, .pro-print-overlay, .modal, .toast-container, .confirm-overlay, .name-modal, .email-modal, .mobile-tab-bar { display: none !important; }
-  #printZone {
-    display: block !important;
-    position: static !important;
-    left: auto !important;
-    top: auto !important;
-    width: auto !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    z-index: auto !important;
-  }
-  #printZone, #printZone * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-    zoom: 1 !important;
-    animation: none !important;
-    transition: none !important;
-  }
-  .print-page-wrapper {
-    width: 210mm !important;
-    height: 297mm !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-    background: white !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 5mm 0 5mm 0 !important;
-  }
+  #printZone { display: block !important; position: static !important; left: auto !important; top: auto !important; width: auto !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; z-index: auto !important; }
+  #printZone, #printZone * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; transform: none !important; -webkit-transform: none !important; zoom: 1 !important; animation: none !important; transition: none !important; }
+  .print-page-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; break-after: page !important; overflow: hidden !important; box-sizing: border-box !important; position: relative !important; background: white !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; padding: 5mm 0 5mm 0 !important; }
   .print-page-wrapper:last-child { page-break-after: auto !important; break-after: auto !important; }
-  .print-sheet-amanhecer {
-    display: grid !important;
-    grid-template-columns: 66mm 66mm 66mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 198mm !important;
-    height: 278mm !important;
-    margin-top: var(--offset-y) !important;
-    gap: 0 !important;
-  }
-  .print-page-generic-grid {
-    display: grid !important;
-    margin-top: var(--offset-y) !important;
-  }
-  #printZone .label-card {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    border: 1px solid transparent !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    padding: 2px 4px !important;
-  }
+  .print-sheet-amanhecer { display: grid !important; grid-template-columns: 66mm 66mm 66mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 198mm !important; height: 278mm !important; margin-top: var(--offset-y) !important; gap: 0 !important; }
+  .print-page-generic-grid { display: grid !important; margin-top: var(--offset-y) !important; }
+  #printZone .label-card { background: #ffffff !important; background-color: #ffffff !important; border: 1px solid transparent !important; margin: 0 !important; box-sizing: border-box !important; page-break-inside: avoid !important; break-inside: avoid !important; padding: 2px 4px !important; }
   #printZone .print-page-generic-grid .label-card { border: 1px solid #222 !important; }
   #printZone .print-sheet-amanhecer .label-card { width: 66mm !important; }
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
@@ -284,49 +206,21 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4) { height: 40mm !important; }
   .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; transform: translateY(var(--col-left-y)) !important; }
   .print-sheet-amanhecer .label-card:nth-child(3n)   { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
-  #printZone .fp-box.fp-promo {
-    background: #c8102e !important;
-    background-color: #c8102e !important;
-    border: 2px solid #c8102e !important;
-    color: #ffffff !important;
-  }
+  #printZone .fp-box.fp-promo { background: #c8102e !important; background-color: #c8102e !important; border: 2px solid #c8102e !important; color: #ffffff !important; }
   #printZone .fp-box.fp-promo .fp-label,
   #printZone .fp-box.fp-promo .fp-price,
   #printZone .fp-box.fp-promo .fp-unit { color: #ffffff !important; }
-  #printZone .fp-box.fp-normal {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    border: 2px solid #222222 !important;
-    color: #222222 !important;
-  }
+  #printZone .fp-box.fp-normal { background: #ffffff !important; background-color: #ffffff !important; border: 2px solid #222222 !important; color: #222222 !important; }
   #printZone .fp-box.fp-normal .fp-label,
   #printZone .fp-box.fp-normal .fp-price,
   #printZone .fp-box.fp-normal .fp-unit { color: #222222 !important; }
-  #printZone .promo-tag {
-    background: #c8102e !important;
-    background-color: #c8102e !important;
-    color: #ffffff !important;
-  }
+  #printZone .promo-tag { background: #c8102e !important; background-color: #c8102e !important; color: #ffffff !important; }
   #printZone .header { border-bottom: 1.5px solid #c8102e !important; }
-  #printZone .deposit-box {
-    background: #fff5f5 !important;
-    background-color: #fff5f5 !important;
-    color: #c8102e !important;
-    border: 1px solid #fed7d7 !important;
-  }
+  #printZone .deposit-box { background: #fff5f5 !important; background-color: #fff5f5 !important; color: #c8102e !important; border: 1px solid #fed7d7 !important; }
   #printZone .unit-price-text { color: #c8102e !important; }
   #printZone .fruit-full-bar { color: #084298 !important; }
   .calib-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; }
-  .calib-sheet {
-    display: grid !important;
-    grid-template-columns: 66mm 66mm 66mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 198mm !important;
-    height: 278mm !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: var(--offset-y) !important;
-  }
+  .calib-sheet { display: grid !important; grid-template-columns: 66mm 66mm 66mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 198mm !important; height: 278mm !important; margin-left: auto !important; margin-right: auto !important; margin-top: var(--offset-y) !important; }
   .calib-cell { border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
   .calib-sheet .calib-cell:nth-child(3n+1){ transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
   .calib-sheet .calib-cell:nth-child(3n)  { transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
@@ -389,7 +283,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .diag-box.show{display:block}
 .diag-box .ok{color:#176b3a;font-weight:800}
 .diag-box .err{color:#c0392b;font-weight:800}
-/* ✅ Modal de email */
 .email-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100003;align-items:center;justify-content:center;padding:20px}
 .email-modal.show{display:flex}
 .email-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:95vh;overflow:auto}
@@ -721,8 +614,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <button class="secondary" id="printDbBtn" type="button" style="font-size:12px">🗃️ Imprimir BD</button>
           <button class="secondary" id="clearBtn" type="button" style="font-size:12px">🗑️ Limpar</button>
         </div>
-        <div class="actions-2">
-          <button class="email-btn" id="emailLabelsBtn" type="button" style="font-size:13px">📧 Enviar etiquetas por Email (PDF)</button>
+        <div class="actions-full" style="margin-top:10px">
+          <button class="email-btn" id="emailLabelsBtn" type="button">📧 Enviar etiquetas por Email (PDF)</button>
         </div>
       </section>
 
@@ -823,11 +716,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </div>
 </div>
 
-<!-- ✅ Modal de email para envio de etiquetas em PDF -->
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
-    <p>O ficheiro PDF será gerado e descarregado automaticamente. Depois é só anexá-lo ao email que vai abrir no seu programa de correio.</p>
+    <p>O PDF vai ser gerado e enviado diretamente para o email indicado. Vai receber o ficheiro como anexo.</p>
     <label for="emailDestino">Email de destino</label>
     <input id="emailDestino" type="email" placeholder="exemplo@email.com" autocomplete="email">
     <label for="emailAssunto">Assunto</label>
@@ -836,7 +728,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <input id="emailCorpo" type="text" placeholder="Segue em anexo o PDF com as etiquetas.">
     <div class="email-modal-actions">
       <button type="button" class="email-modal-no" id="emailCancel">Cancelar</button>
-      <button type="button" class="email-modal-yes" id="emailConfirm">📧 Gerar PDF</button>
+      <button type="button" class="email-modal-yes" id="emailConfirm">📧 Enviar email</button>
     </div>
   </div>
 </div>
@@ -894,16 +786,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v14';
+const CACHE_KEY = 'balcao_cache_v15';
 
-/* ✅ Reduzido: 450px / 0.65 → imagens 60% mais leves que antes */
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
 const THUMB_SIZE   = 200;
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 
-/* ═══════════════ UTILITÁRIOS DE UI ═══════════════ */
 function toast(msg, type, duration) {
   type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
   const c = document.getElementById('toastContainer'); if (!c) return;
@@ -955,7 +845,6 @@ function pedirEmail(){
     const inpTo = document.getElementById("emailDestino");
     const inpSub = document.getElementById("emailAssunto");
     const inpBody = document.getElementById("emailCorpo");
-    /* Restaurar valores guardados */
     try {
       inpTo.value = localStorage.getItem('balcao_email_destino') || '';
       inpSub.value = localStorage.getItem('balcao_email_assunto') || 'Etiquetas de Preços';
@@ -987,12 +876,7 @@ function pedirEmail(){
   });
 }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
-
-function thumbUrl(fotoId, size){
-  if(!fotoId) return '';
-  const s = size || THUMB_SIZE;
-  return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s;
-}
+function thumbUrl(fotoId, size){ if(!fotoId) return ''; const s = size || THUMB_SIZE; return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s; }
 
 /* ═══════════════ IMAGEM ═══════════════ */
 function compressSmart(dataUrl, maxSize, quality) {
@@ -1193,105 +1077,47 @@ function updateEanBadge(){
   else if(/^[\x20-\x7E]+$/.test(clean)){ badge.textContent="Code128"; badge.className="bc-badge warn"; }
   else { badge.textContent="Inválido"; badge.className="bc-badge err"; }
 }
-
-const CODE128_PATTERNS = [
-  "212222","222122","222221","121223","121322","131222","122213","122312","132212","221213",
-  "221312","231212","112232","122132","122231","113222","123122","123221","223211","221132",
-  "221231","213212","223112","312131","311222","321122","321221","312212","322112","322211",
-  "212123","212321","232121","111323","131123","131321","112313","132113","132311","211313",
-  "231113","231311","112133","112331","132131","113123","113321","133121","313121","211331",
-  "231131","213113","213311","213131","311123","311321","331121","312113","312311","332111",
-  "314111","221411","431111","111224","111422","121124","121421","141122","141221","112214",
-  "112412","122114","122411","142112","142211","241211","221114","413111","241112","134111",
-  "111242","121142","121241","114212","124112","124211","411212","421112","421211","212141",
-  "214121","412121","111143","111341","131141","114113","114311","411113","411311","113141",
-  "114131","311141","411131","211412","211214","211232"
-];
-const CODE128_STOP    = "2331112";
+const CODE128_PATTERNS = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232"];
+const CODE128_STOP = "2331112";
 const CODE128_START_B = 104;
-
 function drawCode128(svg, text){
-  const str = String(text || '');
-  if(!str || !/^[\x20-\x7E]+$/.test(str)) return;
-  const values = [CODE128_START_B];
-  for(let i = 0; i < str.length; i++) values.push(str.charCodeAt(i) - 32);
-  let sum = CODE128_START_B;
-  for(let i = 0; i < str.length; i++) sum += (str.charCodeAt(i) - 32) * (i + 1);
-  values.push(sum % 103);
-  values.push(106);
+  const str = String(text || ''); if(!str || !/^[\x20-\x7E]+$/.test(str)) return;
+  const values = [CODE128_START_B]; for(let i = 0; i < str.length; i++) values.push(str.charCodeAt(i) - 32);
+  let sum = CODE128_START_B; for(let i = 0; i < str.length; i++) sum += (str.charCodeAt(i) - 32) * (i + 1);
+  values.push(sum % 103); values.push(106);
   let bits = '';
   for(let k = 0; k < values.length; k++){
-    const pat = (values[k] === 106) ? CODE128_STOP : CODE128_PATTERNS[values[k]];
-    if(!pat) continue;
-    let isBar = true;
-    for(let j = 0; j < pat.length; j++){
-      const w = parseInt(pat[j], 10);
-      bits += (isBar ? '1' : '0').repeat(w);
-      isBar = !isBar;
-    }
+    const pat = (values[k] === 106) ? CODE128_STOP : CODE128_PATTERNS[values[k]]; if(!pat) continue;
+    let isBar = true; for(let j = 0; j < pat.length; j++){ const w = parseInt(pat[j], 10); bits += (isBar ? '1' : '0').repeat(w); isBar = !isBar; }
   }
-  const qz = 11;
-  const tw = bits.length + qz * 2;
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", "0 0 " + tw + " 72");
-  svg.setAttribute("preserveAspectRatio", "none");
-  for(let i = 0; i < bits.length; i++){
-    if(bits[i] !== "1") continue;
-    const r = document.createElementNS(ns, "rect");
-    r.setAttribute("x", i + qz); r.setAttribute("y", 0); r.setAttribute("width", 1); r.setAttribute("height", 62); r.setAttribute("fill", "black");
-    svg.appendChild(r);
-  }
+  const qz = 11, tw = bits.length + qz * 2, ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", "0 0 " + tw + " 72"); svg.setAttribute("preserveAspectRatio", "none");
+  for(let i = 0; i < bits.length; i++){ if(bits[i] !== "1") continue; const r = document.createElementNS(ns, "rect"); r.setAttribute("x", i + qz); r.setAttribute("y", 0); r.setAttribute("width", 1); r.setAttribute("height", 62); r.setAttribute("fill", "black"); svg.appendChild(r); }
 }
-
 const ITF_PATTERNS = { '0': "00110", '1': "10001", '2': "01001", '3': "11000", '4': "00101", '5': "10100", '6': "01100", '7': "00011", '8': "10010", '9': "01010" };
-
 function drawITF14(svg, digits){
-  const d = String(digits || '').replace(/\D/g, '');
-  if(d.length !== 14) return;
-  const NARROW = 1, WIDE = 3;
-  let bits = '';
+  const d = String(digits || '').replace(/\D/g, ''); if(d.length !== 14) return;
+  const NARROW = 1, WIDE = 3; let bits = '';
   bits += '1'.repeat(NARROW) + '0'.repeat(NARROW) + '1'.repeat(NARROW) + '0'.repeat(NARROW);
   for(let i = 0; i < d.length; i += 2){
     const bars = ITF_PATTERNS[d[i]], spaces = ITF_PATTERNS[d[i + 1]];
-    for(let k = 0; k < 5; k++){
-      bits += '1'.repeat(bars[k]   === '1' ? WIDE : NARROW);
-      bits += '0'.repeat(spaces[k] === '1' ? WIDE : NARROW);
-    }
+    for(let k = 0; k < 5; k++){ bits += '1'.repeat(bars[k] === '1' ? WIDE : NARROW); bits += '0'.repeat(spaces[k] === '1' ? WIDE : NARROW); }
   }
   bits += '1'.repeat(WIDE) + '0'.repeat(NARROW) + '1'.repeat(NARROW);
-  const qz = 11;
-  const tw = bits.length + qz * 2;
-  const ns = "http://www.w3.org/2000/svg";
-  svg.setAttribute("viewBox", "0 0 " + tw + " 72");
-  svg.setAttribute("preserveAspectRatio", "none");
-  for(let i = 0; i < bits.length; i++){
-    if(bits[i] !== "1") continue;
-    const r = document.createElementNS(ns, "rect");
-    r.setAttribute("x", i + qz); r.setAttribute("y", 6); r.setAttribute("width", 1); r.setAttribute("height", 50); r.setAttribute("fill", "black");
-    svg.appendChild(r);
-  }
-  const bearerTop = document.createElementNS(ns, "rect");
-  bearerTop.setAttribute("x", qz); bearerTop.setAttribute("y", 0); bearerTop.setAttribute("width", bits.length); bearerTop.setAttribute("height", 6); bearerTop.setAttribute("fill", "black");
-  svg.appendChild(bearerTop);
-  const bearerBot = document.createElementNS(ns, "rect");
-  bearerBot.setAttribute("x", qz); bearerBot.setAttribute("y", 56); bearerBot.setAttribute("width", bits.length); bearerBot.setAttribute("height", 6); bearerBot.setAttribute("fill", "black");
-  svg.appendChild(bearerBot);
+  const qz = 11, tw = bits.length + qz * 2, ns = "http://www.w3.org/2000/svg";
+  svg.setAttribute("viewBox", "0 0 " + tw + " 72"); svg.setAttribute("preserveAspectRatio", "none");
+  for(let i = 0; i < bits.length; i++){ if(bits[i] !== "1") continue; const r = document.createElementNS(ns, "rect"); r.setAttribute("x", i + qz); r.setAttribute("y", 6); r.setAttribute("width", 1); r.setAttribute("height", 50); r.setAttribute("fill", "black"); svg.appendChild(r); }
+  const bt = document.createElementNS(ns, "rect"); bt.setAttribute("x", qz); bt.setAttribute("y", 0); bt.setAttribute("width", bits.length); bt.setAttribute("height", 6); bt.setAttribute("fill", "black"); svg.appendChild(bt);
+  const bb = document.createElementNS(ns, "rect"); bb.setAttribute("x", qz); bb.setAttribute("y", 56); bb.setAttribute("width", bits.length); bb.setAttribute("height", 6); bb.setAttribute("fill", "black"); svg.appendChild(bb);
 }
-
 function drawBarcode(svg,value){
   if(!svg) return; svg.innerHTML = "";
   const clean = normalizeBarcode(value); if(!clean) return;
   if(/^\d{13}$/.test(clean) && isValidEAN13(clean)){
-    const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
-    const EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
-    const EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
-    const EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+    const EAN_L=["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"], EAN_G=["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"], EAN_R=["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"], EAN_P=["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
     const dg = onlyDigits(clean), first = Number(dg[0]), L = dg.slice(1,7), R = dg.slice(7), par = EAN_P[first];
-    let bits = "101";
-    for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
-    bits += "01010";
-    for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])];
-    bits += "101";
+    let bits = "101"; for(let i=0;i<6;i++) bits += par[i]==="L" ? EAN_L[Number(L[i])] : EAN_G[Number(L[i])];
+    bits += "01010"; for(let i=0;i<6;i++) bits += EAN_R[Number(R[i])]; bits += "101";
     const tw = bits.length + 22, ns = "http://www.w3.org/2000/svg";
     svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
     for(let i=0;i<bits.length;i++){ if(bits[i]==="1"){ const r = document.createElementNS(ns,"rect"); r.setAttribute("x",i+11); r.setAttribute("y",0); r.setAttribute("width",1); r.setAttribute("height",62); r.setAttribute("fill","black"); svg.appendChild(r); } }
@@ -1378,7 +1204,6 @@ async function verificarProdutoEmBackground(){
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
   }catch(e){ console.warn("Verificação em background falhou:", e); }
 }
-
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
 window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
 window.saveQueueItem = async function(i){
@@ -1387,8 +1212,7 @@ window.saveQueueItem = async function(i){
   if(!d.product && !d.internalCode){ toast("Preenche nome ou código.", "warning"); return; }
   const existente = savedProducts.find(function(p){ return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode); });
   if(existente){ const substituir = await confirmDialog("Já existe um produto \""+d.product+"\". Substituir?"); if(!substituir) return; }
-  const t0 = Date.now();
-  setStatus("A guardar…");
+  const t0 = Date.now(); setStatus("A guardar…");
   try{
     let fotoId = d.fotoId || "", fotoUrl = d.fotoUrl || "";
     const foto = d.processedPhoto || d.originalPhoto;
@@ -1400,8 +1224,7 @@ window.saveQueueItem = async function(i){
     await api('guardarProduto', payload);
     item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
     item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
-    atualizarProdutoLocal(payload);
-    renderDb(); renderQueue();
+    atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus("✅ Guardado em " + dt + "s.", "success", 2500);
@@ -1424,21 +1247,17 @@ function renderDb(){
 async function saveToDb(){
   const data = getFormData();
   if(!data.product && !data.internalCode){ setStatus("Preencha um nome ou código.","error"); return; }
-  const t0 = Date.now();
-  setStatus("A guardar…");
+  const t0 = Date.now(); setStatus("A guardar…");
   try{
     const foto = data.processedPhoto || data.originalPhoto;
     if(foto && foto.indexOf('http')!==0){
       setStatus("A enviar foto…");
       const up = await api('uploadFoto',{ base64: await compressSmart(foto), nomeFicheiro:(data.internalCode||'artigo')+'_'+Date.now()+'.jpg' });
-      data.fotoId = up.id; data.fotoUrl = up.url;
-      globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
+      data.fotoId = up.id; data.fotoUrl = up.url; globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
     }
-    const payload = buildProdutoPayload(data);
-    setStatus("A gravar…");
+    const payload = buildProdutoPayload(data); setStatus("A gravar…");
     await api('guardarProduto', payload);
-    atualizarProdutoLocal(payload);
-    renderDb();
+    atualizarProdutoLocal(payload); renderDb();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus("✅ Guardado em " + dt + "s.", "success");
@@ -1487,10 +1306,7 @@ function renderBancoFruta(filtro){
     const tipo = (f.tipo==='legume') ? 'legume' : 'fruta';
     const tag = '<span class="bf-tag '+tipo+'">'+(tipo==='legume'?'🥬 Legume':'🍎 Fruta')+'</span>';
     const thumb = f.fotoId ? thumbUrl(f.fotoId, THUMB_SIZE) : f.fotoUrl;
-    return '<div class="bf-card" data-url="'+escapeHTML(f.fotoUrl)+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'">' +
-           '<img src="'+escapeHTML(thumb)+'" loading="lazy" decoding="async" alt="" onerror="this.onerror=null;this.src=\''+escapeHTML(f.fotoUrl)+'\'">' +
-           tag +
-           '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
+    return '<div class="bf-card" data-url="'+escapeHTML(f.fotoUrl)+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'"><img src="'+escapeHTML(thumb)+'" loading="lazy" decoding="async" alt="" onerror="this.onerror=null;this.src=\''+escapeHTML(f.fotoUrl)+'\'">' + tag + '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
   }).join('');
   c.querySelectorAll('.bf-card').forEach(function(el){
     el.addEventListener('click',function(){
@@ -1631,8 +1447,7 @@ function _hasOverflow(parent){
   for(let i=0;i<kids.length;i++){
     const ch = kids[i];
     if(ch.style.display === "none" || ch.offsetParent === null) continue;
-    const cr = ch.getBoundingClientRect();
-    if(cr.height === 0) continue;
+    const cr = ch.getBoundingClientRect(); if(cr.height === 0) continue;
     if(cr.top < pr.top - 0.5 || cr.bottom > pr.bottom + 0.5) return true;
   }
   return false;
@@ -1708,8 +1523,7 @@ function updateCardUnsafe(){
       $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
       if(priceNum !== null && oldPriceNum > priceNum){
         const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
-        $("cardPromoTag").textContent = "-"+disc+"%";
-        $("cardPromoTag").style.display = "inline-block";
+        $("cardPromoTag").textContent = "-"+disc+"%"; $("cardPromoTag").style.display = "inline-block";
       } else { $("cardPromoTag").style.display = "none"; }
     } else { $("cardPromoTopRow").style.display = "none"; }
 
@@ -1742,9 +1556,7 @@ function updateCardUnsafe(){
     const cat = ($("categoria").value||"").trim().toUpperCase();
     const cal = ($("calibre").value||"").trim().toUpperCase();
     const parts = [];
-    if(org) parts.push("Origem: "+org);
-    if(cat) parts.push("Cat. "+cat);
-    if(cal) parts.push("Cal. "+cal);
+    if(org) parts.push("Origem: "+org); if(cat) parts.push("Cat. "+cat); if(cal) parts.push("Cal. "+cal);
     if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent = parts.join(" • "); } else { $("cardFruit").style.display = "none"; }
 
     const dep = $("depositFeeSelect").value;
@@ -1818,8 +1630,7 @@ function cleanupAfterPrint(){
   $("printBtn").disabled = false;
   $("printBtn").innerHTML = printQueue.length>0 ? '🖨️ Imprimir Fila ('+printQueue.reduce(function(a,b){return a+b.copies},0)+' etiq.) [F9]' : "🖨️ Imprimir [F9]";
   const pz = $("printZone");
-  pz.classList.remove("measure");  /* ✅ Remover classe de medição */
-  pz.innerHTML = "";
+  pz.classList.remove("measure"); pz.innerHTML = "";
   $("proPrintOverlay").classList.remove("show");
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
@@ -1845,7 +1656,6 @@ function getPrintDimensions(format, baseDims){
   return baseDims;
 }
 
-/* ✅ Reconstrói as páginas A4 (partilhado entre impressão e PDF) */
 function construirPaginasA4(container, groups, amanhecerQueue){
   groups.forEach(function(g){
     if(g.format==="amanhecer"){ return; }
@@ -1901,7 +1711,6 @@ function triggerPrint(){
   $("printBtn").disabled = true; $("printBtn").textContent = "⏳ A preparar...";
   $("proPrintOverlay").classList.add("show");
   const pz = $("printZone"); pz.innerHTML = "";
-  /* ✅ Torna a zona de impressão visível fora do ecrã para o auto-fit funcionar */
   pz.classList.add("measure");
 
   const editorFmt = $("presetSizes").value;
@@ -1921,15 +1730,11 @@ function triggerPrint(){
     if(last && last.format===it.format) last.items.push(it.data);
     else groups.push({ format:it.format, items:[it.data] });
   });
-
   const amanhecerQueue = [];
-  groups.forEach(function(g){
-    if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); }
-  });
+  groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
 
   construirPaginasA4(pz, groups, amanhecerQueue);
 
-  /* ✅ Auto-ajuste de texto após as páginas estarem no DOM visível */
   requestAnimationFrame(function(){
     try{
       pz.querySelectorAll(".label-card").forEach(function(card){
@@ -1938,16 +1743,9 @@ function triggerPrint(){
         if(card.classList.contains("has-image")) autoAdaptImage(card);
       });
     }catch(e){}
-
-    /* Pequeno delay para garantir medições */
     setTimeout(function(){
-      if(isMobile()){
-        try { window.print(); } catch(e){ console.warn(e); }
-        setTimeout(function(){ if(printInProgress) cleanupAfterPrint(); }, 4000);
-      } else {
-        try { window.print(); } catch(e){ console.warn(e); }
-        setTimeout(function(){ if(printInProgress) cleanupAfterPrint(); }, 3000);
-      }
+      try { window.print(); } catch(e){ console.warn(e); }
+      setTimeout(function(){ if(printInProgress) cleanupAfterPrint(); }, isMobile() ? 4000 : 3000);
     }, 120);
   });
 }
@@ -1956,7 +1754,7 @@ window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 window.addEventListener("beforeunload", function(ev){ if(printQueue.length>0){ ev.preventDefault(); ev.returnValue=""; } });
 
-/* ═══════════════ GERAÇÃO DE PDF (para email) ═══════════════ */
+/* ═══════════════ PDF — GERAÇÃO ═══════════════ */
 let _html2pdfLoading = null;
 function loadHtml2Pdf(){
   if(typeof html2pdf !== 'undefined') return Promise.resolve();
@@ -1972,10 +1770,8 @@ function loadHtml2Pdf(){
 }
 
 async function gerarPDFBlob(){
-  /* 1) Garantir biblioteca */
   await loadHtml2Pdf();
 
-  /* 2) Recolher items (fila ou editor/BD) */
   const editorFmt = $("presetSizes").value;
   const items = [];
   if(printQueue.length===0){
@@ -1998,16 +1794,26 @@ async function gerarPDFBlob(){
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
 
-  /* 3) Container temporário visível (off-screen) */
+  /* Container com dimensões reais (posicionado fora do ecrã, mas renderizado) */
   const container = document.createElement("div");
-  container.style.cssText = "position:fixed;left:-99999px;top:0;background:#fff;width:210mm;padding:0;margin:0;";
+  container.style.cssText = "position:absolute;top:0;left:0;width:210mm;background:#fff;padding:0;margin:0;z-index:-99999;opacity:0.001;pointer-events:none;";
   document.body.appendChild(container);
 
-  /* 4) Construir páginas */
   construirPaginasA4(container, groups, amanhecerQueue);
 
-  /* 5) Auto-ajustar textos */
-  await new Promise(function(r){ setTimeout(r, 200); });
+  /* 1) Esperar TODAS as imagens carregarem */
+  const imgs = container.querySelectorAll("img");
+  await Promise.all(Array.from(imgs).map(function(img){
+    return new Promise(function(resolve){
+      if(img.complete && img.naturalWidth > 0) return resolve();
+      img.onload = resolve;
+      img.onerror = resolve;
+      setTimeout(resolve, 4000);
+    });
+  }));
+
+  /* 2) Aguardar render + auto-fit */
+  await new Promise(function(r){ setTimeout(r, 250); });
   try{
     container.querySelectorAll(".label-card").forEach(function(card){
       const prodEl = card.querySelector(".product");
@@ -2015,14 +1821,23 @@ async function gerarPDFBlob(){
       if(card.classList.contains("has-image")) autoAdaptImage(card);
     });
   }catch(e){}
-  await new Promise(function(r){ setTimeout(r, 150); });
+  await new Promise(function(r){ setTimeout(r, 200); });
 
-  /* 6) Gerar blob PDF */
+  /* 3) Gerar blob PDF */
   const opt = {
     margin: 0,
     filename: 'etiquetas.pdf',
     image: { type: 'jpeg', quality: 0.92 },
-    html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      scrollX: 0, scrollY: 0,
+      windowWidth: container.scrollWidth,
+      windowHeight: container.scrollHeight
+    },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['css', 'legacy'] }
   };
@@ -2036,8 +1851,17 @@ async function gerarPDFBlob(){
   return blob;
 }
 
+function blobToBase64(blob){
+  return new Promise(function(resolve, reject){
+    const reader = new FileReader();
+    reader.onloadend = function(){ resolve(reader.result); };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+/* ═══════════════ ENVIO DE EMAIL (via Apps Script) ═══════════════ */
 async function enviarEtiquetasPorEmail(){
-  /* 1) Pedir dados do email */
   const info = await pedirEmail();
   if(!info) return;
 
@@ -2045,51 +1869,41 @@ async function enviarEtiquetasPorEmail(){
   toast("📄 A gerar o PDF das etiquetas…", "info", 4000);
 
   let blob;
-  try {
-    blob = await gerarPDFBlob();
-  } catch(e){
+  try { blob = await gerarPDFBlob(); }
+  catch(e){
     setStatus("Erro a gerar PDF: " + e.message, "error");
     toast("Não foi possível gerar o PDF: " + e.message, "error", 6000);
     return;
   }
 
-  /* 2) Descarregar o PDF */
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
-
-  /* 3) Tentar partilha nativa (mobile) */
-  let partilhou = false;
-  try {
-    const file = new File([blob], "etiquetas.pdf", { type: "application/pdf" });
-    if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
-      try {
-        await navigator.share({
-          files: [file],
-          title: info.assunto,
-          text: info.corpo || "Segue em anexo o PDF com as etiquetas."
-        });
-        partilhou = true;
-      } catch(e){ /* utilizador cancelou ou não suportado */ }
-    }
-  } catch(e){}
-
-  /* 4) Fallback — abrir email com mailto */
-  if(!partilhou){
-    const bodyText = (info.corpo || "Segue em anexo o PDF com as etiquetas.") + "\n\n(O ficheiro PDF foi descarregado para a pasta de Downloads. Por favor anexe-o a este email.)";
-    const mailto = 'mailto:' + encodeURIComponent(info.destino)
-                 + '?subject=' + encodeURIComponent(info.assunto)
-                 + '&body='    + encodeURIComponent(bodyText);
-    setTimeout(function(){ window.location.href = mailto; }, 500);
+  if(!blob || blob.size < 500){
+    setStatus("O PDF saiu vazio.", "error");
+    toast("O PDF não foi gerado corretamente.", "error", 6000);
+    return;
   }
 
-  setStatus("✅ PDF gerado. Anexe-o ao email.", "success");
-  toast("✅ PDF gerado. Verifique a pasta de Downloads.", "success", 6000);
+  setStatus("A converter o PDF…");
+  let base64;
+  try { base64 = await blobToBase64(blob); }
+  catch(e){ setStatus("Erro a preparar o PDF: " + e.message, "error"); return; }
+
+  setStatus("A enviar o email…");
+  toast("📧 A enviar o email para " + info.destino + "…", "info", 8000);
+
+  try {
+    await api('enviarEtiquetasEmail', {
+      destino: info.destino,
+      assunto: info.assunto,
+      corpo: info.corpo,
+      pdfBase64: base64,
+      nomeFicheiro: "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf"
+    });
+    setStatus("✅ Email enviado para " + info.destino, "success");
+    toast("✅ Email enviado com sucesso para " + info.destino, "success", 7000);
+  } catch(e){
+    setStatus("Erro a enviar email: " + e.message, "error");
+    toast("Erro a enviar email: " + e.message, "error", 7000);
+  }
 }
 
 /* ═══════════════ STATUS ═══════════════ */
@@ -2223,9 +2037,7 @@ $("bfTabs").addEventListener("click", function(e){
 $("abrirBancoFrutaBtn").addEventListener("click", async function(e){
   e.preventDefault();
   bancoTipoFiltro = 'fruta';
-  $("bfTabs").querySelectorAll("button").forEach(function(b){
-    b.classList.toggle("active", b.dataset.tipo === 'fruta');
-  });
+  $("bfTabs").querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b.dataset.tipo === 'fruta'); });
   $('bancoFrutaModal').classList.add('show');
   renderBancoFruta($('buscaBancoFruta').value);
 });
@@ -2300,8 +2112,7 @@ $("previewSheetBtn").addEventListener("click", function(){
       g.items.forEach(function(d){
         const clone = buildLabelClone(d,dims,true);
         const scale = 3.2;
-        clone.style.width = (dims.width*scale)+"px";
-        clone.style.height = (dims.height*scale)+"px";
+        clone.style.width = (dims.width*scale)+"px"; clone.style.height = (dims.height*scale)+"px";
         grp.appendChild(clone);
       });
       content.appendChild(grp);
@@ -2314,7 +2125,6 @@ $("previewSheetBtn").addEventListener("click", function(){
 });
 $("sheetPreviewClose").addEventListener("click", function(){ $("sheetPreview").classList.remove("show"); });
 $("sheetPreview").addEventListener("click", function(e){ if(e.target===$("sheetPreview")) $("sheetPreview").classList.remove("show"); });
-
 document.addEventListener("keydown", function(ev){
   if(ev.key==="F9"){ ev.preventDefault(); window.triggerPrint(); }
   if(ev.key==="Escape"){ $("sheetPreview").classList.remove("show"); closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); $("emailModal").classList.remove("show"); }
@@ -2327,35 +2137,24 @@ document.addEventListener("keydown", function(ev){
 ["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg"].forEach(function(id){
   const el = document.getElementById(id); if(el) el.addEventListener("change", updateCard);
 });
-
 (function(){
   const eanInput = $("ean"); if(!eanInput) return;
   eanInput.addEventListener("input", function(){
-    const pos = this.selectionStart;
-    const upper = this.value.toUpperCase();
+    const pos = this.selectionStart; const upper = this.value.toUpperCase();
     if(this.value !== upper){ this.value = upper; try { this.setSelectionRange(pos, pos); } catch(e){} }
   });
 })();
-
 $("presetSizes").addEventListener("change", function(){
   const val = this.value;
   $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
   $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
   updateOrientationVisibility(); updateCard();
 });
-$("isPromoActive").addEventListener("change", function(){
-  $("promoBox").style.display = this.checked ? "block" : "none";
-  updateCard();
-});
-$("depositFeeSelect").addEventListener("change", function(){
-  $("customDepositInput").style.display = (this.value === "custom") ? "block" : "none";
-  updateCard();
-});
+$("isPromoActive").addEventListener("change", function(){ $("promoBox").style.display = this.checked ? "block" : "none"; updateCard(); });
+$("depositFeeSelect").addEventListener("change", function(){ $("customDepositInput").style.display = (this.value === "custom") ? "block" : "none"; updateCard(); });
 $("capacityUnit").addEventListener("change", function(){
-  const capInput = $("capacity");
-  const def = DEFAULTS_UNIDADE[this.value];
-  capInput.value = (def !== undefined) ? def : "1";
-  updateCard();
+  const capInput = $("capacity"); const def = DEFAULTS_UNIDADE[this.value];
+  capInput.value = (def !== undefined) ? def : "1"; updateCard();
 });
 $("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
@@ -2382,8 +2181,7 @@ $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre"].forEach(function(id){ if($(id)) $(id).value = ""; });
   $("depositFeeSelect").value = "";
-  $("capacityUnit").value = "peso";
-  $("capacity").value = DEFAULTS_UNIDADE["peso"];
+  $("capacityUnit").value = "peso"; $("capacity").value = DEFAULTS_UNIDADE["peso"];
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -2402,8 +2200,7 @@ function bindSlider(id, setter, storageKey){
     setter(v);
     const valId = id.replace("Range", "Val");
     if($(valId)) $(valId).textContent = v + " mm";
-    applyOffsets();
-    Storage.set(storageKey, String(v));
+    applyOffsets(); Storage.set(storageKey, String(v));
   });
 }
 bindSlider("offsetXRange",     function(v){ offsetX = v; },    "balcao_offset_x");
@@ -2416,8 +2213,8 @@ $("resetOffsetBtn").addEventListener("click", function(){
   offsetX = 0; offsetY = 6; colLeftY = 0; colRightY = 0;
   marginLeft = 4; marginRight = 4;
   applyOffsets();
-  Storage.set("balcao_offset_x", "0");     Storage.set("balcao_offset_y", "6");
-  Storage.set("balcao_col_left_y", "0");   Storage.set("balcao_col_right_y", "0");
+  Storage.set("balcao_offset_x", "0"); Storage.set("balcao_offset_y", "6");
+  Storage.set("balcao_col_left_y", "0"); Storage.set("balcao_col_right_y", "0");
   Storage.set("balcao_margin_left_v2", "4"); Storage.set("balcao_margin_right_v2", "4");
   setStatus("Ajustes reiniciados (X=0, Y=6, Esq=0, Dir=0, Margens=4 mm).", "success");
 });
@@ -2428,12 +2225,10 @@ $("printCalibBtn").addEventListener("click", function(){
   const grid = document.createElement("div"); grid.className = "calib-sheet";
   for(let i = 1; i <= 21; i++){
     const cell = document.createElement("div");
-    cell.className = "calib-cell";
-    cell.textContent = "• " + i + " •";
+    cell.className = "calib-cell"; cell.textContent = "• " + i + " •";
     grid.appendChild(cell);
   }
-  wrapper.appendChild(grid);
-  pz.appendChild(wrapper);
+  wrapper.appendChild(grid); pz.appendChild(wrapper);
   setTimeout(function(){
     try { window.print(); } catch(e){}
     setTimeout(function(){ pz.classList.remove("measure"); pz.innerHTML = ""; }, 1500);
@@ -2479,9 +2274,7 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
     renderQueue();
     const fvInicial = $("presetSizes").value;
     $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
-    if(!$("capacity").value){
-      $("capacity").value = DEFAULTS_UNIDADE[$("capacityUnit").value] || "1";
-    }
+    if(!$("capacity").value){ $("capacity").value = DEFAULTS_UNIDADE[$("capacityUnit").value] || "1"; }
     await carregarTudo();
   }catch(err){ console.error("Erro no arranque:", err); }
 })();
