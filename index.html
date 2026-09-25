@@ -203,7 +203,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
   #printZone * { transform: none !important; -webkit-transform: none !important; zoom: 1 !important; animation: none !important; transition: none !important; }
   
-  /* Wrapper Rígido para forçar limite da página */
+  /* Wrapper Rígido para forçar limite da página e impedir cortes */
   .print-page-wrapper {
     width: 210mm !important;
     height: 297mm !important;
@@ -238,7 +238,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     align-content: start !important;
     margin-top: var(--offset-y) !important;
     margin-left: var(--offset-x) !important;
-    padding: 2mm !important; /* Segurança adicional para não encostar bordas */
+    padding-top: 2mm !important; 
   }
 
   /* Reset dos Cartões na Impressão */
@@ -269,20 +269,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
   
   /* Folha de Calibração */
-  .calib-wrapper {
-    width: 210mm !important;
-    height: 297mm !important;
-    page-break-after: always !important;
-  }
-  .calib-sheet {
-    display: grid !important;
-    grid-template-columns: 70mm 70mm 70mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 210mm !important;
-    height: 278mm !important;
-    margin-left: var(--offset-x) !important;
-    margin-top: var(--offset-y) !important;
-  }
+  .calib-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; }
+  .calib-sheet { display: grid !important; grid-template-columns: 70mm 70mm 70mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 210mm !important; height: 278mm !important; margin-left: var(--offset-x) !important; margin-top: var(--offset-y) !important; }
   .calib-cell{ border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
   .calib-sheet .calib-cell:nth-child(3n+1){ transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
   .calib-sheet .calib-cell:nth-child(3n){ transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
@@ -813,7 +801,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v6';
+const CACHE_KEY = 'balcao_cache_v7';
 
 function toast(msg, type, duration) {
   type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
@@ -857,7 +845,7 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
     renderBancoFruta(document.getElementById("buscaBancoFruta").value);
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
     toast("✅ Foto guardada: " + r.nome, "success", 4500);
-  }catch(e){ toast("Erro ao guardar: " + e.message, "error"); throw e; }
+  }catch(e){ toast("Erro ao guardar no banco: " + e.message, "error"); throw e; }
 }
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || 700; quality = quality || 0.72;
@@ -970,7 +958,9 @@ function setProductText(el,text){
   const words = raw.split(/\s+/).filter(Boolean); words.forEach(function(word){ const s = document.createElement("span"); s.className = "w"; s.textContent = word; el.appendChild(s); });
 }
 
-/* --- NOVA FUNÇÃO DE CÁLCULO PROFISSIONAL --- */
+/* ========================================================= */
+/* --- CÁLCULO PROFISSIONAL DE MEDIDAS --- */
+/* ========================================================= */
 function calcUnitInfo(capUnit){
   switch(capUnit){
     case "peso": return { mainSuffix:"€/KG", refSuffix:"€/KG", normalizar:1 };
@@ -1032,6 +1022,7 @@ window.saveQueueItem = async function(i){
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue() };
 window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
 $("clearQueueBtn").addEventListener("click", async function(){ if(await confirmDialog("Limpar fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); } });
+
 function renderDb(){
   const c = $("dbListContainer"); $("dbBadge").textContent = savedProducts.length;
   if(savedProducts.length===0){c.innerHTML='<div class="empty-msg">Nenhum produto guardado ainda.</div>';return}
@@ -1060,7 +1051,7 @@ async function saveToDb(){
 window.duplicateFromDb = function(i){ const d = savedProducts[i]; if(!d) return; const copia = JSON.parse(JSON.stringify(d)); copia.codigo = (d.codigo || 'NOVO') + '-COPIA'; setFormData(copia); switchMobileTab('editar'); toast('Produto copiado. Edite o código.', 'info'); };
 window.loadFromDb = function(i){ const d = savedProducts[i]; if(!d) return; setFormData(d); switchMobileTab('editar'); setStatus("Produto carregado.","success"); };
 
-/* APAGAR DO DRIVE ROBUSTO (Usa Nome e Código) */
+/* APAGAR DO DRIVE ROBUSTO (Usa Nome e Código para não falhar) */
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const targetName = d.nome || d.codigo || "produto sem nome";
@@ -1072,7 +1063,7 @@ window.removeFromDb = async function(i){
 
 window.queueFromDb = function(i){ const d = savedProducts[i]; if(!d) return; printQueue.push({data:JSON.parse(JSON.stringify(d)),copies:parseInt($("copiesCount").value)||1}); renderQueue(); setStatus("Adicionado à fila.","success"); };
 
-/* DELEGAÇÃO DE CLIQUES */
+/* DELEGAÇÃO DE CLIQUES GERAIS */
 document.addEventListener("click",function(e){
   const chip = e.target.closest(".chip-btn[data-field]"); if(chip){ setField(chip.dataset.field,chip.dataset.val); return }
   const btn = e.target.closest("[data-action]"); if(!btn) return;
@@ -1139,7 +1130,7 @@ $("camSnap").addEventListener("click", async function(){
   if(fotoBancoModo){
     fotoBancoModo = false; closeCamera(); setStatus("A processar..."); let fotoFinal = dataUrl; if($("autoRemoveBg").checked){ try{ fotoFinal = await removeBackgroundSmart(dataUrl); }catch(e){ } }
     const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro); if(!info){ setStatus("Cancelado.", "info"); return; }
-    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); }catch(e){} return;
+    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); setStatus("✅ Guardado no banco.", "success"); }catch(e){ setStatus("Erro: " + e.message, "error"); } return;
   }
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = ""; updateCard(); closeCamera(); setStatus("Foto capturada.","success");
   if($("autoRemoveBg").checked){ try { globalProcessedPhoto = await removeBackgroundSmart(dataUrl); updateCard(); await perguntarGuardarNoBanco(); } catch(e) { } }
@@ -1149,6 +1140,7 @@ async function perguntarGuardarNoBanco(){
   const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro); if(!info) return;
   try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
 }
+
 let scanner = null;
 async function openScanner(){ $("scannerModal").classList.add("show"); scanner = new Html5Qrcode("reader"); try{ await scanner.start( { facingMode:"environment" }, { fps:10, qrbox:{width:280,height:180}}, function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido.","success"); closeScanner(); }, function(){} ); }catch(e){ closeScanner(); } }
 async function closeScanner(){ try{ if(scanner){ await scanner.stop(); await scanner.clear() } }catch(e){} scanner = null; $("scannerModal").classList.remove("show"); }
@@ -1190,8 +1182,17 @@ function autoAdaptImage(card){
 }
 
 /* ========================================================= */
-/* --- ATUALIZAÇÃO DA ETIQUETA ---                           */
+/* --- CÁLCULO PROFISSIONAL E ATUALIZAÇÃO DA ETIQUETA ---    */
 /* ========================================================= */
+
+// Aqui garanto que todas as tuas caixas de texto reagem no momento exato
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight"].forEach(function(id){
+  const el = document.getElementById(id); if(el) el.addEventListener("input",updateCard);
+});
+["presetSizes","store","isPromoActive","capacityUnit","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg"].forEach(function(id){
+  const el = document.getElementById(id); if(el) el.addEventListener("change",updateCard);
+});
+
 function updateCardUnsafe(){
   try {
     const storeVal = $("store").value||"PATAIAS";
@@ -1220,32 +1221,41 @@ function updateCardUnsafe(){
     $("cardStore").textContent = storeVal; setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
     if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent = codeVal } else $("cardCode").style.display = "none";
     
-    if(priceNum!==null){
+    const info = calcUnitInfo(capUnit);
+    
+    // OPORTUNIDADE (Preço Riscado)
+    if(isPromo && oldPriceNum !== null){
+      $("cardPromoTopRow").style.display = "flex";
+      $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+      if(priceNum !== null && oldPriceNum > priceNum){
+        const disc = Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100);
+        $("cardPromoTag").textContent = "-"+disc+"%";
+        $("cardPromoTag").style.display = "inline-block";
+      } else { $("cardPromoTag").style.display = "none"; }
+    } else { $("cardPromoTopRow").style.display = "none"; }
+    
+    // PREÇO PRINCIPAL E SECUNDÁRIO
+    if(priceNum !== null){
       const fmt = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
-      if(isPromo && oldPriceNum!==null && oldPriceNum>priceNum){
-        $("cardPromoTopRow").style.display = "flex"; $("cardOldPrice").textContent = oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-        $("cardPromoTag").textContent = "-"+Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100)+"%";
-      } else $("cardPromoTopRow").style.display = "none";
       
-      const info = calcUnitInfo(capUnit);
-      
-      // PREÇO GRANDE com unidade (ex: 3,99 €/KG)
-      $("cardPrice").innerHTML = fmt+'<span class="unit-inline">'+info.mainSuffix+'</span>';
-      
-      if(capNum>0){
+      if(capNum > 0){
+        // PREÇO GRANDE com unidade (ex: 3,99 €/KG)
+        $("cardPrice").innerHTML = fmt + '<span class="unit-inline">' + info.mainSuffix + '</span>';
         // PREÇO PEQUENO calculado pela referência (ex: 7,98 €/KG)
         const precoUnit = priceNum / (capNum * info.normalizar);
         $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.refSuffix;
         $("cardUnitPrice").style.display = "block";
       } else {
+        // PREÇO GRANDE normal (ex: 3,99 €/KG)
+        $("cardPrice").innerHTML = fmt + '<span class="unit-inline">' + info.mainSuffix + '</span>';
         $("cardUnitPrice").style.display = "none";
       }
     } else {
-      const infoFb = calcUnitInfo(capUnit);
-      $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.mainSuffix+'</span>';
-      $("cardPromoTopRow").style.display = "none"; $("cardUnitPrice").style.display = "none";
+      $("cardPrice").innerHTML = '0,00<span class="unit-inline">' + info.mainSuffix + '</span>';
+      $("cardUnitPrice").style.display = "none";
     }
     
+    // OPORTUNIDADE DE FRUTA E LEGUMES
     if(isFP){
       const pu = $("promoUnit").value||"KG"; const pm = $("promoMinQty").value||"2";
       $("cardFpNormalPrice").textContent = (priceNum!==null) ? priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €" : "0,00 €";
@@ -1274,22 +1284,8 @@ function updateCardUnsafe(){
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
     $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
     autoAdaptImage(card);
-  } catch (err) { }
+  } catch (err) { console.error("Falha ao desenhar a etiqueta: ", err); }
 }
-
-let _t = null;
-function updateCard(){
-  if(_t) clearTimeout(_t);
-  _t = setTimeout(function(){ updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint(); }, 20);
-}
-
-/* ══════════ EVENT LISTENERS DO EDITOR (MANTÉM TUDO RESPONSIVO) ══════════ */
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("input",updateCard);
-});
-["presetSizes","store","isPromoActive","capacityUnit","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg"].forEach(function(id){
-  const el = $(id); if(el) el.addEventListener("change",updateCard);
-});
 
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData(); setFormData(data); updateCardUnsafe();
@@ -1324,18 +1320,18 @@ function cleanupAfterPrint(){
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
 
-/* ================== IMPRESSÃO SEGURA E LIMITADA (A4 = 210x297) ================== */
+/* =========================================================================== */
+/* IMPRESSÃO PERFEITA E BLINDADA: A4 exato, margens não deixam a impressora cortar */
+/* =========================================================================== */
 function computeLayout(labelW, labelH){
   const PAGE_W = 210, PAGE_H = 297;
-  let gutter = 0; // Removido o gutter escondido que estragava as colunas
   const currentOffsetX = Math.max(0, parseFloat($("offsetXRange").value) || 0);
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
   const availW = PAGE_W - currentOffsetX;
-  const availH = PAGE_H - currentOffsetY - 6; // 6mm de margem segura no fundo para evitar cortes na impressora
-  
-  const cols = Math.max(1, Math.floor((availW + gutter) / (labelW + gutter)));
-  const rows = Math.max(1, Math.floor((availH + gutter) / (labelH + gutter)));
-  return { cols: cols, rows: rows, perPage: cols * rows, gutter: gutter };
+  const availH = PAGE_H - currentOffsetY - 8; // 8mm de margem segura no fundo para a impressora
+  const cols = Math.max(1, Math.floor(availW / labelW));
+  const rows = Math.max(1, Math.floor(availH / labelH));
+  return { cols: cols, rows: rows, perPage: cols * rows, gutter: 0 };
 }
 
 function triggerPrint(){
@@ -1372,7 +1368,7 @@ function triggerPrint(){
       const first = g.items[0];
       const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
       
-      // A5, A6 e maiores: reduz-se a medida real de impressão uns mm para a impressora não cortar as pontas.
+      // Ajuste automático para as tabuletas não saírem cortadas na impressora
       let pW = baseDims.width, pH = baseDims.height;
       if(g.format === "A5") { pW = 196; pH = 140; } 
       else if(g.format === "A6" || g.format === "frutaPromoA6") { pW = 138; pH = 98; }
@@ -1388,7 +1384,7 @@ function triggerPrint(){
         const grid = document.createElement("div"); grid.className = "print-page-generic-grid";
         grid.style.gridTemplateColumns = "repeat("+lay.cols+", "+dims.width+"mm)";
         grid.style.gridAutoRows = dims.height + "mm";
-        grid.style.gap = lay.gutter + "mm";
+        grid.style.gap = "2mm"; // Espaçamento leve entre os cartões A5 e A6
         chunk.forEach(function(d){
           const c = buildLabelClone(d, dims, true);
           c.style.setProperty("width",  dims.width  + "mm", "important");
