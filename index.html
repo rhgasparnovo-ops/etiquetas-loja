@@ -185,135 +185,72 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-
-/* ════════════════════════════════════════════════════════════════
-   ECRÃ — modo de medição/PDF
-   Este é o CSS que permite ao html2canvas "ver" as páginas A4
-   corretamente quando geramos o PDF por email.
-   ════════════════════════════════════════════════════════════════ */
-@media screen {
-  #printZone { display:none !important; }
-  #printZone.measure {
-    display: block !important;
-    position: fixed !important;
-    left: -99999px !important;
-    top: 0 !important;
-    width: 210mm !important;
-    pointer-events: none !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: -1 !important;
-    background: #ffffff !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  /* Páginas A4 visíveis no DOM mas fora do ecrã — para o html2canvas capturar */
-  #printZone.measure .print-page-wrapper {
-    width: 210mm !important;
-    height: 297mm !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-    background: white !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 5mm 0 5mm 0 !important;
-    page-break-after: always !important;
-  }
-  #printZone.measure .print-page-wrapper:last-child { page-break-after: auto !important; }
-  #printZone.measure .print-sheet-amanhecer {
-    display: grid !important;
-    grid-template-columns: 66mm 66mm 66mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 198mm !important;
-    height: 278mm !important;
-    margin-top: var(--offset-y) !important;
-    gap: 0 !important;
-  }
-  #printZone.measure .print-page-generic-grid {
-    display: grid !important;
-    margin-top: var(--offset-y) !important;
-  }
-  #printZone.measure .label-card {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    border: 1px solid transparent !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    padding: 2px 4px !important;
-  }
-  #printZone.measure .print-page-generic-grid .label-card { border: 1px solid #222 !important; }
-  #printZone.measure .print-sheet-amanhecer .label-card { width: 66mm !important; }
+@media screen{
+  #printZone{display:none!important}
+  #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
+  #printZone.measure .print-page-wrapper{width:210mm!important;height:297mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important;page-break-after:always!important}
+  #printZone.measure .print-page-wrapper:last-child{page-break-after:auto!important}
+  #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
+  #printZone.measure .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important}
+  #printZone.measure .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}
+  #printZone.measure .print-page-generic-grid .label-card{border:1px solid #222!important}
+  #printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4) { height: 40mm !important; }
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; }
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n)   { padding-right: var(--margin-right) !important; }
-  #printZone.measure .fp-box.fp-promo { background: #c8102e !important; background-color: #c8102e !important; border: 2px solid #c8102e !important; color: #ffffff !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important}
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
+  #printZone.measure .fp-box.fp-promo{background:#c8102e!important;border:2px solid #c8102e!important;color:#fff!important}
   #printZone.measure .fp-box.fp-promo .fp-label,
   #printZone.measure .fp-box.fp-promo .fp-price,
-  #printZone.measure .fp-box.fp-promo .fp-unit { color: #ffffff !important; }
-  #printZone.measure .fp-box.fp-normal { background: #ffffff !important; background-color: #ffffff !important; border: 2px solid #222222 !important; color: #222222 !important; }
+  #printZone.measure .fp-box.fp-promo .fp-unit{color:#fff!important}
+  #printZone.measure .fp-box.fp-normal{background:#fff!important;border:2px solid #222!important;color:#222!important}
   #printZone.measure .fp-box.fp-normal .fp-label,
   #printZone.measure .fp-box.fp-normal .fp-price,
-  #printZone.measure .fp-box.fp-normal .fp-unit { color: #222222 !important; }
-  #printZone.measure .promo-tag { background: #c8102e !important; background-color: #c8102e !important; color: #ffffff !important; }
-  #printZone.measure .header { border-bottom: 1.5px solid #c8102e !important; }
-  #printZone.measure .deposit-box { background: #fff5f5 !important; background-color: #fff5f5 !important; color: #c8102e !important; border: 1px solid #fed7d7 !important; }
-  #printZone.measure .unit-price-text { color: #c8102e !important; }
-  #printZone.measure .fruit-full-bar { color: #084298 !important; }
-  #printZone.measure .calib-sheet {
-    display: grid !important;
-    grid-template-columns: 66mm 66mm 66mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 198mm !important;
-    height: 278mm !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: var(--offset-y) !important;
-  }
-  #printZone.measure .calib-cell { border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
+  #printZone.measure .fp-box.fp-normal .fp-unit{color:#222!important}
+  #printZone.measure .promo-tag{background:#c8102e!important;color:#fff!important}
+  #printZone.measure .header{border-bottom:1.5px solid #c8102e!important}
+  #printZone.measure .deposit-box{background:#fff5f5!important;color:#c8102e!important;border:1px solid #fed7d7!important}
+  #printZone.measure .unit-price-text{color:#c8102e!important}
+  #printZone.measure .fruit-full-bar{color:#084298!important}
+  #printZone.measure .calib-sheet{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;margin-top:var(--offset-y)!important}
+  #printZone.measure .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 }
 @media print{
-  @page { size: A4 portrait; margin: 0 !important; }
-  html, body { width: 210mm !important; height: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-  .app, .sheet-preview, .pro-print-overlay, .modal, .toast-container, .confirm-overlay, .name-modal, .email-modal, .mobile-tab-bar { display: none !important; }
-  #printZone { display: block !important; position: static !important; left: auto !important; top: auto !important; width: auto !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; z-index: auto !important; }
-  #printZone, #printZone * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; transform: none !important; -webkit-transform: none !important; zoom: 1 !important; animation: none !important; transition: none !important; }
-  .print-page-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; break-after: page !important; overflow: hidden !important; box-sizing: border-box !important; position: relative !important; background: white !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; padding: 5mm 0 5mm 0 !important; }
-  .print-page-wrapper:last-child { page-break-after: auto !important; break-after: auto !important; }
-  .print-sheet-amanhecer { display: grid !important; grid-template-columns: 66mm 66mm 66mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 198mm !important; height: 278mm !important; margin-top: var(--offset-y) !important; gap: 0 !important; }
-  .print-page-generic-grid { display: grid !important; margin-top: var(--offset-y) !important; }
-  #printZone .label-card { background: #ffffff !important; background-color: #ffffff !important; border: 1px solid transparent !important; margin: 0 !important; box-sizing: border-box !important; page-break-inside: avoid !important; break-inside: avoid !important; padding: 2px 4px !important; }
-  #printZone .print-page-generic-grid .label-card { border: 1px solid #222 !important; }
-  #printZone .print-sheet-amanhecer .label-card { width: 66mm !important; }
+  @page{size:A4 portrait;margin:0!important}
+  html,body{width:210mm!important;height:100%!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.mobile-tab-bar{display:none!important}
+  #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
+  #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
+  .print-page-wrapper{width:210mm!important;height:297mm!important;page-break-after:always!important;break-after:page!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important}
+  .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
+  .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
+  .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important}
+  #printZone .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
+  #printZone .print-page-generic-grid .label-card{border:1px solid #222!important}
+  #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
-  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4) { height: 40mm !important; }
-  .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; transform: translateY(var(--col-left-y)) !important; }
-  .print-sheet-amanhecer .label-card:nth-child(3n)   { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
-  #printZone .fp-box.fp-promo { background: #c8102e !important; background-color: #c8102e !important; border: 2px solid #c8102e !important; color: #ffffff !important; }
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important;transform:translateY(var(--col-left-y))!important}
+  .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important;transform:translateY(var(--col-right-y))!important}
+  #printZone .fp-box.fp-promo{background:#c8102e!important;border:2px solid #c8102e!important;color:#fff!important}
   #printZone .fp-box.fp-promo .fp-label,
   #printZone .fp-box.fp-promo .fp-price,
-  #printZone .fp-box.fp-promo .fp-unit { color: #ffffff !important; }
-  #printZone .fp-box.fp-normal { background: #ffffff !important; background-color: #ffffff !important; border: 2px solid #222222 !important; color: #222222 !important; }
+  #printZone .fp-box.fp-promo .fp-unit{color:#fff!important}
+  #printZone .fp-box.fp-normal{background:#fff!important;border:2px solid #222!important;color:#222!important}
   #printZone .fp-box.fp-normal .fp-label,
   #printZone .fp-box.fp-normal .fp-price,
-  #printZone .fp-box.fp-normal .fp-unit { color: #222222 !important; }
-  #printZone .promo-tag { background: #c8102e !important; background-color: #c8102e !important; color: #ffffff !important; }
-  #printZone .header { border-bottom: 1.5px solid #c8102e !important; }
-  #printZone .deposit-box { background: #fff5f5 !important; background-color: #fff5f5 !important; color: #c8102e !important; border: 1px solid #fed7d7 !important; }
-  #printZone .unit-price-text { color: #c8102e !important; }
-  #printZone .fruit-full-bar { color: #084298 !important; }
-  .calib-wrapper { width: 210mm !important; height: 297mm !important; page-break-after: always !important; }
-  .calib-sheet { display: grid !important; grid-template-columns: 66mm 66mm 66mm !important; grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important; width: 198mm !important; height: 278mm !important; margin-left: auto !important; margin-right: auto !important; margin-top: var(--offset-y) !important; }
-  .calib-cell { border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
-  .calib-sheet .calib-cell:nth-child(3n+1){ transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
-  .calib-sheet .calib-cell:nth-child(3n)  { transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
+  #printZone .fp-box.fp-normal .fp-unit{color:#222!important}
+  #printZone .promo-tag{background:#c8102e!important;color:#fff!important}
+  #printZone .header{border-bottom:1.5px solid #c8102e!important}
+  #printZone .deposit-box{background:#fff5f5!important;color:#c8102e!important;border:1px solid #fed7d7!important}
+  #printZone .unit-price-text{color:#c8102e!important}
+  #printZone .fruit-full-bar{color:#084298!important}
+  .calib-sheet{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;margin-top:var(--offset-y)!important}
+  .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 }
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center;padding:20px}
 .pro-print-overlay.show{display:flex}
@@ -395,7 +332,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .top-logos img{height:24px;max-width:80px}
   .top-logos .divider{height:18px;background:#dfe3e8}
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
-  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px 12px;border-radius:0;position:relative;letter-spacing:.3px}
+  .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px;border-radius:0;position:relative;letter-spacing:.3px}
   .mobile-tab-bar button.active{color:#c8102e}
   .mobile-tab-bar button.active::before{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:3px;background:linear-gradient(90deg,#c8102e 0%,#e83a55 100%);border-radius:3px 3px 0 0}
   .tab-badge{position:absolute;top:5px;right:calc(50% - 26px);background:linear-gradient(135deg,#e83a55,#c8102e);border:1.5px solid #fff;font-size:9px;padding:1px 5px;border-radius:9px;margin:0;min-width:18px;height:18px;line-height:15px;text-align:center}
@@ -410,7 +347,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   input[type=range]{padding:0;height:8px;background:transparent;border:none}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
   .format-select{font-size:15px;padding:14px 40px 14px 16px;min-height:52px;border-radius:12px;font-weight:800}
-  button{padding:14px 14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800}
+  button{padding:14px;font-size:15px;border-radius:14px;min-height:52px;font-weight:800}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:17px;font-weight:900;padding:18px 16px;min-height:60px;border-radius:16px}
   .success-btn{background:linear-gradient(135deg,#22a355 0%,#176b3a 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;border-radius:15px}
   .save-btn{background:linear-gradient(135deg,#0a5ecb 0%,#084298 100%);border:none;font-size:15.5px;padding:15px 14px;min-height:54px;border-radius:15px}
@@ -503,7 +440,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
       <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=.3">
     </div>
   </header>
-
   <div class="grid">
     <div class="left-col">
       <section class="panel tab-el tab-editar">
@@ -537,7 +473,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </div>
         <div style="width:100%"><label for="store" style="margin-top:0">Loja</label><select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select></div>
       </section>
-
       <details class="drawer tab-el tab-editar" open>
         <summary>📝 Editar Dados do Produto</summary>
         <div class="drawer-content">
@@ -666,7 +601,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade · 1ª vez descarrega ~40MB)</label>
         </div>
       </details>
-
       <details class="drawer tab-el tab-editar">
         <summary>🎯 Ajustes de Impressão</summary>
         <div class="drawer-content">
@@ -690,7 +624,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           </div>
         </div>
       </details>
-
       <section class="panel tab-el tab-editar">
         <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="21"></div></div>
         <div id="appStatus" role="status" aria-live="polite"></div>
@@ -708,7 +641,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <button class="email-btn" id="emailLabelsBtn" type="button">📧 Enviar etiquetas por Email (PDF)</button>
         </div>
       </section>
-
       <details class="drawer tab-el tab-fila">
         <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
@@ -716,7 +648,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <button class="secondary" style="margin-top:10px;border-color:#e74c3c;color:#c0392b;display:none" id="clearQueueBtn">🗑️ Limpar Fila</button>
         </div>
       </details>
-
       <details class="drawer tab-el tab-fila" open>
         <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)</summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
@@ -730,7 +661,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </div>
       </details>
     </div>
-
     <section class="preview-container tab-el tab-ver">
       <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer</div>
       <div class="preview-wrap" id="previewWrap">
@@ -774,10 +704,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     </section>
   </div>
 </div>
-
 <div id="printZone"></div>
 <div class="toast-container" id="toastContainer"></div>
-
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg"></p>
@@ -787,7 +715,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     </div>
   </div>
 </div>
-
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3 id="saveBancoTitle">📷 Guardar foto no banco</h3>
@@ -805,7 +732,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     </div>
   </div>
 </div>
-
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
@@ -822,7 +748,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     </div>
   </div>
 </div>
-
 <div class="modal" id="cameraModal">
   <video id="camVideo" autoplay playsinline muted></video>
   <canvas id="camCanvas" style="display:none"></canvas>
@@ -831,12 +756,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <button id="camClose" class="secondary">✕ Fechar</button>
   </div>
 </div>
-
 <div class="modal" id="scannerModal">
   <div id="reader"></div>
   <button id="scanClose" class="secondary" style="width:auto;padding:10px 22px">✕ Fechar</button>
 </div>
-
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div class="bf-modal-header">
@@ -853,7 +776,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
-
 <div class="sheet-preview" id="sheetPreview">
   <div class="sheet-preview-inner">
     <div class="sheet-preview-header">
@@ -863,7 +785,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <div id="sheetPreviewContent" class="sheet-preview-content"></div>
   </div>
 </div>
-
 <div class="pro-print-overlay" id="proPrintOverlay">
   <div class="pro-print-box">
     <div class="pro-spinner"></div>
@@ -871,12 +792,11 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <div class="print-tip">Se o diálogo não abrir automaticamente, use <b>Partilhar → Imprimir</b>.</div>
   </div>
 </div>
-
 <script>
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v17';
+const CACHE_KEY = 'balcao_cache_v18';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
@@ -968,7 +888,7 @@ function pedirEmail(){
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
 function thumbUrl(fotoId, size){ if(!fotoId) return ''; const s = size || THUMB_SIZE; return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s; }
 
-/* ═══════════════ IMAGEM ═══════════════ */
+/* IMAGEM */
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || IMG_MAX_SIZE; quality = quality || IMG_QUALITY;
   return new Promise(function(resolve){
@@ -1023,7 +943,7 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ═══════════════ API ═══════════════ */
+/* API */
 async function api(fn, payload, retries){
   payload = payload || {};
   if(retries === undefined) retries = 2;
@@ -1040,14 +960,12 @@ async function api(fn, payload, retries){
   }
 }
 
-/* ═══════════════ ESTADO ═══════════════ */
 const $ = function(id){ return document.getElementById(id); };
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, fotoBancoModo = false;
 let printQueue = [], savedProducts = [], bancoFruta = [];
 let bancoTipoFiltro = 'fruta';
 const Storage = { get:function(k,f){ try{ const v=localStorage.getItem(k); return v===null?f:v; }catch(e){ return f; } }, set:function(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } } };
 
-/* ═══════════════ CALIBRAÇÃO ═══════════════ */
 let offsetX = parseFloat(Storage.get("balcao_offset_x","0")); if(!isFinite(offsetX)) offsetX = 0;
 let offsetY = parseFloat(Storage.get("balcao_offset_y","6")); if(!isFinite(offsetY)) offsetY = 6;
 let colLeftY = parseFloat(Storage.get("balcao_col_left_y","0")); if(!isFinite(colLeftY)) colLeftY = 0;
@@ -1076,7 +994,6 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 
-/* ═══════════════ CARREGAMENTO ═══════════════ */
 async function carregarTudo(){
   try{
     const raw = localStorage.getItem(CACHE_KEY);
@@ -1101,7 +1018,6 @@ async function carregarTudo(){
   else { setStatus('✅ Dados atualizados.','success'); }
 }
 
-/* ═══════════════ FORM ═══════════════ */
 function getFormData(){
   return {
     presetSizes:$("presetSizes").value, customWidth:$("customWidth").value, customHeight:$("customHeight").value,
@@ -1132,19 +1048,14 @@ function setFormData(d){
   const capSalva = (d.capacity !== undefined && d.capacity !== "") ? d.capacity : (d.capacidade !== undefined && d.capacidade !== "" ? d.capacidade : "");
   $("capacity").value = capSalva !== "" ? capSalva : (DEFAULTS_UNIDADE[unidade] || "1");
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
-  if(['', 'Acresce 0,10 € Volta'].indexOf(depSalvo) >= 0){
-    $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
-  } else if(depSalvo){
-    $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block";
-  } else {
-    $("depositFeeSelect").value = ""; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
-  }
+  if(['', 'Acresce 0,10 € Volta'].indexOf(depSalvo) >= 0){ $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none"; }
+  else if(depSalvo){ $("depositFeeSelect").value = "custom"; $("customDepositInput").value = depSalvo; $("customDepositInput").style.display = "block"; }
+  else { $("depositFeeSelect").value = ""; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none"; }
   $("unit").value = d.unit||""; $("promoStart").value = d.promoStart||""; $("promoEnd").value = d.promoEnd||"";
   $("ean").value = (d.ean||"").toUpperCase();
   $("autoRemoveBg").checked = d.autoRemoveBg!==false; $("useAI").checked = d.useAI!==false;
   $("promoMinQty").value = d.promoMinQty||"2"; $("promoUnit").value = d.promoUnit||"KG"; $("promoPrice").value = d.promoPrice||"";
-  globalOriginalPhoto = d.originalPhoto||d.fotoUrl||"";
-  globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
+  globalOriginalPhoto = d.originalPhoto||d.fotoUrl||""; globalProcessedPhoto = d.processedPhoto||d.fotoUrl||"";
   $("photo").value = "";
   $("customDimensionsRow").style.display = ($("presetSizes").value==="custom") ? "grid" : "none";
   updateOrientationVisibility(); updateCard();
@@ -1152,7 +1063,6 @@ function setFormData(d){
 function markFieldError(id,has){ const el=$(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
 
-/* ═══════════════ EAN / ITF-14 / CODE 128 ═══════════════ */
 function onlyDigits(v){ return String(v||"").replace(/\D/g,""); }
 function ean13CheckDigit(f12){ const d=onlyDigits(f12).slice(0,12); if(d.length!==12) return null; let s=0; for(let i=0;i<12;i++) s+=Number(d[i])*(i%2===0?1:3); return String((10-(s%10))%10); }
 function isValidEAN13(v){ const d=onlyDigits(v); return d.length===13 && ean13CheckDigit(d.slice(0,12))===d[12]; }
@@ -1217,7 +1127,6 @@ function drawBarcode(svg,value){
   if(/^[\x20-\x7E]+$/.test(clean)){ drawCode128(svg, clean); }
 }
 
-/* ═══════════════ FORMATO ═══════════════ */
 function isLargeFormat(v){ return ["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v)>-1 || (v==="custom" && (parseFloat($("customWidth").value)>=90 || parseFloat($("customHeight").value)>=65)); }
 function isFruitPromoFormat(v){ return v==="frutaPromo125x80" || v==="frutaPromoA6"; }
 function getDimensionsFor(fv,cw,ch){
@@ -1231,7 +1140,6 @@ function applySizeClass(el,w,h){ if(!el) return; el.classList.remove("size-tiny"
 window.setField = function(id,val){ const el=$(id); if(el){ el.value=val; updateCard(); } };
 function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
 
-/* ═══════════════ UNIDADES ═══════════════ */
 function calcUnitInfo(capUnit){
   switch(capUnit){
     case "peso":    return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
@@ -1248,7 +1156,6 @@ function calcUnitInfo(capUnit){
 }
 const DEFAULTS_UNIDADE = { peso:"1", g:"1", lt:"1", cl:"0.75", ml:"1", un:"1", dz:"1", meia_dz:"1", dose:"1" };
 
-/* ═══════════════ FILA ═══════════════ */
 function renderQueue(){
   const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
   const tb = document.getElementById("tabQueueBadge");
@@ -1323,7 +1230,6 @@ window.saveQueueItem = async function(i){
   }catch(e){ setStatus("Erro: "+e.message, "error"); }
 };
 
-/* ═══════════════ BD ═══════════════ */
 function renderDb(){
   const c = $("dbListContainer"); $("dbBadge").textContent = savedProducts.length;
   if(savedProducts.length===0){ c.innerHTML='<div class="empty-msg">Nenhum produto guardado ainda.</div>'; return; }
@@ -1367,7 +1273,6 @@ window.removeFromDb = async function(i){
 };
 window.queueFromDb = function(i){ const d = savedProducts[i]; if(!d) return; printQueue.push({ data:JSON.parse(JSON.stringify(d)), copies:parseInt($("copiesCount").value)||1 }); renderQueue(); setStatus("Adicionado à fila.","success"); };
 
-/* ═══════════════ BANCO ═══════════════ */
 function updateBancoCounts(){
   let fruta=0, legume=0;
   bancoFruta.forEach(function(f){ if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
@@ -1428,7 +1333,6 @@ async function perguntarGuardarNoBanco(){
   try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
 }
 
-/* ═══════════════ PREÇO E DATAS ═══════════════ */
 function parsePrice(v){
   if(v==null || String(v).trim()==="") return null;
   let c = String(v).trim().replace(/€|\s/g,"");
@@ -1449,7 +1353,6 @@ function formatPromoDate(s,e){
   }catch(err){ return "Preço sujeito às condições comerciais em vigor."; }
 }
 
-/* ═══════════════ SET PRODUCT TEXT ═══════════════ */
 function setProductText(el,text){
   if(!el) return; el.innerHTML = "";
   const raw = String(text||"").trim();
@@ -1458,7 +1361,6 @@ function setProductText(el,text){
   words.forEach(function(word){ const s = document.createElement("span"); s.className = "w"; s.textContent = word; el.appendChild(s); });
 }
 
-/* ═══════════════ MOTOR DA ETIQUETA ═══════════════ */
 let _updateCardTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
@@ -1519,7 +1421,6 @@ function updateCapacityHint(){
 }
 function reAdaptClone(clone){ autoAdaptImage(clone); }
 
-/* ═══════════════ AUTO-FIT ═══════════════ */
 function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
   const s = Math.min(dims.width/70, dims.height/38) * (card.classList.contains("layout-fruit-promo") ? 0.8 : 1);
@@ -1573,7 +1474,6 @@ function autoAdaptImage(card){
   card.classList.replace("img-mini","img-hidden");
 }
 
-/* ═══════════════ DESENHO DA ETIQUETA ═══════════════ */
 function updateCardUnsafe(){
   try{
     const storeVal = $("store").value||"PATAIAS";
@@ -1676,7 +1576,6 @@ function updateCardUnsafe(){
   } catch(err){ console.error("Falha ao desenhar a etiqueta:", err); }
 }
 
-/* ═══════════════ CLONE ═══════════════ */
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
   setFormData(data); updateCardUnsafe();
@@ -1697,7 +1596,6 @@ function buildLabelClone(data, dims, forPrint){
   return clone;
 }
 
-/* ═══════════════ IMPRESSÃO ═══════════════ */
 function validateBeforePrint(){
   setValidationState();
   if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false; }
@@ -1842,22 +1740,38 @@ window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 window.addEventListener("beforeunload", function(ev){ if(printQueue.length>0){ ev.preventDefault(); ev.returnValue=""; } });
 
-/* ═══════════════ PDF — GERAÇÃO ═══════════════ */
-let _html2pdfLoading = null;
-function loadHtml2Pdf(){
-  if(typeof html2pdf !== 'undefined') return Promise.resolve();
-  if(_html2pdfLoading) return _html2pdfLoading;
-  _html2pdfLoading = new Promise(function(resolve, reject){
+/* ════════════════════════════════════════════════════════════════
+   CARREGAMENTO DE BIBLIOTECAS — html2canvas-pro (suporta container
+   queries, unidades cqw, etc.) + jsPDF
+   ════════════════════════════════════════════════════════════════ */
+let _h2cLoading = null;
+function loadHtml2CanvasPro(){
+  if(window.html2canvas && window.html2canvas.version) return Promise.resolve();
+  if(_h2cLoading) return _h2cLoading;
+  _h2cLoading = new Promise(function(resolve, reject){
     const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    s.onload = function(){ _html2pdfLoading = null; resolve(); };
-    s.onerror = function(){ _html2pdfLoading = null; reject(new Error('Falha ao carregar gerador de PDF.')); };
+    s.src = 'https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/dist/html2canvas-pro.min.js';
+    s.onload = function(){ _h2cLoading = null; resolve(); };
+    s.onerror = function(){ _h2cLoading = null; reject(new Error('Falha ao carregar html2canvas-pro.')); };
     document.head.appendChild(s);
   });
-  return _html2pdfLoading;
+  return _h2cLoading;
+}
+let _jsPDFLoading = null;
+function loadJsPDF(){
+  if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve();
+  if(_jsPDFLoading) return _jsPDFLoading;
+  _jsPDFLoading = new Promise(function(resolve, reject){
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = function(){ _jsPDFLoading = null; resolve(); };
+    s.onerror = function(){ _jsPDFLoading = null; reject(new Error('Falha ao carregar jsPDF.')); };
+    document.head.appendChild(s);
+  });
+  return _jsPDFLoading;
 }
 
-/* Pré-carregar imagens como data URLs (resolve CORS do Google Drive) */
+/* Pré-carregar imagens do Google Drive como base64 (resolve CORS) */
 async function preloadImagesAsDataURLs(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   await Promise.all(imgs.map(async function(img){
@@ -1886,10 +1800,20 @@ async function preloadImagesAsDataURLs(container){
   }));
 }
 
-/* ✅ Gera o PDF usando o #printZone.measure que já tem TODO o CSS necessário */
+/* ════════════════════════════════════════════════════════════════
+   GERAR PDF — renderiza cada etiqueta individualmente com
+   html2canvas-pro e posiciona-a no jsPDF com coordenadas em mm.
+   Robusto, previsível, sem depender de grelhas CSS complexas
+   (que o html2canvas não entende).
+   ════════════════════════════════════════════════════════════════ */
 async function gerarPDFBlob(){
-  await loadHtml2Pdf();
+  await loadHtml2CanvasPro();
+  await loadJsPDF();
 
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait', compress:true });
+
+  /* Recolher items */
   const editorFmt = $("presetSizes").value;
   const items = [];
   if(printQueue.length===0){
@@ -1909,56 +1833,141 @@ async function gerarPDFBlob(){
     if(last && last.format===it.format) last.items.push(it.data);
     else groups.push({ format:it.format, items:[it.data] });
   });
+
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
 
-  /* Usar o #printZone — já tem todo o CSS em @media screen .measure */
-  const pz = $("printZone");
-  pz.innerHTML = "";
-  pz.classList.add("measure");
+  /* Container de renderização fora do ecrã mas renderizado */
+  const renderZone = document.createElement("div");
+  renderZone.style.cssText =
+    "position:absolute;top:0;left:-10000px;width:250mm;background:#ffffff;" +
+    "padding:0;margin:0;z-index:1;overflow:visible;pointer-events:none;";
+  document.body.appendChild(renderZone);
 
-  try {
-    construirPaginasA4(pz, groups, amanhecerQueue);
+  async function renderLabelToDataURL(labelEl){
+    labelEl.style.transform = "none";
+    labelEl.style.position = "relative";
+    labelEl.style.display = "flex";
+    labelEl.style.boxSizing = "border-box";
+    labelEl.style.boxShadow = "none";
+    labelEl.style.borderRadius = "0";
+    labelEl.style.border = "1px solid #222";
+    labelEl.style.margin = "0";
+    labelEl.style.visibility = "visible";
+    labelEl.style.opacity = "1";
 
-    /* Pré-carregar imagens (base64) */
-    await preloadImagesAsDataURLs(pz);
+    renderZone.appendChild(labelEl);
 
-    /* Aguardar render + auto-fit */
-    await new Promise(function(r){ setTimeout(r, 250); });
-    try{
-      pz.querySelectorAll(".label-card").forEach(function(card){
-        const prodEl = card.querySelector(".product");
-        if(prodEl) autoFitTextSync(prodEl);
-        if(card.classList.contains("has-image")) autoAdaptImage(card);
-      });
-    }catch(e){}
-    await new Promise(function(r){ setTimeout(r, 250); });
+    try { await preloadImagesAsDataURLs(labelEl); } catch(e){}
 
-    /* Gerar blob */
-    const opt = {
-      margin: 0,
-      filename: 'etiquetas.pdf',
-      image: { type: 'jpeg', quality: 0.92 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0, scrollY: 0,
-        windowWidth: pz.scrollWidth || 794,
-        windowHeight: pz.scrollHeight || 1123
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
+    const prodEl = labelEl.querySelector(".product");
+    if(prodEl) autoFitTextSync(prodEl);
+    if(labelEl.classList.contains("has-image")) autoAdaptImage(labelEl);
 
-    const blob = await html2pdf().set(opt).from(pz).outputPdf('blob');
-    return blob;
-  } finally {
-    pz.classList.remove("measure");
-    pz.innerHTML = "";
+    await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r, 60); }); });
+
+    const w = labelEl.offsetWidth || 250;
+    const h = labelEl.offsetHeight || 144;
+
+    const canvas = await window.html2canvas(labelEl, {
+      scale: 3,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      imageTimeout: 0,
+      width: w,
+      height: h,
+      windowWidth: w,
+      windowHeight: h
+    });
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    renderZone.removeChild(labelEl);
+    return dataUrl;
   }
+
+  let firstPage = true;
+
+  /* AMANHECER — grelha 3×7 */
+  const AMANHECER_ROW_H = [38,40,40,40,40,40,40];
+  const AMANHECER_COL_W = 66;
+  const BASE_LEFT = (210 - AMANHECER_COL_W*3) / 2;
+  const BASE_TOP  = 5;
+
+  for(let i=0; i<amanhecerQueue.length; i+=21){
+    const chunk = amanhecerQueue.slice(i, i+21);
+
+    if(!firstPage) doc.addPage();
+    firstPage = false;
+
+    let yMm = BASE_TOP + (offsetY || 0);
+
+    for(let r=0; r<7; r++){
+      const rowH = AMANHECER_ROW_H[r];
+      const yRow = yMm;
+      yMm += rowH;
+
+      for(let c=0; c<3; c++){
+        const idx = r*3 + c;
+        if(idx >= chunk.length) break;
+
+        let xCol = BASE_LEFT + c*AMANHECER_COL_W;
+        if(c === 0) xCol += (marginLeft || 0);
+        if(c === 2) xCol -= (marginRight || 0);
+
+        const data = chunk[idx];
+        const dims = { width: 66, height: rowH };
+        const labelEl = buildLabelClone(data, dims, true);
+        labelEl.style.width  = "66mm";
+        labelEl.style.height = rowH + "mm";
+
+        const dataUrl = await renderLabelToDataURL(labelEl);
+        doc.addImage(dataUrl, 'JPEG', xCol, yRow, 66, rowH);
+      }
+    }
+  }
+
+  /* FORMATOS GENÉRICOS */
+  for(const g of groups){
+    if(g.format === "amanhecer") continue;
+
+    const first = g.items[0];
+    const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
+    const dims = getPrintDimensions(g.format, baseDims);
+    const lay = computeLayout(dims.width, dims.height);
+    const GUTTER = 2;
+
+    for(let p=0; p<g.items.length; p+=lay.perPage){
+      const chunk = g.items.slice(p, p + lay.perPage);
+
+      if(!firstPage) doc.addPage();
+      firstPage = false;
+
+      const totalW = lay.cols * dims.width + (lay.cols-1) * GUTTER;
+      const startX = (210 - totalW) / 2;
+      const startY = 5 + (offsetY || 0);
+
+      for(let idx=0; idx<chunk.length; idx++){
+        const row = Math.floor(idx / lay.cols);
+        const col = idx % lay.cols;
+
+        const xMm = startX + col * (dims.width + GUTTER);
+        const yMm = startY + row * (dims.height + GUTTER);
+
+        const data = chunk[idx];
+        const labelEl = buildLabelClone(data, dims, true);
+        labelEl.style.width  = dims.width  + "mm";
+        labelEl.style.height = dims.height + "mm";
+
+        const dataUrl = await renderLabelToDataURL(labelEl);
+        doc.addImage(dataUrl, 'JPEG', xMm, yMm, dims.width, dims.height);
+      }
+    }
+  }
+
+  document.body.removeChild(renderZone);
+  return doc.output('blob');
 }
 
 function blobToBase64(blob){
@@ -1970,7 +1979,7 @@ function blobToBase64(blob){
   });
 }
 
-/* Envio de email — só pelo Apps Script, NUNCA abre cliente de email */
+/* Envio de email — só pelo Apps Script, NUNCA abre cliente */
 async function enviarEtiquetasPorEmail(){
   const info = await pedirEmail();
   if(!info) return;
@@ -2014,9 +2023,9 @@ async function enviarEtiquetasPorEmail(){
     setStatus("Erro a enviar email: " + e.message, "error");
     toast("Erro a enviar email: " + e.message, "error", 7000);
   }
+  /* NUNCA abre mailto, Outlook, Thunderbird, nem qualquer cliente de email */
 }
 
-/* ═══════════════ STATUS ═══════════════ */
 let _statusToastMsg = '', _statusToastTime = 0;
 function setStatus(msg, type){
   const el = $("appStatus"); if(!el) return;
@@ -2030,7 +2039,6 @@ function setStatus(msg, type){
   if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none"; }, 3500);
 }
 
-/* ═══════════════ CÂMARA ═══════════════ */
 let camStream = null;
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
@@ -2047,7 +2055,6 @@ function closeCamera(){
   setTimeout(function(){ fotoBancoModo = false; }, 300);
 }
 
-/* ═══════════════ SCANNER ═══════════════ */
 let scanner = null;
 let _qrcodeLoading = null;
 function loadQrCodeLib(){
@@ -2082,7 +2089,6 @@ async function closeScanner(){
   scanner = null; $("scannerModal").classList.remove("show");
 }
 
-/* ═══════════════ EVENT LISTENERS — BOTÕES ═══════════════ */
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
 $("recarregarDbBtn").addEventListener("click", carregarTudo);
@@ -2135,7 +2141,6 @@ $("camSnap").addEventListener("click", async function(){
   }
 });
 
-/* ═══════════════ BANCO ═══════════════ */
 $("bfTabs").addEventListener("click", function(e){
   const btn = e.target.closest("button[data-tipo]"); if(!btn) return;
   const tipo = btn.dataset.tipo;
@@ -2160,7 +2165,6 @@ $("buscaBancoFruta").addEventListener("input", function(e){
 });
 $("bancoFrutaModal").addEventListener("click", function(e){ if(e.target === $("bancoFrutaModal")) $("bancoFrutaModal").classList.remove("show"); });
 
-/* ═══════════════ DIAGNÓSTICO ═══════════════ */
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
   box.innerHTML = "🩺 <b>A diagnosticar…</b>"; box.classList.add("show"); setStatus("🩺 A testar ligação…");
@@ -2176,7 +2180,6 @@ $("diagnosticoBtn").addEventListener("click", async function(){
   box.innerHTML = linhas.join("\n"); setStatus("✅ Diagnóstico concluído.","success");
 });
 
-/* ═══════════════ PREVIEW DA FOLHA ═══════════════ */
 $("previewSheetBtn").addEventListener("click", function(){
   const content = $("sheetPreviewContent"); content.innerHTML = "";
   const items = [];
@@ -2240,7 +2243,6 @@ document.addEventListener("keydown", function(ev){
   if(ev.key==="Escape"){ $("sheetPreview").classList.remove("show"); closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); $("emailModal").classList.remove("show"); }
 });
 
-/* ═══════════════ INPUTS ═══════════════ */
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight"].forEach(function(id){
   const el = document.getElementById(id); if(el) el.addEventListener("input", updateCard);
 });
@@ -2345,7 +2347,6 @@ $("printCalibBtn").addEventListener("click", function(){
   }, 100);
 });
 
-/* ═══════════════ DELEGAÇÃO ═══════════════ */
 document.addEventListener("click", function(e){
   const chip = e.target.closest(".chip-btn[data-field]");
   if(chip){ setField(chip.dataset.field, chip.dataset.val); return; }
@@ -2365,7 +2366,6 @@ document.addEventListener("change", function(e){
   if(printQueue[i]){ printQueue[i].copies = Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
 });
 
-/* ═══════════════ MOBILE TABS ═══════════════ */
 document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   btn.addEventListener('click', function(){
     document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
@@ -2375,7 +2375,6 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
   });
 });
 
-/* ═══════════════ ARRANQUE ═══════════════ */
 (async function boot(){
   try{
     applyOffsets();
