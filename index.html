@@ -533,15 +533,21 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
                 <div>
                   <label for="capacityUnit">Unidade de Medida</label>
                   <select id="capacityUnit">
-                    <option value="peso" selected>⚖️ Quilos (KG)</option>
-                    <option value="g">⚖️ Gramas (g)</option>
-                    <option value="lt">🥤 Litros (LT)</option>
-                    <option value="cl">🍷 Centilitros (cl)</option>
-                    <option value="ml">💧 Mililitros (ml)</option>
-                    <option value="un">🔢 Unidade (UN)</option>
-                    <option value="dz">🥚 Dúzia (12 un.)</option>
-                    <option value="meia_dz">🥚 Meia Dúzia (6 un.)</option>
-                    <option value="dose">🍽️ Dose</option>
+                    <optgroup label="⚖️ Peso">
+                      <option value="peso" selected>Quilos (KG)</option>
+                      <option value="g">Gramas (g)</option>
+                    </optgroup>
+                    <optgroup label="🥤 Volume">
+                      <option value="lt">Litros (LT)</option>
+                      <option value="cl">Centilitros (cl) — 0,75 = garrafa</option>
+                      <option value="ml">Mililitros (ml)</option>
+                    </optgroup>
+                    <optgroup label="🔢 Contagem">
+                      <option value="un">Unidade (UN)</option>
+                      <option value="dz">Dúzia (12 un.)</option>
+                      <option value="meia_dz">Meia Dúzia (6 un.)</option>
+                      <option value="dose">Dose</option>
+                    </optgroup>
                   </select>
                 </div>
               </div>
@@ -775,7 +781,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v8';
+const CACHE_KEY = 'balcao_cache_v9';
 
 /* ═══════════════ UTILITÁRIOS DE UI ═══════════════ */
 function toast(msg, type, duration) {
@@ -985,7 +991,6 @@ function setFormData(d){
   $("isPromoActive").checked = isPromo; $("promoBox").style.display = isPromo ? "block" : "none";
   $("capacity").value = d.capacity||d.capacidade||"";
   $("capacityUnit").value = d.capacityUnit||d.unidade||"peso";
-  $("capacityUnit").dataset.last = $("capacityUnit").value;
   const depSalvo = d.depositFeeSelect !== undefined ? d.depositFeeSelect : (d.deposito||"");
   if(['', 'Acresce 0,10 € Volta'].indexOf(depSalvo) >= 0){
     $("depositFeeSelect").value = depSalvo; $("customDepositInput").value = ""; $("customDepositInput").style.display = "none";
@@ -1056,21 +1061,50 @@ function applySizeClass(el,w,h){ if(!el) return; el.classList.remove("size-tiny"
 window.setField = function(id,val){ const el=$(id); if(el){ el.value=val; updateCard(); } };
 function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
 
-/* ═══════════════ UNIDADES ═══════════════ */
+/* ═══════════════ UNIDADES DE MEDIDA ═══════════════
+   Cada unidade tem:
+     mainSuffix  → unidade apresentada no preço grande
+     refSuffix   → unidade apresentada no preço pequeno (referência)
+     normalizar  → multiplicador para converter para a referência
+
+   Tabela:
+     peso    → valor em KG       ×1        ref: KG
+     g       → valor em gramas   ×1/1000   ref: KG
+     lt      → valor em litros   ×1        ref: LT
+     cl      → 0.75 = 75 cl      ×1        ref: LT  (garrafa típica)
+     ml      → valor em ml       ×1/1000   ref: LT
+     un      → contagem          ×1        ref: UN
+     dz      → dúzia (12 un)     ×12       ref: UN
+     meia_dz → meia dúzia (6 un) ×6        ref: UN
+     dose    → dose individual   ×1        ref: DOSE
+   ═════════════════════════════════════════════════ */
 function calcUnitInfo(capUnit){
   switch(capUnit){
-    case "peso":    return { mainSuffix:"€/KG",    refSuffix:"€/KG",  normalizar:1 };
-    case "g":       return { mainSuffix:"€/UN",    refSuffix:"€/KG",  normalizar:1/1000 };
-    case "lt":      return { mainSuffix:"€/LT",    refSuffix:"€/LT",  normalizar:1 };
-    case "cl":      return { mainSuffix:"€/UN",    refSuffix:"€/LT",  normalizar:1/100 };
-    case "ml":      return { mainSuffix:"€/UN",    refSuffix:"€/LT",  normalizar:1/1000 };
-    case "un":      return { mainSuffix:"€/UN",    refSuffix:"€/UN",  normalizar:1 };
-    case "dz":      return { mainSuffix:"€/DZ",    refSuffix:"€/UN",  normalizar:12 };
-    case "meia_dz": return { mainSuffix:"€/½DZ",   refSuffix:"€/UN",  normalizar:6 };
-    case "dose":    return { mainSuffix:"€/DOSE",  refSuffix:"€/DOSE",normalizar:1 };
-    default:        return { mainSuffix:"€/KG",    refSuffix:"€/KG",  normalizar:1 };
+    case "peso":    return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
+    case "g":       return { mainSuffix:"€/UN",   refSuffix:"€/KG",  normalizar:1/1000 };
+    case "lt":      return { mainSuffix:"€/LT",   refSuffix:"€/LT",  normalizar:1 };
+    case "cl":      return { mainSuffix:"€/UN",   refSuffix:"€/LT",  normalizar:1 };
+    case "ml":      return { mainSuffix:"€/UN",   refSuffix:"€/LT",  normalizar:1/1000 };
+    case "un":      return { mainSuffix:"€/UN",   refSuffix:"€/UN",  normalizar:1 };
+    case "dz":      return { mainSuffix:"€/DZ",   refSuffix:"€/UN",  normalizar:12 };
+    case "meia_dz": return { mainSuffix:"€/½DZ",  refSuffix:"€/UN",  normalizar:6 };
+    case "dose":    return { mainSuffix:"€/DOSE", refSuffix:"€/DOSE",normalizar:1 };
+    default:        return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
   }
 }
+
+/* Valores por defeito — ao mudar de unidade, o campo Quantidade é reescrito. */
+const DEFAULTS_UNIDADE = {
+  peso:    "",
+  g:       "500",
+  lt:      "1",
+  cl:      "0.75",   /* 0,75 L = 75 cl → garrafa típica de vinho, azeite, etc. */
+  ml:      "500",
+  un:      "",
+  dz:      "1",
+  meia_dz: "1",
+  dose:    "1"
+};
 
 /* ═══════════════ FILA ═══════════════ */
 function renderQueue(){
@@ -1541,10 +1575,7 @@ function cleanupAfterPrint(){
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
 
-/* ═══════════════ LAYOUT PROFISSIONAL ═══════════════
-   Reserva 5 mm de margem segura em cada lado. Impressoras comuns não
-   imprimem nos 5 mm finais de cada lado do A4 — sem esta reserva, as
-   etiquetas da 1ª e última coluna saem cortadas. */
+/* Layout com 5 mm de margem segura em cada lado. */
 function computeLayout(labelW, labelH){
   const PAGE_W = 210, PAGE_H = 297;
   const SAFE_MARGIN = 5;
@@ -1557,17 +1588,15 @@ function computeLayout(labelW, labelH){
   return { cols: cols, rows: rows, perPage: cols * rows };
 }
 
-/* ═══════════════ FORMATOS REAIS DE IMPRESSÃO ═══════════════
-   Encolhe automaticamente formatos que ocupavam 210 mm exatos,
-   garantindo margem lateral de pelo menos 5 mm. */
+/* Encolhe formatos que ocupavam 210 mm para caber com margem lateral. */
 function getPrintDimensions(format, baseDims){
   if(format === "A5")    return { width:196, height:140 };
   if(format === "A6" || format === "frutaPromoA6")     return { width:138, height:98 };
   if(format === "125x80" || format === "frutaPromo125x80") return { width:120, height:76 };
   if(format === "100x70") return { width:96,  height:68 };
-  if(format === "105x38") return { width:96,  height:36 };   /* 2×96 = 192 mm (18 mm de margem) */
-  if(format === "70x38")  return { width:66,  height:36 };   /* 3×66 = 198 mm ( 6 mm de margem) */
-  if(format === "65x38")  return { width:62,  height:36 };   /* 3×62 = 186 mm (12 mm de margem) */
+  if(format === "105x38") return { width:96,  height:36 };
+  if(format === "70x38")  return { width:66,  height:36 };
+  if(format === "65x38")  return { width:62,  height:36 };
   return baseDims;
 }
 
@@ -1630,7 +1659,7 @@ function triggerPrint(){
     const wrapper = document.createElement("div"); wrapper.className = "print-page-wrapper";
     const grid = document.createElement("div"); grid.className = "print-sheet-amanhecer";
     chunk.forEach(function(data,idx){
-      const dims = { width:66, height: idx<3?38:40 };  /* 66 mm × 3 = 198 mm, com 6 mm margem cada lado */
+      const dims = { width:66, height: idx<3?38:40 };
       const c = buildLabelClone(data, dims, true);
       c.style.setProperty("width",  "66mm", "important");
       c.style.setProperty("height", (idx<3?38:40)+"mm", "important");
@@ -1915,40 +1944,15 @@ $("depositFeeSelect").addEventListener("change", function(){
   $("customDepositInput").style.display = (this.value === "custom") ? "block" : "none";
   updateCard();
 });
-$("capacityUnit").dataset.last = $("capacityUnit").value;
+
+/* Mudança de unidade — reescreve a quantidade com o valor por defeito. */
 $("capacityUnit").addEventListener("change", function(){
-  const prev = this.dataset.last || this.value;
-  this.dataset.last = this.value;
   const capInput = $("capacity");
-  const cur = parseFloat(capInput.value);
-  const grupo = function(u){ if(u === "g") return "massa-pequena"; if(u === "peso") return "massa-grande"; if(u === "ml") return "volume-ml"; if(u === "cl") return "volume-cl"; if(u === "lt") return "volume-grande"; return "especial"; };
-  const g1 = grupo(prev), g2 = grupo(this.value);
-  const isMassa = function(g){ return g.indexOf("massa") === 0; };
-  const isVolume = function(g){ return g.indexOf("volume") === 0; };
-  if(cur > 0 && (isMassa(g1) !== isMassa(g2) || isVolume(g1) !== isVolume(g2))){ capInput.value = ""; }
-  else if(cur > 0 && g1 !== g2){
-    let novo = cur;
-    if(g1 === "massa-pequena" && g2 === "massa-grande") novo = cur / 1000;
-    if(g1 === "massa-grande" && g2 === "massa-pequena") novo = cur * 1000;
-    if(g1 === "volume-ml" && g2 === "volume-grande") novo = cur / 1000;
-    if(g1 === "volume-ml" && g2 === "volume-cl") novo = cur / 10;
-    if(g1 === "volume-cl" && g2 === "volume-grande") novo = cur / 100;
-    if(g1 === "volume-cl" && g2 === "volume-ml") novo = cur * 10;
-    if(g1 === "volume-grande" && g2 === "volume-ml") novo = cur * 1000;
-    if(g1 === "volume-grande" && g2 === "volume-cl") novo = cur * 100;
-    if(novo > 0) capInput.value = String(Number(novo.toFixed(4)));
-  } else if(!cur || cur <= 0){
-    switch(this.value){
-      case "g": capInput.value = "500"; break;
-      case "cl": capInput.value = "75"; break;
-      case "ml": capInput.value = "500"; break;
-      case "dz": capInput.value = "1"; break;
-      case "meia_dz": capInput.value = "1"; break;
-      case "dose": capInput.value = "1"; break;
-    }
-  }
+  const def = DEFAULTS_UNIDADE[this.value];
+  capInput.value = (def !== undefined) ? def : "";
   updateCard();
 });
+
 $("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -1970,11 +1974,12 @@ $("photo").addEventListener("change", async function(e){
   };
   r.readAsDataURL(file);
 });
+
 $("clearBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos do editor?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","capacity"].forEach(function(id){ if($(id)) $(id).value = ""; });
   $("depositFeeSelect").value = "";
-  $("capacityUnit").value = "peso"; $("capacityUnit").dataset.last = "peso";
+  $("capacityUnit").value = "peso";
   $("isPromoActive").checked = false; $("promoBox").style.display = "none";
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -1986,6 +1991,7 @@ $("clearBtn").addEventListener("click", async function(){
   updateOrientationVisibility(); updateCard();
   toast("Editor limpo.", "info");
 });
+
 function bindSlider(id, setter, storageKey){
   const el = $(id); if(!el) return;
   el.addEventListener("input", function(){
