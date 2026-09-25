@@ -185,7 +185,98 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-@media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important}}
+
+/* ════════════════════════════════════════════════════════════════
+   ECRÃ — modo de medição/PDF
+   Este é o CSS que permite ao html2canvas "ver" as páginas A4
+   corretamente quando geramos o PDF por email.
+   ════════════════════════════════════════════════════════════════ */
+@media screen {
+  #printZone { display:none !important; }
+  #printZone.measure {
+    display: block !important;
+    position: fixed !important;
+    left: -99999px !important;
+    top: 0 !important;
+    width: 210mm !important;
+    pointer-events: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: -1 !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Páginas A4 visíveis no DOM mas fora do ecrã — para o html2canvas capturar */
+  #printZone.measure .print-page-wrapper {
+    width: 210mm !important;
+    height: 297mm !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    background: white !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 5mm 0 5mm 0 !important;
+    page-break-after: always !important;
+  }
+  #printZone.measure .print-page-wrapper:last-child { page-break-after: auto !important; }
+  #printZone.measure .print-sheet-amanhecer {
+    display: grid !important;
+    grid-template-columns: 66mm 66mm 66mm !important;
+    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+    width: 198mm !important;
+    height: 278mm !important;
+    margin-top: var(--offset-y) !important;
+    gap: 0 !important;
+  }
+  #printZone.measure .print-page-generic-grid {
+    display: grid !important;
+    margin-top: var(--offset-y) !important;
+  }
+  #printZone.measure .label-card {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border: 1px solid transparent !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    padding: 2px 4px !important;
+  }
+  #printZone.measure .print-page-generic-grid .label-card { border: 1px solid #222 !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card { width: 66mm !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3) { height: 38mm !important; padding-top: 3mm !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4) { height: 40mm !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; }
+  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n)   { padding-right: var(--margin-right) !important; }
+  #printZone.measure .fp-box.fp-promo { background: #c8102e !important; background-color: #c8102e !important; border: 2px solid #c8102e !important; color: #ffffff !important; }
+  #printZone.measure .fp-box.fp-promo .fp-label,
+  #printZone.measure .fp-box.fp-promo .fp-price,
+  #printZone.measure .fp-box.fp-promo .fp-unit { color: #ffffff !important; }
+  #printZone.measure .fp-box.fp-normal { background: #ffffff !important; background-color: #ffffff !important; border: 2px solid #222222 !important; color: #222222 !important; }
+  #printZone.measure .fp-box.fp-normal .fp-label,
+  #printZone.measure .fp-box.fp-normal .fp-price,
+  #printZone.measure .fp-box.fp-normal .fp-unit { color: #222222 !important; }
+  #printZone.measure .promo-tag { background: #c8102e !important; background-color: #c8102e !important; color: #ffffff !important; }
+  #printZone.measure .header { border-bottom: 1.5px solid #c8102e !important; }
+  #printZone.measure .deposit-box { background: #fff5f5 !important; background-color: #fff5f5 !important; color: #c8102e !important; border: 1px solid #fed7d7 !important; }
+  #printZone.measure .unit-price-text { color: #c8102e !important; }
+  #printZone.measure .fruit-full-bar { color: #084298 !important; }
+  #printZone.measure .calib-sheet {
+    display: grid !important;
+    grid-template-columns: 66mm 66mm 66mm !important;
+    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
+    width: 198mm !important;
+    height: 278mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: var(--offset-y) !important;
+  }
+  #printZone.measure .calib-cell { border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
+}
 @media print{
   @page { size: A4 portrait; margin: 0 !important; }
   html, body { width: 210mm !important; height: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
@@ -785,7 +876,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v16';
+const CACHE_KEY = 'balcao_cache_v17';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
@@ -1751,7 +1842,7 @@ window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 window.addEventListener("beforeunload", function(ev){ if(printQueue.length>0){ ev.preventDefault(); ev.returnValue=""; } });
 
-/* ═══════════════ PDF — GERAÇÃO (corrigido) ═══════════════ */
+/* ═══════════════ PDF — GERAÇÃO ═══════════════ */
 let _html2pdfLoading = null;
 function loadHtml2Pdf(){
   if(typeof html2pdf !== 'undefined') return Promise.resolve();
@@ -1766,8 +1857,7 @@ function loadHtml2Pdf(){
   return _html2pdfLoading;
 }
 
-/* Pré-carrega todas as imagens do container como data URLs locais.
-   Sem isto, as imagens do Google Drive ficam em branco por CORS no html2canvas. */
+/* Pré-carregar imagens como data URLs (resolve CORS do Google Drive) */
 async function preloadImagesAsDataURLs(container){
   const imgs = Array.from(container.querySelectorAll("img"));
   await Promise.all(imgs.map(async function(img){
@@ -1785,10 +1875,10 @@ async function preloadImagesAsDataURLs(container){
       });
       img.removeAttribute('crossorigin');
       img.src = dataUrl;
-      await new Promise(function(resolve){ 
+      await new Promise(function(resolve){
         if(img.complete && img.naturalWidth > 0) return resolve();
         img.onload = resolve; img.onerror = resolve;
-        setTimeout(resolve, 3000);
+        setTimeout(resolve, 4000);
       });
     } catch(e){
       console.warn('Falha a pré-carregar imagem:', src, e);
@@ -1796,6 +1886,7 @@ async function preloadImagesAsDataURLs(container){
   }));
 }
 
+/* ✅ Gera o PDF usando o #printZone.measure que já tem TODO o CSS necessário */
 async function gerarPDFBlob(){
   await loadHtml2Pdf();
 
@@ -1821,36 +1912,29 @@ async function gerarPDFBlob(){
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
 
-  /* ✅ Container num wrapper com 0×0 e overflow:hidden — o browser renderiza
-     normalmente (html2canvas consegue capturar) mas fica invisível. Sem opacity,
-     sem z-index negativo, sem left negativo — todas essas técnicas quebram o html2canvas. */
-  const wrapper = document.createElement("div");
-  wrapper.style.cssText = "position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none;";
-  const container = document.createElement("div");
-  container.style.cssText = "width:210mm;background:#ffffff;padding:0;margin:0;";
-  wrapper.appendChild(container);
-  document.body.appendChild(wrapper);
+  /* Usar o #printZone — já tem todo o CSS em @media screen .measure */
+  const pz = $("printZone");
+  pz.innerHTML = "";
+  pz.classList.add("measure");
 
   try {
-    construirPaginasA4(container, groups, amanhecerQueue);
+    construirPaginasA4(pz, groups, amanhecerQueue);
 
-    /* 1) Pré-carregar TODAS as imagens como base64 (resolve CORS do Drive) */
-    await preloadImagesAsDataURLs(container);
+    /* Pré-carregar imagens (base64) */
+    await preloadImagesAsDataURLs(pz);
 
-    /* 2) Reflow + auto-ajuste de texto */
-    void container.offsetWidth;
-    void container.offsetHeight;
-    await new Promise(function(r){ setTimeout(r, 200); });
+    /* Aguardar render + auto-fit */
+    await new Promise(function(r){ setTimeout(r, 250); });
     try{
-      container.querySelectorAll(".label-card").forEach(function(card){
+      pz.querySelectorAll(".label-card").forEach(function(card){
         const prodEl = card.querySelector(".product");
         if(prodEl) autoFitTextSync(prodEl);
         if(card.classList.contains("has-image")) autoAdaptImage(card);
       });
     }catch(e){}
-    await new Promise(function(r){ setTimeout(r, 200); });
+    await new Promise(function(r){ setTimeout(r, 250); });
 
-    /* 3) Gerar o blob PDF */
+    /* Gerar blob */
     const opt = {
       margin: 0,
       filename: 'etiquetas.pdf',
@@ -1861,19 +1945,19 @@ async function gerarPDFBlob(){
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: container.scrollWidth || 794,
-        windowHeight: container.scrollHeight || 1123
+        scrollX: 0, scrollY: 0,
+        windowWidth: pz.scrollWidth || 794,
+        windowHeight: pz.scrollHeight || 1123
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] }
     };
 
-    const blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    const blob = await html2pdf().set(opt).from(pz).outputPdf('blob');
     return blob;
   } finally {
-    document.body.removeChild(wrapper);
+    pz.classList.remove("measure");
+    pz.innerHTML = "";
   }
 }
 
@@ -1886,7 +1970,7 @@ function blobToBase64(blob){
   });
 }
 
-/* ═══════════════ ENVIO DE EMAIL — só pelo Apps Script, NUNCA abre cliente ═══════════════ */
+/* Envio de email — só pelo Apps Script, NUNCA abre cliente de email */
 async function enviarEtiquetasPorEmail(){
   const info = await pedirEmail();
   if(!info) return;
@@ -1930,7 +2014,6 @@ async function enviarEtiquetasPorEmail(){
     setStatus("Erro a enviar email: " + e.message, "error");
     toast("Erro a enviar email: " + e.message, "error", 7000);
   }
-  /* ✅ NUNCA abre mailto, Outlook, Thunderbird, ou qualquer cliente de email */
 }
 
 /* ═══════════════ STATUS ═══════════════ */
