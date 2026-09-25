@@ -462,7 +462,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         <label for="presetSizes">Medida / Formato da Etiqueta</label>
         <select id="presetSizes" class="format-select">
           <optgroup label="⭐ Amanhecer">
-            <option value="amanhecer" selected>⭐ Folha Oficial · 21 un · 70×38/40</option>
+            <option value="amanhecer" selected>⭐ Etiquetas Amanhecer · 70×38/40</option>
           </optgroup>
           <optgroup label="🍎 Fruta e Legumes">
             <option value="125x80">🍎 Suporte · 125×80</option>
@@ -641,7 +641,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </div>
       </details>
       <section class="panel tab-el tab-editar">
-        <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="21"></div></div>
+        <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="1"></div></div>
         <div id="appStatus" role="status" aria-live="polite"></div>
         <div class="actions">
           <button class="success-btn" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
@@ -681,7 +681,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
       </details>
     </div>
     <section class="preview-container tab-el tab-ver">
-      <div id="badgeSheet" class="sheet-badge">⭐ Folha Oficial Amanhecer</div>
+      <div id="badgeSheet" class="sheet-badge">⭐ Etiquetas Amanhecer</div>
       <div class="preview-wrap" id="previewWrap">
         <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
           <div class="header">
@@ -1629,7 +1629,7 @@ function updateCardUnsafe(){
     if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
     if(isAmanhecer){
       card.style.width="380px"; card.style.height="214px"; applySizeClass(card,70,38);
-      $("badgeSheet").textContent = "⭐ Folha Oficial Amanhecer (21 Etiquetas - 66×38/40 mm)";
+      $("badgeSheet").textContent = "⭐ Etiquetas Amanhecer (70×38/40 mm)";
     } else {
       card.style.width = (dims.width*3.2)+"px"; card.style.height = (dims.height*3.2)+"px";
       applySizeClass(card,dims.width,dims.height);
@@ -2390,7 +2390,7 @@ document.addEventListener("keydown", function(ev){
 $("presetSizes").addEventListener("change", function(){
   const val = this.value;
   $("customDimensionsRow").style.display = (val==="custom") ? "grid" : "none";
-  $("copiesCount").value = (val==="amanhecer") ? "21" : "1";
+  $("copiesCount").value = "1";
   updateOrientationVisibility(); updateCard();
 });
 $("isPromoActive").addEventListener("change", function(){ $("promoBox").style.display = this.checked ? "block" : "none"; updateCard(); });
@@ -2433,7 +2433,7 @@ $("clearBtn").addEventListener("click", async function(){
   $("store").value = "PATAIAS";
   $("customWidth").value = "70"; $("customHeight").value = "38";
   $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
-  $("copiesCount").value = "21";
+  $("copiesCount").value = "1";
   updateOrientationVisibility(); updateCard();
   toast("Editor limpo.", "info");
 });
@@ -2510,8 +2510,7 @@ document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
     updateOrientationVisibility();
     updateCard();
     renderQueue();
-    const fvInicial = $("presetSizes").value;
-    $("copiesCount").value = (fvInicial === "amanhecer") ? "21" : "1";
+    $("copiesCount").value = "1";
     if(!$("capacity").value && DEFAULTS_UNIDADE[$("capacityUnit").value]){
       $("capacity").value = DEFAULTS_UNIDADE[$("capacityUnit").value];
     }
