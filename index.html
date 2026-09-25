@@ -841,28 +841,38 @@ function compressSmart(dataUrl, maxSize, quality) {
     img.src = dataUrl;
   });
 }
-/* ═══════════ API com diagnóstico real do erro ═══════════ */
-async function api(fn, payload){
+/* ═══════════ API COM PROTEÇÃO DE ERROS DA GOOGLE ═══════════ */
+async function api(fn, payload, retries = 2) {
   payload = payload || {};
-  const resp = await fetch(API_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload })
-  });
-  const texto = await resp.text();
-  if(!resp.ok){
-    const amostra = texto.slice(0, 160).replace(/\s+/g,' ').trim();
-    throw new Error('HTTP ' + resp.status + (amostra ? ' — ' + amostra : ''));
+  try {
+    const resp = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload })
+    });
+    const texto = await resp.text();
+    if(!resp.ok){
+      const amostra = texto.slice(0, 160).replace(/\s+/g,' ').trim();
+      throw new Error('HTTP ' + resp.status + (amostra ? ' — ' + amostra : ''));
+    }
+    if(texto.charAt(0) !== '{'){
+      const amostra = texto.slice(0, 200).replace(/\s+/g,' ').trim();
+      throw new Error('Resposta não-JSON (' + texto.length + ' bytes). Início: ' + (amostra || '(vazio)'));
+    }
+    let j;
+    try { j = JSON.parse(texto); }
+    catch(e){ throw new Error('JSON inválido: ' + e.message); }
+    if(!j.ok) throw new Error(j.error || 'Erro API');
+    return j.data;
+  } catch(e) {
+    // Se a Google bloquear o pedido, tenta novamente de forma silenciosa
+    if(retries > 0) {
+      console.warn(`[API] Google bloqueou pedido (${fn}). A tentar novamente em 1s...`);
+      await new Promise(r => setTimeout(r, 1000));
+      return api(fn, payload, retries - 1);
+    }
+    throw e;
   }
-  if(texto.charAt(0) !== '{'){
-    const amostra = texto.slice(0, 200).replace(/\s+/g,' ').trim();
-    throw new Error('Resposta não-JSON (' + texto.length + ' bytes). Início: ' + (amostra || '(vazio)'));
-  }
-  let j;
-  try { j = JSON.parse(texto); }
-  catch(e){ throw new Error('JSON inválido: ' + e.message + ' — Início: ' + texto.slice(0, 120)); }
-  if(!j.ok) throw new Error(j.error || 'Erro API');
-  return j.data;
 }
 
 const $ = function(id){return document.getElementById(id)};
@@ -913,7 +923,6 @@ let bancoTipoFiltro = 'all';
 
 /* ═════════ CARREGAMENTO RÁPIDO ═════════ */
 async function carregarTudo(){
-  /* 1) Cache primeiro */
   try{
     const raw = localStorage.getItem(CACHE_KEY);
     if(raw){
@@ -924,27 +933,23 @@ async function carregarTudo(){
     }
   }catch(e){}
 
-  /* 2) Atualização em paralelo */
   setStatus('A atualizar do Drive…');
   let errProd = null, errBanco = null;
-  const [p, f] = await Promise.all([
-    api('listarProdutos').catch(function(e){ errProd = e.message; console.error('[listarProdutos]', e); return null; }),
-    api('listarBancoFruta').catch(function(e){ errBanco = e.message; console.error('[listarBancoFruta]', e); return null; })
-  ]);
+  
+  // Agora faz um de cada vez para evitar bloquear a API da Google
+  const p = await api('listarProdutos').catch(function(e){ errProd = e.message; return null; });
+  await new Promise(r => setTimeout(r, 600)); // Pequena pausa de segurança
+  const f = await api('listarBancoFruta').catch(function(e){ errBanco = e.message; return null; });
+  
   if(p) savedProducts = p;
   if(f) bancoFruta = f;
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
 
-  /* 3) Guarda cache */
   try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
 
-  if(errProd && errBanco){
-    setStatus('❌ Erro ao ler do Drive: '+errProd, 'error');
-  } else if(errProd || errBanco){
-    setStatus('⚠️ Ligação parcial. '+(errProd||'')+(errBanco||''), 'error');
-  } else {
-    setStatus('✅ Dados atualizados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success');
-  }
+  if(errProd && errBanco) setStatus('❌ Erro ao ler do Drive: '+errProd, 'error');
+  else if(errProd || errBanco) setStatus('⚠️ Ligação parcial. '+(errProd||'')+(errBanco||''), 'error');
+  else setStatus('✅ Dados atualizados ('+savedProducts.length+' produtos, '+bancoFruta.length+' imagens).','success');
 }
 
 function getFormData(){return{
@@ -1240,7 +1245,7 @@ $("syncBancoBtn").addEventListener("click",async function(){
   }catch(e){setStatus("Erro: "+e.message,"error")}
 });
 
-/* ══════════ 🩺 DIAGNÓSTICO ══════════ */
+/* ══════════ 🩺 DIAGNÓSTICO COM PAUSAS DE SEGURANÇA ══════════ */
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
   box.innerHTML = "🩺 <b>A diagnosticar…</b>";
@@ -1249,7 +1254,6 @@ $("diagnosticoBtn").addEventListener("click", async function(){
 
   const linhas = [];
   linhas.push("API_URL: " + API_URL);
-  linhas.push("Token: " + API_TOKEN.slice(0,20) + "…");
   linhas.push("");
 
   try{
@@ -1263,25 +1267,18 @@ $("diagnosticoBtn").addEventListener("click", async function(){
     return;
   }
 
+  await new Promise(r => setTimeout(r, 800)); // Pausa para não bloquear a API da Google
+
   try{
     const t1 = Date.now();
     const prod = await api('listarProdutos');
     const dur = Date.now()-t1;
     linhas.push('<span class="ok">✔ listarProdutos OK</span> → ' + (prod?prod.length:0) + " produto(s) na Sheet (" + dur + "ms)");
-    if(prod && prod.length){
-      linhas.push("   Últimos 3:");
-      prod.slice(-3).forEach(function(p){
-        linhas.push("   • " + (p.codigo||"(s/ cod)") + " — " + (p.nome||"(s/ nome)"));
-      });
-    } else {
-      linhas.push('   <span class="err">Nenhum produto na Sheet.</span>');
-      linhas.push("   → Se estás a guardar e não aparece, o Apps Script");
-      linhas.push("     provavelmente não está atualizado ou o SHEET_ID");
-      linhas.push("     no script está errado.");
-    }
   }catch(e){
     linhas.push('<span class="err">✘ listarProdutos FALHOU</span> → ' + e.message);
   }
+
+  await new Promise(r => setTimeout(r, 800)); // Pausa para não bloquear a API da Google
 
   try{
     const t2 = Date.now();
