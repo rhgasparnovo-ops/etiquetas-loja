@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="pt-PT">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
 <meta name="theme-color" content="#c8102e">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -9,7 +11,7 @@
 <title>Etiquetas de Preços</title>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-:root{--red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;--text:#222;--text-soft:#666;--offset-x:0mm;--offset-y:6mm;--col-left-y:0mm;--col-right-y:0mm;--margin-left:15mm;--margin-right:15mm}
+:root{--red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;--text:#222;--text-soft:#666;--offset-x:0mm;--offset-y:6mm;--col-left-y:0mm;--col-right-y:0mm;--margin-left:4mm;--margin-right:4mm}
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
 .app{max-width:1400px;margin:0 auto;padding:20px}
@@ -177,8 +179,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card{width:70mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
 .preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-.preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:max(5mm,var(--margin-left))!important}
-.preview-page-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important}
+.preview-page-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important}
+.preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 @media screen{#printZone{display:none!important}}
@@ -197,16 +199,15 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-  /* ✅ Margens laterais — mínimo GARANTIDO de 5mm */
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:max(5mm,var(--margin-left))!important;position:relative!important;top:var(--col-left-y)!important}
-  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:max(5mm,var(--margin-right))!important;position:relative!important;top:var(--col-right-y)!important}
-  .print-page-generic{display:grid!important;gap:0!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important;position:relative!important;top:var(--col-left-y)!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important;position:relative!important;top:var(--col-right-y)!important}
+  .print-page-generic{display:grid!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important;justify-content:center!important;align-content:start!important}
   .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
   #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
   .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
   .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
-  .calib-sheet .calib-cell:nth-child(3n+1){margin-left:max(5mm,var(--margin-left))!important;transform:translateY(var(--col-left-y))!important}
-  .calib-sheet .calib-cell:nth-child(3n){margin-right:max(5mm,var(--margin-right))!important;transform:translateY(var(--col-right-y))!important}
+  .calib-sheet .calib-cell:nth-child(3n+1){margin-left:var(--margin-left)!important;transform:translateY(var(--col-left-y))!important}
+  .calib-sheet .calib-cell:nth-child(3n){margin-right:var(--margin-right)!important;transform:translateY(var(--col-right-y))!important}
   .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
   .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
   #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
@@ -394,7 +395,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <optgroup label="🍎 Fruta e Legumes">
             <option value="125x80">🍎 Suporte · 125×80</option>
             <option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option>
-            <option value="50x30">🍎 Individual · 50×30</option>
           </optgroup>
           <optgroup label="📄 Tabuletas">
             <option value="A6">📄 Tabuleta A6 · 148×105</option>
@@ -406,7 +406,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <option value="105x38">🏷️ Longa · 105×38</option>
             <option value="70x38">🏷️ Standard · 70×38</option>
             <option value="65x38">🏷️ Média · 65×38</option>
-            <option value="52x30">🏷️ Tala Estreita · 52×30</option>
           </optgroup>
           <optgroup label="⚙️ Outro">
             <option value="custom">⚙️ Tamanho Personalizado…</option>
@@ -553,13 +552,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <div class="offset-row"><label for="colLeftYRange">↕ Esq</label><input id="colLeftYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colLeftYVal">0 mm</span></div>
             <div class="offset-row"><label for="colRightYRange">↕ Dir</label><input id="colRightYRange" type="range" min="-15" max="15" step="0.5" value="0"><span class="offset-value" id="colRightYVal">0 mm</span></div>
             <div class="offset-divider"></div>
-            <div class="offset-section-title">📏 Margens laterais (mínimo 5 mm)</div>
-            <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginLeftVal">15 mm</span></div>
-            <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="5" max="30" step="0.5" value="15"><span class="offset-value" id="marginRightVal">15 mm</span></div>
-            <div class="offset-hint">💡 As margens laterais nunca ficam abaixo de 5 mm (garantido). Recomendado: 15 mm.</div>
+            <div class="offset-section-title">📏 Margens laterais (0 a 15 mm)</div>
+            <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginLeftVal">4 mm</span></div>
+            <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginRightVal">4 mm</span></div>
+            <div class="offset-hint">💡 0 mm = encostado à borda (a impressora pode cortar). 4 mm é seguro para a maioria das impressoras. Máximo 15 mm.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
               <button class="warn-btn" id="printCalibBtn" type="button">📏 Calibração</button>
-              <button class="secondary" id="resetOffsetBtn" type="button">↺ Reset</button>
+              <button class="secondary" id="resetOffsetBtn" type="button">↺ Reiniciar</button>
             </div>
           </div>
         </div>
@@ -864,16 +863,18 @@ let offsetX    = parseFloat(Storage.get("balcao_offset_x","0"));    if(!isFinite
 let offsetY    = parseFloat(Storage.get("balcao_offset_y","6"));    if(!isFinite(offsetY)) offsetY = 6;
 let colLeftY   = parseFloat(Storage.get("balcao_col_left_y","0"));  if(!isFinite(colLeftY)) colLeftY = 0;
 let colRightY  = parseFloat(Storage.get("balcao_col_right_y","0")); if(!isFinite(colRightY)) colRightY = 0;
-let marginLeft = parseFloat(Storage.get("balcao_margin_left","15"));  if(!isFinite(marginLeft)  || marginLeft  < 5) marginLeft  = 15;
-let marginRight= parseFloat(Storage.get("balcao_margin_right","15")); if(!isFinite(marginRight) || marginRight < 5) marginRight = 15;
+let marginLeft = parseFloat(Storage.get("balcao_margin_left_v2","4"));
+if(!isFinite(marginLeft)  || marginLeft  < 0 || marginLeft  > 15) marginLeft  = 4;
+let marginRight= parseFloat(Storage.get("balcao_margin_right_v2","4"));
+if(!isFinite(marginRight) || marginRight < 0 || marginRight > 15) marginRight = 4;
 
 function applyOffsets(){
   document.documentElement.style.setProperty("--offset-x",    offsetX + "mm");
   document.documentElement.style.setProperty("--offset-y",    offsetY + "mm");
   document.documentElement.style.setProperty("--col-left-y",  colLeftY + "mm");
   document.documentElement.style.setProperty("--col-right-y", colRightY + "mm");
-  document.documentElement.style.setProperty("--margin-left", Math.max(5, marginLeft) + "mm");
-  document.documentElement.style.setProperty("--margin-right",Math.max(5, marginRight) + "mm");
+  document.documentElement.style.setProperty("--margin-left", marginLeft + "mm");
+  document.documentElement.style.setProperty("--margin-right",marginRight + "mm");
   if($("offsetXRange"))    $("offsetXRange").value    = String(offsetX);
   if($("offsetYRange"))    $("offsetYRange").value    = String(offsetY);
   if($("colLeftYRange"))   $("colLeftYRange").value   = String(colLeftY);
@@ -893,7 +894,6 @@ let savedProducts = [];
 let bancoFruta = [];
 let bancoTipoFiltro = 'all';
 
-/* ════ CARREGAR TUDO — não engole erros ════ */
 async function carregarTudo(){
   setStatus('A carregar do Drive…');
   let p = [], f = [];
@@ -1047,7 +1047,6 @@ function buildProdutoPayload(d){
   };
 }
 
-/* ══════════ ENCONTRAR PRODUTO NA LISTA ══════════ */
 function procurarNaLista(lista, payload){
   if(!lista || !lista.length) return null;
   const cod  = String(payload.codigo || '').trim();
@@ -1085,7 +1084,6 @@ window.saveQueueItem = async function(i){
     await api('guardarProduto', payload);
     item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
     item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl;
-    /* Verificar */
     const lista = await api('listarProdutos');
     const achado = procurarNaLista(lista, payload);
     if(!achado){ setStatus("⚠️ Item \""+(d.product||d.internalCode)+"\" NÃO apareceu na Sheet após gravar.","error"); return; }
@@ -1116,7 +1114,6 @@ function renderDb(){
   });
 }
 
-/* ══════════ SAVE TO DB — com verificação ══════════ */
 async function saveToDb(){
   const data = getFormData();
   if(!data.product && !data.internalCode){
@@ -1125,7 +1122,6 @@ async function saveToDb(){
   }
   setStatus("A guardar no Drive…");
   try{
-    /* 1) Upload foto se necessário */
     const foto = data.processedPhoto || data.originalPhoto;
     if(foto && foto.indexOf('http')!==0){
       setStatus("A enviar foto…");
@@ -1136,13 +1132,11 @@ async function saveToDb(){
       globalOriginalPhoto = up.url; globalProcessedPhoto = up.url;
     }
 
-    /* 2) Enviar dados para a Sheet */
     const payload = buildProdutoPayload(data);
     setStatus("A enviar dados para o Drive…");
     const respGuardar = await api('guardarProduto', payload);
     console.log("[saveToDb] resp guardarProduto:", respGuardar);
 
-    /* 3) VERIFICAR: reler lista e confirmar que o produto está lá */
     setStatus("A verificar se ficou guardado…");
     const lista = await api('listarProdutos');
     const achado = procurarNaLista(lista, payload);
@@ -1154,7 +1148,6 @@ async function saveToDb(){
       return;
     }
 
-    /* 4) Sucesso confirmado */
     savedProducts = lista;
     renderDb();
     setStatus("✅ Guardado e verificado no Drive.","success");
@@ -1221,7 +1214,6 @@ $("syncBancoBtn").addEventListener("click",async function(){
   }catch(e){setStatus("Erro: "+e.message,"error")}
 });
 
-/* ══════════ 🩺 DIAGNÓSTICO ══════════ */
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
   box.innerHTML = "🩺 <b>A diagnosticar…</b>";
@@ -1256,9 +1248,6 @@ $("diagnosticoBtn").addEventListener("click", async function(){
       });
     } else {
       linhas.push('   <span class="err">Nenhum produto na Sheet.</span>');
-      linhas.push("   → Se estás a guardar e não aparece, o Apps Script");
-      linhas.push("     provavelmente não está atualizado ou o SHEET_ID");
-      linhas.push("     no script está errado.");
     }
   }catch(e){
     linhas.push('<span class="err">✘ listarProdutos FALHOU</span> → ' + e.message);
@@ -1611,8 +1600,8 @@ function getDimensionsFor(fv,cw,ch){
   switch(fv){
     case"amanhecer":w=70;h=38;break;case"125x80":w=125;h=80;break;case"A6":w=148;h=105;break;
     case"A5":w=210;h=148;break;case"105x38":w=105;h=38;break;case"70x38":w=70;h=38;break;
-    case"65x38":w=65;h=38;break;case"52x30":w=52;h=30;break;case"100x70":w=100;h=70;break;
-    case"50x30":w=50;h=30;break;case"frutaPromo125x80":w=125;h=80;break;case"frutaPromoA6":w=148;h=105;break;
+    case"65x38":w=65;h=38;break;case"100x70":w=100;h=70;break;
+    case"frutaPromo125x80":w=125;h=80;break;case"frutaPromoA6":w=148;h=105;break;
     case"custom":w=parseFloat(cw)||70;h=parseFloat(ch)||38;break;
   }
   return {width:w,height:h};
@@ -1947,17 +1936,17 @@ bindSlider("offsetXRange",     function(v){ offsetX = v; },      "balcao_offset_
 bindSlider("offsetYRange",     function(v){ offsetY = v; },      "balcao_offset_y");
 bindSlider("colLeftYRange",    function(v){ colLeftY = v; },     "balcao_col_left_y");
 bindSlider("colRightYRange",   function(v){ colRightY = v; },    "balcao_col_right_y");
-bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(5, v); },   "balcao_margin_left");
-bindSlider("marginRightRange", function(v){ marginRight = Math.max(5, v); },  "balcao_margin_right");
+bindSlider("marginLeftRange",  function(v){ marginLeft = Math.max(0, Math.min(15, v)); },   "balcao_margin_left_v2");
+bindSlider("marginRightRange", function(v){ marginRight = Math.max(0, Math.min(15, v)); },  "balcao_margin_right_v2");
 $("resetOffsetBtn").addEventListener("click",function(){
   offsetX = 0; offsetY = 6;
   colLeftY = 0; colRightY = 0;
-  marginLeft = 15; marginRight = 15;
+  marginLeft = 4; marginRight = 4;
   applyOffsets();
   Storage.set("balcao_offset_x","0");  Storage.set("balcao_offset_y","6");
   Storage.set("balcao_col_left_y","0"); Storage.set("balcao_col_right_y","0");
-  Storage.set("balcao_margin_left","15"); Storage.set("balcao_margin_right","15");
-  setStatus("Ajustes restaurados (X=0, Y=6, Esq=0, Dir=0, Margens=15mm).","success");
+  Storage.set("balcao_margin_left_v2","4"); Storage.set("balcao_margin_right_v2","4");
+  setStatus("Ajustes reiniciados (X=0, Y=6, Esq=0, Dir=0, Margens=4 mm).","success");
 });
 $("printCalibBtn").addEventListener("click",function(){
   const pz = $("printZone"); pz.innerHTML = "";
@@ -1975,6 +1964,7 @@ function buildLabelClone(data, dims, forPrint){
   const ids = clone.querySelectorAll("[id]");
   for(let k=0;k<ids.length;k++) ids[k].removeAttribute("id");
   applySizeClass(clone,dims.width,dims.height);
+  clone.classList.remove("img-tight","img-mini","img-hidden");
   const eanVal = normalizeBarcode(data.ean);
   const svg = clone.querySelector("svg");
   if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg,eanVal) }
@@ -2012,12 +2002,22 @@ function cleanupAfterPrint(){
   $("proPrintOverlay").classList.remove("show");
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
 }
-function getItemsPerPage(dims){
-  const pageW = 210, pageH = 290;
-  const cols = Math.max(1, Math.floor(pageW / dims.width));
-  const rows = Math.max(1, Math.floor(pageH / dims.height));
-  return cols * rows;
+/* Layout profissional: distribui etiquetas numa grelha centrada com gutter fixo.
+   - PAGE_W / PAGE_H: área útil A4 (deixa respiro para a impressora).
+   - SIDE: 2 mm de respiro lateral (só conta para calcular colunas).
+   - GUTTER: 2 mm entre etiquetas (para não colarem e facilitar o corte). */
+function computeLayout(labelW, labelH){
+  const PAGE_W = 210;
+  const PAGE_H = 288;
+  const SIDE   = 2;
+  const GUTTER = 2;
+  const availW = PAGE_W - 2*SIDE;
+  const availH = PAGE_H - 2*SIDE;
+  const cols = Math.max(1, Math.floor((availW + GUTTER) / (labelW + GUTTER)));
+  const rows = Math.max(1, Math.floor((availH + GUTTER) / (labelH + GUTTER)));
+  return { cols: cols, rows: rows, perPage: cols*rows, gutter: GUTTER };
 }
+function getItemsPerPage(dims){ return computeLayout(dims.width, dims.height).perPage; }
 function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
@@ -2049,15 +2049,16 @@ function triggerPrint(){
     }else{
       const first = g.items[0];
       const dims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
-      const perPage = getItemsPerPage(dims);
-      const perRow = Math.max(1, Math.floor(210 / dims.width));
-      for(let i=0;i<g.items.length;i+=perPage){
-        const chunk = g.items.slice(i,i+perPage);
+      const lay = computeLayout(dims.width, dims.height);
+      for(let i=0;i<g.items.length;i+=lay.perPage){
+        const chunk = g.items.slice(i,i+lay.perPage);
         const page = document.createElement("div"); page.className = "print-page-generic";
         page.style.display = "grid";
-        page.style.gridTemplateColumns = "repeat("+perRow+", "+dims.width+"mm)";
+        page.style.gridTemplateColumns = "repeat("+lay.cols+", "+dims.width+"mm)";
         page.style.gridAutoRows = dims.height + "mm";
-        page.style.justifyContent = "start"; page.style.alignContent = "start";
+        page.style.gap = lay.gutter + "mm";
+        page.style.justifyContent = "center";
+        page.style.alignContent = "start";
         chunk.forEach(function(d){
           const c = buildLabelClone(d,dims,true);
           c.style.setProperty("width",  dims.width  + "mm", "important");
