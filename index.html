@@ -9,6 +9,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Etiquetas de Preços</title>
+
+<!-- Novas Bibliotecas (IndexedDB e Google Login) -->
+<script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <style>
 :root{--red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;--text:#222;--text-soft:#666;--offset-x:0mm;--offset-y:6mm;--col-left-y:0mm;--col-right-y:0mm;--margin-left:4mm;--margin-right:4mm}
 *{box-sizing:border-box}
@@ -436,6 +441,15 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </nav>
   <header class="top-header">
     <h1><span class="h1-tag">🏷️</span> ETIQUETAS DE PREÇOS</h1>
+    
+    <!-- BOTÃO GOOGLE OAUTH -->
+    <div id="g_id_onload"
+         data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
+
     <div class="top-logos">
       <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=.3">
       <div class="divider"></div>
@@ -797,25 +811,30 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <div class="print-tip">Se o diálogo não abrir automaticamente, use <b>Partilhar → Imprimir</b>.</div>
   </div>
 </div>
+
 <script>
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
-const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
 const CACHE_KEY = 'balcao_cache_v27';
+
+let jwtToken = sessionStorage.getItem("google_jwt") || null;
+
+window.handleCredentialResponse = function(response) {
+  jwtToken = response.credential;
+  sessionStorage.setItem("google_jwt", jwtToken);
+  toast("✅ Login efetuado com sucesso!", "success");
+  carregarTudo();
+};
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
 const THUMB_SIZE   = 200;
 
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
-
-/* Formatos reconhecidos pelo sistema (usados para sanitizar produtos da BD) */
 const FORMATOS_VALIDOS = ["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
-
-/* Normaliza produto do Drive para o formato usado na fila */
 function normalizarProdutoParaFila(p){
   if(!p) return p;
   const out = Object.assign({}, p);
@@ -833,16 +852,11 @@ function normalizarProdutoParaFila(p){
   out.fotoUrl        = out.fotoUrl        || "";
   return out;
 }
-
-/* Sanitiza formato para impressão em lote (evita "1 etiqueta por folha") */
 function sanitizarFormatoBD(data){
   const fv = String((data && (data.presetSizes || data.formato)) || "").trim();
   if(FORMATOS_VALIDOS.indexOf(fv) !== -1) return data;
-  // Formato desconhecido ou "custom" → força 70x38 (21 por folha)
-  data.presetSizes  = "70x38";
-  data.formato      = "70x38";
-  data.customWidth  = "70";
-  data.customHeight = "38";
+  data.presetSizes  = "70x38"; data.formato      = "70x38";
+  data.customWidth  = "70"; data.customHeight = "38";
   return data;
 }
 
@@ -932,18 +946,13 @@ function pedirEmail(){
 }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
 function thumbUrl(fotoId, size){ if(!fotoId) return ''; const s = size || THUMB_SIZE; return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s; }
-
-/* v27 — Extrai ID de ambos os formatos de URL do Google */
 function extrairFotoIdDoUrl(url){
   if(!url || url.indexOf('http') !== 0) return '';
-  // Formato 1: https://lh3.googleusercontent.com/d/{ID}=w600
   let m = String(url).match(/\/d\/([^=\/?#]+)/);
   if(m) return m[1];
-  // Formato 2: https://drive.google.com/thumbnail?id={ID}&sz=w320
   m = String(url).match(/[?&]id=([^&=]+)/);
   return m ? m[1] : '';
 }
-
 function compressSmart(dataUrl, maxSize, quality) {
   maxSize = maxSize || IMG_MAX_SIZE; quality = quality || IMG_QUALITY;
   return new Promise(function(resolve){
@@ -1000,13 +1009,29 @@ async function removeBackgroundSmart(dataUrl){
     return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); });
   }
 }
+
 async function api(fn, payload, retries){
   payload = payload || {};
   if(retries === undefined){
     retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
   }
+  if(!jwtToken){
+     toast("Faça login com a sua conta Google primeiro.", "error");
+     throw new Error("Não autenticado.");
+  }
   try {
-    const resp = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token:API_TOKEN, fn:fn, payload:payload }) });
+    const resp = await fetch(API_URL, { 
+      method:'POST', 
+      headers:{'Content-Type':'application/json', 'Authorization': 'Bearer ' + jwtToken}, 
+      body: JSON.stringify({ fn:fn, payload:payload }) 
+    });
+    
+    if(resp.status === 401) {
+      sessionStorage.removeItem("google_jwt");
+      jwtToken = null;
+      throw new Error("Sessão expirada. Por favor, faça login novamente.");
+    }
+    
     const texto = await resp.text();
     if(!resp.ok) throw new Error('HTTP ' + resp.status);
     let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta não-JSON'); }
@@ -1017,6 +1042,7 @@ async function api(fn, payload, retries){
     throw e;
   }
 }
+
 const $ = function(id){ return document.getElementById(id); };
 let globalOriginalPhoto = '', globalProcessedPhoto = '', printInProgress = false, fotoBancoModo = false;
 let printQueue = [], savedProducts = [], bancoFruta = [];
@@ -1048,24 +1074,22 @@ function applyOffsets(){
   if($("marginLeftVal")) $("marginLeftVal").textContent = marginLeft + " mm";
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
+
 async function carregarTudo(){
-  try{ localStorage.removeItem('balcao_cache_v26'); }catch(e){}
-  try{ localStorage.removeItem('balcao_cache_v25'); }catch(e){}
-  try{ localStorage.removeItem('balcao_cache_v24'); }catch(e){}
-  try{ localStorage.removeItem('balcao_cache_v23'); }catch(e){}
-  try{ localStorage.removeItem('balcao_cache_v22'); }catch(e){}
   try{
-    const raw = localStorage.getItem(CACHE_KEY);
-    if(raw){
-      const c = JSON.parse(raw);
+    const c = await localforage.getItem(CACHE_KEY);
+    if(c){
       if(Array.isArray(c.produtos)){ savedProducts = c.produtos; renderDb(); }
       if(Array.isArray(c.banco)){ bancoFruta = c.banco; renderBancoFruta($("buscaBancoFruta").value); }
       if(!Array.isArray(c.produtos) && !Array.isArray(c.banco)){
-        try{ localStorage.removeItem(CACHE_KEY); }catch(e){}
+        try{ await localforage.removeItem(CACHE_KEY); }catch(e){}
       }
       if(c.t) setStatus('⚡ Cache de ' + new Date(c.t).toLocaleTimeString('pt-PT') + ' — a atualizar…');
     }
-  }catch(e){}
+  }catch(e){ console.warn("Erro IndexedDB", e); }
+  
+  if(!jwtToken) return; // Se não tem login, aguarda pelo utilizador
+  
   setStatus('A atualizar do Drive…');
   const [rProd, rBanco] = await Promise.all([
     api('listarProdutos').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; }),
@@ -1074,11 +1098,14 @@ async function carregarTudo(){
   if(rProd.ok)  savedProducts = ensureArray(rProd.v);
   if(rBanco.ok) bancoFruta     = ensureArray(rBanco.v);
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-  try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
+  
+  try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){ console.warn(e); }
+  
   if(!rProd.ok && !rBanco.ok){ setStatus('❌ Erro ao ler do Drive.', 'error'); }
   else if(!rProd.ok || !rBanco.ok){ setStatus('⚠️ Ligação parcial.', 'error'); }
   else { setStatus('✅ Dados atualizados.','success'); }
 }
+
 function getFormData(){
   return {
     presetSizes:$("presetSizes").value, customWidth:$("customWidth").value, customHeight:$("customHeight").value,
@@ -1096,7 +1123,6 @@ function getFormData(){
 }
 function setFormData(d){
   if(!d) return;
-  // v27 — Só aplica presetSizes se for um valor válido do <select>
   const fv = d.presetSizes || d.formato || "amanhecer";
   const opt = $("presetSizes").querySelector('option[value="'+fv+'"]');
   $("presetSizes").value = opt ? fv : "amanhecer";
@@ -1232,7 +1258,6 @@ function renderQueue(){
     const jaGuardado = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
     const iconeGuardar = jaGuardado ? "✅" : "💾";
     const tituloGuardar = jaGuardado ? "Já guardado no Drive" : "Guardar este produto no Drive";
-    // v27 — Mostra preço "0" também
     const precoTxt = (item.data.price !== undefined && item.data.price !== "" && item.data.price !== null) ? (escapeHTML(item.data.price)+"€") : "S/ Preço";
     div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+precoTxt+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
     c.appendChild(div);
@@ -1264,12 +1289,11 @@ async function verificarProdutoEmBackground(){
   try{
     const lista = await api('listarProdutos');
     savedProducts = ensureArray(lista); renderDb();
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
+    try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
   }catch(e){ console.warn("Verificação em background falhou:", e); }
 }
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
 window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
-
 async function resolverFotoParaPayload(d){
   let fotoId = d.fotoId || "";
   let fotoUrl = d.fotoUrl || "";
@@ -1283,7 +1307,6 @@ async function resolverFotoParaPayload(d){
   const up = await api('uploadFoto', { base64: await compressSmart(foto), nomeFicheiro:(d.internalCode||'artigo')+'_'+Date.now()+'.jpg' });
   return { fotoId: up.id, fotoUrl: up.url };
 }
-
 window.saveQueueItem = async function(i){
   const item = printQueue[i]; if(!item){ toast("Item não encontrado.", "error"); return; }
   const d = item.data;
@@ -1298,7 +1321,7 @@ window.saveQueueItem = async function(i){
     const payload = buildProdutoPayload(d);
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
+    try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus("✅ Guardado em " + dt + "s.", "success", 2500);
     toast("✅ Guardado.", "success", 2500);
@@ -1311,7 +1334,6 @@ function renderDb(){
   c.innerHTML = "";
   savedProducts.map(function(p,i){ return {p:p,i:i} }).sort(function(a,b){ return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt") }).forEach(function(obj){
     const d = obj.p, i = obj.i; const div = document.createElement("div"); div.className = "list-item";
-    // v27 — mostra preço "0"
     const precoTxt = (d.preco !== undefined && d.preco !== "" && d.preco !== null) ? (escapeHTML(d.preco)+"€") : "";
     div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+precoTxt+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Editar">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Eliminar">❌</button></div>';
     c.appendChild(div);
@@ -1330,7 +1352,7 @@ async function saveToDb(){
     setStatus("A gravar…");
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb();
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
+    try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus("✅ Guardado em " + dt + "s.", "success");
     toast("✅ \"" + (payload.nome||payload.codigo) + "\" guardado.", "success", 2500);
@@ -1404,7 +1426,7 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
     bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url, tipo: r.tipo || tipo });
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     renderBancoFruta($("buscaBancoFruta").value);
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
+    try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     toast("✅ Foto guardada: " + r.nome, "success", 4500);
   }catch(e){ toast("Erro ao guardar no banco: " + e.message, "error"); throw e; }
 }
@@ -1535,7 +1557,6 @@ function _hasOverflow(parent){
   }
   return false;
 }
-/* v27 — Só ajusta preço quando está visível (nunca em Fruit Promo) */
 function autoFitPrice(card){
   if(!card) return;
   const priceCol = card.querySelector(".col-price");
@@ -1709,7 +1730,6 @@ function validateBeforePrint(){
       const pp = parsePrice($("promoPrice").value);
       if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false; }
     }
-    // v27 — Validação de medidas custom
     if(fv === "custom"){
       const cw = parseFloat($("customWidth").value);
       const ch = parseFloat($("customHeight").value);
@@ -1737,7 +1757,6 @@ function computeLayout(labelW, labelH){
   labelH = Math.max(20, Math.min(297, Number(labelH) || 38));
   const SAFE_MARGIN = 5;
   const GUTTER = 1;
-  // v27 — offsetX NÃO reduz a área (é um shift, não margem). offsetY reduz (empurra para baixo)
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
   const availW = PAGE_W - 2 * SAFE_MARGIN;
   const availH = PAGE_H - 2 * SAFE_MARGIN - currentOffsetY;
@@ -2045,6 +2064,23 @@ function blobToBase64(blob){
 let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
   if(_emailSending){ toast("Email já está a ser enviado…", "warning"); return; }
+  
+  const editorFmt = $("presetSizes").value;
+  let itemsContados = 0;
+  if(printQueue.length===0){
+    itemsContados = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
+  } else {
+    printQueue.forEach(function(q){ itemsContados += q.copies; });
+  }
+  
+  const MAX_ETIQUETAS = 45;
+  if(itemsContados > MAX_ETIQUETAS){
+    const msg = `Estás a tentar gerar ${itemsContados} etiquetas. O limite seguro para não bloquear o dispositivo é de ${MAX_ETIQUETAS} etiquetas por email. Divide a impressão na Fila em lotes mais pequenos.`;
+    setStatus("Geração cancelada (limite de memória).", "error");
+    toast(msg, "error", 8000);
+    return;
+  }
+
   const info = await pedirEmail();
   if(!info) return;
   _emailSending = true;
@@ -2110,8 +2146,17 @@ async function openCamera(){
   } catch(e){ toast("Erro câmara: " + e.message, "error"); closeCamera(); }
 }
 function closeCamera(){
-  if(camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; }
-  $("camVideo").srcObject = null;
+  if(camStream){ 
+    camStream.getTracks().forEach(function(t){ t.stop(); }); 
+    camStream = null; 
+  }
+  const video = $("camVideo");
+  if(video){
+    video.pause();
+    video.removeAttribute('src');
+    video.srcObject = null;
+    video.load(); 
+  }
   $("cameraModal").classList.remove("show");
   setTimeout(function(){ fotoBancoModo = false; }, 300);
 }
@@ -2143,8 +2188,16 @@ async function openScanner(){
   } catch(e){ closeScanner(); }
 }
 async function closeScanner(){
-  try{ if(scanner){ await scanner.stop(); await scanner.clear(); } }catch(e){}
-  scanner = null; $("scannerModal").classList.remove("show");
+  if(scanner){
+    try {
+      await scanner.stop();
+      await scanner.clear();
+    } catch(e) {
+      console.warn("Erro a parar scanner", e);
+    }
+    scanner = null; 
+  }
+  $("scannerModal").classList.remove("show");
 }
 $("addToQueueBtn").addEventListener("click", addToQueue);
 $("saveDbBtn").addEventListener("click", saveToDb);
@@ -2266,7 +2319,7 @@ $("previewSheetBtn").addEventListener("click", function(){
     for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:editorFmt });
   } else {
     printQueue.forEach(function(q){
-      const fmt = _fmtDoItem(q, editorFmt);   // v27 — fallback para o formato do editor
+      const fmt = _fmtDoItem(q, editorFmt);
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
