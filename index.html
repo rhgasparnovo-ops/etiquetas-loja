@@ -54,7 +54,6 @@ button:active:not(:disabled){transform:scale(.97)}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .actions-full{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
 .actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.actions-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .size-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .size-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 #appStatus{margin:8px 0;padding:9px 12px;border-radius:8px;font:600 13px/1.35 system-ui,sans-serif;display:none}
@@ -719,7 +718,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
-    <p>O PDF vai ser gerado e enviado diretamente para o email indicado. Vai receber o ficheiro como anexo.</p>
+    <p>O PDF é gerado e enviado pelo servidor. Vai receber o email com o ficheiro anexo.</p>
     <label for="emailDestino">Email de destino</label>
     <input id="emailDestino" type="email" placeholder="exemplo@email.com" autocomplete="email">
     <label for="emailAssunto">Assunto</label>
@@ -786,7 +785,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v15';
+const CACHE_KEY = 'balcao_cache_v16';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
@@ -1655,7 +1654,6 @@ function getPrintDimensions(format, baseDims){
   if(format === "65x38")  return { width:62,  height:36 };
   return baseDims;
 }
-
 function construirPaginasA4(container, groups, amanhecerQueue){
   groups.forEach(function(g){
     if(g.format==="amanhecer"){ return; }
@@ -1703,7 +1701,6 @@ function construirPaginasA4(container, groups, amanhecerQueue){
     container.appendChild(wrapper);
   }
 }
-
 function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
@@ -1754,7 +1751,7 @@ window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", cleanupAfterPrint);
 window.addEventListener("beforeunload", function(ev){ if(printQueue.length>0){ ev.preventDefault(); ev.returnValue=""; } });
 
-/* ═══════════════ PDF — GERAÇÃO ═══════════════ */
+/* ═══════════════ PDF — GERAÇÃO (corrigido) ═══════════════ */
 let _html2pdfLoading = null;
 function loadHtml2Pdf(){
   if(typeof html2pdf !== 'undefined') return Promise.resolve();
@@ -1767,6 +1764,36 @@ function loadHtml2Pdf(){
     document.head.appendChild(s);
   });
   return _html2pdfLoading;
+}
+
+/* Pré-carrega todas as imagens do container como data URLs locais.
+   Sem isto, as imagens do Google Drive ficam em branco por CORS no html2canvas. */
+async function preloadImagesAsDataURLs(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(async function(img){
+    const src = img.getAttribute('src') || '';
+    if(!src || src.indexOf('data:') === 0) return;
+    try {
+      const resp = await fetch(src, { mode: 'cors' });
+      if(!resp.ok) throw new Error('HTTP ' + resp.status);
+      const blob = await resp.blob();
+      const dataUrl = await new Promise(function(res, rej){
+        const r = new FileReader();
+        r.onloadend = function(){ res(r.result); };
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+      img.removeAttribute('crossorigin');
+      img.src = dataUrl;
+      await new Promise(function(resolve){ 
+        if(img.complete && img.naturalWidth > 0) return resolve();
+        img.onload = resolve; img.onerror = resolve;
+        setTimeout(resolve, 3000);
+      });
+    } catch(e){
+      console.warn('Falha a pré-carregar imagem:', src, e);
+    }
+  }));
 }
 
 async function gerarPDFBlob(){
@@ -1794,61 +1821,60 @@ async function gerarPDFBlob(){
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
 
-  /* Container com dimensões reais (posicionado fora do ecrã, mas renderizado) */
+  /* ✅ Container num wrapper com 0×0 e overflow:hidden — o browser renderiza
+     normalmente (html2canvas consegue capturar) mas fica invisível. Sem opacity,
+     sem z-index negativo, sem left negativo — todas essas técnicas quebram o html2canvas. */
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "position:absolute;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none;";
   const container = document.createElement("div");
-  container.style.cssText = "position:absolute;top:0;left:0;width:210mm;background:#fff;padding:0;margin:0;z-index:-99999;opacity:0.001;pointer-events:none;";
-  document.body.appendChild(container);
+  container.style.cssText = "width:210mm;background:#ffffff;padding:0;margin:0;";
+  wrapper.appendChild(container);
+  document.body.appendChild(wrapper);
 
-  construirPaginasA4(container, groups, amanhecerQueue);
-
-  /* 1) Esperar TODAS as imagens carregarem */
-  const imgs = container.querySelectorAll("img");
-  await Promise.all(Array.from(imgs).map(function(img){
-    return new Promise(function(resolve){
-      if(img.complete && img.naturalWidth > 0) return resolve();
-      img.onload = resolve;
-      img.onerror = resolve;
-      setTimeout(resolve, 4000);
-    });
-  }));
-
-  /* 2) Aguardar render + auto-fit */
-  await new Promise(function(r){ setTimeout(r, 250); });
-  try{
-    container.querySelectorAll(".label-card").forEach(function(card){
-      const prodEl = card.querySelector(".product");
-      if(prodEl) autoFitTextSync(prodEl);
-      if(card.classList.contains("has-image")) autoAdaptImage(card);
-    });
-  }catch(e){}
-  await new Promise(function(r){ setTimeout(r, 200); });
-
-  /* 3) Gerar blob PDF */
-  const opt = {
-    margin: 0,
-    filename: 'etiquetas.pdf',
-    image: { type: 'jpeg', quality: 0.92 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-      scrollX: 0, scrollY: 0,
-      windowWidth: container.scrollWidth,
-      windowHeight: container.scrollHeight
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['css', 'legacy'] }
-  };
-
-  let blob;
   try {
-    blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    construirPaginasA4(container, groups, amanhecerQueue);
+
+    /* 1) Pré-carregar TODAS as imagens como base64 (resolve CORS do Drive) */
+    await preloadImagesAsDataURLs(container);
+
+    /* 2) Reflow + auto-ajuste de texto */
+    void container.offsetWidth;
+    void container.offsetHeight;
+    await new Promise(function(r){ setTimeout(r, 200); });
+    try{
+      container.querySelectorAll(".label-card").forEach(function(card){
+        const prodEl = card.querySelector(".product");
+        if(prodEl) autoFitTextSync(prodEl);
+        if(card.classList.contains("has-image")) autoAdaptImage(card);
+      });
+    }catch(e){}
+    await new Promise(function(r){ setTimeout(r, 200); });
+
+    /* 3) Gerar o blob PDF */
+    const opt = {
+      margin: 0,
+      filename: 'etiquetas.pdf',
+      image: { type: 'jpeg', quality: 0.92 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: container.scrollWidth || 794,
+        windowHeight: container.scrollHeight || 1123
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    const blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+    return blob;
   } finally {
-    document.body.removeChild(container);
+    document.body.removeChild(wrapper);
   }
-  return blob;
 }
 
 function blobToBase64(blob){
@@ -1860,7 +1886,7 @@ function blobToBase64(blob){
   });
 }
 
-/* ═══════════════ ENVIO DE EMAIL (via Apps Script) ═══════════════ */
+/* ═══════════════ ENVIO DE EMAIL — só pelo Apps Script, NUNCA abre cliente ═══════════════ */
 async function enviarEtiquetasPorEmail(){
   const info = await pedirEmail();
   if(!info) return;
@@ -1904,6 +1930,7 @@ async function enviarEtiquetasPorEmail(){
     setStatus("Erro a enviar email: " + e.message, "error");
     toast("Erro a enviar email: " + e.message, "error", 7000);
   }
+  /* ✅ NUNCA abre mailto, Outlook, Thunderbird, ou qualquer cliente de email */
 }
 
 /* ═══════════════ STATUS ═══════════════ */
