@@ -183,89 +183,42 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .preview-page-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
 .preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-
 @media screen{#printZone{display:none!important}}
 
-/* ======================================================== */
-/* MODO DE IMPRESSÃO - CORREÇÃO ABSOLUTA DE MARGENS (A4)    */
-/* ======================================================== */
+/* ========================================================== */
+/* MODO IMPRESSÃO - CÓDIGO ORIGINAL COM MARGENS DE SEGURANÇA */
+/* ========================================================== */
 @media print{
-  @page { size: 210mm 297mm; margin: 0 !important; }
-  html, body { width: 210mm !important; height: auto !important; margin: 0 !important; padding: 0 !important; background: #fff !important; }
-  .app, .sheet-preview, .pro-print-overlay, .modal, .toast-container, .confirm-overlay, .name-modal, .mobile-tab-bar { display: none !important; }
+  @page{size:210mm 297mm;margin:0!important}
+  html,body{margin:0!important;padding:0!important;background:#fff!important;width:210mm!important;min-height:0!important;max-height:none!important;overflow:visible!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.mobile-tab-bar{display:none!important}
+  #printZone{display:block!important;margin:0!important;padding:0!important}
+  #printZone *{transform:none!important;-webkit-transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
+  #printZone .label-card{container-type:inline-size!important;box-shadow:none!important;border-radius:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important}
   
-  #printZone { display: block !important; margin: 0 !important; padding: 0 !important; }
-  #printZone * { transform: none !important; -webkit-transform: none !important; zoom: 1 !important; animation: none !important; transition: none !important; }
+  .print-sheet-amanhecer{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-inside:avoid!important;overflow:hidden!important}
+  .print-sheet-amanhecer:not(:last-child){page-break-after:always!important;break-after:page!important}
+  .print-sheet-amanhecer:last-child{page-break-after:avoid!important;break-after:avoid!important}
   
-  /* Wrapper Rígido para evitar que o Chrome parta páginas ao meio */
-  .print-page-wrapper {
-    width: 210mm !important;
-    height: 297mm !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-  }
-  .print-page-wrapper:last-child {
-    page-break-after: avoid !important;
-    break-after: auto !important;
-  }
-
-  /* Grelha Amanhecer 21 Etiquetas */
-  .print-sheet-amanhecer {
-    display: grid !important;
-    grid-template-columns: 70mm 70mm 70mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 210mm !important;
-    height: 278mm !important;
-    margin-left: var(--offset-x) !important;
-    margin-top: var(--offset-y) !important;
-  }
+  #printZone .print-sheet-amanhecer .label-card{width:70mm!important;border:1px solid transparent!important;box-shadow:none!important;margin:0!important;padding:2px 4px!important;overflow:hidden!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(1),
+  #printZone .print-sheet-amanhecer .label-card:nth-child(2),
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important;position:relative!important;top:var(--col-left-y)!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important;position:relative!important;top:var(--col-right-y)!important}
   
-  /* Grelha Formatos Genéricos */
-  .print-page-generic-grid {
-    display: grid !important;
-    justify-content: center !important;
-    align-content: start !important;
-    margin-left: var(--offset-x) !important;
-    margin-top: var(--offset-y) !important;
-  }
-
-  /* Reset dos Cartões na Impressão */
-  #printZone .label-card {
-    border: 1px solid transparent !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-  #printZone .print-page-generic-grid .label-card {
-    border: 1px solid #222 !important;
-  }
+  .print-page-generic{display:grid!important;width:210mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;page-break-after:always!important;break-after:page!important;box-sizing:border-box!important;overflow:hidden!important;justify-content:center!important;align-content:start!important}
+  .print-page-generic:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important}
+  #printZone .print-page-generic .label-card{border:1px solid #222!important;box-shadow:none!important;overflow:hidden!important;page-break-inside:avoid!important;break-inside:avoid!important;margin:0!important;padding:2px 4px!important;box-sizing:border-box!important}
   
-  /* Correções Individuais Amanhecer */
-  .print-sheet-amanhecer .label-card:nth-child(3n+1) { padding-left: var(--margin-left) !important; transform: translateY(var(--col-left-y)) !important; }
-  .print-sheet-amanhecer .label-card:nth-child(3n) { padding-right: var(--margin-right) !important; transform: translateY(var(--col-right-y)) !important; }
-  
-  /* Folha de Calibração */
-  .calib-wrapper {
-    width: 210mm !important;
-    height: 297mm !important;
-    page-break-after: always !important;
-  }
-  .calib-sheet {
-    display: grid !important;
-    grid-template-columns: 70mm 70mm 70mm !important;
-    grid-template-rows: 38mm 40mm 40mm 40mm 40mm 40mm 40mm !important;
-    width: 210mm !important;
-    height: 278mm !important;
-    margin-left: var(--offset-x) !important;
-    margin-top: var(--offset-y) !important;
-  }
-  .calib-cell{ border:1px dashed #d33!important; display:flex!important; align-items:center!important; justify-content:center!important; font:900 14px Arial!important; color:#c8102e!important; background:#fff5f5!important; }
-  .calib-sheet .calib-cell:nth-child(3n+1){ transform: translateX(var(--margin-left)) translateY(var(--col-left-y)) !important; }
-  .calib-sheet .calib-cell:nth-child(3n){ transform: translateX(calc(var(--margin-right) * -1)) translateY(var(--col-right-y)) !important; }
+  .calib-sheet{display:grid!important;grid-template-columns:70mm 70mm 70mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;gap:0!important;padding:0!important;width:210mm!important;height:278mm!important;margin-left:var(--offset-x)!important;margin-top:var(--offset-y)!important;overflow:hidden!important}
+  .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
+  .calib-sheet .calib-cell:nth-child(3n+1){margin-left:var(--margin-left)!important;transform:translateY(var(--col-left-y))!important}
+  .calib-sheet .calib-cell:nth-child(3n){margin-right:var(--margin-right)!important;transform:translateY(var(--col-right-y))!important}
+  .calib-sheet:not(:last-child){page-break-after:always!important;break-after:page!important}
+  .calib-sheet:last-child{page-break-after:avoid!important;break-after:avoid!important}
+  #printZone > *:last-child{page-break-after:avoid!important;break-after:avoid!important;margin-bottom:0!important;padding-bottom:0!important}
 }
 
 .pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center}
@@ -1131,18 +1084,55 @@ function updateCardUnsafe(){
   card.style.width = (fv==="amanhecer"?380:dims.width*3.2)+"px"; card.style.height = (fv==="amanhecer"?214:dims.height*3.2)+"px";
   $("cardStore").textContent = $("store").value; setProductText($("cardProduct"), $("product").value);
   $("cardCode").style.display = $("internalCode").value ? "block" : "none"; $("cardCode").textContent = $("internalCode").value;
+  
   const price = parsePrice($("price").value), oldPrice = parsePrice($("oldPrice").value), cap = parseFloat($("capacity").value);
+  const capUnit = $("capacityUnit").value;
+  
   if(price!==null){
-    $("cardPrice").innerHTML = price.toLocaleString("pt-PT",{minimumFractionDigits:2}) + (cap>0 ? " €" : `<span class="unit-inline">${calcUnitInfo($("capacityUnit").value).unitSuffix}</span>`);
-    if($("isPromoActive").checked && oldPrice > price){ $("cardPromoTopRow").style.display="flex"; $("cardOldPrice").textContent=oldPrice+" €"; $("cardPromoTag").textContent="-"+Math.round(((oldPrice-price)/oldPrice)*100)+"\%"; } else $("cardPromoTopRow").style.display="none";
-  } else { $("cardPrice").innerHTML = '0,00<span class="unit-inline">€/KG</span>'; $("cardPromoTopRow").style.display="none"; }
+    const info = calcUnitInfo(capUnit);
+    // CORREÇÃO: O preço mostra SEMPRE a unidade de medida ao lado.
+    $("cardPrice").innerHTML = price.toLocaleString("pt-PT",{minimumFractionDigits:2}) + `<span class="unit-inline">${info.unitSuffix}</span>`;
+    
+    if(cap > 0){
+      const precoUnit = price / (cap * info.normalizar);
+      $("cardUnitPrice").innerHTML = precoUnit.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.unitLabel;
+      $("cardUnitPrice").style.display = "block";
+    } else {
+      $("cardUnitPrice").style.display = "none";
+    }
+    
+    if($("isPromoActive").checked && oldPrice > price){ 
+      $("cardPromoTopRow").style.display="flex"; 
+      $("cardOldPrice").textContent=oldPrice+" €"; 
+      $("cardPromoTag").textContent="-"+Math.round(((oldPrice-price)/oldPrice)*100)+"%"; 
+    } else $("cardPromoTopRow").style.display="none";
+  } else { 
+    const infoFb = calcUnitInfo(capUnit);
+    $("cardPrice").innerHTML = '0,00<span class="unit-inline">'+infoFb.unitSuffix+'</span>'; 
+    $("cardPromoTopRow").style.display="none"; 
+    $("cardUnitPrice").style.display="none";
+  }
+  
   $("cardPhotoBox").classList.toggle("show", !!globalOriginalPhoto); if(globalOriginalPhoto){ card.classList.add("has-image"); $("cardPhotoImg").src = globalOriginalPhoto; } else card.classList.remove("has-image");
   if($("ean").value){ $("cardBarcodeBox").classList.add("show"); drawBarcode($("cardBarcodeSvg"), $("ean").value); $("cardBarcodeText").textContent=$("ean").value; } else $("cardBarcodeBox").classList.remove("show");
   autoAdaptImage(card);
 }
 let _t; function updateCard(){ clearTimeout(_t); _t = setTimeout(() => { updateCardUnsafe(); updateEanBadge(); }, 20); }
-["presetSizes","store","isPromoActive","capacityUnit","depositFeeSelect"].forEach(id => $(id).addEventListener("change", updateCard));
-["product","internalCode","price","oldPrice","ean","customWidth","customHeight","capacity"].forEach(id => $(id).addEventListener("input", updateCard));
+
+// CORREÇÃO DOS EVENT LISTENERS: Todos os campos atualizam a etiqueta ao vivo
+const fieldsToListen = [
+  "presetSizes", "customWidth", "customHeight", "store", "internalCode", "product",
+  "origem", "categoria", "calibre", "price", "isPromoActive", "oldPrice", "capacity",
+  "capacityUnit", "depositFeeSelect", "customDepositInput", "unit", "promoStart",
+  "promoEnd", "ean", "promoMinQty", "promoUnit", "promoPrice", "autoRemoveBg"
+];
+fieldsToListen.forEach(id => {
+  const el = $(id);
+  if(el) {
+    el.addEventListener("input", updateCard);
+    el.addEventListener("change", updateCard);
+  }
+});
 
 function buildLabelClone(d, dims, forPrint){
   const bk = getFormData(); setFormData(d); updateCardUnsafe();
@@ -1153,13 +1143,12 @@ function buildLabelClone(d, dims, forPrint){
   autoFitTextSync(clone.querySelector(".product")); setFormData(bk); updateCardUnsafe(); return clone;
 }
 
-/* ============= IMPRESSÃO ROBUSTA (Evita Margens Cortadas) ============= */
+/* ============= IMPRESSÃO ROBUSTA ============= */
 function computeLayout(labelW, labelH){
-  const availW = 210 - (parseFloat($("offsetXRange").value) || 0);
-  const availH = 297 - (parseFloat($("offsetYRange").value) || 0) - 5; // 5mm de margem segura fundo
-  const cols = Math.max(1, Math.floor(availW / labelW));
-  const rows = Math.max(1, Math.floor(availH / labelH));
-  return { cols, rows, perPage: cols * rows, gutter: 0 };
+  const availW = 210 - offsetX, availH = 297 - offsetY - 8, gutter = 2; // Margem de segurança de 8mm para não cortar
+  const cols = Math.max(1, Math.floor((availW + gutter) / (labelW + gutter)));
+  const rows = Math.max(1, Math.floor((availH + gutter) / (labelH + gutter)));
+  return { cols, rows, perPage: cols * rows, gutter };
 }
 
 $("printBtn").addEventListener("click", () => {
@@ -1173,7 +1162,6 @@ $("printBtn").addEventListener("click", () => {
   
   const am = items.filter(i => i.format === "amanhecer"), gen = items.filter(i => i.format !== "amanhecer");
   
-  // Agrupar formatos genéricos
   if(gen.length > 0) {
     const formatGroups = {};
     gen.forEach(it => { if(!formatGroups[it.format]) formatGroups[it.format] = []; formatGroups[it.format].push(it.data); });
@@ -1184,39 +1172,40 @@ $("printBtn").addEventListener("click", () => {
       
       for(let i=0; i<arr.length; i+=lay.perPage){
         const chunk = arr.slice(i, i+lay.perPage);
-        const pageWrapper = document.createElement("div"); pageWrapper.className = "print-page-wrapper";
-        const grid = document.createElement("div"); grid.className = "print-page-generic-grid";
-        grid.style.gridTemplateColumns = `repeat(${lay.cols}, ${dims.width}mm)`;
-        grid.style.gridAutoRows = `${dims.height}mm`;
+        const page = document.createElement("div"); page.className = "print-page-generic";
+        page.style.display = "grid";
+        page.style.gridTemplateColumns = `repeat(${lay.cols}, ${dims.width}mm)`;
+        page.style.gridAutoRows = `${dims.height}mm`; page.style.gap = `${lay.gutter}mm`;
+        page.style.justifyContent = "center"; page.style.alignContent = "start";
         
         chunk.forEach(d => {
           const c = buildLabelClone(d, dims, true);
           c.style.setProperty("width", `${dims.width}mm`, "important");
           c.style.setProperty("height", `${dims.height}mm`, "important");
-          grid.appendChild(c);
+          page.appendChild(c);
         });
-        pageWrapper.appendChild(grid); pz.appendChild(pageWrapper);
+        pz.appendChild(page);
       }
     }
   }
 
-  // Agrupar formato oficial Amanhecer
+  // Folha Oficial Amanhecer -> A tua versão original restaurada que garante 21 etiquetas!
   for(let i=0; i<am.length; i+=21){
     const chunk = am.slice(i, i+21);
-    const pageWrapper = document.createElement("div"); pageWrapper.className = "print-page-wrapper";
-    const grid = document.createElement("div"); grid.className = "print-sheet-amanhecer";
+    const page = document.createElement("div"); page.className = "print-sheet-amanhecer";
     chunk.forEach((d, idx) => {
       const h = idx < 3 ? 38 : 40;
       const c = buildLabelClone(d.data, {width:70, height:h}, true);
       c.style.setProperty("width", "70mm", "important"); c.style.setProperty("height", `${h}mm`, "important");
-      grid.appendChild(c);
+      c.style.setProperty("box-sizing", "border-box", "important");
+      page.appendChild(c);
     });
     for(let j=chunk.length; j<21; j++){
-      const empty = document.createElement("div"); empty.className = "label-card"; empty.style.visibility = "hidden";
+      const empty = document.createElement("div"); empty.className = "label-card size-small"; empty.style.visibility = "hidden";
       empty.style.setProperty("width", "70mm", "important"); empty.style.setProperty("height", (j<3?38:40)+"mm", "important");
-      grid.appendChild(empty);
+      page.appendChild(empty);
     }
-    pageWrapper.appendChild(grid); pz.appendChild(pageWrapper);
+    pz.appendChild(page);
   }
   
   setTimeout(() => { window.print(); setTimeout(() => { printInProgress=false; $("printBtn").disabled=false; $("proPrintOverlay").classList.remove("show"); pz.innerHTML=""; }, 3000); }, 500);
