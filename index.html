@@ -657,12 +657,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <button class="secondary" id="recarregarDbBtn" type="button" style="font-size:12px">🔄 Recarregar</button>
             <button class="secondary" id="syncBancoBtn" type="button" style="font-size:12px">🔄 Sincronizar</button>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
             <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
             <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:10px">
-            <button class="secondary" id="fixarDimensoesBtn" type="button" style="font-size:12px;border-color:#c8102e;color:#c8102e">🛠️ Corrigir medidas dos produtos guardados</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
           <div id="diagBox" class="diag-box"></div>
@@ -804,7 +801,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v25';
+const CACHE_KEY = 'balcao_cache_v26';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
@@ -812,10 +809,12 @@ const THUMB_SIZE   = 200;
 
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 
+const FORMATOS_VALIDOS = ["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
+
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
 
-/* v25 — Normaliza produto do Drive para o formato usado na fila */
+/* v26 — Normaliza produto do Drive para o formato usado na fila */
 function normalizarProdutoParaFila(p){
   if(!p) return p;
   const out = Object.assign({}, p);
@@ -834,12 +833,16 @@ function normalizarProdutoParaFila(p){
   return out;
 }
 
-/* v25 — Nunca deixa uma medida passar dos limites de uma folha A4 */
-function clampDims(d){
-  return {
-    width:  Math.max(20, Math.min(210, Number(d && d.width)  || 70)),
-    height: Math.max(20, Math.min(297, Number(d && d.height) || 38))
-  };
+/* v26 — Sanitiza formato para impressão em lote (evita 1 etiqueta por folha) */
+function sanitizarFormatoBD(data){
+  const fv = String((data && (data.presetSizes || data.formato)) || "").trim();
+  if(FORMATOS_VALIDOS.indexOf(fv) !== -1) return data;
+  // Formato desconhecido ou "custom" → força 70x38 (21 por folha)
+  data.presetSizes  = "70x38";
+  data.formato      = "70x38";
+  data.customWidth  = "70";
+  data.customHeight = "38";
+  return data;
 }
 
 function toast(msg, type, duration) {
@@ -1036,6 +1039,7 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 async function carregarTudo(){
+  try{ localStorage.removeItem('balcao_cache_v25'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v24'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v23'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v22'); }catch(e){}
@@ -2117,8 +2121,11 @@ $("printDbBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?\n\nAs etiquetas vão ser agrupadas por formato para aproveitar o papel."))) return;
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
   _restoreQueueAfterPrint = printQueue.slice();
+  // v26 — Sanitizar cada produto para evitar "1 etiqueta por página"
   printQueue = savedProducts.map(function(p){
-    return { data: normalizarProdutoParaFila(JSON.parse(JSON.stringify(p))), copies: 1 };
+    const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(p)));
+    sanitizarFormatoBD(data);
+    return { data: data, copies: 1 };
   });
   renderQueue();
   setTimeout(function(){ window.triggerPrint(); }, 100);
@@ -2142,29 +2149,6 @@ $("otimizarBancoBtn").addEventListener("click", async function(){
   } catch(e){
     setStatus("Erro: " + e.message, "error");
     toast("Erro a otimizar: " + e.message, "error", 7000);
-  } finally {
-    btn.disabled = false; btn.textContent = t0;
-  }
-});
-$("fixarDimensoesBtn").addEventListener("click", async function(){
-  if(savedProducts.length === 0){ toast("Sem produtos guardados.", "warning"); return; }
-  if(!(await confirmDialog("Corrigir automaticamente as medidas dos produtos guardados?\n\nIsto vai substituir customWidth/customHeight por valores dentro dos limites A4 (20-210mm × 20-297mm). Útil se algum produto ficou com medidas gigantes gravadas."))) return;
-  const btn = this; const t0 = btn.textContent;
-  btn.disabled = true; btn.textContent = "⏳ A corrigir…";
-  let n = 0;
-  try{
-    for(const p of savedProducts){
-      const cw = parseFloat(p.customWidth);
-      const ch = parseFloat(p.customHeight);
-      const bad = (!isFinite(cw) || cw < 20 || cw > 210 || !isFinite(ch) || ch < 20 || ch > 297);
-      if(!bad) continue;
-      p.customWidth = "70"; p.customHeight = "38";
-      try{ await api('guardarProduto', buildProdutoPayload(normalizarProdutoParaFila(p))); n++; }
-      catch(e){ console.warn("Falha a corrigir " + (p.nome||p.codigo), e); }
-    }
-    await carregarTudo();
-    setStatus("✅ " + n + " produto(s) corrigido(s).", "success");
-    toast("✅ " + n + " produto(s) corrigido(s).", "success", 5000);
   } finally {
     btn.disabled = false; btn.textContent = t0;
   }
