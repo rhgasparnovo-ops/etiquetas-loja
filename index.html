@@ -122,7 +122,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .col-image.show{display:flex!important}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
-/* v22 — código interno mais pequeno, mais acima e com espaço */
 .item-code{font-size:clamp(4.5px,1.4cqw,7.5px);font-weight:900;color:#111;line-height:1;margin-bottom:5px;letter-spacing:.3px;opacity:.85;align-self:flex-start;padding-bottom:1px}
 .product{font-weight:900;color:#000;line-height:1.05;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);word-break:normal;overflow-wrap:anywhere}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%}
@@ -193,7 +192,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone.measure .print-page-wrapper{width:210mm!important;height:297mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important;page-break-after:always!important}
   #printZone.measure .print-page-wrapper:last-child{page-break-after:auto!important}
   #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
-  #printZone.measure .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important}
+  #printZone.measure .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important}
   #printZone.measure .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}
   #printZone.measure .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}
@@ -228,7 +227,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .print-page-wrapper{width:210mm!important;height:297mm!important;page-break-after:always!important;break-after:page!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important}
   .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
   .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
-  .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important}
+  .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important}
   #printZone .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
   #printZone .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
@@ -801,16 +800,18 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v22';
+const CACHE_KEY = 'balcao_cache_v23';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
 const THUMB_SIZE   = 200;
 
-/* v22 — funções não-idempotentes (nunca repetir em caso de timeout) */
+// Funções não-idempotentes (nunca fazer retry)
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
+
+function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
 
 function toast(msg, type, duration) {
   type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
@@ -1006,12 +1007,16 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 async function carregarTudo(){
+  try{ localStorage.removeItem('balcao_cache_v22'); }catch(e){}
   try{
     const raw = localStorage.getItem(CACHE_KEY);
     if(raw){
       const c = JSON.parse(raw);
       if(Array.isArray(c.produtos)){ savedProducts = c.produtos; renderDb(); }
       if(Array.isArray(c.banco)){ bancoFruta = c.banco; renderBancoFruta($("buscaBancoFruta").value); }
+      if(!Array.isArray(c.produtos) && !Array.isArray(c.banco)){
+        try{ localStorage.removeItem(CACHE_KEY); }catch(e){}
+      }
       if(c.t) setStatus('⚡ Cache de ' + new Date(c.t).toLocaleTimeString('pt-PT') + ' — a atualizar…');
     }
   }catch(e){}
@@ -1020,8 +1025,8 @@ async function carregarTudo(){
     api('listarProdutos').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; }),
     api('listarBancoFruta').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; })
   ]);
-  if(rProd.ok) savedProducts = rProd.v || [];
-  if(rBanco.ok) bancoFruta = rBanco.v || [];
+  if(rProd.ok)  savedProducts = ensureArray(rProd.v);
+  if(rBanco.ok) bancoFruta     = ensureArray(rBanco.v);
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
   try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
   if(!rProd.ok && !rBanco.ok){ setStatus('❌ Erro ao ler do Drive.', 'error'); }
@@ -1162,7 +1167,6 @@ function calcUnitInfo(capUnit){
     default:        return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
   }
 }
-/* v22 — KG e gramas ficam em branco por defeito */
 const DEFAULTS_UNIDADE = { peso:"", g:"", lt:"1", cl:"0.75", ml:"1", un:"1", dz:"1", meia_dz:"1", dose:"1" };
 function renderQueue(){
   const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
@@ -1205,14 +1209,13 @@ function atualizarProdutoLocal(payload){
 async function verificarProdutoEmBackground(){
   try{
     const lista = await api('listarProdutos');
-    savedProducts = lista; renderDb();
+    savedProducts = ensureArray(lista); renderDb();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
   }catch(e){ console.warn("Verificação em background falhou:", e); }
 }
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
 window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
 
-/* v22 — preserva fotoUrl/fotoId quando a foto já vem do Drive (banco) */
 async function resolverFotoParaPayload(d){
   let fotoId = d.fotoId || "";
   let fotoUrl = d.fotoUrl || "";
@@ -1299,6 +1302,7 @@ function updateBancoCounts(){
 function renderBancoFruta(filtro){
   filtro = filtro || '';
   const c = $("gradeBancoFruta"); if(!c) return;
+  bancoFruta = ensureArray(bancoFruta);
   const q = filtro.toUpperCase();
   const lista = bancoFruta.filter(function(f){
     if((f.tipo||'') !== bancoTipoFiltro) return false;
@@ -1318,7 +1322,6 @@ function renderBancoFruta(filtro){
     const tipo = (f.tipo==='legume') ? 'legume' : 'fruta';
     const tag = '<span class="bf-tag '+tipo+'">'+(tipo==='legume'?'🥬 Legume':'🍎 Fruta')+'</span>';
     const thumb = f.fotoId ? thumbUrl(f.fotoId, THUMB_SIZE) : f.fotoUrl;
-    /* v22 — aplicar sempre a versão redimensionada (600px) na etiqueta */
     const applyUrl = f.fotoId ? thumbUrl(f.fotoId, 600) : f.fotoUrl;
     return '<div class="bf-card" data-url="'+escapeHTML(applyUrl)+'" data-fotoid="'+escapeHTML(f.fotoId||'')+'" data-nome="'+escapeHTML(f.nome)+'" data-tipo="'+escapeHTML(tipo)+'"><img src="'+escapeHTML(thumb)+'" loading="lazy" decoding="async" alt="" onerror="this.onerror=null;this.src=\''+escapeHTML(f.fotoUrl)+'\'">' + tag + '<div class="bf-nome">'+escapeHTML(f.nome)+'</div></div>';
   }).join('');
@@ -1336,7 +1339,7 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
   try{
     const comprimida = await compressSmart(dataUrl);
     const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome, tipo: tipo });
-    bancoFruta = bancoFruta.filter(function(f){ return String(f.nome||"").toUpperCase() !== nome; });
+    bancoFruta = ensureArray(bancoFruta).filter(function(f){ return String(f.nome||"").toUpperCase() !== nome; });
     bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url, tipo: r.tipo || tipo });
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     renderBancoFruta($("buscaBancoFruta").value);
@@ -1625,13 +1628,15 @@ function cleanupAfterPrint(){
 function computeLayout(labelW, labelH){
   const PAGE_W = 210, PAGE_H = 297;
   const SAFE_MARGIN = 5;
+  const GUTTER = 1;                     // v23 — gap reduzido
   const currentOffsetX = Math.max(0, parseFloat($("offsetXRange").value) || 0);
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
   const availW = PAGE_W - 2 * SAFE_MARGIN - currentOffsetX;
   const availH = PAGE_H - 2 * SAFE_MARGIN - currentOffsetY;
-  const cols = Math.max(1, Math.floor(availW / labelW));
-  const rows = Math.max(1, Math.floor(availH / labelH));
-  return { cols: cols, rows: rows, perPage: cols * rows };
+  // conta gap: cols * labelW + (cols-1) * GUTTER <= availW
+  const cols = Math.max(1, Math.floor((availW + GUTTER) / (labelW + GUTTER)));
+  const rows = Math.max(1, Math.floor((availH + GUTTER) / (labelH + GUTTER)));
+  return { cols: cols, rows: rows, perPage: cols * rows, gutter: GUTTER };
 }
 function getPrintDimensions(format, baseDims){
   if(format === "A5")    return { width:196, height:140 };
@@ -1656,7 +1661,7 @@ function construirPaginasA4(container, groups, amanhecerQueue){
       const grid = document.createElement("div"); grid.className = "print-page-generic-grid";
       grid.style.gridTemplateColumns = "repeat("+lay.cols+", "+dims.width+"mm)";
       grid.style.gridAutoRows = dims.height + "mm";
-      grid.style.gap = "2mm";
+      grid.style.gap = lay.gutter + "mm";
       chunk.forEach(function(d){
         const c = buildLabelClone(d, dims, true);
         c.style.setProperty("width",  dims.width  + "mm", "important");
@@ -1690,8 +1695,27 @@ function construirPaginasA4(container, groups, amanhecerQueue){
     container.appendChild(wrapper);
   }
 }
-/* v22 — respeita sempre o formato de cada produto guardado */
 function _fmtDoItem(q, editorFmt){ return q.data.presetSizes || q.data.formato || editorFmt; }
+
+function _agruparItensPorFormato(items){
+  // v23 — agrupa GLOBALMENTE por formato (não por consecutivo)
+  const grupos = {};
+  items.forEach(function(it){
+    const key = it.format || "amanhecer";
+    if(!grupos[key]) grupos[key] = { format: key, items: [] };
+    grupos[key].items.push(it.data);
+  });
+  // Ordem: amanhecer primeiro, resto pela ordem de aparição
+  const vistos = {};
+  const ordenados = [];
+  items.forEach(function(it){
+    const key = it.format || "amanhecer";
+    if(vistos[key]) return;
+    vistos[key] = true;
+    ordenados.push(grupos[key]);
+  });
+  return ordenados;
+}
 
 function triggerPrint(){
   if(printInProgress) return;
@@ -1712,12 +1736,7 @@ function triggerPrint(){
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({ format:it.format, items:[it.data] });
-  });
+  const groups = _agruparItensPorFormato(items);
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
   construirPaginasA4(pz, groups, amanhecerQueue);
@@ -1809,12 +1828,7 @@ async function gerarPDFBlob(){
     });
   }
   if(items.length === 0) throw new Error("Sem etiquetas para gerar PDF.");
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({ format:it.format, items:[it.data] });
-  });
+  const groups = _agruparItensPorFormato(items);
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
   const renderZone = document.createElement("div");
@@ -1901,7 +1915,7 @@ async function gerarPDFBlob(){
     const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
     const dims = getPrintDimensions(g.format, baseDims);
     const lay = computeLayout(dims.width, dims.height);
-    const GUTTER = 2;
+    const GUTTER = lay.gutter;
     for(let p=0; p<g.items.length; p+=lay.perPage){
       const chunk = g.items.slice(p, p + lay.perPage);
       if(!firstPage) doc.addPage();
@@ -1937,13 +1951,9 @@ function blobToBase64(blob){
   });
 }
 
-/* Envio de email — sem duplicados */
 let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
-  if(_emailSending){
-    toast("Email já está a ser enviado…", "warning");
-    return;
-  }
+  if(_emailSending){ toast("Email já está a ser enviado…", "warning"); return; }
   const info = await pedirEmail();
   if(!info) return;
 
@@ -2062,7 +2072,7 @@ $("printBtn").addEventListener("click", function(){ window.triggerPrint(); });
 $("emailLabelsBtn").addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 $("printDbBtn").addEventListener("click", async function(){
   if(savedProducts.length===0){ setStatus("Sem produtos guardados.","error"); return; }
-  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?"))) return;
+  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?\n\nAs etiquetas vão ser agrupadas por formato para aproveitar o papel."))) return;
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
   _restoreQueueAfterPrint = printQueue.slice();
   printQueue = savedProducts.map(function(p){ return { data:JSON.parse(JSON.stringify(p)), copies:1 }; });
@@ -2073,8 +2083,6 @@ $("syncBancoBtn").addEventListener("click", async function(){
   try{ setStatus("A sincronizar banco…"); await api('sincronizarBancoFruta'); await carregarTudo(); setStatus("✅ Sincronizado.","success"); }
   catch(e){ setStatus("Erro: "+e.message,"error"); }
 });
-
-/* v22 — NOVO botão: otimizar todas as imagens do banco */
 $("otimizarBancoBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Otimizar TODAS as imagens do banco?\n\nAs fotos serão redimensionadas (máx. 320 px) e recomprimidas, tornando o carregamento muito mais rápido.\n\nAs imagens originais serão substituídas no Drive."))) return;
   const btn = this; const t0 = btn.textContent;
@@ -2094,7 +2102,6 @@ $("otimizarBancoBtn").addEventListener("click", async function(){
     btn.disabled = false; btn.textContent = t0;
   }
 });
-
 $("clearQueueBtn").addEventListener("click", async function(){
   if(await confirmDialog("Limpar fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
 });
@@ -2178,12 +2185,7 @@ $("previewSheetBtn").addEventListener("click", function(){
     });
   }
   if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return; }
-  const groups = [];
-  items.forEach(function(it){
-    const last = groups[groups.length-1];
-    if(last && last.format===it.format) last.items.push(it.data);
-    else groups.push({ format:it.format, items:[it.data] });
-  });
+  const groups = _agruparItensPorFormato(items);
   let totalPreviewed = 0;
   groups.forEach(function(g){
     if(g.format==="amanhecer"){
@@ -2207,13 +2209,19 @@ $("previewSheetBtn").addEventListener("click", function(){
       const first = g.items[0];
       const baseDims = getDimensionsFor(g.format, first.customWidth, first.customHeight);
       const dims = getPrintDimensions(g.format, baseDims);
+      const lay = computeLayout(dims.width, dims.height);
       const grp = document.createElement("div"); grp.className = "preview-group-flex";
+      // v23 — mostra em grelha com a mesma disposição da impressão
+      const page = document.createElement("div");
+      page.style.display = "grid";
+      page.style.gridTemplateColumns = "repeat("+lay.cols+", "+(dims.width*3.2)+"px)";
+      page.style.gap = lay.gutter*3.2 + "px";
       g.items.forEach(function(d){
         const clone = buildLabelClone(d,dims,true);
-        const scale = 3.2;
-        clone.style.width = (dims.width*scale)+"px"; clone.style.height = (dims.height*scale)+"px";
-        grp.appendChild(clone);
+        clone.style.width = (dims.width*3.2)+"px"; clone.style.height = (dims.height*3.2)+"px";
+        page.appendChild(clone);
       });
+      grp.appendChild(page);
       content.appendChild(grp);
       grp.querySelectorAll(".label-card").forEach(function(c){ reAdaptClone(c); });
       totalPreviewed += g.items.length;
