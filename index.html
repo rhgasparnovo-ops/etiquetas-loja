@@ -192,8 +192,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
   #printZone.measure .print-page-wrapper{width:210mm!important;height:297mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important;page-break-after:always!important}
   #printZone.measure .print-page-wrapper:last-child{page-break-after:auto!important}
-  #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
-  #printZone.measure .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important}
+  #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important;position:relative!important;left:var(--offset-x)!important}
+  #printZone.measure .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important;position:relative!important;left:var(--offset-x)!important}
   #printZone.measure .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}
   #printZone.measure .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}
@@ -227,8 +227,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   .print-page-wrapper{width:210mm!important;height:297mm!important;page-break-after:always!important;break-after:page!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important}
   .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
-  .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important}
-  .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important}
+  .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin-top:var(--offset-y)!important;gap:0!important;position:relative!important;left:var(--offset-x)!important}
+  .print-page-generic-grid{display:grid!important;margin-top:var(--offset-y)!important;margin-left:auto!important;margin-right:auto!important;position:relative!important;left:var(--offset-x)!important}
   #printZone .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
   #printZone .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
@@ -801,7 +801,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v26';
+const CACHE_KEY = 'balcao_cache_v27';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
@@ -809,12 +809,13 @@ const THUMB_SIZE   = 200;
 
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 
+/* Formatos reconhecidos pelo sistema (usados para sanitizar produtos da BD) */
 const FORMATOS_VALIDOS = ["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
 
-/* v26 — Normaliza produto do Drive para o formato usado na fila */
+/* Normaliza produto do Drive para o formato usado na fila */
 function normalizarProdutoParaFila(p){
   if(!p) return p;
   const out = Object.assign({}, p);
@@ -833,7 +834,7 @@ function normalizarProdutoParaFila(p){
   return out;
 }
 
-/* v26 — Sanitiza formato para impressão em lote (evita 1 etiqueta por folha) */
+/* Sanitiza formato para impressão em lote (evita "1 etiqueta por folha") */
 function sanitizarFormatoBD(data){
   const fv = String((data && (data.presetSizes || data.formato)) || "").trim();
   if(FORMATOS_VALIDOS.indexOf(fv) !== -1) return data;
@@ -931,9 +932,15 @@ function pedirEmail(){
 }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m] }) }
 function thumbUrl(fotoId, size){ if(!fotoId) return ''; const s = size || THUMB_SIZE; return 'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s; }
+
+/* v27 — Extrai ID de ambos os formatos de URL do Google */
 function extrairFotoIdDoUrl(url){
   if(!url || url.indexOf('http') !== 0) return '';
-  const m = String(url).match(/\/d\/([^=\/?#]+)/);
+  // Formato 1: https://lh3.googleusercontent.com/d/{ID}=w600
+  let m = String(url).match(/\/d\/([^=\/?#]+)/);
+  if(m) return m[1];
+  // Formato 2: https://drive.google.com/thumbnail?id={ID}&sz=w320
+  m = String(url).match(/[?&]id=([^&=]+)/);
   return m ? m[1] : '';
 }
 
@@ -942,13 +949,16 @@ function compressSmart(dataUrl, maxSize, quality) {
   return new Promise(function(resolve){
     const img = new Image(); img.crossOrigin = "anonymous";
     img.onload = function(){
-      let w = img.width, h = img.height;
-      if (w > maxSize || h > maxSize) { if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; } else { w = Math.round(w * maxSize / h); h = maxSize; } }
-      const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      let temTransparencia = false;
-      try { const tmp = document.createElement('canvas'); tmp.width = Math.min(w, 80); tmp.height = Math.min(h, 80); const tctx = tmp.getContext('2d'); tctx.drawImage(img, 0, 0, tmp.width, tmp.height); const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data; for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { temTransparencia = true; break; } } } catch(e) {}
-      if (temTransparencia) { ctx.clearRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); let out = canvas.toDataURL('image/webp', quality); if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png'); resolve(out); } else { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); resolve(canvas.toDataURL('image/jpeg', quality)); }
+      try {
+        let w = img.width, h = img.height;
+        if (w > maxSize || h > maxSize) { if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; } else { w = Math.round(w * maxSize / h); h = maxSize; } }
+        const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        let temTransparencia = false;
+        try { const tmp = document.createElement('canvas'); tmp.width = Math.min(w, 80); tmp.height = Math.min(h, 80); const tctx = tmp.getContext('2d'); tctx.drawImage(img, 0, 0, tmp.width, tmp.height); const px = tctx.getImageData(0, 0, tmp.width, tmp.height).data; for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { temTransparencia = true; break; } } } catch(e) {}
+        if (temTransparencia) { ctx.clearRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); let out = canvas.toDataURL('image/webp', quality); if (out.indexOf('image/webp') === -1) out = canvas.toDataURL('image/png'); resolve(out); }
+        else { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h); resolve(canvas.toDataURL('image/jpeg', quality)); }
+      } catch(e){ resolve(dataUrl); }
     };
     img.onerror = function(){ resolve(dataUrl); };
     img.src = dataUrl;
@@ -1039,6 +1049,7 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 async function carregarTudo(){
+  try{ localStorage.removeItem('balcao_cache_v26'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v25'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v24'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v23'); }catch(e){}
@@ -1085,7 +1096,10 @@ function getFormData(){
 }
 function setFormData(d){
   if(!d) return;
-  $("presetSizes").value = d.presetSizes||d.formato||"amanhecer";
+  // v27 — Só aplica presetSizes se for um valor válido do <select>
+  const fv = d.presetSizes || d.formato || "amanhecer";
+  const opt = $("presetSizes").querySelector('option[value="'+fv+'"]');
+  $("presetSizes").value = opt ? fv : "amanhecer";
   $("customWidth").value = d.customWidth||"70"; $("customHeight").value = d.customHeight||"38";
   $("store").value = d.store||d.loja||"PATAIAS";
   $("internalCode").value = d.internalCode||d.codigo||"";
@@ -1218,7 +1232,9 @@ function renderQueue(){
     const jaGuardado = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
     const iconeGuardar = jaGuardado ? "✅" : "💾";
     const tituloGuardar = jaGuardado ? "Já guardado no Drive" : "Guardar este produto no Drive";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+(item.data.price?escapeHTML(item.data.price)+"€":"S/ Preço")+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
+    // v27 — Mostra preço "0" também
+    const precoTxt = (item.data.price !== undefined && item.data.price !== "" && item.data.price !== null) ? (escapeHTML(item.data.price)+"€") : "S/ Preço";
+    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+precoTxt+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="'+tituloGuardar+'">'+iconeGuardar+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover">❌</button></div>';
     c.appendChild(div);
   });
   $("printBtn").innerHTML = '🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
@@ -1277,11 +1293,10 @@ window.saveQueueItem = async function(i){
   const t0 = Date.now(); setStatus("A guardar…");
   try{
     const { fotoId, fotoUrl } = await resolverFotoParaPayload(d);
+    d.fotoId = fotoId; d.fotoUrl = fotoUrl;
+    if(fotoUrl){ d.processedPhoto = fotoUrl; d.originalPhoto = fotoUrl; }
     const payload = buildProdutoPayload(d);
-    payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
     await api('guardarProduto', payload);
-    item.data.fotoId = fotoId; item.data.fotoUrl = fotoUrl;
-    if(fotoUrl){ item.data.processedPhoto = fotoUrl; item.data.originalPhoto = fotoUrl; }
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ produtos: savedProducts, banco: bancoFruta, t: Date.now() })); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
@@ -1296,7 +1311,9 @@ function renderDb(){
   c.innerHTML = "";
   savedProducts.map(function(p,i){ return {p:p,i:i} }).sort(function(a,b){ return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt") }).forEach(function(obj){
     const d = obj.p, i = obj.i; const div = document.createElement("div"); div.className = "list-item";
-    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+(d.preco?escapeHTML(d.preco)+"€":"")+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Editar">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Eliminar">❌</button></div>';
+    // v27 — mostra preço "0"
+    const precoTxt = (d.preco !== undefined && d.preco !== "" && d.preco !== null) ? (escapeHTML(d.preco)+"€") : "";
+    div.innerHTML = '<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+precoTxt+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Editar">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'" title="Duplicar">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Eliminar">❌</button></div>';
     c.appendChild(div);
   });
 }
@@ -1499,29 +1516,40 @@ function applyPrintSizes(card, dims){
   set(".extra-unit", 2.2); set(".fruit-full-bar", 2.2); set(".ean-text", 1.8);
   set(".promo-text", 1.8); set(".print-date", 1.6);
 }
+function _isVisivel(el){
+  if(!el) return false;
+  if(el.offsetParent === null && el !== document.body) return false;
+  const cs = window.getComputedStyle(el);
+  if(cs.display === "none" || cs.visibility === "hidden") return false;
+  return true;
+}
 function _hasOverflow(parent){
   if(!parent) return false;
   const pr = parent.getBoundingClientRect(); if(!pr.height) return false;
   const kids = parent.children;
   for(let i=0;i<kids.length;i++){
     const ch = kids[i];
-    if(ch.style.display === "none" || ch.offsetParent === null) continue;
+    if(!_isVisivel(ch)) continue;
     const cr = ch.getBoundingClientRect(); if(cr.height === 0) continue;
     if(cr.top < pr.top - 0.5 || cr.bottom > pr.bottom + 0.5) return true;
   }
   return false;
 }
+/* v27 — Só ajusta preço quando está visível (nunca em Fruit Promo) */
 function autoFitPrice(card){
   if(!card) return;
   const priceCol = card.querySelector(".col-price");
   const priceEl  = card.querySelector(".price");
   if(!priceCol || !priceEl) return;
+  if(card.classList.contains("layout-fruit-promo")) return;
+  if(!_isVisivel(priceCol) || !_isVisivel(priceEl)) return;
   priceEl.style.removeProperty("font-size");
   void priceEl.offsetHeight;
   let i = 0;
   while(i < 40){
     const pcR = priceCol.getBoundingClientRect();
     const pr  = priceEl.getBoundingClientRect();
+    if(pcR.width <= 0) break;
     const overflow = (pr.right > pcR.right + 0.5) || (pr.left < pcR.left - 0.5) || (pr.width > pcR.width + 0.5);
     if(!overflow) break;
     const cur = parseFloat(getComputedStyle(priceEl).fontSize);
@@ -1681,6 +1709,13 @@ function validateBeforePrint(){
       const pp = parsePrice($("promoPrice").value);
       if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false; }
     }
+    // v27 — Validação de medidas custom
+    if(fv === "custom"){
+      const cw = parseFloat($("customWidth").value);
+      const ch = parseFloat($("customHeight").value);
+      if(!isFinite(cw) || cw < 20 || cw > 210){ setStatus("Largura entre 20 e 210 mm.","error"); return false; }
+      if(!isFinite(ch) || ch < 20 || ch > 297){ setStatus("Altura entre 20 e 297 mm.","error"); return false; }
+    }
     const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
     if(fv==="amanhecer" && copies>21){ setStatus("Máximo 21 etiquetas por folha.","error"); return false; }
   }
@@ -1702,9 +1737,9 @@ function computeLayout(labelW, labelH){
   labelH = Math.max(20, Math.min(297, Number(labelH) || 38));
   const SAFE_MARGIN = 5;
   const GUTTER = 1;
-  const currentOffsetX = Math.max(0, parseFloat($("offsetXRange").value) || 0);
+  // v27 — offsetX NÃO reduz a área (é um shift, não margem). offsetY reduz (empurra para baixo)
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
-  const availW = PAGE_W - 2 * SAFE_MARGIN - currentOffsetX;
+  const availW = PAGE_W - 2 * SAFE_MARGIN;
   const availH = PAGE_H - 2 * SAFE_MARGIN - currentOffsetY;
   const cols = Math.max(1, Math.floor((availW + GUTTER) / (labelW + GUTTER)));
   const rows = Math.max(1, Math.floor((availH + GUTTER) / (labelH + GUTTER)));
@@ -1951,7 +1986,7 @@ async function gerarPDFBlob(){
       for(let c=0; c<3; c++){
         const idx = r*3 + c;
         if(idx >= chunk.length) break;
-        const xCol = BASE_LEFT + c * AMANHECER_COL_W;
+        const xCol = BASE_LEFT + c * AMANHECER_COL_W + (offsetX || 0);
         const data = chunk[idx];
         const dims = { width: 66, height: rowH };
         const labelEl = buildLabelClone(data, dims, true);
@@ -1978,7 +2013,7 @@ async function gerarPDFBlob(){
       if(!firstPage) doc.addPage();
       firstPage = false;
       const totalW = lay.cols * dims.width + (lay.cols-1) * GUTTER;
-      const startX = (210 - totalW) / 2;
+      const startX = (210 - totalW) / 2 + (offsetX || 0);
       const startY = 5 + (offsetY || 0);
       for(let idx=0; idx<chunk.length; idx++){
         const row = Math.floor(idx / lay.cols);
@@ -2121,7 +2156,6 @@ $("printDbBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?\n\nAs etiquetas vão ser agrupadas por formato para aproveitar o papel."))) return;
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
   _restoreQueueAfterPrint = printQueue.slice();
-  // v26 — Sanitizar cada produto para evitar "1 etiqueta por página"
   printQueue = savedProducts.map(function(p){
     const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(p)));
     sanitizarFormatoBD(data);
@@ -2225,13 +2259,14 @@ $("diagnosticoBtn").addEventListener("click", async function(){
 });
 $("previewSheetBtn").addEventListener("click", function(){
   const content = $("sheetPreviewContent"); content.innerHTML = "";
+  const editorFmt = $("presetSizes").value;
   const items = [];
   if(printQueue.length===0){
     const copies = Math.max(1,Math.min(21,Number($("copiesCount").value)||1));
-    for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:$("presetSizes").value });
+    for(let i=0;i<copies;i++) items.push({ data:getFormData(), format:editorFmt });
   } else {
     printQueue.forEach(function(q){
-      const fmt = _fmtDoItem(q, "amanhecer");
+      const fmt = _fmtDoItem(q, editorFmt);   // v27 — fallback para o formato do editor
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
