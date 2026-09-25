@@ -116,24 +116,25 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
-.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px}
+.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px;overflow-wrap:anywhere;word-break:break-word}
+.col-desc > *{max-width:100%;min-width:0}
 .col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 1px;justify-self:center;align-self:center}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
 .col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto;background:transparent}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
-.item-code{font-size:clamp(4.5px,1.4cqw,7.5px);font-weight:900;color:#111;line-height:1;margin-bottom:5px;letter-spacing:.3px;opacity:.85;align-self:flex-start;padding-bottom:1px}
+.item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1.05;margin-bottom:5px;letter-spacing:.3px;opacity:.92;align-self:flex-start;padding-bottom:1px;white-space:normal;word-break:break-word;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left}
 .product{font-weight:900;color:#000;line-height:1.05;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);word-break:normal;overflow-wrap:anywhere}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%}
-.unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:#c8102e;font-weight:900;line-height:1.05;margin-top:1px;letter-spacing:.2px;text-transform:uppercase}
+.unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:#c8102e;font-weight:900;line-height:1.05;margin-top:1px;letter-spacing:.2px;text-transform:uppercase;white-space:normal;word-break:break-word;overflow-wrap:anywhere;max-width:100%}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:3px;line-height:1;margin-bottom:1px}
 .old-price{font-size:clamp(6px,2cqw,11px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
 .promo-tag{font-size:clamp(7px,2.3cqw,13px);color:#fff;background:#c8102e;border-radius:3px;font-weight:900;line-height:1;padding:1px 4px}
-.price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em}
+.price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;max-width:100%}
 .price .unit-inline{font-size:.42em;font-weight:800;color:#333;letter-spacing:0;line-height:1}
-.deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block}
-.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:1px;color:#333}
+.deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block;white-space:normal;word-break:break-word;overflow-wrap:anywhere;max-width:100%}
+.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;white-space:normal;word-break:break-word;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left;display:block}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
 .barcode-container.show{display:flex!important}
@@ -160,7 +161,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 .label-card.size-tiny .price .unit-inline{font-size:.45em}
-.label-card.size-tiny .item-code{font-size:clamp(4px,2.1cqw,7px)!important;margin-bottom:3px}
+.label-card.size-tiny .item-code{font-size:clamp(5px,2.6cqw,8.5px)!important;margin-bottom:3px}
 .label-card.size-tiny .store-text{font-size:clamp(5px,2.8cqw,9px)!important}
 .label-card.size-tiny .brand-logo{max-height:95%}
 .label-card.size-small .product{font-size:clamp(9px,3.4cqw,18px)!important}
@@ -508,7 +509,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
               </div>
               <div class="chips-label">🏅 Categorias UE</div>
               <div class="chips-group">
-                <span class="chip-btn" data-field="categoria" data-val="EXTRA">EXTRA</span><span class="chip-btn" data-field="categoria" data-val="I">I</span><span class="chip-btn" data-field="categoria" data-val="II">II</span><span class="chip-btn" data-field="categoria" data-val="III">III</span><span class="chip-btn" data-field="categoria" data-val="CAT I">CAT I</span><span class="chip-btn" data-field="categoria" data-val="CAT II">CAT II</span><span class="chip-btn" data-field="categoria" data-val="COMERCIAL">COMERCIAL</span><span class="chip-btn" data-field="categoria" data-val="INDUSTRIAL">INDUSTRIAL</span>
+                <span class="chip-btn" data-field="categoria" data-val="I">I</span><span class="chip-btn" data-field="categoria" data-val="II">II</span><span class="chip-btn" data-field="categoria" data-val="III">III</span>
               </div>
               <div class="chips-label">📏 Calibre — Frutos</div>
               <div class="chips-group">
@@ -656,9 +657,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <button class="secondary" id="recarregarDbBtn" type="button" style="font-size:12px">🔄 Recarregar</button>
             <button class="secondary" id="syncBancoBtn" type="button" style="font-size:12px">🔄 Sincronizar</button>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
             <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
             <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:10px">
+            <button class="secondary" id="fixarDimensoesBtn" type="button" style="font-size:12px;border-color:#c8102e;color:#c8102e">🛠️ Corrigir medidas dos produtos guardados</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
           <div id="diagBox" class="diag-box"></div>
@@ -800,18 +804,43 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const API_TOKEN = 'balcao-pataias-etiquetas-2024-9xK7mZ3q';
-const CACHE_KEY = 'balcao_cache_v23';
+const CACHE_KEY = 'balcao_cache_v25';
 
 const IMG_MAX_SIZE = 450;
 const IMG_QUALITY  = 0.65;
 const THUMB_SIZE   = 200;
 
-// Funções não-idempotentes (nunca fazer retry)
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
-
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
+
+/* v25 — Normaliza produto do Drive para o formato usado na fila */
+function normalizarProdutoParaFila(p){
+  if(!p) return p;
+  const out = Object.assign({}, p);
+  out.presetSizes    = out.presetSizes    || out.formato   || "amanhecer";
+  out.product        = out.product        || out.nome      || "";
+  out.internalCode   = out.internalCode   || out.codigo    || "";
+  out.price          = out.price          || out.preco     || "";
+  out.capacity       = out.capacity       || out.capacidade|| "";
+  out.capacityUnit   = out.capacityUnit   || out.unidade   || "peso";
+  out.customWidth    = out.customWidth    || "70";
+  out.customHeight   = out.customHeight   || "38";
+  out.originalPhoto  = out.originalPhoto  || out.fotoUrl   || "";
+  out.processedPhoto = out.processedPhoto || out.fotoUrl   || "";
+  out.fotoId         = out.fotoId         || "";
+  out.fotoUrl        = out.fotoUrl        || "";
+  return out;
+}
+
+/* v25 — Nunca deixa uma medida passar dos limites de uma folha A4 */
+function clampDims(d){
+  return {
+    width:  Math.max(20, Math.min(210, Number(d && d.width)  || 70)),
+    height: Math.max(20, Math.min(297, Number(d && d.height) || 38))
+  };
+}
 
 function toast(msg, type, duration) {
   type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
@@ -1007,6 +1036,8 @@ function applyOffsets(){
   if($("marginRightVal")) $("marginRightVal").textContent = marginRight + " mm";
 }
 async function carregarTudo(){
+  try{ localStorage.removeItem('balcao_cache_v24'); }catch(e){}
+  try{ localStorage.removeItem('balcao_cache_v23'); }catch(e){}
   try{ localStorage.removeItem('balcao_cache_v22'); }catch(e){}
   try{
     const raw = localStorage.getItem(CACHE_KEY);
@@ -1145,8 +1176,10 @@ function isLargeFormat(v){ return ["125x80","A6","A5","100x70","frutaPromo125x80
 function isFruitPromoFormat(v){ return v==="frutaPromo125x80" || v==="frutaPromoA6"; }
 function getDimensionsFor(fv,cw,ch){
   const m = { amanhecer:[70,38], "125x80":[125,80], A6:[148,105], A5:[210,148], "105x38":[105,38], "70x38":[70,38], "65x38":[65,38], "100x70":[100,70], frutaPromo125x80:[125,80], frutaPromoA6:[148,105] };
-  if(fv==="custom") return { width: parseFloat(cw)||70, height: parseFloat(ch)||38 };
-  return { width: (m[fv]&&m[fv][0])||70, height: (m[fv]&&m[fv][1])||38 };
+  let w, h;
+  if(fv==="custom"){ w = parseFloat(cw)||70; h = parseFloat(ch)||38; }
+  else { w = (m[fv]&&m[fv][0])||70; h = (m[fv]&&m[fv][1])||38; }
+  return { width: Math.max(20, Math.min(210, w)), height: Math.max(20, Math.min(297, h)) };
 }
 function getDimensions(){ return getDimensionsFor($("presetSizes").value, $("customWidth").value, $("customHeight").value); }
 function getSizeClass(w,h){ const m = Math.max(w,h); if(m<55) return "size-tiny"; if(m<82) return "size-small"; if(m<115) return "size-medium"; if(m<165) return "size-large"; return "size-xl"; }
@@ -1176,7 +1209,8 @@ function renderQueue(){
   $("clearQueueBtn").style.display = "block"; let total = 0; c.innerHTML = "";
   printQueue.forEach(function(item,i){
     total += item.copies; const div = document.createElement("div"); div.className = "list-item";
-    const fmt = (item.data.presetSizes==="amanhecer")?"Amanhecer":item.data.presetSizes;
+    const fmtRaw = item.data.presetSizes || item.data.formato || "amanhecer";
+    const fmt = (fmtRaw === "amanhecer") ? "Amanhecer" : fmtRaw;
     const jaGuardado = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
     const iconeGuardar = jaGuardado ? "✅" : "💾";
     const tituloGuardar = jaGuardado ? "Já guardado no Drive" : "Guardar este produto no Drive";
@@ -1292,7 +1326,13 @@ window.removeFromDb = async function(i){
   try{ await api('apagarProduto',{ codigo: d.codigo, nome: d.nome }); await carregarTudo(); setStatus("✅ Produto eliminado.","success"); }
   catch(e){ setStatus("Erro: "+e.message,"error"); }
 };
-window.queueFromDb = function(i){ const d = savedProducts[i]; if(!d) return; printQueue.push({ data:JSON.parse(JSON.stringify(d)), copies:parseInt($("copiesCount").value)||1 }); renderQueue(); setStatus("Adicionado à fila.","success"); };
+window.queueFromDb = function(i){
+  const d = savedProducts[i]; if(!d) return;
+  const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
+  printQueue.push({ data: data, copies: parseInt($("copiesCount").value)||1 });
+  renderQueue();
+  setStatus("Adicionado à fila.","success");
+};
 function updateBancoCounts(){
   let fruta=0, legume=0;
   bancoFruta.forEach(function(f){ if(f.tipo === 'legume') legume++; else if(f.tipo === 'fruta') fruta++; });
@@ -1367,10 +1407,16 @@ function formatPromoDate(s,e){
   try{
     if(s && e){
       const d1 = new Date(s), d2 = new Date(e);
-      if(d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear()) return "Oportunidade de "+d1.getDate()+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-      return "Oportunidade de "+d1.getDate()+" de "+m[d1.getMonth()]+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
-    } else if(e){ const d2 = new Date(e); return "Oportunidade válida até "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear(); }
-    else { const d1 = new Date(s); return "Oportunidade a partir de "+d1.getDate()+" de "+m[d1.getMonth()]+" de "+d1.getFullYear(); }
+      if(d1.getMonth()===d2.getMonth() && d1.getFullYear()===d2.getFullYear())
+        return "Válido de "+d1.getDate()+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+      return "Válido de "+d1.getDate()+" de "+m[d1.getMonth()]+" a "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+    } else if(e){
+      const d2 = new Date(e);
+      return "Válido até "+d2.getDate()+" de "+m[d2.getMonth()]+" de "+d2.getFullYear();
+    } else {
+      const d1 = new Date(s);
+      return "Válido a partir de "+d1.getDate()+" de "+m[d1.getMonth()]+" de "+d1.getFullYear();
+    }
   }catch(err){ return "Preço sujeito às condições comerciais em vigor."; }
 }
 function setProductText(el,text){
@@ -1460,6 +1506,25 @@ function _hasOverflow(parent){
     if(cr.top < pr.top - 0.5 || cr.bottom > pr.bottom + 0.5) return true;
   }
   return false;
+}
+function autoFitPrice(card){
+  if(!card) return;
+  const priceCol = card.querySelector(".col-price");
+  const priceEl  = card.querySelector(".price");
+  if(!priceCol || !priceEl) return;
+  priceEl.style.removeProperty("font-size");
+  void priceEl.offsetHeight;
+  let i = 0;
+  while(i < 40){
+    const pcR = priceCol.getBoundingClientRect();
+    const pr  = priceEl.getBoundingClientRect();
+    const overflow = (pr.right > pcR.right + 0.5) || (pr.left < pcR.left - 0.5) || (pr.width > pcR.width + 0.5);
+    if(!overflow) break;
+    const cur = parseFloat(getComputedStyle(priceEl).fontSize);
+    if(!cur || cur < 4) break;
+    priceEl.style.setProperty("font-size", (cur * 0.9) + "px", "important");
+    i++; void priceEl.offsetHeight;
+  }
 }
 function autoFitTextSync(el){
   if(!el) return;
@@ -1578,6 +1643,7 @@ function updateCardUnsafe(){
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
     $("cardPrintDate").textContent = "Impresso a: "+new Date().toLocaleDateString("pt-PT");
     autoAdaptImage(card);
+    autoFitPrice(card);
   } catch(err){ console.error("Falha ao desenhar a etiqueta:", err); }
 }
 function buildLabelClone(data, dims, forPrint){
@@ -1596,6 +1662,7 @@ function buildLabelClone(data, dims, forPrint){
   if(forPrint) applyPrintSizes(clone, dims);
   const prodEl = clone.querySelector(".product");
   if(prodEl) autoFitTextSync(prodEl);
+  autoFitPrice(clone);
   setFormData(backup); updateCardUnsafe();
   return clone;
 }
@@ -1627,13 +1694,14 @@ function cleanupAfterPrint(){
 }
 function computeLayout(labelW, labelH){
   const PAGE_W = 210, PAGE_H = 297;
+  labelW = Math.max(20, Math.min(210, Number(labelW) || 70));
+  labelH = Math.max(20, Math.min(297, Number(labelH) || 38));
   const SAFE_MARGIN = 5;
-  const GUTTER = 1;                     // v23 — gap reduzido
+  const GUTTER = 1;
   const currentOffsetX = Math.max(0, parseFloat($("offsetXRange").value) || 0);
   const currentOffsetY = Math.max(0, parseFloat($("offsetYRange").value) || 0);
   const availW = PAGE_W - 2 * SAFE_MARGIN - currentOffsetX;
   const availH = PAGE_H - 2 * SAFE_MARGIN - currentOffsetY;
-  // conta gap: cols * labelW + (cols-1) * GUTTER <= availW
   const cols = Math.max(1, Math.floor((availW + GUTTER) / (labelW + GUTTER)));
   const rows = Math.max(1, Math.floor((availH + GUTTER) / (labelH + GUTTER)));
   return { cols: cols, rows: rows, perPage: cols * rows, gutter: GUTTER };
@@ -1646,7 +1714,8 @@ function getPrintDimensions(format, baseDims){
   if(format === "105x38") return { width:96,  height:36 };
   if(format === "70x38")  return { width:66,  height:36 };
   if(format === "65x38")  return { width:62,  height:36 };
-  return baseDims;
+  if(!baseDims) return { width:70, height:38 };
+  return { width: Math.max(20, Math.min(210, baseDims.width||70)), height: Math.max(20, Math.min(297, baseDims.height||38)) };
 }
 function construirPaginasA4(container, groups, amanhecerQueue){
   groups.forEach(function(g){
@@ -1695,17 +1764,16 @@ function construirPaginasA4(container, groups, amanhecerQueue){
     container.appendChild(wrapper);
   }
 }
-function _fmtDoItem(q, editorFmt){ return q.data.presetSizes || q.data.formato || editorFmt; }
-
+function _fmtDoItem(q, editorFmt){
+  return (q && q.data && (q.data.presetSizes || q.data.formato)) || editorFmt || "amanhecer";
+}
 function _agruparItensPorFormato(items){
-  // v23 — agrupa GLOBALMENTE por formato (não por consecutivo)
   const grupos = {};
   items.forEach(function(it){
     const key = it.format || "amanhecer";
     if(!grupos[key]) grupos[key] = { format: key, items: [] };
     grupos[key].items.push(it.data);
   });
-  // Ordem: amanhecer primeiro, resto pela ordem de aparição
   const vistos = {};
   const ordenados = [];
   items.forEach(function(it){
@@ -1716,7 +1784,6 @@ function _agruparItensPorFormato(items){
   });
   return ordenados;
 }
-
 function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
@@ -1745,6 +1812,7 @@ function triggerPrint(){
       pz.querySelectorAll(".label-card").forEach(function(card){
         const prodEl = card.querySelector(".product");
         if(prodEl) autoFitTextSync(prodEl);
+        autoFitPrice(card);
         if(card.classList.contains("has-image")) autoAdaptImage(card);
       });
     }catch(e){}
@@ -1832,9 +1900,7 @@ async function gerarPDFBlob(){
   const amanhecerQueue = [];
   groups.forEach(function(g){ if(g.format==="amanhecer"){ g.items.forEach(function(d){ amanhecerQueue.push(d); }); } });
   const renderZone = document.createElement("div");
-  renderZone.style.cssText =
-    "position:absolute;top:0;left:-10000px;width:250mm;background:#ffffff;" +
-    "padding:0;margin:0;z-index:1;overflow:visible;pointer-events:none;";
+  renderZone.style.cssText = "position:absolute;top:0;left:-10000px;width:250mm;background:#ffffff;padding:0;margin:0;z-index:1;overflow:visible;pointer-events:none;";
   document.body.appendChild(renderZone);
   async function renderLabelToDataURL(labelEl){
     labelEl.style.transform = "none";
@@ -1851,21 +1917,14 @@ async function gerarPDFBlob(){
     try { await preloadImagesAsDataURLs(labelEl); } catch(e){}
     const prodEl = labelEl.querySelector(".product");
     if(prodEl) autoFitTextSync(prodEl);
+    autoFitPrice(labelEl);
     if(labelEl.classList.contains("has-image")) autoAdaptImage(labelEl);
     await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r, 60); }); });
     const w = labelEl.offsetWidth || 250;
     const h = labelEl.offsetHeight || 144;
     const canvas = await window.html2canvas(labelEl, {
-      scale: 3,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      imageTimeout: 0,
-      width: w,
-      height: h,
-      windowWidth: w,
-      windowHeight: h
+      scale: 3, backgroundColor: '#ffffff', useCORS: true, allowTaint: true, logging: false,
+      imageTimeout: 0, width: w, height: h, windowWidth: w, windowHeight: h
     });
     const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
     renderZone.removeChild(labelEl);
@@ -1896,14 +1955,8 @@ async function gerarPDFBlob(){
         labelEl.style.height = rowH + "mm";
         labelEl.style.boxSizing = "border-box";
         labelEl.style.overflow = "hidden";
-        if(c === 0){
-          const ml = Math.max(0, marginLeft || 0);
-          if(ml > 0) labelEl.style.setProperty("padding-left", ml + "mm", "important");
-        }
-        if(c === 2){
-          const mr = Math.max(0, marginRight || 0);
-          if(mr > 0) labelEl.style.setProperty("padding-right", mr + "mm", "important");
-        }
+        if(c === 0){ const ml = Math.max(0, marginLeft || 0); if(ml > 0) labelEl.style.setProperty("padding-left", ml + "mm", "important"); }
+        if(c === 2){ const mr = Math.max(0, marginRight || 0); if(mr > 0) labelEl.style.setProperty("padding-right", mr + "mm", "important"); }
         const dataUrl = await renderLabelToDataURL(labelEl);
         doc.addImage(dataUrl, 'JPEG', xCol, yRow, 66, rowH);
       }
@@ -1950,18 +2003,15 @@ function blobToBase64(blob){
     reader.readAsDataURL(blob);
   });
 }
-
 let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
   if(_emailSending){ toast("Email já está a ser enviado…", "warning"); return; }
   const info = await pedirEmail();
   if(!info) return;
-
   _emailSending = true;
   const btn = $("emailLabelsBtn");
   const btnTxtOriginal = btn ? btn.textContent : '';
   if(btn){ btn.disabled = true; btn.textContent = "⏳ A enviar email…"; }
-
   try {
     setStatus("A gerar PDF… aguarde.");
     toast("📄 A gerar o PDF das etiquetas…", "info", 4000);
@@ -1981,16 +2031,11 @@ async function enviarEtiquetasPorEmail(){
     let base64;
     try { base64 = await blobToBase64(blob); }
     catch(e){ setStatus("Erro a preparar o PDF: " + e.message, "error"); return; }
-
     setStatus("A enviar o email…");
     toast("📧 A enviar o email para " + info.destino + "…", "info", 8000);
-
     try {
       await api('enviarEtiquetasEmail', {
-        destino: info.destino,
-        assunto: info.assunto,
-        corpo: info.corpo,
-        pdfBase64: base64,
+        destino: info.destino, assunto: info.assunto, corpo: info.corpo, pdfBase64: base64,
         nomeFicheiro: "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf"
       });
       setStatus("✅ Email enviado para " + info.destino, "success");
@@ -2004,7 +2049,6 @@ async function enviarEtiquetasPorEmail(){
     if(btn){ btn.disabled = false; btn.textContent = btnTxtOriginal || "📧 Enviar etiquetas por Email (PDF)"; }
   }
 }
-
 let _statusToastMsg = '', _statusToastTime = 0;
 function setStatus(msg, type){
   const el = $("appStatus"); if(!el) return;
@@ -2053,9 +2097,7 @@ async function openScanner(){
   catch(e){ setStatus("Erro a carregar leitor.", "error"); $("scannerModal").classList.remove("show"); return; }
   scanner = new Html5Qrcode("reader");
   try{
-    await scanner.start(
-      { facingMode:"environment" },
-      { fps:10, qrbox:{width:280,height:180} },
+    await scanner.start({ facingMode:"environment" }, { fps:10, qrbox:{width:280,height:180} },
       function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido.","success"); closeScanner(); },
       function(){}
     );
@@ -2075,7 +2117,9 @@ $("printDbBtn").addEventListener("click", async function(){
   if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?\n\nAs etiquetas vão ser agrupadas por formato para aproveitar o papel."))) return;
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
   _restoreQueueAfterPrint = printQueue.slice();
-  printQueue = savedProducts.map(function(p){ return { data:JSON.parse(JSON.stringify(p)), copies:1 }; });
+  printQueue = savedProducts.map(function(p){
+    return { data: normalizarProdutoParaFila(JSON.parse(JSON.stringify(p))), copies: 1 };
+  });
   renderQueue();
   setTimeout(function(){ window.triggerPrint(); }, 100);
 });
@@ -2098,6 +2142,29 @@ $("otimizarBancoBtn").addEventListener("click", async function(){
   } catch(e){
     setStatus("Erro: " + e.message, "error");
     toast("Erro a otimizar: " + e.message, "error", 7000);
+  } finally {
+    btn.disabled = false; btn.textContent = t0;
+  }
+});
+$("fixarDimensoesBtn").addEventListener("click", async function(){
+  if(savedProducts.length === 0){ toast("Sem produtos guardados.", "warning"); return; }
+  if(!(await confirmDialog("Corrigir automaticamente as medidas dos produtos guardados?\n\nIsto vai substituir customWidth/customHeight por valores dentro dos limites A4 (20-210mm × 20-297mm). Útil se algum produto ficou com medidas gigantes gravadas."))) return;
+  const btn = this; const t0 = btn.textContent;
+  btn.disabled = true; btn.textContent = "⏳ A corrigir…";
+  let n = 0;
+  try{
+    for(const p of savedProducts){
+      const cw = parseFloat(p.customWidth);
+      const ch = parseFloat(p.customHeight);
+      const bad = (!isFinite(cw) || cw < 20 || cw > 210 || !isFinite(ch) || ch < 20 || ch > 297);
+      if(!bad) continue;
+      p.customWidth = "70"; p.customHeight = "38";
+      try{ await api('guardarProduto', buildProdutoPayload(normalizarProdutoParaFila(p))); n++; }
+      catch(e){ console.warn("Falha a corrigir " + (p.nome||p.codigo), e); }
+    }
+    await carregarTudo();
+    setStatus("✅ " + n + " produto(s) corrigido(s).", "success");
+    toast("✅ " + n + " produto(s) corrigido(s).", "success", 5000);
   } finally {
     btn.disabled = false; btn.textContent = t0;
   }
@@ -2211,7 +2278,6 @@ $("previewSheetBtn").addEventListener("click", function(){
       const dims = getPrintDimensions(g.format, baseDims);
       const lay = computeLayout(dims.width, dims.height);
       const grp = document.createElement("div"); grp.className = "preview-group-flex";
-      // v23 — mostra em grelha com a mesma disposição da impressão
       const page = document.createElement("div");
       page.style.display = "grid";
       page.style.gridTemplateColumns = "repeat("+lay.cols+", "+(dims.width*3.2)+"px)";
