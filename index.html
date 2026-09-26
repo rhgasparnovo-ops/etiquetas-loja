@@ -332,12 +332,18 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .pb-actions button{background:#fff;border:1.5px solid #084298;color:#084298;font-weight:800;font-size:12px;padding:12px 8px;border-radius:10px;min-height:auto;display:flex;align-items:center;justify-content:center;gap:5px;letter-spacing:.1px;transition:all .15s}
 .pb-actions button:hover{background:#084298;color:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(8,66,152,.22);filter:none}
 .pb-hint{font-size:11px;color:#084298;margin-top:9px;line-height:1.4;opacity:.85}
-.tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.tipo-selector button{background:#f8f9fa;border:2px solid #e0e5ea;border-radius:12px;padding:14px 10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;color:#5a6470;font-weight:800;font-size:13px;min-height:auto;width:auto;letter-spacing:.2px}
+
+/* ============ SELETOR FRUTA/LEGUME (MODAL) ============ */
+.tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.tipo-selector button{background:#f8f9fa;border:2px solid #e0e5ea;border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px;color:#5a6470;font-weight:800;font-size:13px;min-height:auto;width:auto;letter-spacing:.2px;position:relative}
 .tipo-selector button:hover{border-color:#c8d0dc;background:#f0f2f5;transform:none;filter:none}
-.tipo-selector button.active{border-color:#c8102e;background:#fff5f5;color:#c8102e;box-shadow:0 0 0 3px rgba(200,16,46,.1)}
-.tipo-selector .tipo-icon{font-size:28px;line-height:1}
-.tipo-selector .tipo-label{font-size:13px;font-weight:900}
+.tipo-selector button.active{border-color:#c8102e;background:#fff5f5;color:#c8102e;box-shadow:0 0 0 4px rgba(200,16,46,.12)}
+.tipo-selector button.active::after{content:"✓";position:absolute;top:6px;right:8px;width:22px;height:22px;border-radius:50%;background:#c8102e;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(200,16,46,.35)}
+.tipo-selector .tipo-icon{font-size:32px;line-height:1}
+.tipo-selector .tipo-label{font-size:14px;font-weight:900;letter-spacing:.3px;text-transform:uppercase}
+.tipo-hint{display:block;font-size:11.5px;font-weight:700;margin:2px 0 12px 0;padding:7px 12px;border-radius:8px;background:#fef3c7;color:#92400e;text-align:center;border:1px solid #fde68a;line-height:1.3}
+.tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
+
 .diag-box{background:#f8f9fa;border:1px solid #e0e5ea;border-radius:8px;padding:10px;font-family:monospace;font-size:11px;color:#333;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;margin-top:8px;display:none}
 .diag-box.show{display:block}
 .diag-box .ok{color:#176b3a;font-weight:800}
@@ -391,6 +397,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .name-modal-actions button{flex:1;padding:13px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
 .name-modal-no{background:#f0f2f5;color:#2c3440}
 .name-modal-yes{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;box-shadow:0 3px 12px rgba(23,107,58,.3)}
+.name-modal-yes:disabled{background:#cbd5e1;color:#64748b;box-shadow:none;cursor:not-allowed;opacity:.85}
+.name-modal-yes:disabled:hover{filter:none;transform:none}
 
 @media(max-width:900px){
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
@@ -402,51 +410,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .top-logos{flex-shrink:0;gap:6px;padding:4px 8px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:10px;border:1px solid #eef1f5}
   .top-logos img{height:22px;max-width:70px}
   .top-logos .divider{height:16px;background:#dfe3e8}
-
-  /* AUTH CARD em mobile: empilhado em 2 linhas dentro do próprio cartão */
-  .auth-card{
-    width:100%;
-    flex-direction:column;
-    align-items:stretch;
-    gap:10px;
-    padding:12px 14px;
-    border-radius:14px;
-  }
-  .auth-card-icon{
-    width:36px;height:36px;border-radius:10px;
-    display:inline-flex;
-  }
-  .auth-card-text{
-    display:none; /* esconder texto em mobile para layout compacto, ou usar flex-direction:row no topo */
-  }
-  /* Alternativa: linha superior com ícone + texto */
-  .auth-card::before{display:none}
-
-  /* Layout mobile: ícone à esquerda, texto ao lado, botão em baixo */
-  .auth-card{
-    display:grid;
-    grid-template-columns:auto 1fr;
-    grid-template-rows:auto auto;
-    column-gap:10px;
-    row-gap:10px;
-    align-items:center;
-  }
-  .auth-card-icon{grid-column:1;grid-row:1}
-  .auth-card-text{
-    display:flex;
-    grid-column:2;grid-row:1;
-    align-items:flex-start;
-    justify-content:center;
-  }
+  .auth-card{width:100%;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;row-gap:10px;align-items:center;padding:12px 14px;border-radius:14px;flex-direction:initial}
+  .auth-card-icon{grid-column:1;grid-row:1;width:36px;height:36px;border-radius:10px}
+  .auth-card-text{grid-column:2;grid-row:1;display:flex;align-items:flex-start;justify-content:center}
   .auth-card-text strong{font-size:12.5px;white-space:normal}
   .auth-card-text span{font-size:11px;white-space:normal}
-  .auth-card-btn{
-    grid-column:1 / -1;
-    grid-row:2;
-    width:100%;
-    justify-content:center;
-  }
-
+  .auth-card-btn{grid-column:1 / -1;grid-row:2;width:100%;justify-content:center}
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
   .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px;border-radius:0;position:relative;letter-spacing:.3px}
   .mobile-tab-bar button.active{color:#c8102e}
@@ -502,8 +471,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .pb-actions button:hover{transform:none;background:#fff;color:#084298;box-shadow:none}
   .bf-tabs button{font-size:12px;padding:13px 4px}
   .bf-modal-actions button{font-size:12px;padding:10px 12px;min-height:auto}
-  .tipo-selector button{padding:16px 10px}
-  .tipo-selector .tipo-icon{font-size:32px}
+  .tipo-selector button{padding:18px 10px}
+  .tipo-selector .tipo-icon{font-size:36px}
+  .tipo-selector .tipo-label{font-size:14px}
   .offset-row{grid-template-columns:56px 1fr 56px}
   .offset-value{font-size:11px}
   .pro-print-box{min-width:auto;padding:20px;border-radius:18px;max-width:88vw}
@@ -723,7 +693,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
               <button type="button" id="abrirBancoFrutaBtn">🍎🥬 Escolher do banco</button>
               <button type="button" id="fotoBancoBtn">📷 Fotografar para o banco</button>
             </div>
-            <div class="pb-hint">Escolhe uma imagem já existente ou fotografa um novo artigo — vais poder indicar se é <b>Fruta</b> ou <b>Legume</b>.</div>
+            <div class="pb-hint">Escolhe uma imagem já existente ou fotografa um novo artigo — vais sempre indicar se é <b>Fruta</b> ou <b>Legume</b> e o nome do artigo.</div>
           </div>
           <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo automaticamente</label>
           <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade · 1ª vez descarrega ~40MB)</label>
@@ -849,17 +819,18 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3 id="saveBancoTitle">📷 Guardar foto no banco</h3>
-    <p id="saveBancoDesc">Escolhe onde guardar e dá um nome ao artigo.</p>
-    <span class="tipo-label-title">Onde guardar?</span>
+    <p id="saveBancoDesc">Escolhe a pasta de destino e dá um nome ao artigo.</p>
+    <span class="tipo-label-title">1. Escolha a pasta de destino *</span>
     <div class="tipo-selector" id="saveBancoTipo">
       <button type="button" data-tipo="fruta"><span class="tipo-icon">🍎</span><span class="tipo-label">Fruta</span></button>
       <button type="button" data-tipo="legume"><span class="tipo-icon">🥬</span><span class="tipo-label">Legume</span></button>
     </div>
-    <span class="tipo-label-title">Nome do artigo</span>
+    <div class="tipo-hint" id="saveBancoTipoHint">⚠️ Escolha obrigatória: Fruta ou Legume</div>
+    <span class="tipo-label-title">2. Nome do artigo *</span>
     <input id="saveBancoName" type="text" placeholder="Ex.: MAÇÃ GALA NACIONAL" style="text-transform:uppercase;font-weight:800;font-size:16px;padding:14px">
     <div class="name-modal-actions">
       <button type="button" class="name-modal-no" id="saveBancoCancel">Cancelar</button>
-      <button type="button" class="name-modal-yes" id="saveBancoConfirm">Guardar</button>
+      <button type="button" class="name-modal-yes" id="saveBancoConfirm" disabled>Guardar</button>
     </div>
   </div>
 </div>
@@ -1050,34 +1021,92 @@ function confirmDialog(msg) {
   });
 }
 
-function pedirNomeTipoArtigo(valorInicial, tipoInicial){
+/* =========================================================
+   MODAL: PERGUNTA OBRIGATÓRIA DE PASTA + NOME
+   - tipoSel começa SEMPRE em null (obriga escolha ativa)
+   - Botão "Guardar" desativado até tipo + nome definidos
+   - Mostra dica visual com a pasta de destino
+   ========================================================= */
+function pedirNomeTipoArtigo(valorInicial){
   return new Promise(function(resolve){
-    const modal = document.getElementById("saveBancoModal");
-    const input = document.getElementById("saveBancoName");
-    const boxTipo = document.getElementById("saveBancoTipo");
+    const modal     = document.getElementById("saveBancoModal");
+    const input     = document.getElementById("saveBancoName");
+    const boxTipo   = document.getElementById("saveBancoTipo");
+    const hintEl    = document.getElementById("saveBancoTipoHint");
+    const confirmBtn= document.getElementById("saveBancoConfirm");
+
     input.value = String(valorInicial || "").toUpperCase();
-    let tipoSel = (tipoInicial === 'legume') ? 'legume' : 'fruta';
-    function marcar(){ boxTipo.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.tipo === tipoSel); }); }
-    marcar(); boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = function(){ tipoSel = b.dataset.tipo; marcar(); input.focus(); }; });
-    modal.classList.add("show"); setTimeout(function(){ input.focus(); input.select(); }, 50);
+    let tipoSel = null; // ⚠️ OBRIGATÓRIO: sem pré-seleção
+
+    function atualizarEstado(){
+      // Marcar botão ativo
+      boxTipo.querySelectorAll("button").forEach(function(b){
+        b.classList.toggle("active", b.dataset.tipo === tipoSel);
+      });
+      // Validação
+      const nomeOk = (input.value || "").trim().length > 0;
+      const tipoOk = (tipoSel === "fruta" || tipoSel === "legume");
+      confirmBtn.disabled = !(nomeOk && tipoOk);
+      // Dica visual
+      if (hintEl){
+        if (!tipoOk){
+          hintEl.textContent = "⚠️ Escolha obrigatória: Fruta ou Legume";
+          hintEl.removeAttribute("data-ok");
+        } else {
+          const pasta = (tipoSel === "legume") ? "Banco de Legumes" : "Banco de Frutas";
+          hintEl.textContent = "📁 Vai ser guardado em: " + pasta;
+          hintEl.setAttribute("data-ok", "1");
+        }
+      }
+    }
+
+    // Handlers
+    boxTipo.querySelectorAll("button").forEach(function(b){
+      b.onclick = function(){
+        tipoSel = b.dataset.tipo;
+        atualizarEstado();
+        if (input.value.trim()) input.focus();
+      };
+    });
+    input.oninput = atualizarEstado;
+
+    // Estado inicial
+    atualizarEstado();
+    modal.classList.add("show");
+    setTimeout(function(){
+      // Se tiver nome, focar no input; caso contrário, foco no seletor
+      if (input.value.trim()) { input.focus(); input.select(); }
+    }, 60);
+
     function fechar(r){
       modal.classList.remove("show");
-      document.getElementById("saveBancoConfirm").onclick = null;
+      confirmBtn.onclick = null;
       document.getElementById("saveBancoCancel").onclick = null;
-      input.onkeydown = null; modal.onclick = null;
-      boxTipo.querySelectorAll('button').forEach(function(b){ b.onclick = null; });
+      input.onkeydown = null;
+      input.oninput = null;
+      modal.onclick = null;
+      boxTipo.querySelectorAll("button").forEach(function(b){ b.onclick = null; });
       resolve(r);
     }
-    document.getElementById("saveBancoConfirm").onclick = function(){
+
+    confirmBtn.onclick = function(){
       const v = (input.value || "").trim().toUpperCase();
-      if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
+      if (!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
+      if (tipoSel !== "fruta" && tipoSel !== "legume"){
+        toast("Escolha se é Fruta ou Legume.", "warning");
+        return;
+      }
       fechar({ nome: v, tipo: tipoSel });
     };
     document.getElementById("saveBancoCancel").onclick = function(){ fechar(null); };
-    input.onkeydown = function(e){ if(e.key==="Enter"){ e.preventDefault(); document.getElementById("saveBancoConfirm").click(); } if(e.key==="Escape"){ e.preventDefault(); fechar(null); } };
-    modal.onclick = function(e){ if(e.target === modal) fechar(null); };
+    input.onkeydown = function(e){
+      if (e.key === "Enter"){ e.preventDefault(); if (!confirmBtn.disabled) confirmBtn.click(); }
+      if (e.key === "Escape"){ e.preventDefault(); fechar(null); }
+    };
+    modal.onclick = function(e){ if (e.target === modal) fechar(null); };
   });
 }
+
 function pedirEmail(){
   return new Promise(function(resolve){
     const modal = document.getElementById("emailModal");
@@ -1615,7 +1644,8 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
     renderBancoFruta($("buscaBancoFruta").value);
     try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     setStatus("");
-    toast("Foto \"" + r.nome + "\" guardada no banco", "success", 4500);
+    const pasta = (tipo === "legume") ? "Banco de Legumes" : "Banco de Frutas";
+    toast("Foto \"" + r.nome + "\" guardada em " + pasta, "success", 4500);
   }catch(e){
     setStatus("Erro ao guardar no banco: " + e.message, "error");
     toast("Erro ao guardar foto no banco", "error");
@@ -1625,7 +1655,8 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
 async function perguntarGuardarNoBanco(){
   if(!globalProcessedPhoto) return;
   if(!await confirmDialog("Guardar esta imagem no banco de imagens?")) return;
-  const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro);
+  // ⚠️ Sem pré-seleção: o utilizador tem de escolher a pasta
+  const info = await pedirNomeTipoArtigo($("product").value);
   if(!info) return;
   try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
 }
@@ -2436,7 +2467,8 @@ $("camSnap").addEventListener("click", async function(){
     setStatus("A processar imagem…", "loading");
     let fotoFinal = dataUrl;
     if($("autoRemoveBg").checked){ try{ fotoFinal = await removeBackgroundSmart(dataUrl); }catch(e){} }
-    const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro);
+    // ⚠️ Pergunta SEMPRE a pasta (sem pré-seleção)
+    const info = await pedirNomeTipoArtigo($("product").value);
     if(!info){ setStatus(""); return; }
     try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); }
     catch(e){ }
