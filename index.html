@@ -21,13 +21,15 @@ html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
 .app{max-width:1400px;margin:0 auto;padding:20px}
 .top-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:14px 24px;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:20px;gap:16px;flex-wrap:wrap}
+.header-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
 .top-header h1{margin:0;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.4px;text-transform:uppercase;color:#1a1f28}
 .h1-tag{display:inline-block;font-size:1em;margin:0;transform:translateY(-1px)}
+.google-auth-wrap{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0}
 .top-logos{display:flex;align-items:center;gap:14px}
 .top-logos img{height:40px;max-width:150px;object-fit:contain}
 .top-logos .divider{width:1px;height:30px;background:#e0e0e0}
 .grid{display:grid;grid-template-columns:440px 1fr;gap:24px;align-items:start}
-@media(max-width:900px){.top-header{flex-direction:column;align-items:flex-start}.grid{grid-template-columns:1fr}.preview-container{position:relative;top:0}}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.preview-container{position:relative;top:0}}
 .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
 label{display:block;font-weight:700;margin:12px 0 5px;font-size:13px}
 input,select,textarea{width:100%;padding:9px 12px;border:1px solid #bbb;border-radius:7px;font-size:14px;font-family:inherit;background:#fff;color:var(--text)}
@@ -333,11 +335,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
   .app{max-width:100%;padding:0 12px 12px 12px}
-  .top-header{padding:12px 16px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:row;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;background:#fff}
-  .top-header h1{font-size:14px;line-height:1.15;font-weight:900;flex:1;letter-spacing:.6px;color:#1a1f28;display:flex;align-items:center;gap:6px;text-transform:uppercase}
-  .top-logos{flex-shrink:0;gap:8px;padding:5px 10px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:12px;border:1px solid #eef1f5}
-  .top-logos img{height:24px;max-width:80px}
-  .top-logos .divider{height:18px;background:#dfe3e8}
+  .top-header{padding:12px 14px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:column;align-items:stretch;gap:10px;flex-wrap:nowrap}
+  .header-left{justify-content:space-between;flex-wrap:nowrap;width:100%;gap:10px}
+  .top-header h1{font-size:13px;line-height:1.15;font-weight:900;flex:1 1 auto;min-width:0;letter-spacing:.5px;color:#1a1f28;gap:5px;text-transform:uppercase}
+  .top-logos{flex-shrink:0;gap:6px;padding:4px 8px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:10px;border:1px solid #eef1f5}
+  .top-logos img{height:22px;max-width:70px}
+  .top-logos .divider{height:16px;background:#dfe3e8}
+  .google-auth-wrap{width:100%;justify-content:center;min-height:44px}
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
   .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px;border-radius:0;position:relative;letter-spacing:.3px}
   .mobile-tab-bar button.active{color:#c8102e}
@@ -440,20 +444,21 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <button type="button" data-tab="fila">🛒 Fila <span class="tab-badge" id="tabQueueBadge">0</span></button>
   </nav>
   <header class="top-header">
-    <h1><span class="h1-tag">🏷️</span> ETIQUETAS DE PREÇOS</h1>
-    
-    <!-- BOTÃO GOOGLE OAUTH -->
-    <div id="g_id_onload"
-         data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
+    <div class="header-left">
+      <h1><span class="h1-tag">🏷️</span> ETIQUETAS DE PREÇOS</h1>
+      <div class="top-logos">
+        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=.3">
+        <div class="divider"></div>
+        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=.3">
+      </div>
     </div>
-    <div class="g_id_signin" data-type="standard"></div>
-
-    <div class="top-logos">
-      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="Balcão Agrícola" onerror="this.style.opacity=.3">
-      <div class="divider"></div>
-      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=.3">
+    <div class="google-auth-wrap">
+      <div id="g_id_onload"
+           data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin" data-type="standard"></div>
     </div>
   </header>
   <div class="grid">
@@ -817,11 +822,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const CACHE_KEY = 'balcao_cache_v27';
 
-let jwtToken = sessionStorage.getItem("google_jwt") || null;
+let jwtToken = null;
+try { jwtToken = sessionStorage.getItem("google_jwt") || null; } catch(e){}
 
 window.handleCredentialResponse = function(response) {
   jwtToken = response.credential;
-  sessionStorage.setItem("google_jwt", jwtToken);
+  try { sessionStorage.setItem("google_jwt", jwtToken); } catch(e){}
   toast("✅ Login efetuado com sucesso!", "success");
   carregarTudo();
 };
@@ -1020,18 +1026,18 @@ async function api(fn, payload, retries){
      throw new Error("Não autenticado.");
   }
   try {
-    const resp = await fetch(API_URL, { 
-      method:'POST', 
-      headers:{'Content-Type':'application/json', 'Authorization': 'Bearer ' + jwtToken}, 
-      body: JSON.stringify({ fn:fn, payload:payload }) 
+    const resp = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization': 'Bearer ' + jwtToken},
+      body: JSON.stringify({ fn:fn, payload:payload })
     });
-    
+
     if(resp.status === 401) {
-      sessionStorage.removeItem("google_jwt");
+      try { sessionStorage.removeItem("google_jwt"); } catch(e){}
       jwtToken = null;
       throw new Error("Sessão expirada. Por favor, faça login novamente.");
     }
-    
+
     const texto = await resp.text();
     if(!resp.ok) throw new Error('HTTP ' + resp.status);
     let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta não-JSON'); }
@@ -1087,9 +1093,9 @@ async function carregarTudo(){
       if(c.t) setStatus('⚡ Cache de ' + new Date(c.t).toLocaleTimeString('pt-PT') + ' — a atualizar…');
     }
   }catch(e){ console.warn("Erro IndexedDB", e); }
-  
-  if(!jwtToken) return; // Se não tem login, aguarda pelo utilizador
-  
+
+  if(!jwtToken) return;
+
   setStatus('A atualizar do Drive…');
   const [rProd, rBanco] = await Promise.all([
     api('listarProdutos').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; }),
@@ -1098,9 +1104,9 @@ async function carregarTudo(){
   if(rProd.ok)  savedProducts = ensureArray(rProd.v);
   if(rBanco.ok) bancoFruta     = ensureArray(rBanco.v);
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-  
+
   try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){ console.warn(e); }
-  
+
   if(!rProd.ok && !rBanco.ok){ setStatus('❌ Erro ao ler do Drive.', 'error'); }
   else if(!rProd.ok || !rBanco.ok){ setStatus('⚠️ Ligação parcial.', 'error'); }
   else { setStatus('✅ Dados atualizados.','success'); }
@@ -2064,7 +2070,7 @@ function blobToBase64(blob){
 let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
   if(_emailSending){ toast("Email já está a ser enviado…", "warning"); return; }
-  
+
   const editorFmt = $("presetSizes").value;
   let itemsContados = 0;
   if(printQueue.length===0){
@@ -2072,7 +2078,7 @@ async function enviarEtiquetasPorEmail(){
   } else {
     printQueue.forEach(function(q){ itemsContados += q.copies; });
   }
-  
+
   const MAX_ETIQUETAS = 45;
   if(itemsContados > MAX_ETIQUETAS){
     const msg = `Estás a tentar gerar ${itemsContados} etiquetas. O limite seguro para não bloquear o dispositivo é de ${MAX_ETIQUETAS} etiquetas por email. Divide a impressão na Fila em lotes mais pequenos.`;
@@ -2146,16 +2152,16 @@ async function openCamera(){
   } catch(e){ toast("Erro câmara: " + e.message, "error"); closeCamera(); }
 }
 function closeCamera(){
-  if(camStream){ 
-    camStream.getTracks().forEach(function(t){ t.stop(); }); 
-    camStream = null; 
+  if(camStream){
+    camStream.getTracks().forEach(function(t){ t.stop(); });
+    camStream = null;
   }
   const video = $("camVideo");
   if(video){
     video.pause();
     video.removeAttribute('src');
     video.srcObject = null;
-    video.load(); 
+    video.load();
   }
   $("cameraModal").classList.remove("show");
   setTimeout(function(){ fotoBancoModo = false; }, 300);
@@ -2195,7 +2201,7 @@ async function closeScanner(){
     } catch(e) {
       console.warn("Erro a parar scanner", e);
     }
-    scanner = null; 
+    scanner = null;
   }
   $("scannerModal").classList.remove("show");
 }
