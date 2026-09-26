@@ -28,13 +28,14 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 .top-logos .divider{width:1px;height:30px;background:#e0e0e0}
 
 /* ============ AUTH CARD (GOOGLE) ============ */
-.auth-card{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 12px;background:linear-gradient(135deg,#fff 0%,#fafbfc 100%);border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 2px 10px rgba(15,23,42,.05);flex-shrink:0;transition:box-shadow .2s ease,transform .2s ease}
+.auth-card{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 12px;background:linear-gradient(135deg,#fff 0%,#fafbfc 100%);border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 2px 10px rgba(15,23,42,.05);flex-shrink:0;transition:box-shadow .2s ease;overflow:hidden}
 .auth-card:hover{box-shadow:0 4px 16px rgba(15,23,42,.08)}
 .auth-card-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#c8102e 0%,#a80d24 100%);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(200,16,46,.28)}
 .auth-card-text{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.25;gap:1px}
-.auth-card-text strong{font-size:12.5px;font-weight:800;color:#1a1f28;letter-spacing:.2px;text-transform:uppercase}
-.auth-card-text span{font-size:11px;color:#64748b;font-weight:500;white-space:nowrap}
-.auth-card-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auth-card-text strong{font-size:12.5px;font-weight:800;color:#1a1f28;letter-spacing:.2px;text-transform:uppercase;white-space:nowrap}
+.auth-card-text span{font-size:11px;color:#64748b;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.auth-card-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;max-width:100%;overflow:hidden}
+.auth-card-btn > div{max-width:100%}
 
 .grid{display:grid;grid-template-columns:440px 1fr;gap:24px;align-items:start}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.preview-container{position:relative;top:0}}
@@ -251,7 +252,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 @media print{
   @page{size:A4 portrait;margin:0!important}
   html,body{width:210mm!important;height:100%!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.mobile-tab-bar{display:none!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.mobile-tab-bar,.top-header{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   .print-page-wrapper{width:210mm!important;height:297mm!important;page-break-after:always!important;break-after:page!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important}
@@ -360,7 +361,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .toast.show{opacity:1;transform:translateX(0) scale(1)}
 .toast-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .toast-body{flex:1;min-width:0;word-break:break-word}
-.toast-close{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:#94a3b8;cursor:pointer;padding:0;font-size:13px;font-weight:900;line-height:1;margin:0;width:auto;min-width:22px;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.toast-close{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:#94a3b8;cursor:pointer;padding:0;font-size:13px;font-weight:900;line-height:1;margin:0;min-width:22px;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .toast-close:hover{background:#f1f5f9;color:#475569;filter:none}
 .toast.success{border-left-color:#16a34a}
 .toast.success .toast-icon{background:linear-gradient(135deg,#22c55e,#16a34a)}
@@ -395,16 +396,57 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
   .app{max-width:100%;padding:0 12px 12px 12px}
-  .top-header{padding:12px 14px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:column;align-items:stretch;gap:10px;flex-wrap:nowrap}
-  .header-left{justify-content:space-between;flex-wrap:nowrap;width:100%;gap:10px}
+  .top-header{padding:12px 14px;margin:0 -12px 12px -12px;border-radius:0;border:none;border-bottom:1px solid #e8e8e8;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-direction:column;align-items:stretch;gap:12px;flex-wrap:nowrap}
+  .header-left{justify-content:space-between;flex-wrap:nowrap;width:100%;gap:10px;align-items:center}
   .top-header h1{font-size:13px;line-height:1.15;font-weight:900;flex:1 1 auto;min-width:0;letter-spacing:.5px;color:#1a1f28;gap:5px;text-transform:uppercase}
   .top-logos{flex-shrink:0;gap:6px;padding:4px 8px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:10px;border:1px solid #eef1f5}
   .top-logos img{height:22px;max-width:70px}
   .top-logos .divider{height:16px;background:#dfe3e8}
-  .auth-card{width:100%;padding:10px 12px;justify-content:space-between}
-  .auth-card-icon{width:38px;height:38px;border-radius:11px}
-  .auth-card-text strong{font-size:11.5px}
-  .auth-card-text span{font-size:10.5px}
+
+  /* AUTH CARD em mobile: empilhado em 2 linhas dentro do próprio cartão */
+  .auth-card{
+    width:100%;
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    padding:12px 14px;
+    border-radius:14px;
+  }
+  .auth-card-icon{
+    width:36px;height:36px;border-radius:10px;
+    display:inline-flex;
+  }
+  .auth-card-text{
+    display:none; /* esconder texto em mobile para layout compacto, ou usar flex-direction:row no topo */
+  }
+  /* Alternativa: linha superior com ícone + texto */
+  .auth-card::before{display:none}
+
+  /* Layout mobile: ícone à esquerda, texto ao lado, botão em baixo */
+  .auth-card{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto;
+    column-gap:10px;
+    row-gap:10px;
+    align-items:center;
+  }
+  .auth-card-icon{grid-column:1;grid-row:1}
+  .auth-card-text{
+    display:flex;
+    grid-column:2;grid-row:1;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  .auth-card-text strong{font-size:12.5px;white-space:normal}
+  .auth-card-text span{font-size:11px;white-space:normal}
+  .auth-card-btn{
+    grid-column:1 / -1;
+    grid-row:2;
+    width:100%;
+    justify-content:center;
+  }
+
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
   .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px;border-radius:0;position:relative;letter-spacing:.3px}
   .mobile-tab-bar button.active{color:#c8102e}
@@ -473,6 +515,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .name-modal-box{border-radius:20px;padding:22px 20px}
   .name-modal-box h3{font-size:17px}
   .name-modal-actions button{padding:15px;font-size:15px;min-height:52px;border-radius:13px}
+}
+@media(max-width:420px){
+  .auth-card{padding:10px 12px;gap:8px}
+  .auth-card-icon{width:34px;height:34px;border-radius:10px}
+  .auth-card-text strong{font-size:11.5px}
+  .auth-card-text span{font-size:10.5px}
+  .top-header h1{font-size:12px}
 }
 </style>
 </head>
@@ -926,9 +975,6 @@ function sanitizarFormatoBD(data){
 
 /* =========================================================
    SISTEMA DE NOTIFICAÇÕES UNIFICADO
-   - toast() -> notificação flutuante (transiente)
-   - setStatus() -> banner inline (estado persistente)
-   - SEM duplicação entre os dois
    ========================================================= */
 const TOAST_ICONS = { success: "✓", error: "✕", warning: "!", info: "i" };
 let _lastToastMsg = "", _lastToastTime = 0;
@@ -936,7 +982,6 @@ let _lastToastMsg = "", _lastToastTime = 0;
 function toast(msg, type, duration) {
   if (!msg) return;
   type = (type || "info").toLowerCase();
-  // Deduplicação: não repetir a mesma mensagem em menos de 2s
   const now = Date.now();
   if (msg === _lastToastMsg && (now - _lastToastTime) < 2000) return;
   _lastToastMsg = msg; _lastToastTime = now;
@@ -974,7 +1019,6 @@ function setStatus(msg, type, opts){
   if (!el) return;
   opts = opts || {};
   if (_statusTimer){ clearTimeout(_statusTimer); _statusTimer = null; }
-
   if (!msg){
     el.textContent = "";
     el.classList.remove("show");
@@ -985,8 +1029,6 @@ function setStatus(msg, type, opts){
   el.textContent = msg;
   el.setAttribute("data-type", type);
   el.classList.add("show");
-
-  // Auto-dismiss apenas para success/info; erros ficam visíveis
   if (type === "success" || type === "info"){
     _statusTimer = setTimeout(function(){
       if (el.textContent === msg){
@@ -997,7 +1039,6 @@ function setStatus(msg, type, opts){
   }
 }
 
-/* Confirmação modal */
 function confirmDialog(msg) {
   return new Promise(function(resolve){
     const ov = document.getElementById('confirmOverlay');
@@ -1648,7 +1689,6 @@ function setValidationState(){
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
     if(!valid){ errors.push("O código de barras introduzido não é válido."); markFieldError("ean", true); }
   }
-  // Erros ficam visíveis inline; toast só na primeira vez que aparece
   if(errors.length){ setStatus(errors[0], "error"); }
   else { setStatus(""); }
 }
