@@ -10,7 +10,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Etiquetas de Preços</title>
 
-<!-- Novas Bibliotecas (IndexedDB e Google Login) -->
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -24,10 +23,19 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
 .header-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
 .top-header h1{margin:0;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.4px;text-transform:uppercase;color:#1a1f28}
 .h1-tag{display:inline-block;font-size:1em;margin:0;transform:translateY(-1px)}
-.google-auth-wrap{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0}
 .top-logos{display:flex;align-items:center;gap:14px}
 .top-logos img{height:40px;max-width:150px;object-fit:contain}
 .top-logos .divider{width:1px;height:30px;background:#e0e0e0}
+
+/* ============ AUTH CARD (GOOGLE) ============ */
+.auth-card{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 12px;background:linear-gradient(135deg,#fff 0%,#fafbfc 100%);border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 2px 10px rgba(15,23,42,.05);flex-shrink:0;transition:box-shadow .2s ease,transform .2s ease}
+.auth-card:hover{box-shadow:0 4px 16px rgba(15,23,42,.08)}
+.auth-card-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#c8102e 0%,#a80d24 100%);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(200,16,46,.28)}
+.auth-card-text{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.25;gap:1px}
+.auth-card-text strong{font-size:12.5px;font-weight:800;color:#1a1f28;letter-spacing:.2px;text-transform:uppercase}
+.auth-card-text span{font-size:11px;color:#64748b;font-weight:500;white-space:nowrap}
+.auth-card-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
 .grid{display:grid;grid-template-columns:440px 1fr;gap:24px;align-items:start}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.preview-container{position:relative;top:0}}
 .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
@@ -64,9 +72,23 @@ button:active:not(:disabled){transform:scale(.97)}
 .actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
 .size-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .size-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-#appStatus{margin:8px 0;padding:9px 12px;border-radius:8px;font:600 13px/1.35 system-ui,sans-serif;display:none}
-#appStatus[data-type=error]{display:block;color:#8a1c1c;background:#fff0f0;border:1px solid #f5b5b5}
-#appStatus[data-type=success]{display:block;color:#176b3a;background:#eaf7ef;border:1px solid #9bd5b1}
+
+/* ============ INLINE STATUS BANNER ============ */
+#appStatus{display:none;align-items:center;gap:10px;margin:10px 0;padding:11px 14px;border-radius:10px;font:700 13px/1.4 system-ui,-apple-system,sans-serif;border:1px solid transparent;transition:background .2s,border-color .2s}
+#appStatus.show{display:flex}
+#appStatus[data-type=error]{color:#7f1d1d;background:#fef2f2;border-color:#fecaca}
+#appStatus[data-type=success]{color:#14532d;background:#f0fdf4;border-color:#bbf7d0}
+#appStatus[data-type=warning]{color:#78350f;background:#fffbeb;border-color:#fde68a}
+#appStatus[data-type=info]{color:#1e3a8a;background:#eff6ff;border-color:#bfdbfe}
+#appStatus[data-type=loading]{color:#1e3a8a;background:#eff6ff;border-color:#bfdbfe}
+#appStatus::before{content:"";flex-shrink:0;width:16px;height:16px;border-radius:50%;display:block}
+#appStatus[data-type=error]::before{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.15)}
+#appStatus[data-type=success]::before{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+#appStatus[data-type=warning]::before{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}
+#appStatus[data-type=info]::before{background:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+#appStatus[data-type=loading]::before{background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;animation:statusSpin .7s linear infinite;box-shadow:none;width:14px;height:14px}
+@keyframes statusSpin{to{transform:rotate(360deg)}}
+
 details.drawer{margin-top:12px;background:var(--panel-soft);border:1px solid var(--border);border-radius:8px;font-size:13px}
 details.drawer summary{cursor:pointer;font-weight:700;padding:12px;background:var(--panel-soft);border-radius:8px;user-select:none;list-style:none}
 details.drawer summary::-webkit-details-marker{display:none}
@@ -331,6 +353,44 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .email-modal-actions button{flex:1;padding:14px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
 .email-modal-no{background:#f0f2f5;color:#2c3440}
 .email-modal-yes{background:linear-gradient(135deg,#6b21a8,#4c1d95);color:#fff;box-shadow:0 3px 12px rgba(107,33,168,.3)}
+
+/* ============ TOASTS PROFISSIONAIS ============ */
+.toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:380px}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(15,23,42,.18),0 2px 6px rgba(15,23,42,.08);font-weight:600;font-size:14px;line-height:1.35;color:#1a1f28;border-left:4px solid #64748b;opacity:0;transform:translateX(28px) scale(.96);transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:auto;min-width:260px}
+.toast.show{opacity:1;transform:translateX(0) scale(1)}
+.toast-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.toast-body{flex:1;min-width:0;word-break:break-word}
+.toast-close{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:#94a3b8;cursor:pointer;padding:0;font-size:13px;font-weight:900;line-height:1;margin:0;width:auto;min-width:22px;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.toast-close:hover{background:#f1f5f9;color:#475569;filter:none}
+.toast.success{border-left-color:#16a34a}
+.toast.success .toast-icon{background:linear-gradient(135deg,#22c55e,#16a34a)}
+.toast.error{border-left-color:#dc2626}
+.toast.error .toast-icon{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.toast.warning{border-left-color:#f59e0b}
+.toast.warning .toast-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+.toast.info{border-left-color:#2563eb}
+.toast.info .toast-icon{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-overlay.show{display:flex}
+.confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.confirm-box p{margin:0 0 18px 0;font-size:15px;font-weight:600;line-height:1.4;color:#222;white-space:pre-line}
+.confirm-box .confirm-actions{display:flex;gap:10px}
+.confirm-box .confirm-actions button{flex:1;padding:12px;font-size:14px;width:auto}
+.confirm-box .confirm-actions .confirm-no{background:#f0f2f5;border:1px solid #ccc;color:#222}
+.confirm-box .confirm-actions .confirm-yes{background:#c8102e;color:#fff;border-color:#c8102e}
+.name-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100002;align-items:center;justify-content:center;padding:20px}
+.name-modal.show{display:flex}
+.name-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:95vh;overflow:auto}
+.name-modal-box h3{margin:0 0 6px 0;font-size:16px;font-weight:900;color:#1a1f28}
+.name-modal-box p{margin:0 0 14px 0;font-size:13px;color:#4a5560;line-height:1.4}
+.name-modal-box input{width:100%;margin-bottom:16px}
+.name-modal-box .tipo-label-title{display:block;font-size:11px;font-weight:900;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.name-modal-actions{display:flex;gap:10px;margin-top:6px}
+.name-modal-actions button{flex:1;padding:13px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
+.name-modal-no{background:#f0f2f5;color:#2c3440}
+.name-modal-yes{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;box-shadow:0 3px 12px rgba(23,107,58,.3)}
+
 @media(max-width:900px){
   html,body{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
   body{background:#eef1f4;font-size:15px;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -341,7 +401,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .top-logos{flex-shrink:0;gap:6px;padding:4px 8px;background:linear-gradient(135deg,#fafbfc,#f0f2f5);border-radius:10px;border:1px solid #eef1f5}
   .top-logos img{height:22px;max-width:70px}
   .top-logos .divider{height:16px;background:#dfe3e8}
-  .google-auth-wrap{width:100%;justify-content:center;min-height:44px}
+  .auth-card{width:100%;padding:10px 12px;justify-content:space-between}
+  .auth-card-icon{width:38px;height:38px;border-radius:11px}
+  .auth-card-text strong{font-size:11.5px}
+  .auth-card-text span{font-size:10.5px}
   .mobile-tab-bar{display:flex;position:sticky;top:0;z-index:8000;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid rgba(0,0,0,.06);margin:0 -12px 14px -12px;padding:0;box-shadow:0 4px 20px rgba(0,0,0,.05);padding-top:env(safe-area-inset-top,0px)}
   .mobile-tab-bar button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:11px;padding:12px 4px;border-radius:0;position:relative;letter-spacing:.3px}
   .mobile-tab-bar button.active{color:#c8102e}
@@ -385,6 +448,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
   .bf-card img{height:100px}
   .toast-container{top:auto;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:none;gap:8px}
+  .toast{min-width:auto;font-size:13.5px;padding:13px 14px;transform:translateY(20px) scale(.98)}
+  .toast.show{transform:translateY(0) scale(1)}
   .confirm-overlay{padding:16px}
   .confirm-box{border-radius:18px;padding:22px 20px}
   .sheet-preview{padding:0}
@@ -402,33 +467,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .pro-print-box{min-width:auto;padding:20px;border-radius:18px;max-width:88vw}
   .pro-print-box strong{font-size:16px}
   .email-modal-box{border-radius:20px;padding:22px 20px}
+  #appStatus{font-size:12.5px;padding:10px 12px}
 }
-.toast-container{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:340px}
-.toast{background:#fff;border-left:4px solid #666;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);font-weight:600;font-size:13px;opacity:0;transform:translateX(20px);transition:all .25s ease;pointer-events:auto;line-height:1.35;color:#222}
-.toast.show{opacity:1;transform:translateX(0)}
-.toast.success{border-left-color:#176b3a;color:#0e4a26}
-.toast.error{border-left-color:#c0392b;color:#7a221a}
-.toast.warning{border-left-color:#f6c23e;color:#7c5a0c}
-.toast.info{border-left-color:#084298;color:#052c66}
-.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
-.confirm-overlay.show{display:flex}
-.confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.confirm-box p{margin:0 0 18px 0;font-size:15px;font-weight:600;line-height:1.4;color:#222;white-space:pre-line}
-.confirm-box .confirm-actions{display:flex;gap:10px}
-.confirm-box .confirm-actions button{flex:1;padding:12px;font-size:14px;width:auto}
-.confirm-box .confirm-actions .confirm-no{background:#f0f2f5;border:1px solid #ccc;color:#222}
-.confirm-box .confirm-actions .confirm-yes{background:#c8102e;color:#fff;border-color:#c8102e}
-.name-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100002;align-items:center;justify-content:center;padding:20px}
-.name-modal.show{display:flex}
-.name-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:95vh;overflow:auto}
-.name-modal-box h3{margin:0 0 6px 0;font-size:16px;font-weight:900;color:#1a1f28}
-.name-modal-box p{margin:0 0 14px 0;font-size:13px;color:#4a5560;line-height:1.4}
-.name-modal-box input{width:100%;margin-bottom:16px}
-.name-modal-box .tipo-label-title{display:block;font-size:11px;font-weight:900;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
-.name-modal-actions{display:flex;gap:10px;margin-top:6px}
-.name-modal-actions button{flex:1;padding:13px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
-.name-modal-no{background:#f0f2f5;color:#2c3440}
-.name-modal-yes{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;box-shadow:0 3px 12px rgba(23,107,58,.3)}
 @media(max-width:900px){
   .name-modal-box{border-radius:20px;padding:22px 20px}
   .name-modal-box h3{font-size:17px}
@@ -452,13 +492,31 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="Amanhecer" onerror="this.style.opacity=.3">
       </div>
     </div>
-    <div class="google-auth-wrap">
-      <div id="g_id_onload"
-           data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
-           data-callback="handleCredentialResponse"
-           data-auto_prompt="false">
+    <div class="auth-card">
+      <div class="auth-card-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+          <path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/>
+        </svg>
       </div>
-      <div class="g_id_signin" data-type="standard"></div>
+      <div class="auth-card-text">
+        <strong>Acesso ao sistema</strong>
+        <span>Inicie sessão para continuar</span>
+      </div>
+      <div class="auth-card-btn">
+        <div id="g_id_onload"
+             data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-theme="outline"
+             data-size="large"
+             data-text="signin_with"
+             data-shape="pill"
+             data-logo_alignment="left">
+        </div>
+      </div>
     </div>
   </header>
   <div class="grid">
@@ -729,7 +787,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </div>
 </div>
 <div id="printZone"></div>
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer" role="region" aria-label="Notificações" aria-live="polite"></div>
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg"></p>
@@ -828,7 +886,7 @@ try { jwtToken = sessionStorage.getItem("google_jwt") || null; } catch(e){}
 window.handleCredentialResponse = function(response) {
   jwtToken = response.credential;
   try { sessionStorage.setItem("google_jwt", jwtToken); } catch(e){}
-  toast("✅ Login efetuado com sucesso!", "success");
+  toast("Sessão iniciada com sucesso", "success");
   carregarTudo();
 };
 
@@ -866,13 +924,80 @@ function sanitizarFormatoBD(data){
   return data;
 }
 
+/* =========================================================
+   SISTEMA DE NOTIFICAÇÕES UNIFICADO
+   - toast() -> notificação flutuante (transiente)
+   - setStatus() -> banner inline (estado persistente)
+   - SEM duplicação entre os dois
+   ========================================================= */
+const TOAST_ICONS = { success: "✓", error: "✕", warning: "!", info: "i" };
+let _lastToastMsg = "", _lastToastTime = 0;
+
 function toast(msg, type, duration) {
-  type = type || 'info'; duration = duration || (type === 'error' ? 5000 : 3000);
-  const c = document.getElementById('toastContainer'); if (!c) return;
-  const el = document.createElement('div'); el.className = 'toast ' + type; el.textContent = msg;
-  c.appendChild(el); requestAnimationFrame(function(){ el.classList.add('show'); });
-  setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, duration);
+  if (!msg) return;
+  type = (type || "info").toLowerCase();
+  // Deduplicação: não repetir a mesma mensagem em menos de 2s
+  const now = Date.now();
+  if (msg === _lastToastMsg && (now - _lastToastTime) < 2000) return;
+  _lastToastMsg = msg; _lastToastTime = now;
+
+  duration = duration || (type === "error" ? 5500 : type === "warning" ? 4500 : 3200);
+  const c = document.getElementById("toastContainer");
+  if (!c) return;
+
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.setAttribute("role", "alert");
+  el.innerHTML =
+    '<span class="toast-icon">' + (TOAST_ICONS[type] || "•") + '</span>' +
+    '<span class="toast-body"></span>' +
+    '<button class="toast-close" type="button" aria-label="Fechar">✕</button>';
+  el.querySelector(".toast-body").textContent = msg;
+
+  let dismissed = false;
+  function dismiss(){
+    if (dismissed) return;
+    dismissed = true;
+    el.classList.remove("show");
+    setTimeout(function(){ if (el.parentNode) el.remove(); }, 320);
+  }
+  el.querySelector(".toast-close").addEventListener("click", dismiss);
+
+  c.appendChild(el);
+  requestAnimationFrame(function(){ el.classList.add("show"); });
+  setTimeout(dismiss, duration);
 }
+
+let _statusTimer = null;
+function setStatus(msg, type, opts){
+  const el = document.getElementById("appStatus");
+  if (!el) return;
+  opts = opts || {};
+  if (_statusTimer){ clearTimeout(_statusTimer); _statusTimer = null; }
+
+  if (!msg){
+    el.textContent = "";
+    el.classList.remove("show");
+    el.removeAttribute("data-type");
+    return;
+  }
+  type = type || "info";
+  el.textContent = msg;
+  el.setAttribute("data-type", type);
+  el.classList.add("show");
+
+  // Auto-dismiss apenas para success/info; erros ficam visíveis
+  if (type === "success" || type === "info"){
+    _statusTimer = setTimeout(function(){
+      if (el.textContent === msg){
+        el.classList.remove("show");
+        el.removeAttribute("data-type");
+      }
+    }, opts.duration || 3200);
+  }
+}
+
+/* Confirmação modal */
 function confirmDialog(msg) {
   return new Promise(function(resolve){
     const ov = document.getElementById('confirmOverlay');
@@ -883,6 +1008,7 @@ function confirmDialog(msg) {
     ov.onclick = function(e){ if (e.target === ov) cleanup(false); };
   });
 }
+
 function pedirNomeTipoArtigo(valorInicial, tipoInicial){
   return new Promise(function(resolve){
     const modal = document.getElementById("saveBancoModal");
@@ -903,7 +1029,7 @@ function pedirNomeTipoArtigo(valorInicial, tipoInicial){
     }
     document.getElementById("saveBancoConfirm").onclick = function(){
       const v = (input.value || "").trim().toUpperCase();
-      if(!v){ toast("Escreva um nome.", "warning"); input.focus(); return; }
+      if(!v){ toast("Escreva um nome para o artigo.", "warning"); input.focus(); return; }
       fechar({ nome: v, tipo: tipoSel });
     };
     document.getElementById("saveBancoCancel").onclick = function(){ fechar(null); };
@@ -936,7 +1062,7 @@ function pedirEmail(){
     document.getElementById("emailCancel").onclick = function(){ fechar(null); };
     document.getElementById("emailConfirm").onclick = function(){
       const dest = (inpTo.value || "").trim();
-      if(!dest || dest.indexOf('@') < 0){ toast("Escreva um email válido.", "warning"); inpTo.focus(); return; }
+      if(!dest || dest.indexOf('@') < 0){ toast("Introduza um email válido.", "warning"); inpTo.focus(); return; }
       const sub = (inpSub.value || "Etiquetas de Preços").trim();
       const body = (inpBody.value || "").trim();
       try {
@@ -1022,7 +1148,7 @@ async function api(fn, payload, retries){
     retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
   }
   if(!jwtToken){
-     toast("Faça login com a sua conta Google primeiro.", "error");
+     toast("Inicie sessão com a sua conta Google primeiro.", "error");
      throw new Error("Não autenticado.");
   }
   try {
@@ -1031,17 +1157,15 @@ async function api(fn, payload, retries){
       headers:{'Content-Type':'application/json', 'Authorization': 'Bearer ' + jwtToken},
       body: JSON.stringify({ fn:fn, payload:payload })
     });
-
     if(resp.status === 401) {
       try { sessionStorage.removeItem("google_jwt"); } catch(e){}
       jwtToken = null;
-      throw new Error("Sessão expirada. Por favor, faça login novamente.");
+      throw new Error("Sessão expirada. Inicie sessão novamente.");
     }
-
     const texto = await resp.text();
     if(!resp.ok) throw new Error('HTTP ' + resp.status);
-    let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta não-JSON'); }
-    if(!j.ok) throw new Error(j.error || 'Erro API');
+    let j; try { j = JSON.parse(texto); } catch(e){ throw new Error('Resposta inválida do servidor'); }
+    if(!j.ok) throw new Error(j.error || 'Erro no servidor');
     return j.data;
   } catch(e) {
     if(retries > 0){ await new Promise(function(r){ setTimeout(r, 900); }); return api(fn, payload, retries - 1); }
@@ -1090,13 +1214,12 @@ async function carregarTudo(){
       if(!Array.isArray(c.produtos) && !Array.isArray(c.banco)){
         try{ await localforage.removeItem(CACHE_KEY); }catch(e){}
       }
-      if(c.t) setStatus('⚡ Cache de ' + new Date(c.t).toLocaleTimeString('pt-PT') + ' — a atualizar…');
     }
   }catch(e){ console.warn("Erro IndexedDB", e); }
 
   if(!jwtToken) return;
 
-  setStatus('A atualizar do Drive…');
+  setStatus("A atualizar dados do Drive…", "loading");
   const [rProd, rBanco] = await Promise.all([
     api('listarProdutos').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; }),
     api('listarBancoFruta').then(function(v){ return { ok:true, v:v }; }).catch(function(e){ return { ok:false, e:e.message }; })
@@ -1105,11 +1228,15 @@ async function carregarTudo(){
   if(rBanco.ok) bancoFruta     = ensureArray(rBanco.v);
   renderDb(); renderBancoFruta($("buscaBancoFruta").value);
 
-  try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){ console.warn(e); }
+  try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
 
-  if(!rProd.ok && !rBanco.ok){ setStatus('❌ Erro ao ler do Drive.', 'error'); }
-  else if(!rProd.ok || !rBanco.ok){ setStatus('⚠️ Ligação parcial.', 'error'); }
-  else { setStatus('✅ Dados atualizados.','success'); }
+  if(!rProd.ok && !rBanco.ok){
+    setStatus("Não foi possível ler do Drive.", "error");
+  } else if(!rProd.ok || !rBanco.ok){
+    setStatus("Ligação parcial — alguns dados podem estar em falta.", "warning");
+  } else {
+    setStatus("Dados sincronizados", "success");
+  }
 }
 
 function getFormData(){
@@ -1272,11 +1399,12 @@ function renderQueue(){
 }
 function addToQueue(){
   setValidationState();
-  if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return; }
+  if($("appStatus").dataset.type==="error"){ toast("Corrija os erros antes de continuar.", "error"); return; }
   const copies = Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
   const data = getFormData();
-  if(!data.product && !data.price && !data.internalCode){ setStatus("Preencha os dados primeiro.","error"); return; }
-  printQueue.push({ data:data, copies:copies }); renderQueue(); setStatus("Adicionado à fila!","success");
+  if(!data.product && !data.price && !data.internalCode){ toast("Preencha os dados do produto primeiro.", "warning"); return; }
+  printQueue.push({ data:data, copies:copies }); renderQueue();
+  toast("Adicionado à fila de impressão", "success");
 }
 function buildProdutoPayload(d){
   return { codigo: d.internalCode, nome: d.product, preco: d.price, oldPrice: d.oldPrice, isPromoActive: d.isPromoActive, promoPrice: d.promoPrice, promoMinQty: d.promoMinQty, promoUnit: d.promoUnit, promoStart: d.promoStart, promoEnd: d.promoEnd, unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre, ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity, deposito: d.depositFeeSelect==='custom' ? d.customDepositInput : d.depositFeeSelect, formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight, fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || '' };
@@ -1299,7 +1427,7 @@ async function verificarProdutoEmBackground(){
   }catch(e){ console.warn("Verificação em background falhou:", e); }
 }
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
-window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); setStatus("Item duplicado.","success"); };
+window.duplicateQueue = function(i){ const item = printQueue[i]; if(!item) return; printQueue.splice(i+1,0,{data:JSON.parse(JSON.stringify(item.data)),copies:item.copies}); renderQueue(); toast("Item duplicado na fila", "info"); };
 async function resolverFotoParaPayload(d){
   let fotoId = d.fotoId || "";
   let fotoUrl = d.fotoUrl || "";
@@ -1316,10 +1444,10 @@ async function resolverFotoParaPayload(d){
 window.saveQueueItem = async function(i){
   const item = printQueue[i]; if(!item){ toast("Item não encontrado.", "error"); return; }
   const d = item.data;
-  if(!d.product && !d.internalCode){ toast("Preenche nome ou código.", "warning"); return; }
+  if(!d.product && !d.internalCode){ toast("Preencha o nome ou o código do produto.", "warning"); return; }
   const existente = savedProducts.find(function(p){ return p.codigo && d.internalCode && String(p.codigo) === String(d.internalCode); });
-  if(existente){ const substituir = await confirmDialog("Já existe um produto \""+d.product+"\". Substituir?"); if(!substituir) return; }
-  const t0 = Date.now(); setStatus("A guardar…");
+  if(existente){ const substituir = await confirmDialog("Já existe um produto com o código \""+d.internalCode+"\".\n\nSubstituir o registo existente?"); if(!substituir) return; }
+  const t0 = Date.now(); setStatus("A guardar no Drive…", "loading");
   try{
     const { fotoId, fotoUrl } = await resolverFotoParaPayload(d);
     d.fotoId = fotoId; d.fotoUrl = fotoUrl;
@@ -1329,10 +1457,13 @@ window.saveQueueItem = async function(i){
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
-    setStatus("✅ Guardado em " + dt + "s.", "success", 2500);
-    toast("✅ Guardado.", "success", 2500);
+    setStatus("");
+    toast("Guardado em " + dt + "s", "success");
     setTimeout(verificarProdutoEmBackground, 2500);
-  }catch(e){ setStatus("Erro: "+e.message, "error"); }
+  }catch(e){
+    setStatus("Não foi possível guardar: " + e.message, "error");
+    toast("Erro ao guardar: " + e.message, "error");
+  }
 };
 function renderDb(){
   const c = $("dbListContainer"); $("dbBadge").textContent = savedProducts.length;
@@ -1347,40 +1478,49 @@ function renderDb(){
 }
 async function saveToDb(){
   const data = getFormData();
-  if(!data.product && !data.internalCode){ setStatus("Preencha um nome ou código.","error"); return; }
-  const t0 = Date.now(); setStatus("A guardar…");
+  if(!data.product && !data.internalCode){ toast("Preencha um nome ou código antes de guardar.", "warning"); return; }
+  const t0 = Date.now(); setStatus("A preparar imagem…", "loading");
   try{
-    setStatus("A preparar foto…");
     const { fotoId, fotoUrl } = await resolverFotoParaPayload(data);
     if(fotoUrl){ globalOriginalPhoto = fotoUrl; globalProcessedPhoto = fotoUrl; }
     const payload = buildProdutoPayload(data);
     payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
-    setStatus("A gravar…");
+    setStatus("A guardar no Drive…", "loading");
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb();
     try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
-    setStatus("✅ Guardado em " + dt + "s.", "success");
-    toast("✅ \"" + (payload.nome||payload.codigo) + "\" guardado.", "success", 2500);
+    setStatus("");
+    toast("\"" + (payload.nome||payload.codigo) + "\" guardado em " + dt + "s", "success");
     setTimeout(verificarProdutoEmBackground, 2500);
-  }catch(e){ setStatus("Erro ao guardar: "+e.message,"error"); }
+  }catch(e){
+    setStatus("Erro ao guardar: " + e.message, "error");
+    toast("Erro ao guardar produto", "error");
+  }
 }
-window.duplicateFromDb = function(i){ const d = savedProducts[i]; if(!d) return; const copia = JSON.parse(JSON.stringify(d)); copia.codigo = (d.codigo || 'NOVO') + '-COPIA'; setFormData(copia); switchMobileTab('editar'); toast('Produto copiado. Edite o código.', 'info'); };
-window.loadFromDb = function(i){ const d = savedProducts[i]; if(!d) return; setFormData(d); switchMobileTab('editar'); setStatus("Produto carregado.","success"); };
+window.duplicateFromDb = function(i){ const d = savedProducts[i]; if(!d) return; const copia = JSON.parse(JSON.stringify(d)); copia.codigo = (d.codigo || 'NOVO') + '-COPIA'; setFormData(copia); switchMobileTab('editar'); toast("Produto duplicado — ajuste o código", "info"); };
+window.loadFromDb = function(i){ const d = savedProducts[i]; if(!d) return; setFormData(d); switchMobileTab('editar'); toast("Produto carregado no editor", "success"); };
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const targetName = d.nome || d.codigo || "produto sem nome";
-  if(!(await confirmDialog("Eliminar produto '"+targetName+"'?"))) return;
-  setStatus("A apagar do Drive...", "info");
-  try{ await api('apagarProduto',{ codigo: d.codigo, nome: d.nome }); await carregarTudo(); setStatus("✅ Produto eliminado.","success"); }
-  catch(e){ setStatus("Erro: "+e.message,"error"); }
+  if(!(await confirmDialog("Eliminar o produto \"" + targetName + "\"?\n\nEsta ação não pode ser revertida."))) return;
+  setStatus("A eliminar do Drive…", "loading");
+  try{
+    await api('apagarProduto',{ codigo: d.codigo, nome: d.nome });
+    await carregarTudo();
+    setStatus("");
+    toast("Produto eliminado", "success");
+  } catch(e){
+    setStatus("Erro ao eliminar: " + e.message, "error");
+    toast("Erro ao eliminar produto", "error");
+  }
 };
 window.queueFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
   const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
   printQueue.push({ data: data, copies: parseInt($("copiesCount").value)||1 });
   renderQueue();
-  setStatus("Adicionado à fila.","success");
+  toast("Adicionado à fila", "success");
 };
 function updateBancoCounts(){
   let fruta=0, legume=0;
@@ -1419,12 +1559,12 @@ function renderBancoFruta(filtro){
       globalOriginalPhoto = el.dataset.url; globalProcessedPhoto = el.dataset.url;
       if(!$('product').value.trim()) $('product').value = el.dataset.nome;
       updateCard(); $('bancoFrutaModal').classList.remove('show');
-      setStatus('Imagem aplicada.','success');
+      toast("Imagem aplicada ao produto", "success");
     });
   });
 }
 async function guardarFotoBanco(nome, dataUrl, tipo){
-  setStatus("A guardar foto no banco…");
+  setStatus("A guardar foto no banco…", "loading");
   try{
     const comprimida = await compressSmart(dataUrl);
     const r = await api('uploadBancoFruta', { base64: comprimida, nome: nome, tipo: tipo });
@@ -1433,12 +1573,17 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     renderBancoFruta($("buscaBancoFruta").value);
     try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
-    toast("✅ Foto guardada: " + r.nome, "success", 4500);
-  }catch(e){ toast("Erro ao guardar no banco: " + e.message, "error"); throw e; }
+    setStatus("");
+    toast("Foto \"" + r.nome + "\" guardada no banco", "success", 4500);
+  }catch(e){
+    setStatus("Erro ao guardar no banco: " + e.message, "error");
+    toast("Erro ao guardar foto no banco", "error");
+    throw e;
+  }
 }
 async function perguntarGuardarNoBanco(){
   if(!globalProcessedPhoto) return;
-  if(!await confirmDialog("Guardar no banco?")) return;
+  if(!await confirmDialog("Guardar esta imagem no banco de imagens?")) return;
   const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro);
   if(!info) return;
   try{ await guardarFotoBanco(info.nome, globalProcessedPhoto, info.tipo); }catch(e){}
@@ -1492,18 +1637,20 @@ function setValidationState(){
   const errors = [];
   const fv = $("presetSizes").value;
   const isFP = isFruitPromoFormat(fv);
-  if($("price").value.trim() && price === null){ errors.push("Preço inválido."); markFieldError("price", true); }
-  if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null){ errors.push("Preço anterior inválido."); markFieldError("oldPrice", true); }
-  if($("isPromoActive").checked && !isFP && price !== null && oldPrice !== null && oldPrice <= price){ errors.push("Preço anterior deve ser superior."); markFieldError("oldPrice", true); }
+  if($("price").value.trim() && price === null){ errors.push("O preço introduzido não é válido."); markFieldError("price", true); }
+  if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice === null){ errors.push("O preço anterior não é válido."); markFieldError("oldPrice", true); }
+  if($("isPromoActive").checked && !isFP && price !== null && oldPrice !== null && oldPrice <= price){ errors.push("O preço anterior deve ser superior ao preço atual."); markFieldError("oldPrice", true); }
   if(isFP){
-    if($("promoPrice").value.trim() && promoPrice === null){ errors.push("Preço especial inválido."); markFieldError("promoPrice", true); }
-    if(price !== null && promoPrice !== null && promoPrice >= price){ errors.push("Preço especial deve ser inferior."); markFieldError("promoPrice", true); }
+    if($("promoPrice").value.trim() && promoPrice === null){ errors.push("O preço especial não é válido."); markFieldError("promoPrice", true); }
+    if(price !== null && promoPrice !== null && promoPrice >= price){ errors.push("O preço especial deve ser inferior ao preço normal."); markFieldError("promoPrice", true); }
   }
   if(ean){
     const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean);
-    if(!valid){ errors.push("Código de barras inválido."); markFieldError("ean", true); }
+    if(!valid){ errors.push("O código de barras introduzido não é válido."); markFieldError("ean", true); }
   }
-  setStatus(errors.join(" "), errors.length ? "error" : "");
+  // Erros ficam visíveis inline; toast só na primeira vez que aparece
+  if(errors.length){ setStatus(errors[0], "error"); }
+  else { setStatus(""); }
 }
 function updateOrientationVisibility(){
   const fv = $("presetSizes").value;
@@ -1727,23 +1874,23 @@ function buildLabelClone(data, dims, forPrint){
 }
 function validateBeforePrint(){
   setValidationState();
-  if($("appStatus").dataset.type==="error"){ setStatus("Corrija os erros antes.","error"); return false; }
+  if($("appStatus").dataset.type==="error"){ toast("Corrija os erros antes de imprimir.", "error"); return false; }
   if(printQueue.length===0){
     const price = parsePrice($("price").value);
-    if(price===null){ setStatus("Introduza um preço válido.","error"); $("price").focus(); return false; }
+    if(price===null){ toast("Introduza um preço válido.", "error"); $("price").focus(); return false; }
     const fv = $("presetSizes").value;
     if(isFruitPromoFormat(fv)){
       const pp = parsePrice($("promoPrice").value);
-      if(pp===null){ setStatus("Introduza o preço especial.","error"); $("promoPrice").focus(); return false; }
+      if(pp===null){ toast("Introduza o preço especial da oportunidade.", "error"); $("promoPrice").focus(); return false; }
     }
     if(fv === "custom"){
       const cw = parseFloat($("customWidth").value);
       const ch = parseFloat($("customHeight").value);
-      if(!isFinite(cw) || cw < 20 || cw > 210){ setStatus("Largura entre 20 e 210 mm.","error"); return false; }
-      if(!isFinite(ch) || ch < 20 || ch > 297){ setStatus("Altura entre 20 e 297 mm.","error"); return false; }
+      if(!isFinite(cw) || cw < 20 || cw > 210){ toast("A largura deve estar entre 20 e 210 mm.", "error"); return false; }
+      if(!isFinite(ch) || ch < 20 || ch > 297){ toast("A altura deve estar entre 20 e 297 mm.", "error"); return false; }
     }
     const copies = Math.max(1,Math.min(100,Number($("copiesCount").value)||1));
-    if(fv==="amanhecer" && copies>21){ setStatus("Máximo 21 etiquetas por folha.","error"); return false; }
+    if(fv==="amanhecer" && copies>21){ toast("Máximo de 21 etiquetas por folha para o formato Amanhecer.", "error"); return false; }
   }
   return true;
 }
@@ -2069,7 +2216,7 @@ function blobToBase64(blob){
 }
 let _emailSending = false;
 async function enviarEtiquetasPorEmail(){
-  if(_emailSending){ toast("Email já está a ser enviado…", "warning"); return; }
+  if(_emailSending){ toast("Já existe um envio em curso.", "warning"); return; }
 
   const editorFmt = $("presetSizes").value;
   let itemsContados = 0;
@@ -2081,9 +2228,7 @@ async function enviarEtiquetasPorEmail(){
 
   const MAX_ETIQUETAS = 45;
   if(itemsContados > MAX_ETIQUETAS){
-    const msg = `Estás a tentar gerar ${itemsContados} etiquetas. O limite seguro para não bloquear o dispositivo é de ${MAX_ETIQUETAS} etiquetas por email. Divide a impressão na Fila em lotes mais pequenos.`;
-    setStatus("Geração cancelada (limite de memória).", "error");
-    toast(msg, "error", 8000);
+    toast("Limite de " + MAX_ETIQUETAS + " etiquetas por envio. Divida em lotes menores.", "error", 8000);
     return;
   }
 
@@ -2094,53 +2239,39 @@ async function enviarEtiquetasPorEmail(){
   const btnTxtOriginal = btn ? btn.textContent : '';
   if(btn){ btn.disabled = true; btn.textContent = "⏳ A enviar email…"; }
   try {
-    setStatus("A gerar PDF… aguarde.");
-    toast("📄 A gerar o PDF das etiquetas…", "info", 4000);
+    setStatus("A gerar PDF das etiquetas…", "loading");
     let blob;
     try { blob = await gerarPDFBlob(); }
     catch(e){
-      setStatus("Erro a gerar PDF: " + e.message, "error");
-      toast("Não foi possível gerar o PDF: " + e.message, "error", 6000);
+      setStatus("Erro ao gerar PDF: " + e.message, "error");
+      toast("Não foi possível gerar o PDF", "error");
       return;
     }
     if(!blob || blob.size < 500){
-      setStatus("O PDF saiu vazio.", "error");
-      toast("O PDF não foi gerado corretamente.", "error", 6000);
+      setStatus("O PDF gerado está vazio.", "error");
+      toast("O PDF não foi gerado corretamente", "error");
       return;
     }
-    setStatus("A converter o PDF…");
+    setStatus("A converter PDF…", "loading");
     let base64;
     try { base64 = await blobToBase64(blob); }
-    catch(e){ setStatus("Erro a preparar o PDF: " + e.message, "error"); return; }
-    setStatus("A enviar o email…");
-    toast("📧 A enviar o email para " + info.destino + "…", "info", 8000);
+    catch(e){ setStatus("Erro ao preparar o PDF: " + e.message, "error"); return; }
+    setStatus("A enviar email para " + info.destino + "…", "loading");
     try {
       await api('enviarEtiquetasEmail', {
         destino: info.destino, assunto: info.assunto, corpo: info.corpo, pdfBase64: base64,
         nomeFicheiro: "etiquetas_" + new Date().toISOString().slice(0,10) + ".pdf"
       });
-      setStatus("✅ Email enviado para " + info.destino, "success");
-      toast("✅ Email enviado com sucesso para " + info.destino, "success", 7000);
+      setStatus("");
+      toast("Email enviado para " + info.destino, "success", 7000);
     } catch(e){
-      setStatus("Erro a enviar email: " + e.message, "error");
-      toast("Erro a enviar email: " + e.message, "error", 7000);
+      setStatus("Erro ao enviar email: " + e.message, "error");
+      toast("Erro ao enviar email", "error");
     }
   } finally {
     _emailSending = false;
     if(btn){ btn.disabled = false; btn.textContent = btnTxtOriginal || "📧 Enviar etiquetas por Email (PDF)"; }
   }
-}
-let _statusToastMsg = '', _statusToastTime = 0;
-function setStatus(msg, type){
-  const el = $("appStatus"); if(!el) return;
-  el.textContent = msg||""; el.dataset.type = type||"";
-  el.style.display = msg ? "block" : "none";
-  if(msg && (type==="error" || type==="success")){
-    const now = Date.now();
-    const isSame = (msg === _statusToastMsg) && (now - _statusToastTime < 4000);
-    if(!isSame){ toast(msg, type); _statusToastMsg = msg; _statusToastTime = now; }
-  }
-  if(type==="success") setTimeout(function(){ if(el.textContent===msg) el.style.display="none"; }, 3500);
 }
 let camStream = null;
 async function openCamera(){
@@ -2149,7 +2280,7 @@ async function openCamera(){
   try{
     camStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080} }, audio:false });
     $("camVideo").srcObject = camStream;
-  } catch(e){ toast("Erro câmara: " + e.message, "error"); closeCamera(); }
+  } catch(e){ toast("Não foi possível aceder à câmara", "error"); closeCamera(); }
 }
 function closeCamera(){
   if(camStream){
@@ -2182,25 +2313,19 @@ function loadQrCodeLib(){
 }
 async function openScanner(){
   $("scannerModal").classList.add("show");
-  setStatus("A preparar leitor…");
   try{ await loadQrCodeLib(); }
-  catch(e){ setStatus("Erro a carregar leitor.", "error"); $("scannerModal").classList.remove("show"); return; }
+  catch(e){ toast("Não foi possível carregar o leitor de códigos", "error"); $("scannerModal").classList.remove("show"); return; }
   scanner = new Html5Qrcode("reader");
   try{
     await scanner.start({ facingMode:"environment" }, { fps:10, qrbox:{width:280,height:180} },
-      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); setStatus("Código lido.","success"); closeScanner(); },
+      function(decoded){ $("ean").value = String(decoded).toUpperCase(); updateEanBadge(); updateCard(); toast("Código lido com sucesso", "success"); closeScanner(); },
       function(){}
     );
   } catch(e){ closeScanner(); }
 }
 async function closeScanner(){
   if(scanner){
-    try {
-      await scanner.stop();
-      await scanner.clear();
-    } catch(e) {
-      console.warn("Erro a parar scanner", e);
-    }
+    try { await scanner.stop(); await scanner.clear(); } catch(e) {}
     scanner = null;
   }
   $("scannerModal").classList.remove("show");
@@ -2211,8 +2336,8 @@ $("recarregarDbBtn").addEventListener("click", carregarTudo);
 $("printBtn").addEventListener("click", function(){ window.triggerPrint(); });
 $("emailLabelsBtn").addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 $("printDbBtn").addEventListener("click", async function(){
-  if(savedProducts.length===0){ setStatus("Sem produtos guardados.","error"); return; }
-  if(!(await confirmDialog("Imprimir "+savedProducts.length+" produto(s) da base de dados?\n\nAs etiquetas vão ser agrupadas por formato para aproveitar o papel."))) return;
+  if(savedProducts.length===0){ toast("Não há produtos guardados na base de dados.", "warning"); return; }
+  if(!(await confirmDialog("Imprimir os " + savedProducts.length + " produtos da base de dados?\n\nAs etiquetas serão agrupadas por formato para aproveitar o papel."))) return;
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; }
   _restoreQueueAfterPrint = printQueue.slice();
   printQueue = savedProducts.map(function(p){
@@ -2224,30 +2349,34 @@ $("printDbBtn").addEventListener("click", async function(){
   setTimeout(function(){ window.triggerPrint(); }, 100);
 });
 $("syncBancoBtn").addEventListener("click", async function(){
-  try{ setStatus("A sincronizar banco…"); await api('sincronizarBancoFruta'); await carregarTudo(); setStatus("✅ Sincronizado.","success"); }
-  catch(e){ setStatus("Erro: "+e.message,"error"); }
+  setStatus("A sincronizar banco de imagens…", "loading");
+  try{
+    await api('sincronizarBancoFruta');
+    await carregarTudo();
+    toast("Banco de imagens sincronizado", "success");
+  }
+  catch(e){ setStatus("Erro ao sincronizar: " + e.message, "error"); toast("Erro ao sincronizar banco", "error"); }
 });
 $("otimizarBancoBtn").addEventListener("click", async function(){
-  if(!(await confirmDialog("Otimizar TODAS as imagens do banco?\n\nAs fotos serão redimensionadas (máx. 320 px) e recomprimidas, tornando o carregamento muito mais rápido.\n\nAs imagens originais serão substituídas no Drive."))) return;
+  if(!(await confirmDialog("Otimizar todas as imagens do banco?\n\nAs fotos serão redimensionadas (máx. 320 px) e recomprimidas, tornando o carregamento muito mais rápido.\n\nAs imagens originais serão substituídas no Drive."))) return;
   const btn = this; const t0 = btn.textContent;
   btn.disabled = true; btn.textContent = "⏳ A otimizar…";
-  setStatus("A otimizar imagens do banco… aguarde (pode demorar 1-2 min).");
-  toast("📉 A otimizar imagens…", "info", 6000);
+  setStatus("A otimizar imagens do banco… aguarde (1-2 min).", "loading");
   try{
     const r = await api('otimizarBancoFruta');
     const msg = r && r.mensagem ? r.mensagem : ('Otimizadas: ' + ((r && r.total) || 0));
-    setStatus("✅ " + msg, "success");
-    toast("✅ " + msg, "success", 6000);
+    setStatus("");
+    toast(msg, "success", 6000);
     await carregarTudo();
   } catch(e){
-    setStatus("Erro: " + e.message, "error");
-    toast("Erro a otimizar: " + e.message, "error", 7000);
+    setStatus("Erro ao otimizar: " + e.message, "error");
+    toast("Erro ao otimizar imagens", "error");
   } finally {
     btn.disabled = false; btn.textContent = t0;
   }
 });
 $("clearQueueBtn").addEventListener("click", async function(){
-  if(await confirmDialog("Limpar fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila limpa.", "info"); }
+  if(await confirmDialog("Limpar toda a fila de impressão?")){ printQueue=[]; renderQueue(); toast("Fila de impressão limpa", "info"); }
 });
 $("scanEanBtn").addEventListener("click", openScanner);
 $("scanClose").addEventListener("click", closeScanner);
@@ -2257,26 +2386,32 @@ $("camClose").addEventListener("click", closeCamera);
 $("camSnap").addEventListener("click", async function(){
   const v = $("camVideo"), c = $("camCanvas");
   let w = v.videoWidth, h = v.videoHeight;
-  if(!w || !h){ toast("Câmara ainda não está pronta.", "warning"); return; }
+  if(!w || !h){ toast("A câmara ainda não está pronta", "warning"); return; }
   if(w > 1400){ h = Math.round(h * 1400/w); w = 1400; }
   c.width = w; c.height = h;
   c.getContext("2d").drawImage(v,0,0,w,h);
   const dataUrl = c.toDataURL("image/jpeg",0.92);
   if(fotoBancoModo){
     fotoBancoModo = false; closeCamera();
-    setStatus("A processar...");
+    setStatus("A processar imagem…", "loading");
     let fotoFinal = dataUrl;
     if($("autoRemoveBg").checked){ try{ fotoFinal = await removeBackgroundSmart(dataUrl); }catch(e){} }
     const info = await pedirNomeTipoArtigo($("product").value, bancoTipoFiltro);
-    if(!info){ setStatus("Cancelado.", "info"); return; }
-    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); setStatus("✅ Guardado no banco.", "success"); }
-    catch(e){ setStatus("Erro: " + e.message, "error"); }
+    if(!info){ setStatus(""); return; }
+    try{ await guardarFotoBanco(info.nome, fotoFinal, info.tipo); }
+    catch(e){ }
     return;
   }
   globalOriginalPhoto = dataUrl; globalProcessedPhoto = "";
-  updateCard(); closeCamera(); setStatus("Foto capturada.","success");
+  updateCard(); closeCamera();
+  toast("Fotografia capturada", "success");
   if($("autoRemoveBg").checked){
-    try{ globalProcessedPhoto = await removeBackgroundSmart(dataUrl); updateCard(); await perguntarGuardarNoBanco(); }catch(e){}
+    try{
+      globalProcessedPhoto = await removeBackgroundSmart(dataUrl);
+      updateCard();
+      toast("Fundo removido automaticamente", "success");
+      await perguntarGuardarNoBanco();
+    }catch(e){}
   }
 });
 $("bfTabs").addEventListener("click", function(e){
@@ -2304,17 +2439,20 @@ $("buscaBancoFruta").addEventListener("input", function(e){
 $("bancoFrutaModal").addEventListener("click", function(e){ if(e.target === $("bancoFrutaModal")) $("bancoFrutaModal").classList.remove("show"); });
 $("diagnosticoBtn").addEventListener("click", async function(){
   const box = $("diagBox");
-  box.innerHTML = "🩺 <b>A diagnosticar…</b>"; box.classList.add("show"); setStatus("🩺 A testar ligação…");
+  box.innerHTML = "🩺 A diagnosticar…"; box.classList.add("show");
+  setStatus("A testar ligação à API…", "loading");
   const linhas = ["API_URL: " + API_URL, ""];
   try{ const ping = await api('ping'); linhas.push('<span class="ok">✔ ping OK</span> → ' + ping); }
-  catch(e){ linhas.push('<span class="err">✘ ping FALHOU</span> → ' + e.message); box.innerHTML = linhas.join("\n"); setStatus("Erro na ligação.","error"); return; }
+  catch(e){ linhas.push('<span class="err">✘ ping falhou</span> → ' + e.message); box.innerHTML = linhas.join("\n"); setStatus("Falha na ligação à API", "error"); toast("Falha na ligação à API", "error"); return; }
   await new Promise(function(r){ setTimeout(r, 600); });
   try{ const prod = await api('listarProdutos'); linhas.push('<span class="ok">✔ listarProdutos OK</span> → ' + (prod?prod.length:0) + " produtos"); }
-  catch(e){ linhas.push('<span class="err">✘ listarProdutos FALHOU</span> → ' + e.message); }
+  catch(e){ linhas.push('<span class="err">✘ listarProdutos falhou</span> → ' + e.message); }
   await new Promise(function(r){ setTimeout(r, 600); });
   try{ const banco = await api('listarBancoFruta'); linhas.push('<span class="ok">✔ listarBancoFruta OK</span> → ' + (banco?banco.length:0) + " imagens"); }
-  catch(e){ linhas.push('<span class="err">✘ listarBancoFruta FALHOU</span> → ' + e.message); }
-  box.innerHTML = linhas.join("\n"); setStatus("✅ Diagnóstico concluído.","success");
+  catch(e){ linhas.push('<span class="err">✘ listarBancoFruta falhou</span> → ' + e.message); }
+  box.innerHTML = linhas.join("\n");
+  setStatus("");
+  toast("Diagnóstico concluído", "success");
 });
 $("previewSheetBtn").addEventListener("click", function(){
   const content = $("sheetPreviewContent"); content.innerHTML = "";
@@ -2329,7 +2467,7 @@ $("previewSheetBtn").addEventListener("click", function(){
       for(let i=0;i<q.copies;i++) items.push({ data:q.data, format:fmt });
     });
   }
-  if(items.length===0){ setStatus("Sem etiquetas para pré-visualizar.","error"); return; }
+  if(items.length===0){ toast("Sem etiquetas para pré-visualizar", "warning"); return; }
   const groups = _agruparItensPorFormato(items);
   let totalPreviewed = 0;
   groups.forEach(function(g){
@@ -2410,19 +2548,21 @@ $("photo").addEventListener("change", async function(e){
   const file = e.target.files[0];
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
   if(!file){ updateCard(); return; }
-  if(file.type.indexOf("image/") !== 0){ setStatus("Imagem inválida.", "error"); e.target.value = ""; updateCard(); return; }
-  if(file.size > 12 * 1024 * 1024){ setStatus("Imagem muito grande (máx 12 MB).", "error"); e.target.value = ""; updateCard(); return; }
+  if(file.type.indexOf("image/") !== 0){ toast("Ficheiro de imagem inválido", "error"); e.target.value = ""; updateCard(); return; }
+  if(file.size > 12 * 1024 * 1024){ toast("Imagem demasiado grande (máx 12 MB)", "error"); e.target.value = ""; updateCard(); return; }
   const r = new FileReader();
-  r.onerror = function(){ setStatus("Erro a ler imagem.", "error"); };
+  r.onerror = function(){ toast("Erro a ler a imagem", "error"); };
   r.onload = async function(evt){
     globalOriginalPhoto = evt.target.result; updateCard();
     if($("autoRemoveBg").checked){
       try{
+        setStatus("A remover fundo da imagem…", "loading");
         const semFundo = await removeBackgroundSmart(globalOriginalPhoto);
         globalProcessedPhoto = semFundo; updateCard();
-        toast("✅ Fundo removido!", "success");
+        setStatus("");
+        toast("Fundo removido", "success");
         await perguntarGuardarNoBanco();
-      } catch(e){ toast("Erro: " + e.message, "error"); }
+      } catch(e){ setStatus(""); toast("Não foi possível remover o fundo", "warning"); }
     }
   };
   r.readAsDataURL(file);
@@ -2441,7 +2581,7 @@ $("clearBtn").addEventListener("click", async function(){
   $("presetSizes").value = "amanhecer"; $("customDimensionsRow").style.display = "none";
   $("copiesCount").value = "1";
   updateOrientationVisibility(); updateCard();
-  toast("Editor limpo.", "info");
+  toast("Editor limpo", "info");
 });
 function bindSlider(id, setter, storageKey){
   const el = $(id); if(!el) return;
@@ -2466,7 +2606,7 @@ $("resetOffsetBtn").addEventListener("click", function(){
   Storage.set("balcao_offset_x", "0"); Storage.set("balcao_offset_y", "6");
   Storage.set("balcao_col_left_y", "0"); Storage.set("balcao_col_right_y", "0");
   Storage.set("balcao_margin_left_v2", "4"); Storage.set("balcao_margin_right_v2", "4");
-  setStatus("Ajustes reiniciados (X=0, Y=6, Esq=0, Dir=0, Margens=4 mm).", "success");
+  toast("Ajustes reiniciados", "info");
 });
 $("printCalibBtn").addEventListener("click", function(){
   const pz = $("printZone"); pz.innerHTML = "";
