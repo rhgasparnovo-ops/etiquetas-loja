@@ -22,7 +22,7 @@
 
 <script>
 (function(){
-  var FK='balcao_force_v8';
+  var FK='balcao_force_v10';
   var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){
@@ -81,6 +81,7 @@
   --safe-right:env(safe-area-inset-right,0px);
   --app-pad-x:12px;
   --app-max-w:1400px;
+  --hdr-height-mobile:0px;
 }
 *{box-sizing:border-box}
 html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
@@ -107,21 +108,30 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 @supports (overflow-x:clip){.app{overflow-x:clip}}
 
 /* ============================================================
-   HEADER DESKTOP
+   HEADER — DESKTOP: uma linha larga
    ============================================================ */
 .top-header{
-  position:sticky;top:0;z-index:8000;
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:8000;
   display:flex;align-items:center;justify-content:space-between;
   gap:24px;flex-wrap:wrap;
-  background:rgba(255,255,255,.97);
+  background:rgba(255,255,255,.98);
   -webkit-backdrop-filter:saturate(180%) blur(16px);
   backdrop-filter:saturate(180%) blur(16px);
-  border:1px solid #e6ebf2;
-  border-radius:16px;
+  border-bottom:1px solid #e6ebf2;
   box-shadow:0 4px 20px rgba(15,23,42,.06);
   padding:14px 24px;
-  margin-bottom:24px;
+  padding-left:calc(24px + var(--safe-left));
+  padding-right:calc(24px + var(--safe-right));
+  padding-top:calc(14px + var(--safe-top));
   min-height:76px;
+}
+.top-header-inner{
+  max-width:var(--app-max-w);
+  margin:0 auto;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;flex-wrap:wrap;
 }
 .hdr-brand{display:flex;align-items:center;gap:16px;flex:1 1 auto;min-width:0}
 .hdr-title{
@@ -136,7 +146,7 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 .hdr-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 
 .hdr-btn{
-  display:none;align-items:center;justify-content:center;gap:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
   width:auto;padding:10px 18px;border-radius:12px;
   background:linear-gradient(135deg,#0a52b8,#053780);color:#fff;border:none;
   font-weight:800;font-size:13.5px;cursor:pointer;
@@ -145,28 +155,6 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 }
 .hdr-btn svg{width:17px;height:17px;flex-shrink:0}
 .hdr-btn:active{transform:scale(.96)}
-
-/* ============================================================
-   BOTÃO INSTALAR — CIRCULAR COMPACTO
-   ============================================================ */
-.install-btn{
-  display:none;align-items:center;justify-content:center;
-  width:44px;height:44px;min-width:44px;min-height:44px;
-  padding:0;
-  background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;border:none;
-  border-radius:50%;
-  box-shadow:0 3px 10px rgba(23,107,58,.3);
-  cursor:pointer;flex-shrink:0;
-  transition:opacity .3s ease, transform .3s ease, box-shadow .2s;
-  overflow:visible;
-}
-.install-btn.show{display:inline-flex}
-.install-btn.hide{display:none}
-.install-btn svg{width:20px;height:20px;flex-shrink:0;pointer-events:none}
-.install-btn span,.install-btn #installBtnText{display:none!important}
-.install-btn.installed{background:linear-gradient(135deg,#64748b,#475569);pointer-events:none;opacity:.75}
-.install-btn:active:not(:disabled){transform:scale(.9)}
-.install-btn:hover{box-shadow:0 5px 16px rgba(23,107,58,.45)}
 
 .auth-card{
   display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;
@@ -199,6 +187,60 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 .auth-card.logged .auth-logout-btn{display:inline-flex}
 .auth-card.logged .auth-card-btn{display:none}
 .auth-logout-btn svg{width:13px;height:13px}
+
+/* Spacer para compensar header fixed */
+.hdr-spacer{height:76px;width:100%}
+
+.install-banner{
+  position:fixed;bottom:calc(12px + var(--safe-bottom));
+  left:12px;right:12px;
+  z-index:9500;
+  max-width:440px;margin:0 auto;
+  background:linear-gradient(135deg,#1e8a4a 0%,#0d5a2f 100%);
+  color:#fff;border-radius:16px;
+  padding:12px 14px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35),0 4px 12px rgba(0,0,0,.2);
+  display:none;align-items:center;gap:12px;
+  font-family:inherit;
+  animation:bannerSlideUp .35s cubic-bezier(.4,0,.2,1);
+  pointer-events:auto;
+}
+.install-banner.show{display:flex}
+.install-banner.installed{display:none!important}
+.install-banner-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.install-banner-icon svg{width:24px;height:24px;stroke:#fff;fill:none}
+.install-banner-text{flex:1;min-width:0;line-height:1.3}
+.install-banner-text strong{display:block;font-size:14px;font-weight:900;letter-spacing:.3px;margin-bottom:2px}
+.install-banner-text span{font-size:12px;opacity:.92;font-weight:500;display:block}
+.install-banner-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.install-banner-btn{
+  width:auto;padding:9px 14px;border-radius:10px;border:none;
+  background:#fff;color:#0d5a2f;font-weight:900;font-size:13px;
+  cursor:pointer;min-height:40px;white-space:nowrap;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);letter-spacing:.2px;
+}
+.install-banner-btn:active{transform:scale(.96)}
+.install-banner-close{
+  width:36px;height:36px;min-width:36px;min-height:36px;
+  padding:0;border-radius:50%;background:rgba(255,255,255,.15);
+  color:#fff;border:none;font-size:16px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;line-height:1;
+}
+.install-banner-close:active{transform:scale(.9)}
+@keyframes bannerSlideUp{
+  from{transform:translateY(120%);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+@keyframes bannerSlideDown{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(120%);opacity:0}
+}
+.install-banner.closing{animation:bannerSlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
 
 .grid{display:grid;grid-template-columns:440px minmax(0,1fr);gap:24px;align-items:start;min-width:0;max-width:100%;width:100%}
 .left-col{min-width:0;max-width:100%;overflow-x:hidden}
@@ -480,12 +522,99 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
 /* ============================================================
-   MOBILE — header em 2 LINHAS bem espaçadas
+   MOBILE — HEADER FIXO EM 2 LINHAS IGUAL EM BROWSER E APK
    ============================================================ */
 @media(max-width:900px){
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
   body{background:#eef1f4;font-size:15px;padding-bottom:var(--safe-bottom);min-height:100dvh}
+
+  /* Espaçador para compensar header fixed — recalcula dinamicamente via JS */
+  .hdr-spacer{height:var(--hdr-height-mobile)}
+
+  /* Header mobile: 2 linhas, fixo no topo */
+  .top-header{
+    flex-wrap:nowrap;
+    padding:0;
+    padding-top:var(--safe-top);
+    min-height:auto;
+    display:block;
+  }
+  .top-header-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:0;
+    width:100%;
+    padding:10px 14px 10px;
+    max-width:100%;
+  }
+
+  /* Linha 1: marca + logos */
+  .hdr-brand{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;width:100%;min-width:0;overflow:hidden;
+    padding-bottom:10px;
+    border-bottom:1px solid #e8ebf0;
+    margin-bottom:10px;
+    flex-wrap:nowrap;
+  }
+  .hdr-title{font-size:15px;gap:8px;flex:1 1 auto;min-width:0}
+  .hdr-title .h1-tag{font-size:22px;line-height:1}
+  .hdr-logos{gap:6px;flex-shrink:0}
+  .hdr-logos img{height:28px;max-width:60px}
+  .hdr-logos .divider{height:22px}
+
+  /* Linha 2: Ver + Auth */
+  .hdr-actions{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    width:100%;
+    min-width:0;
+    flex-wrap:nowrap;
+  }
+
+  .hdr-btn{
+    display:inline-flex;
+    padding:10px 18px;
+    font-size:14px;
+    min-height:44px;
+    gap:7px;
+    flex-shrink:0;
+    border-radius:12px;
+    font-weight:800;
+  }
+  .hdr-btn svg{width:17px;height:17px}
+  .hdr-btn span{display:inline}
+
+  .auth-card{
+    padding:5px 12px 5px 6px;
+    gap:8px;
+    border-radius:12px;
+    flex-shrink:0;
+    min-width:0;
+    min-height:44px;
+    margin-left:auto;
+  }
+  .auth-card-icon{width:30px;height:30px;border-radius:9px}
+  .auth-card-icon svg{width:15px;height:15px}
+  .auth-card-text{display:none}
+  .auth-card-btn > div[data-gsi]{
+    transform:scale(.76);
+    transform-origin:center right;
+    margin:-6px -10px;
+  }
+  .auth-logout-btn{
+    padding:8px 14px;
+    font-size:12.5px;
+    min-height:38px;
+    gap:5px;
+    border-radius:11px;
+  }
+  .auth-logout-btn svg{width:12px;height:12px}
 
   .app{
     padding:10px var(--app-pad-x) 20px var(--app-pad-x);
@@ -493,106 +622,21 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     padding-right:max(var(--app-pad-x),var(--safe-right));
   }
 
-  /* Header mobile em 2 linhas */
-  .top-header{
-    flex-direction:column;
-    align-items:stretch;
-    justify-content:flex-start;
-    gap:0;
-    padding:12px 14px 10px;
-    padding-top:calc(12px + var(--safe-top));
-    margin-bottom:12px;
+  /* Banner mobile */
+  .install-banner{
+    left:10px;right:10px;
+    bottom:calc(10px + var(--safe-bottom));
+    padding:12px 12px;
     border-radius:14px;
-    min-height:auto;
-    flex-wrap:nowrap;
+    gap:10px;
   }
+  .install-banner-icon{width:40px;height:40px;border-radius:11px}
+  .install-banner-icon svg{width:22px;height:22px}
+  .install-banner-text strong{font-size:13.5px}
+  .install-banner-text span{font-size:11.5px}
+  .install-banner-btn{padding:9px 13px;font-size:13px;min-height:40px;border-radius:9px}
+  .install-banner-close{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px}
 
-  /* Linha 1: marca (título + logos) */
-  .hdr-brand{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:10px;width:100%;min-width:0;overflow:hidden;
-    padding-bottom:10px;
-    border-bottom:1px solid #e8ebf0;
-    margin-bottom:10px;
-  }
-  .hdr-title{
-    font-size:15px;gap:8px;flex:1 1 auto;min-width:0;
-  }
-  .hdr-title .h1-tag{font-size:22px;line-height:1}
-  .hdr-logos{gap:6px;flex-shrink:0}
-  .hdr-logos img{height:28px;max-width:60px}
-  .hdr-logos .divider{height:22px}
-
-  /* Linha 2: ações (Ver + Instalar + Auth) */
-  .hdr-actions{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    width:100%;
-    min-width:0;
-    flex-wrap:nowrap;
-    overflow:visible;
-  }
-
-  /* Botão Ver mobile */
-  .hdr-btn{
-    display:inline-flex;
-    padding:10px 16px;
-    font-size:13.5px;
-    min-height:42px;
-    gap:7px;
-    flex-shrink:0;
-    border-radius:11px;
-    font-weight:800;
-  }
-  .hdr-btn svg{width:16px;height:16px}
-  .hdr-btn span{display:inline}
-
-  /* Botão Instalar — circular 42x42 */
-  .install-btn{
-    width:42px!important;
-    height:42px!important;
-    min-width:42px!important;
-    min-height:42px!important;
-    max-width:42px;
-    max-height:42px;
-    padding:0!important;
-    border-radius:50%!important;
-    flex-shrink:0;
-    margin-left:auto;
-  }
-  .install-btn svg{width:19px;height:19px}
-  .install-btn span,.install-btn #installBtnText{display:none!important}
-
-  /* Auth mobile */
-  .auth-card{
-    padding:5px 10px 5px 6px;
-    gap:7px;
-    border-radius:11px;
-    flex-shrink:0;
-    min-width:0;
-    min-height:42px;
-    margin-left:auto;
-  }
-  .auth-card-icon{width:30px;height:30px;border-radius:9px}
-  .auth-card-icon svg{width:15px;height:15px}
-  .auth-card-text{display:none}
-  .auth-card-btn > div[data-gsi]{
-    transform:scale(.72);
-    transform-origin:center right;
-    margin:-8px -12px;
-  }
-  .auth-logout-btn{
-    padding:8px 12px;
-    font-size:12px;
-    min-height:34px;
-    gap:5px;
-    border-radius:10px;
-  }
-  .auth-logout-btn svg{width:12px;height:12px}
-
-  /* Layout */
   .grid{grid-template-columns:minmax(0,1fr);gap:0}
   .left-col{order:1}
   .preview-container{display:none!important}
@@ -607,9 +651,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .date-input-wrap{width:100%;max-width:100%;min-width:0}
   .date-input-wrap input[type="date"]{padding-right:44px}
   .date-clear-btn{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;font-size:13px;right:6px}
-
   .dates-row{grid-template-columns:minmax(0,1fr);gap:10px}
-
   .format-select{font-size:15px;padding:13px 40px 13px 14px;min-height:50px;border-radius:12px;font-weight:800}
   button{padding:13px;font-size:15px;border-radius:13px;min-height:50px;font-weight:800}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:16.5px;font-weight:900;padding:16px 14px;min-height:58px;border-radius:15px}
@@ -638,7 +680,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
   .bf-card img{height:100px}
 
-  .toast-container{top:auto;bottom:calc(14px + var(--safe-bottom));right:12px;left:12px;max-width:none;gap:8px}
+  .toast-container{top:auto;bottom:calc(90px + var(--safe-bottom));right:12px;left:12px;max-width:none;gap:8px}
   .toast{min-width:auto;font-size:13.5px;padding:13px 14px;transform:translateY(20px) scale(.98)}
   .toast.show{transform:translateY(0) scale(1)}
   .confirm-overlay{padding:16px}
@@ -664,9 +706,15 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .hdr-logos img{height:24px;max-width:50px}
   .hdr-btn{padding:9px 14px;font-size:13px}
   .actions{grid-template-columns:minmax(0,1fr)}
+  .install-banner{padding:10px;gap:8px}
+  .install-banner-icon{width:36px;height:36px}
+  .install-banner-icon svg{width:20px;height:20px}
+  .install-banner-text strong{font-size:13px}
+  .install-banner-text span{font-size:11px}
+  .install-banner-btn{padding:8px 12px;font-size:12.5px;min-height:38px}
+  .install-banner-close{width:30px;height:30px;min-width:30px;min-height:30px;font-size:13px}
 }
 
-/* PRINT */
 @media screen{
   #printZone{display:none!important}
   #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
@@ -686,7 +734,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
   html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.top-header,.install-modal,.mobile-tab-bar,.preview-modal{display:none!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.top-header,.install-modal,.mobile-tab-bar,.preview-modal,.install-banner,.hdr-spacer{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   .print-page-wrapper{width:198mm!important;height:285mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
@@ -707,8 +755,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 </head>
 <body>
 
-<div class="app">
-  <header class="top-header">
+<header class="top-header" id="topHeader">
+  <div class="top-header-inner">
     <div class="hdr-brand">
       <h1 class="hdr-title"><span class="h1-tag">🏷️</span> <span>Etiquetas de Preços</span></h1>
       <div class="hdr-logos">
@@ -721,9 +769,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
       <button type="button" class="hdr-btn" id="openPreviewBtn" title="Ver etiqueta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         <span>Ver</span>
-      </button>
-      <button type="button" class="install-btn hide" id="installAppBtn" title="Instalar aplicação" aria-label="Instalar aplicação">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
       <div class="auth-card" id="authCard">
         <div class="auth-card-icon" id="authIcon">
@@ -752,8 +797,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </button>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
+<div class="hdr-spacer" id="hdrSpacer"></div>
+
+<div class="app">
   <div class="grid">
     <div class="left-col">
       <section class="panel">
@@ -1019,6 +1068,24 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </div>
 </div>
 
+<div class="install-banner" id="installBanner">
+  <div class="install-banner-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  </div>
+  <div class="install-banner-text">
+    <strong>📲 Instalar aplicação</strong>
+    <span>Acesso rápido a partir do ecrã inicial</span>
+  </div>
+  <div class="install-banner-actions">
+    <button type="button" class="install-banner-btn" id="installBannerBtn">Instalar</button>
+    <button type="button" class="install-banner-close" id="installBannerClose" aria-label="Fechar">✕</button>
+  </div>
+</div>
+
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose" aria-label="Fechar">✕</button>
   <div class="preview-modal-badge" id="previewModalBadge">⭐ Etiquetas Amanhecer</div>
@@ -1235,6 +1302,25 @@ function inicializarBotaoGoogle(){
   }catch(e){}
 }
 
+/* ============================================================
+   AJUSTE DINÂMICO DO HEADER — calcula altura real e aplica ao spacer
+   Funciona em browser E em APK instalada, sem depender de breakpoints
+   ============================================================ */
+function ajustarAlturaHeader(){
+  const hdr=document.getElementById('topHeader');
+  const spc=document.getElementById('hdrSpacer');
+  if(!hdr||!spc) return;
+  const h=hdr.getBoundingClientRect().height;
+  if(h>0){
+    document.documentElement.style.setProperty('--hdr-height-mobile',h+'px');
+    spc.style.height=h+'px';
+  }
+}
+window.addEventListener('resize',function(){ ajustarAlturaHeader(); });
+window.addEventListener('orientationchange',function(){ setTimeout(ajustarAlturaHeader,200); });
+window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(ajustarAlturaHeader,300); });
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAlturaHeader,100); });
+
 (function setupPWA(){
   const isAndroid=/Android/i.test(navigator.userAgent);
   const isMobileUA=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -1242,40 +1328,44 @@ function inicializarBotaoGoogle(){
   const isSecure=location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
   const isFile=location.protocol==='file:';
   let dp=null, modalAberto=false;
-  const btn=document.getElementById('installAppBtn');
+  const banner=document.getElementById('installBanner');
+  const bannerBtn=document.getElementById('installBannerBtn');
+  const bannerClose=document.getElementById('installBannerClose');
 
-  // APK instalada — não mostra botão
-  if(isStandalone){
-    if(btn) btn.style.display='none';
-    return;
-  }
-  // Desktop/iPhone/ficheiro — esconde sempre
-  if(!isAndroid||!isMobileUA||isFile){
-    if(btn) btn.style.display='none';
-    return;
-  }
+  if(isStandalone){ if(banner) banner.remove(); return; }
+  if(!isAndroid||!isMobileUA||isFile){ if(banner) banner.remove(); return; }
 
   let mostrarTimer=null, esconderTimer=null;
   const VISIVEL_MS=25000;
   const INTERVALO_MS=300000;
+  const SILENCIADO_KEY='balcao_install_silence';
+  let silenciadoAte=0;
+  try{ silenciadoAte=parseInt(localStorage.getItem(SILENCIADO_KEY)||'0',10)||0; }catch(e){}
 
   function mostrarTemporariamente(){
-    if(!btn) return;
-    if(btn.classList.contains('installed')) return;
-    btn.classList.remove('hide');
-    btn.classList.add('show');
+    if(!banner) return;
+    if(Date.now()<silenciadoAte) return;
+    banner.classList.remove('closing');
+    banner.classList.add('show');
     if(esconderTimer) clearTimeout(esconderTimer);
     esconderTimer=setTimeout(function(){
-      btn.classList.remove('show');
-      btn.classList.add('hide');
+      esconderBanner();
       if(mostrarTimer) clearTimeout(mostrarTimer);
       mostrarTimer=setTimeout(mostrarTemporariamente,INTERVALO_MS);
     },VISIVEL_MS);
   }
+  function esconderBanner(){
+    if(!banner) return;
+    banner.classList.add('closing');
+    setTimeout(function(){ banner.classList.remove('show','closing'); },320);
+  }
+  function silenciarPor30min(){
+    try{ localStorage.setItem(SILENCIADO_KEY,String(Date.now()+30*60*1000)); }catch(e){}
+  }
   function ocultarDefinitivamente(){
     if(mostrarTimer) clearTimeout(mostrarTimer);
     if(esconderTimer) clearTimeout(esconderTimer);
-    if(btn){ btn.classList.remove('show'); btn.classList.add('hide','installed'); }
+    if(banner) banner.remove();
   }
 
   let swOk=false;
@@ -1283,10 +1373,26 @@ function inicializarBotaoGoogle(){
     navigator.serviceWorker.getRegistrations().then(function(regs){ swOk=regs.some(function(r){ return r.active&&r.active.scriptURL.indexOf('sw.js')!==-1; }); }).catch(function(){});
   }
 
-  setTimeout(mostrarTemporariamente,2500);
+  setTimeout(mostrarTemporariamente,2000);
 
-  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); dp=e; mostrarTemporariamente(); });
-  window.addEventListener('appinstalled',function(){ dp=null; ocultarDefinitivamente(); try{ toast('Aplicação instalada!','success'); }catch(e){} });
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); dp=e;
+    if(Date.now()>=silenciadoAte) mostrarTemporariamente();
+  });
+  window.addEventListener('appinstalled',function(){
+    dp=null;
+    ocultarDefinitivamente();
+    try{ toast('Aplicação instalada!','success'); }catch(e){}
+  });
+
+  if(bannerClose){
+    bannerClose.addEventListener('click',function(){
+      silenciarPor30min();
+      esconderBanner();
+      if(mostrarTimer) clearTimeout(mostrarTimer);
+      if(esconderTimer) clearTimeout(esconderTimer);
+    });
+  }
 
   function db(){ const ua=navigator.userAgent||''; if(/SamsungBrowser/i.test(ua)) return 'samsung'; if(/EdgA|EdgiOS|Edg\//i.test(ua)) return 'edge'; if(/OPR|Opera/i.test(ua)) return 'opera'; if(/Firefox|FxiOS/i.test(ua)) return 'firefox'; return 'chrome'; }
   function instr(){
@@ -1320,9 +1426,9 @@ function inicializarBotaoGoogle(){
     if(tr){ if(dp){ tr.style.display=''; tr.textContent='⬇️ Instalar agora'; } else tr.style.display='none'; }
     document.getElementById('installModal').classList.add('show');
   }
-  if(btn) btn.addEventListener('click',function(e){
+  if(bannerBtn) bannerBtn.addEventListener('click',function(e){
     e.preventDefault();
-    if(dp){ dp.prompt(); dp.userChoice.then(function(c){ if(c.outcome==='accepted') toast('A instalar…','success'); else setTimeout(abrirModal,300); dp=null; }).catch(function(){ abrirModal(); }); }
+    if(dp){ dp.prompt(); dp.userChoice.then(function(c){ if(c.outcome==='accepted'){ toast('A instalar…','success'); ocultarDefinitivamente(); } else { setTimeout(abrirModal,300); } dp=null; }).catch(function(){ abrirModal(); }); }
     else abrirModal();
   });
   document.addEventListener('click',function(e){
@@ -1338,7 +1444,7 @@ function inicializarBotaoGoogle(){
 })();
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v8';
+const CACHE_KEY='balcao_cache_v10';
 const IMG_MAX_SIZE=450;
 const IMG_QUALITY=0.65;
 const THUMB_SIZE=200;
@@ -2947,6 +3053,9 @@ document.addEventListener("change",function(e){
     if(getStoredToken()) carregarTudo();
     setTimeout(fitPreviewCard,200);
     setTimeout(fitPreviewCard,600);
+    setTimeout(ajustarAlturaHeader,100);
+    setTimeout(ajustarAlturaHeader,500);
+    setTimeout(ajustarAlturaHeader,1500);
   }catch(err){}
 })();
 </script>
