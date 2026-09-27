@@ -77,9 +77,9 @@ img{max-width:100%}
 .install-btn svg{width:16px;height:16px;flex-shrink:0}
 .install-btn.installed{background:linear-gradient(135deg,#64748b,#475569);pointer-events:none;opacity:.7}
 
-/* ============ GRID / PANELS ============ */
+/* ============ GRID ============ */
 .grid{display:grid;grid-template-columns:440px minmax(0,1fr);gap:24px;align-items:start;min-width:0;max-width:100%;width:100%}
-.left-col{min-width:0;max-width:100%;overflow-x:hidden}
+.left-col{min-width:0;max-width:100%;overflow-x:hidden;display:flex;flex-direction:column;gap:0}
 .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px;min-width:0;max-width:100%}
 label{display:block;font-weight:700;margin:12px 0 5px;font-size:13px}
 input,select,textarea{width:100%;padding:9px 12px;border:1px solid #bbb;border-radius:7px;font-size:14px;font-family:inherit;background:#fff;color:var(--text);min-width:0;max-width:100%}
@@ -134,7 +134,7 @@ button:active:not(:disabled){transform:scale(.97)}
 #appStatus[data-type=loading]::before{background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;animation:statusSpin .7s linear infinite;box-shadow:none;width:14px;height:14px}
 @keyframes statusSpin{to{transform:rotate(360deg)}}
 
-/* ==== DRAWERS / LISTAS ==== */
+/* ==== DRAWERS ==== */
 details.drawer{margin-top:12px;background:var(--panel-soft);border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:0;max-width:100%}
 details.drawer summary{cursor:pointer;font-weight:700;padding:12px;background:var(--panel-soft);border-radius:8px;user-select:none;list-style:none;min-width:0}
 details.drawer summary::-webkit-details-marker{display:none}
@@ -382,7 +382,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-close{background:#f0f2f5;color:#2c3440}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;box-shadow:0 3px 12px rgba(23,107,58,.3)}
 
-/* ============ MOBILE ============ */
+/* ============================================================
+   MOBILE
+   ============================================================ */
 @media(max-width:900px){
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
@@ -396,7 +398,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   }
   @supports (overflow-x:clip){.app{overflow-x:clip}}
 
-  /* HEADER — agora alinhado com os painéis, sem scroll lateral */
+  /* HEADER — dentro do padding, alinhado com os painéis */
   .top-header{
     padding:12px 14px;
     padding-top:calc(12px + var(--safe-top));
@@ -445,7 +447,11 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .auth-card-btn{grid-column:1 / -1;grid-row:2;width:100%;justify-content:center}
   .install-btn{width:100%;justify-content:center;padding:13px 14px;font-size:14px;border-radius:14px;min-height:48px}
 
+  /* Grid vira coluna única — preview fica POR BAIXO do editor */
   .grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .left-col{order:1}
+  .preview-container{order:2;position:relative!important;top:0!important;min-height:auto!important;padding:14px 10px!important;border-radius:14px;justify-content:flex-start;margin-top:4px}
+
   .panel{border-radius:16px;padding:14px;margin-bottom:12px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);background:#fff;min-width:0;max-width:100%}
   label{font-size:11px;margin:10px 0 4px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
   input,select,textarea{padding:13px 14px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc;min-width:0;max-width:100%}
@@ -490,7 +496,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .sheet-preview{padding:0;align-items:stretch}
   .sheet-preview-inner{border-radius:0;padding:14px;max-height:100dvh;height:100dvh;max-width:100vw;width:100vw;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:calc(14px + var(--safe-top));padding-bottom:calc(14px + var(--safe-bottom))}
   .sheet-preview-content{width:100%;align-items:stretch}
-  .preview-container{position:relative!important;top:0!important;min-height:auto!important;padding:14px 10px!important;border-radius:14px;justify-content:flex-start}
   .preview-wrap{padding:4px}
   .preview-scaler{width:100%;max-width:100%}
   #mainLabelCard{max-width:100%!important}
@@ -555,7 +560,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 @media print{
   @page{size:A4 portrait;margin:0!important}
   html,body{width:210mm!important;height:100%!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
-  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.mobile-tab-bar,.top-header,.install-modal{display:none!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.top-header,.install-modal{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   .print-page-wrapper{width:210mm!important;height:297mm!important;page-break-after:always!important;break-after:page!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding:5mm 0!important}
@@ -584,13 +589,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 }
 </style>
 </head>
-<body data-mobile-tab="editar">
+<body>
 <div class="app">
-  <nav class="mobile-tab-bar">
-    <button type="button" data-tab="editar" class="active">✏️ Preencher</button>
-    <button type="button" data-tab="ver">👁️ Ver</button>
-    <button type="button" data-tab="fila">🛒 Fila <span class="tab-badge" id="tabQueueBadge">0</span></button>
-  </nav>
   <header class="top-header">
     <div class="header-left">
       <h1><span class="h1-tag">🏷️</span> ETIQUETAS DE PREÇOS</h1>
@@ -637,7 +637,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </header>
   <div class="grid">
     <div class="left-col">
-      <section class="panel tab-el tab-editar">
+      <section class="panel">
         <label for="presetSizes">Medida / Formato da Etiqueta</label>
         <select id="presetSizes" class="format-select">
           <optgroup label="⭐ Amanhecer">
@@ -668,7 +668,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </div>
         <div style="width:100%"><label for="store" style="margin-top:0">Loja</label><select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select></div>
       </section>
-      <details class="drawer tab-el tab-editar" open>
+      <details class="drawer" open>
         <summary>📝 Editar Dados do Produto</summary>
         <div class="drawer-content">
           <label for="internalCode" style="margin-top:0">Código Interno</label>
@@ -808,7 +808,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade)</label>
         </div>
       </details>
-      <details class="drawer tab-el tab-editar">
+      <details class="drawer">
         <summary>🎯 Ajustes de Impressão</summary>
         <div class="drawer-content">
           <div class="offset-panel">
@@ -831,7 +831,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           </div>
         </div>
       </details>
-      <section class="panel tab-el tab-editar">
+      <section class="panel">
         <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="1"></div></div>
         <div id="appStatus" role="status" aria-live="polite"></div>
         <div class="actions">
@@ -848,14 +848,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <button class="email-btn" id="emailLabelsBtn" type="button">📧 Enviar etiquetas por Email (PDF)</button>
         </div>
       </section>
-      <details class="drawer tab-el tab-fila">
+      <details class="drawer">
         <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
           <div id="queueListContainer"><div class="empty-msg">A fila está vazia.</div></div>
           <button class="secondary" style="margin-top:10px;border-color:#e74c3c;color:#c0392b;display:none" id="clearQueueBtn">🗑️ Limpar Fila</button>
         </div>
       </details>
-      <details class="drawer tab-el tab-fila" open>
+      <details class="drawer" open>
         <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)</summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
@@ -871,7 +871,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
         </div>
       </details>
     </div>
-    <section class="preview-container tab-el tab-ver">
+    <section class="preview-container">
       <div id="badgeSheet" class="sheet-badge">⭐ Etiquetas Amanhecer</div>
       <div class="preview-wrap" id="previewWrap">
         <div class="preview-scaler" id="previewScaler">
@@ -1037,28 +1037,19 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   const btn = document.getElementById('installAppBtn');
   const btnText = document.getElementById('installBtnText');
 
-  // Só mostra em Android smartphone (não em iOS, não em desktop, não em standalone)
   if (!isAndroid || !isMobileUA || isStandalone || isFileProtocol){
     if (btn) btn.style.display = 'none';
     return;
   }
 
-  // Verifica se manifest.json existe (real, não blob)
-  let manifestOk = false;
   let swOk = false;
-  try {
-    const ml = document.querySelector('link[rel="manifest"]');
-    if (ml && ml.href && ml.href.indexOf('manifest.json') !== -1) manifestOk = true;
-  } catch(e){}
 
-  // Verifica SW a partir de ficheiro real
   if ('serviceWorker' in navigator && isSecure){
     navigator.serviceWorker.getRegistrations().then(function(regs){
       swOk = regs.some(function(r){ return r.active && r.active.scriptURL.indexOf('sw.js') !== -1; });
     }).catch(function(){});
   }
 
-  // Mostra botão (só aparece em Android smartphone)
   if (btn) btn.classList.add('show');
 
   window.addEventListener('beforeinstallprompt', function(e){
@@ -1118,16 +1109,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   }
 
   function getWarning(){
-    if (isFileProtocol){
-      return '<strong>⚠️ Está a abrir o ficheiro localmente.</strong> Para instalar como app, é preciso publicar o HTML num servidor HTTPS (ex.: GitHub Pages, Netlify).';
-    }
-    if (!isSecure){
-      return '<strong>⚠️ Ligação não segura.</strong> O Android só permite instalar PWA em páginas HTTPS.';
-    }
     if (!deferredPrompt){
       let html = '<strong>💡 O botão nativo "Instalar app" ainda não está disponível neste Chrome.</strong> ';
       if (!swOk){
-        html += 'Para instalação tipo APK, o servidor precisa de servir dois ficheiros extra ao lado do HTML: <kbd>manifest.json</kbd> e <kbd>sw.js</kbd>. Enquanto não estiverem, use a opção manual abaixo.';
+        html += 'Para instalação tipo APK, o servidor precisa de servir dois ficheiros extra: <kbd>manifest.json</kbd> e <kbd>sw.js</kbd>. Enquanto não estiverem, use a opção manual abaixo.';
       }
       return html;
     }
@@ -1207,13 +1192,11 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     }
   });
 
-  // Registo de SW — só se existir sw.js real
   if ('serviceWorker' in navigator && isSecure){
     navigator.serviceWorker.register('sw.js', { scope: './' }).then(function(reg){
       console.log('[PWA] SW registado:', reg.scope);
       swOk = true;
     }).catch(function(err){
-      // Silencioso — se não existir sw.js, ignora
       console.info('[PWA] sw.js não disponível (opcional):', err.message);
     });
   }
@@ -1223,7 +1206,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
    RESTANTE APP
    ========================================================= */
 const API_URL   = 'https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY = 'balcao_cache_v29';
+const CACHE_KEY = 'balcao_cache_v30';
 
 let jwtToken = null;
 try { jwtToken = sessionStorage.getItem("google_jwt") || null; } catch(e){}
@@ -1721,7 +1704,6 @@ function getDimensions(){ return getDimensionsFor($("presetSizes").value, $("cus
 function getSizeClass(w,h){ const m = Math.max(w,h); if(m<55) return "size-tiny"; if(m<82) return "size-small"; if(m<115) return "size-medium"; if(m<165) return "size-large"; return "size-xl"; }
 function applySizeClass(el,w,h){ if(!el) return; el.classList.remove("size-tiny","size-small","size-medium","size-large","size-xl"); el.classList.add(getSizeClass(w,h)); }
 window.setField = function(id,val){ const el=$(id); if(el){ el.value=val; updateCard(); } };
-function switchMobileTab(tab){ const btn = document.querySelector('.mobile-tab-bar button[data-tab="' + tab + '"]'); if (btn) btn.click(); }
 function calcUnitInfo(capUnit){
   switch(capUnit){
     case "peso":    return { mainSuffix:"€/KG",   refSuffix:"€/KG",  normalizar:1 };
@@ -1739,8 +1721,6 @@ function calcUnitInfo(capUnit){
 const DEFAULTS_UNIDADE = { peso:"", g:"", lt:"1", cl:"0.75", ml:"1", un:"1", dz:"1", meia_dz:"1", dose:"1" };
 function renderQueue(){
   const c = $("queueListContainer"); $("queueBadge").textContent = printQueue.length;
-  const tb = document.getElementById("tabQueueBadge");
-  if (tb) { tb.textContent = printQueue.length; tb.classList.toggle("show", printQueue.length > 0); }
   if(printQueue.length===0){ c.innerHTML = '<div class="empty-msg">A fila está vazia.</div>'; $("clearQueueBtn").style.display = "none"; $("printBtn").textContent = "🖨️ Imprimir [F9]"; return; }
   $("clearQueueBtn").style.display = "block"; let total = 0; c.innerHTML = "";
   printQueue.forEach(function(item,i){
@@ -1857,8 +1837,8 @@ async function saveToDb(){
     toast("Erro ao guardar produto", "error");
   }
 }
-window.duplicateFromDb = function(i){ const d = savedProducts[i]; if(!d) return; const copia = JSON.parse(JSON.stringify(d)); copia.codigo = (d.codigo || 'NOVO') + '-COPIA'; setFormData(copia); switchMobileTab('editar'); toast("Produto duplicado — ajuste o código", "info"); };
-window.loadFromDb = function(i){ const d = savedProducts[i]; if(!d) return; setFormData(d); switchMobileTab('editar'); toast("Produto carregado no editor", "success"); };
+window.duplicateFromDb = function(i){ const d = savedProducts[i]; if(!d) return; const copia = JSON.parse(JSON.stringify(d)); copia.codigo = (d.codigo || 'NOVO') + '-COPIA'; setFormData(copia); toast("Produto duplicado — ajuste o código", "info"); };
+window.loadFromDb = function(i){ const d = savedProducts[i]; if(!d) return; setFormData(d); toast("Produto carregado no editor", "success"); };
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const targetName = d.nome || d.codigo || "produto sem nome";
@@ -2967,16 +2947,6 @@ document.addEventListener("change", function(e){
   const inp = e.target.closest('input[data-action="copies"]'); if(!inp) return;
   const i = parseInt(inp.dataset.index,10); if(!isFinite(i)) return;
   if(printQueue[i]){ printQueue[i].copies = Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
-});
-document.querySelectorAll('.mobile-tab-bar button').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.mobile-tab-bar button').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    document.body.setAttribute('data-mobile-tab', btn.dataset.tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(fitPreviewCard, 100);
-    setTimeout(fitPreviewCard, 350);
-  });
 });
 (async function boot(){
   try{
