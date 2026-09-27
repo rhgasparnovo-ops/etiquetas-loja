@@ -21,22 +21,21 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 
 <script>
-/* Limpeza nuclear — mata qualquer vestígio antigo (SW, cache, abas) */
 (function(){
-  var FORCE_KEY='balcao_force_v4';
-  var jaForcei=false;
-  try{ jaForcei=sessionStorage.getItem(FORCE_KEY)==='1'; }catch(e){}
+  var FK='balcao_force_v5';
+  var jf=false;
+  try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      regs.forEach(function(r){
+    navigator.serviceWorker.getRegistrations().then(function(rs){
+      rs.forEach(function(r){
         var u=(r.active&&r.active.scriptURL)||(r.installing&&r.installing.scriptURL)||(r.waiting&&r.waiting.scriptURL)||'';
         if(u.indexOf('sw.js')===-1){ try{ r.unregister(); }catch(e){} }
       });
     }).catch(function(){});
   }
   if('caches' in window){
-    caches.keys().then(function(keys){
-      keys.forEach(function(k){ if(k!=='balcao-v1'){ try{ caches.delete(k); }catch(e){} } });
+    caches.keys().then(function(ks){
+      ks.forEach(function(k){ if(k!=='balcao-v1'){ try{ caches.delete(k); }catch(e){} } });
     }).catch(function(){});
   }
   function killLegacy(){
@@ -51,21 +50,19 @@
     return n;
   }
   document.addEventListener('DOMContentLoaded',function(){
-    var hasLegacy = !!(document.querySelector('.mobile-tab-bar,[data-mobile-tab]')||(document.body&&document.body.hasAttribute('data-mobile-tab')));
-    if(hasLegacy && !jaForcei){
-      try{ sessionStorage.setItem(FORCE_KEY,'1'); }catch(e){}
+    var hl=!!(document.querySelector('.mobile-tab-bar,[data-mobile-tab]')||(document.body&&document.body.hasAttribute('data-mobile-tab')));
+    if(hl&&!jf){
+      try{ sessionStorage.setItem(FK,'1'); }catch(e){}
       if('caches' in window){
-        caches.keys().then(function(keys){ return Promise.all(keys.map(function(k){ return caches.delete(k); })); }).then(function(){
-          var url=location.href.split('#')[0];
-          var sep=url.indexOf('?')===-1?'?':'&';
-          location.replace(url+sep+'_v='+Date.now());
+        caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); }).then(function(){
+          var u=location.href.split('#')[0], s=u.indexOf('?')===-1?'?':'&';
+          location.replace(u+s+'_v='+Date.now());
         }).catch(function(){ location.reload(true); });
       } else { location.reload(true); }
       return;
     }
     killLegacy();
-    var ciclos=0;
-    var wd=setInterval(function(){ killLegacy(); ciclos++; if(ciclos>=20) clearInterval(wd); },500);
+    var c=0, wd=setInterval(function(){ killLegacy(); c++; if(c>=20) clearInterval(wd); },500);
   });
 })();
 </script>
@@ -83,61 +80,56 @@
   --safe-left:env(safe-area-inset-left,0px);
   --safe-right:env(safe-area-inset-right,0px);
   --app-pad-x:12px;
-  --hdr-h:56px;
+  --hdr-h:58px;
 }
 *{box-sizing:border-box}
 html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 @supports (overflow-x:clip){html,body{overflow-x:clip}}
 html{height:100%}
-body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100%;position:relative}
+body{
+  font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100%;position:relative;
+  padding-top:calc(var(--hdr-h) + var(--safe-top));
+}
 img{max-width:100%}
 
-/* NUCLEAR CSS */
-nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el],body[data-mobile-tab]>nav{
-  display:none!important;visibility:hidden!important;opacity:0!important;
-  width:0!important;height:0!important;max-width:0!important;max-height:0!important;
-  overflow:hidden!important;position:absolute!important;left:-99999px!important;top:-99999px!important;
-  pointer-events:none!important;z-index:-9999!important;margin:0!important;padding:0!important;border:none!important;
-}
-
-/* ============ HEADER FIXO COMPACTO ============ */
+/* ============ HEADER FIXO ============ */
 .top-header{
-  position:sticky;top:0;z-index:8000;
+  position:fixed;top:0;left:0;right:0;z-index:8000;
   background:rgba(255,255,255,.97);
-  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
   border-bottom:1px solid #e8ebef;
   box-shadow:0 2px 12px rgba(15,23,42,.05);
-  padding:8px 16px;padding-top:calc(8px + var(--safe-top));
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 16px;
+  padding-top:calc(8px + var(--safe-top));
   padding-left:calc(16px + var(--safe-left));
   padding-right:calc(16px + var(--safe-right));
-  display:flex;align-items:center;gap:10px;flex-wrap:nowrap;
   min-height:var(--hdr-h);
+  flex-wrap:nowrap;
 }
-.hdr-brand{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;overflow:hidden}
+.hdr-brand{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0;overflow:hidden}
 .hdr-title{
   margin:0;font-size:14px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;
   color:#1a1f28;display:flex;align-items:center;gap:6px;min-width:0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
 }
 .hdr-title .h1-tag{font-size:16px;flex-shrink:0}
 .hdr-logos{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.hdr-logos img{height:22px;width:auto;max-width:44px;object-fit:contain;opacity:.85}
-.hdr-logos .divider{width:1px;height:16px;background:#e0e0e0}
+.hdr-logos img{height:20px;width:auto;max-width:42px;object-fit:contain;opacity:.85}
+.hdr-logos .divider{width:1px;height:14px;background:#e0e0e0}
 .hdr-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
-/* Botão Ver (mobile — abre modal) */
 .hdr-btn{
   display:none;align-items:center;justify-content:center;gap:5px;
   width:auto;padding:7px 12px;border-radius:10px;
   background:linear-gradient(135deg,#0a52b8,#053780);color:#fff;border:none;
   font-weight:800;font-size:12px;cursor:pointer;
-  box-shadow:0 2px 8px rgba(8,66,152,.22);white-space:nowrap;
-  min-height:36px;
+  box-shadow:0 2px 8px rgba(8,66,152,.22);white-space:nowrap;min-height:36px;
 }
 .hdr-btn svg{width:14px;height:14px;flex-shrink:0}
 .hdr-btn:active{transform:scale(.96)}
 
-/* Auth compacto */
 .auth-card{
   display:flex;align-items:center;gap:8px;padding:5px 10px 5px 8px;
   background:#fff;border:1px solid #e2e8f0;border-radius:11px;
@@ -146,13 +138,13 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 }
 .auth-card.logged{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
 .auth-card-icon{
-  width:30px;height:30px;border-radius:9px;flex-shrink:0;
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
   background:linear-gradient(135deg,#c8102e,#a80d24);color:#fff;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 2px 6px rgba(200,16,46,.24);
 }
 .auth-card.logged .auth-card-icon{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 2px 6px rgba(34,197,94,.24)}
-.auth-card-icon svg{width:15px;height:15px}
+.auth-card-icon svg{width:14px;height:14px}
 .auth-card-text{display:none;flex-direction:column;min-width:0;line-height:1.15}
 .auth-card-text strong{font-size:11.5px;font-weight:800;color:#1a1f28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .auth-card-text span{font-size:10px;color:#64748b;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -169,29 +161,36 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 .auth-card.logged .auth-card-btn{display:none}
 .auth-logout-btn svg{width:12px;height:12px}
 
-/* Install btn compacto */
 .install-btn{
   display:none;align-items:center;gap:6px;padding:7px 12px;
   background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;border:none;
   border-radius:10px;font-weight:800;font-size:11.5px;cursor:pointer;
   box-shadow:0 2px 8px rgba(23,107,58,.22);flex-shrink:0;white-space:nowrap;min-height:36px;
+  transition:opacity .35s ease, transform .35s ease;
 }
 .install-btn.show{display:inline-flex}
+.install-btn.hide{display:none}
 .install-btn svg{width:14px;height:14px}
 .install-btn.installed{background:linear-gradient(135deg,#64748b,#475569);pointer-events:none;opacity:.75}
 
-/* Layout principal */
-.app{max-width:1400px;margin:0 auto;padding:20px;padding-left:calc(20px + var(--safe-left));padding-right:calc(20px + var(--safe-right));width:100%;min-width:0;overflow-x:hidden}
+/* NUCLEAR CSS anti-abas antigas */
+nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el],body[data-mobile-tab]>nav{
+  display:none!important;visibility:hidden!important;opacity:0!important;
+  width:0!important;height:0!important;max-width:0!important;max-height:0!important;
+  overflow:hidden!important;position:absolute!important;left:-99999px!important;top:-99999px!important;
+  pointer-events:none!important;z-index:-9999!important;margin:0!important;padding:0!important;border:none!important;
+}
+
+.app{max-width:1400px;margin:0 auto;padding:16px 20px 24px;padding-left:calc(20px + var(--safe-left));padding-right:calc(20px + var(--safe-right));width:100%;min-width:0;overflow-x:hidden}
 @supports (overflow-x:clip){.app{overflow-x:clip}}
 
-/* Grid */
 .grid{display:grid;grid-template-columns:440px minmax(0,1fr);gap:24px;align-items:start;min-width:0;max-width:100%;width:100%}
 .left-col{min-width:0;max-width:100%;overflow-x:hidden}
 .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px;min-width:0;max-width:100%}
 label{display:block;font-weight:700;margin:12px 0 5px;font-size:13px}
 input,select,textarea{width:100%;padding:9px 12px;border:1px solid #bbb;border-radius:7px;font-size:14px;font-family:inherit;background:#fff;color:var(--text);min-width:0;max-width:100%}
 input[type=file]{padding:6px}
-input[type=range]{padding:0;height:6px}
+input[type=range]{padding:0;height:6px;max-width:100%}
 .uppercase-input{text-transform:uppercase}
 input.input-error,select.input-error{border-color:#e74c3c!important;background:#fff5f5!important}
 button{cursor:pointer;font-weight:700;width:100%;padding:9px 12px;border-radius:10px;border:1px solid #bbb;font-size:14px;transition:all .18s cubic-bezier(.4,0,.2,1);letter-spacing:.2px;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;max-width:100%}
@@ -208,16 +207,19 @@ button:active:not(:disabled){transform:scale(.97)}
 .format-select{margin-bottom:10px;background:linear-gradient(135deg,#fffdf5,#fff9db);border:1.5px solid #f6c23e;color:#1a1f28;font-weight:700;font-size:14px;padding:11px 40px 11px 14px;border-radius:10px;appearance:none;-webkit-appearance:none;background-image:linear-gradient(135deg,#fffdf5,#fff9db),url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a87600' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:0 0,calc(100% - 16px) 50%;background-repeat:no-repeat,no-repeat;background-size:100% 100%,12px 8px;cursor:pointer}
 .format-select optgroup{background:#fff;color:#7a5c00;font-weight:800;font-size:12px;text-transform:uppercase}
 .format-select option{background:#fff;color:#1a1f28;font-weight:600;font-size:14px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;min-width:0}
-.actions-full{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;min-width:0}
-.actions-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;min-width:0}
+.actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:16px;min-width:0}
+.actions-full{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:10px;min-width:0}
+.actions-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px;min-width:0}
 .size-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 .size-row-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
-.date-input-wrap{position:relative;display:flex;align-items:center;width:100%;min-width:0}
-.date-input-wrap input[type="date"]{width:100%;padding-right:42px;min-height:42px;min-width:0;max-width:100%}
-.date-clear-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px;padding:0;border-radius:50%;background:#f0f2f5;border:1px solid #e0e5ea;color:#666;font-size:13px;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1}
+/* Datas — wrapper robusto */
+.date-input-wrap{position:relative;display:flex;align-items:center;width:100%;max-width:100%;min-width:0;overflow:hidden}
+.date-input-wrap input[type="date"]{width:100%;max-width:100%;min-width:0;padding-right:42px;min-height:42px;display:block}
+.date-clear-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px;padding:0;border-radius:50%;background:#f0f2f5;border:1px solid #e0e5ea;color:#666;font-size:13px;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2}
 .date-clear-btn.show{display:flex}
+/* Linha só para datas — coluna única em mobile */
+.dates-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
 #appStatus{display:none;align-items:center;gap:10px;margin:10px 0;padding:11px 14px;border-radius:10px;font:700 13px/1.4 system-ui,-apple-system,sans-serif;border:1px solid transparent;min-width:0;max-width:100%}
 #appStatus.show{display:flex}
@@ -270,7 +272,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .fruit-promo-panel{background:#fff5f5;border:2px solid #c8102e;padding:12px;border-radius:8px;margin-top:10px;display:none;min-width:0}
 .fruit-promo-panel h4{margin:0 0 8px 0;color:#c8102e;font-size:13px;font-weight:800}
 .offset-panel{background:#fff9db;border:1px solid #ffe066;border-radius:8px;padding:12px;min-width:0}
-.offset-row{display:grid;grid-template-columns:60px minmax(0,1fr) 60px;align-items:center;gap:8px;margin-bottom:6px}
+.offset-row{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;gap:8px;margin-bottom:6px}
 .offset-row label{margin:0;font-size:12px}
 .offset-value{text-align:center;font-family:monospace;font-size:12px;font-weight:800;color:#664d03}
 .offset-hint{font-size:11px;color:#856404;margin-top:6px;line-height:1.4}
@@ -283,7 +285,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .pb-actions button{background:#fff;border:1.5px solid #084298;color:#084298;font-weight:800;font-size:12px;padding:12px 8px;border-radius:10px;min-height:auto;display:flex;align-items:center;justify-content:center;gap:5px}
 .pb-hint{font-size:11px;color:#084298;margin-top:9px;line-height:1.4;opacity:.85}
 
-.preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:calc(var(--hdr-h) + 12px);min-width:0;max-width:100%}
+.preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:calc(var(--hdr-h) + 20px);min-width:0;max-width:100%}
 .sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center;max-width:100%}
 .preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;padding:10px;overflow:hidden;min-width:0}
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;overflow:hidden;position:relative;min-width:0}
@@ -340,15 +342,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 
-/* Modal Ver Etiqueta (mobile) */
-.preview-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(15,18,22,.92);align-items:center;justify-content:center;padding:16px;padding-top:calc(16px + var(--safe-top));padding-bottom:calc(16px + var(--safe-bottom));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.preview-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(15,18,22,.92);align-items:center;justify-content:center;padding:16px;padding-top:calc(16px + var(--safe-top));padding-bottom:calc(16px + var(--safe-bottom));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .preview-modal.show{display:flex;flex-direction:column;gap:12px}
 .preview-modal-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;max-width:100%;color:#1a1f28}
 .preview-modal-wrap{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;overflow:auto;flex:1 1 auto}
 .preview-modal-close{position:fixed;top:calc(16px + var(--safe-top));right:16px;width:40px;height:40px;min-width:40px;min-height:40px;border-radius:50%;background:rgba(255,255,255,.96);color:#1a1f28;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;border:none;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;z-index:9501}
 .preview-modal-close:active{transform:scale(.92)}
 
-/* Modais genéricos */
 .sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .sheet-preview.show{display:flex}
 .sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);min-width:0}
@@ -448,7 +448,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .diag-box .ok{color:#176b3a;font-weight:800}
 .diag-box .err{color:#c0392b;font-weight:800}
 
-.install-modal{display:none;position:fixed;inset:0;background:rgba(15,18,22,.7);z-index:100004;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.install-modal{display:none;position:fixed;inset:0;background:rgba(15,18,22,.7);z-index:100004;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .install-modal.show{display:flex}
 .install-modal-box{background:#fff;border-radius:20px;padding:26px;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:90vh;overflow:auto;min-width:0}
 .install-modal-box h3{margin:0 0 6px 0;font-size:19px;font-weight:900;color:#1a1f28;display:flex;align-items:center;gap:8px}
@@ -465,37 +465,84 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-close{background:#f0f2f5;color:#2c3440}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
-/* MOBILE */
+/* ============================================================
+   MOBILE — header em 2 linhas, datas em coluna única
+   ============================================================ */
 @media(max-width:900px){
-  :root{--hdr-h:52px}
+  :root{--hdr-h:88px}
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
-  body{background:#eef1f4;font-size:15px;padding-bottom:var(--safe-bottom);min-height:100dvh}
+  body{
+    background:#eef1f4;font-size:15px;
+    padding-top:calc(var(--hdr-h) + var(--safe-top));
+    padding-bottom:var(--safe-bottom);
+    min-height:100dvh;
+  }
 
-  .top-header{padding:6px 10px;padding-top:calc(6px + var(--safe-top));gap:8px;min-height:52px}
-  .hdr-brand{gap:6px}
-  .hdr-title{font-size:12px;gap:4px}
-  .hdr-title .h1-tag{font-size:14px}
-  .hdr-logos{gap:4px}
-  .hdr-logos img{height:18px;max-width:36px}
+  /* Header em 2 linhas */
+  .top-header{
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:6px;
+    padding:6px 12px;
+    padding-top:calc(6px + var(--safe-top));
+    padding-left:calc(12px + var(--safe-left));
+    padding-right:calc(12px + var(--safe-right));
+    min-height:88px;
+    flex-wrap:nowrap;
+  }
+  /* Linha 1: título + logos (marca) */
+  .hdr-brand{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:8px;width:100%;min-width:0;overflow:hidden;
+  }
+  .hdr-title{
+    font-size:13px;gap:5px;flex:1 1 auto;min-width:0;
+  }
+  .hdr-title .h1-tag{font-size:15px}
+  .hdr-logos{gap:4px;flex-shrink:0}
+  .hdr-logos img{height:18px;max-width:34px}
   .hdr-logos .divider{height:14px}
-  .hdr-btn{display:inline-flex}
-  .hdr-actions{gap:4px}
 
-  .auth-card{padding:4px 8px 4px 6px;gap:6px;border-radius:10px}
-  .auth-card-icon{width:26px;height:26px;border-radius:8px}
-  .auth-card-icon svg{width:13px;height:13px}
-  .auth-card-text{display:none}
-  .auth-card-btn > div[data-gsi]{transform:scale(.7);transform-origin:center right;margin:-6px -10px}
-  .auth-logout-btn{padding:5px 8px;font-size:10.5px;min-height:26px;gap:4px}
-  .auth-logout-btn svg{width:11px;height:11px}
-
-  .install-btn{padding:6px 10px;font-size:11px;min-height:32px;gap:5px}
+  /* Linha 2: botões (Ver + Instalar) + auth */
+  .hdr-actions{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:6px;width:100%;min-width:0;
+  }
+  .hdr-btn{
+    display:inline-flex;
+    padding:6px 10px;font-size:11.5px;min-height:32px;gap:4px;
+    flex-shrink:0;
+  }
+  .hdr-btn svg{width:13px;height:13px}
+  .install-btn{
+    padding:6px 10px;font-size:11px;min-height:32px;gap:4px;
+  }
   .install-btn svg{width:12px;height:12px}
-  .install-btn span{display:none}
+  .install-btn span{display:inline}
 
-  .app{padding:8px var(--app-pad-x) 12px var(--app-pad-x);padding-left:max(var(--app-pad-x),var(--safe-left));padding-right:max(var(--app-pad-x),var(--safe-right))}
+  .auth-card{
+    padding:3px 8px 3px 5px;gap:5px;border-radius:9px;
+    margin-left:auto;flex-shrink:0;min-width:0;
+  }
+  .auth-card-icon{width:24px;height:24px;border-radius:7px}
+  .auth-card-icon svg{width:12px;height:12px}
+  .auth-card-text{display:none}
+  .auth-card-btn > div[data-gsi]{
+    transform:scale(.62);
+    transform-origin:center right;
+    margin:-8px -12px;
+  }
+  .auth-logout-btn{padding:4px 7px;font-size:10px;min-height:24px;gap:3px}
+  .auth-logout-btn svg{width:10px;height:10px}
 
+  /* Layout */
+  .app{
+    padding:8px var(--app-pad-x) 12px var(--app-pad-x);
+    padding-left:max(var(--app-pad-x),var(--safe-left));
+    padding-right:max(var(--app-pad-x),var(--safe-right));
+  }
   .grid{grid-template-columns:minmax(0,1fr);gap:0}
   .left-col{order:1}
   .preview-container{display:none!important}
@@ -510,6 +557,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .date-input-wrap{width:100%;max-width:100%;min-width:0}
   .date-input-wrap input[type="date"]{padding-right:44px}
   .date-clear-btn{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;font-size:13px;right:6px}
+
+  /* Datas em coluna única (nunca sai fora) */
+  .dates-row{grid-template-columns:minmax(0,1fr);gap:10px}
+
   .format-select{font-size:15px;padding:13px 40px 13px 14px;min-height:50px;border-radius:12px;font-weight:800}
   button{padding:13px;font-size:15px;border-radius:13px;min-height:50px;font-weight:800}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:16.5px;font-weight:900;padding:16px 14px;min-height:58px;border-radius:15px}
@@ -556,18 +607,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #appStatus{font-size:12.5px;padding:10px 12px}
   .install-modal-box,.name-modal-box,.email-modal-box{border-radius:18px;padding:20px 18px}
   .install-modal-box h3,.name-modal-box h3,.email-modal-box h3{font-size:17px}
-  .install-step{padding:12px;gap:12px}
-  .install-step-num{width:28px;height:28px;font-size:13px}
   .install-modal-actions button,.name-modal-actions button,.email-modal-actions button{padding:14px;font-size:15px;min-height:50px;border-radius:12px}
 }
 @media(max-width:420px){
-  .hdr-title{font-size:11px}
-  .hdr-logos img{height:16px;max-width:32px}
+  .hdr-title{font-size:12px}
+  .hdr-logos img{height:16px;max-width:30px}
   .actions{grid-template-columns:minmax(0,1fr)}
-}
-@media(max-width:900px){
-  body{--dummy:0}
-  .preview-modal .label-card{max-width:100%!important}
 }
 
 /* PRINT */
@@ -584,14 +629,12 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important;padding-top:3mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n+1){padding-left:var(--margin-left)!important}
-  #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3n){padding-right:var(--margin-right)!important}
   #printZone.measure .calib-sheet{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;margin-top:var(--offset-y)!important}
   #printZone.measure .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 }
 @media print{
   @page{size:A4 portrait;margin:0!important}
-  html,body{width:210mm!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  html,body{width:210mm!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;padding-top:0!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
   .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.top-header,.install-modal,.mobile-tab-bar,.preview-modal{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
@@ -612,54 +655,55 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="top-header">
-    <div class="hdr-brand">
-      <h1 class="hdr-title"><span class="h1-tag">🏷️</span> <span class="hdr-txt">Etiquetas</span></h1>
-      <div class="hdr-logos">
-        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="" onerror="this.style.opacity=.3">
-        <div class="divider"></div>
-        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="" onerror="this.style.opacity=.3">
-      </div>
-    </div>
-    <div class="hdr-actions">
-      <button type="button" class="hdr-btn" id="openPreviewBtn" title="Ver etiqueta">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>Ver</span>
-      </button>
-      <button type="button" class="install-btn" id="installAppBtn" title="Instalar aplicação">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span id="installBtnText">Instalar</span>
-      </button>
-      <div class="auth-card" id="authCard">
-        <div class="auth-card-icon" id="authIcon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
-        </div>
-        <div class="auth-card-text">
-          <strong id="authTitle">Sessão</strong>
-          <span id="authSub">Entrar</span>
-        </div>
-        <div class="auth-card-btn" data-gsi>
-          <div id="g_id_onload"
-               data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
-               data-callback="handleCredentialResponse"
-               data-auto_prompt="false"
-               data-cancel_on_tap_outside="false"
-               data-context="signin"
-               data-itp_support="true"></div>
-          <div class="g_id_signin"
-               data-type="standard" data-theme="outline" data-size="medium"
-               data-text="continue_with" data-shape="pill" data-logo_alignment="left"
-               data-locale="pt-PT"></div>
-        </div>
-        <button type="button" class="auth-logout-btn" id="authLogoutBtn" title="Terminar sessão">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Sair
-        </button>
-      </div>
-    </div>
-  </header>
 
+<header class="top-header">
+  <div class="hdr-brand">
+    <h1 class="hdr-title"><span class="h1-tag">🏷️</span> <span>Etiquetas</span></h1>
+    <div class="hdr-logos">
+      <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="" onerror="this.style.opacity=.3">
+      <div class="divider"></div>
+      <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="" onerror="this.style.opacity=.3">
+    </div>
+  </div>
+  <div class="hdr-actions">
+    <button type="button" class="hdr-btn" id="openPreviewBtn" title="Ver etiqueta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Ver</span>
+    </button>
+    <button type="button" class="install-btn hide" id="installAppBtn" title="Instalar aplicação">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span id="installBtnText">Instalar</span>
+    </button>
+    <div class="auth-card" id="authCard">
+      <div class="auth-card-icon" id="authIcon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
+      </div>
+      <div class="auth-card-text">
+        <strong id="authTitle">Sessão</strong>
+        <span id="authSub">Entrar</span>
+      </div>
+      <div class="auth-card-btn" data-gsi>
+        <div id="g_id_onload"
+             data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false"
+             data-cancel_on_tap_outside="false"
+             data-context="signin"
+             data-itp_support="true"></div>
+        <div class="g_id_signin"
+             data-type="standard" data-theme="outline" data-size="medium"
+             data-text="continue_with" data-shape="pill" data-logo_alignment="left"
+             data-locale="pt-PT"></div>
+      </div>
+      <button type="button" class="auth-logout-btn" id="authLogoutBtn" title="Terminar sessão">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
   <div class="grid">
     <div class="left-col">
       <section class="panel">
@@ -776,7 +820,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
               <label for="unit">Informação Extra (Opcional)</label>
               <input id="unit" type="text">
             </div>
-            <div class="size-row" style="margin-top:8px">
+            <div class="dates-row" style="margin-top:8px">
               <div>
                 <label for="promoStart">Início Oportunidade</label>
                 <div class="date-input-wrap">
@@ -925,7 +969,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   </div>
 </div>
 
-<!-- Modal Ver Etiqueta (mobile) -->
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose" aria-label="Fechar">✕</button>
   <div class="preview-modal-badge" id="previewModalBadge">⭐ Etiquetas Amanhecer</div>
@@ -1088,7 +1131,7 @@ function atualizarUICredenciais(){
     card.classList.add('logged');
     t.textContent='Sessão';
     s.textContent=info.email||info.name||'Ativo';
-    ic.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   } else {
     card.classList.remove('logged');
     t.textContent='Sessão';
@@ -1146,7 +1189,7 @@ function inicializarBotaoGoogle(){
 }
 
 /* ==============================
-   PWA
+   PWA — botão Instalar temporário
    ============================== */
 (function setupPWA(){
   const isAndroid=/Android/i.test(navigator.userAgent);
@@ -1157,32 +1200,74 @@ function inicializarBotaoGoogle(){
   let dp=null, modalAberto=false;
   const btn=document.getElementById('installAppBtn');
   const btnText=document.getElementById('installBtnText');
-  if(!isAndroid||!isMobileUA||isStandalone||isFile){ if(btn) btn.style.display='none'; return; }
+
+  // Controlo de visibilidade temporária
+  let mostrarTimer=null;
+  let esconderTimer=null;
+  const VISIVEL_MS=25000;   // 25 s visível
+  const INTERVALO_MS=300000; // volta a aparecer após 5 min
+
+  function mostrarTemporariamente(){
+    if(!btn) return;
+    if(btn.classList.contains('installed')) return;
+    btn.classList.remove('hide');
+    btn.classList.add('show');
+    if(esconderTimer) clearTimeout(esconderTimer);
+    esconderTimer=setTimeout(function(){
+      btn.classList.remove('show');
+      btn.classList.add('hide');
+      // Agenda reaparecimento
+      if(mostrarTimer) clearTimeout(mostrarTimer);
+      mostrarTimer=setTimeout(mostrarTemporariamente,INTERVALO_MS);
+    },VISIVEL_MS);
+  }
+  function ocultarDefinitivamente(){
+    if(mostrarTimer) clearTimeout(mostrarTimer);
+    if(esconderTimer) clearTimeout(esconderTimer);
+    if(btn){ btn.classList.remove('show'); btn.classList.add('hide','installed'); }
+  }
+
+  if(!isAndroid||!isMobileUA||isStandalone||isFile){
+    if(btn) btn.style.display='none';
+    return;
+  }
+
   let swOk=false;
   if('serviceWorker' in navigator&&isSecure){
     navigator.serviceWorker.getRegistrations().then(function(regs){ swOk=regs.some(function(r){ return r.active&&r.active.scriptURL.indexOf('sw.js')!==-1; }); }).catch(function(){});
   }
-  if(btn) btn.classList.add('show');
-  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); dp=e; if(btn) btn.classList.add('show'); });
-  window.addEventListener('appinstalled',function(){ dp=null; if(btn){ btn.classList.add('installed'); if(btnText) btnText.textContent='✓ Instalada'; } try{ toast('Aplicação instalada!','success'); }catch(e){} });
-  function dbrowser(){ const ua=navigator.userAgent||''; if(/SamsungBrowser/i.test(ua)) return 'samsung'; if(/EdgA|EdgiOS|Edg\//i.test(ua)) return 'edge'; if(/OPR|Opera/i.test(ua)) return 'opera'; if(/Firefox|FxiOS/i.test(ua)) return 'firefox'; return 'chrome'; }
+
+  // Mostra logo temporariamente
+  setTimeout(mostrarTemporariamente,2500);
+
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); dp=e;
+    // Se ainda não está instalada, garante que aparece
+    mostrarTemporariamente();
+  });
+  window.addEventListener('appinstalled',function(){
+    dp=null;
+    if(btnText) btnText.textContent='✓ Instalada';
+    ocultarDefinitivamente();
+    try{ toast('Aplicação instalada!','success'); }catch(e){}
+  });
+
+  function db(){ const ua=navigator.userAgent||''; if(/SamsungBrowser/i.test(ua)) return 'samsung'; if(/EdgA|EdgiOS|Edg\//i.test(ua)) return 'edge'; if(/OPR|Opera/i.test(ua)) return 'opera'; if(/Firefox|FxiOS/i.test(ua)) return 'firefox'; return 'chrome'; }
   function instr(){
-    if(dbrowser()==='samsung'){
-      return { t:'📲 Instalar no Samsung Internet', s:'Pelo menu do Samsung Internet.',
-        p:[
-          {n:'1',t:'Menu <kbd>☰</kbd>',d:'Canto inferior direito.'},
-          {n:'2',t:'"Adicionar página a"',d:'Ou "Adicionar à página inicial".'},
-          {n:'3',t:'"Ecrã inicial"',d:'Confirme.'},
-          {n:'4',t:'Pronto',d:'Fica no ecrã inicial.'}
-        ]};
-    }
-    return { t:'📲 Instalar no Android', s:'Chrome / Edge / Firefox.',
-      p:[
-        {n:'1',t:'Menu <kbd>⋮</kbd>',d:'Canto superior direito.'},
-        {n:'2',t:'"Instalar aplicação"',d:'Ou "Adicionar ao ecrã principal".'},
-        {n:'3',t:'Confirmar',d:'Toque em "Instalar".'},
-        {n:'4',t:'Pronto',d:'Abre pelo ícone.'}
+    if(db()==='samsung'){
+      return {t:'📲 Instalar no Samsung Internet',s:'Pelo menu do Samsung Internet.',p:[
+        {n:'1',t:'Menu <kbd>☰</kbd>',d:'Canto inferior direito.'},
+        {n:'2',t:'"Adicionar página a"',d:'Ou "Adicionar à página inicial".'},
+        {n:'3',t:'"Ecrã inicial"',d:'Confirme.'},
+        {n:'4',t:'Pronto',d:'Fica no ecrã inicial.'}
       ]};
+    }
+    return {t:'📲 Instalar no Android',s:'Chrome / Edge / Firefox.',p:[
+      {n:'1',t:'Menu <kbd>⋮</kbd>',d:'Canto superior direito.'},
+      {n:'2',t:'"Instalar aplicação"',d:'Ou "Adicionar ao ecrã principal".'},
+      {n:'3',t:'Confirmar',d:'Toque em "Instalar".'},
+      {n:'4',t:'Pronto',d:'Abre pelo ícone.'}
+    ]};
   }
   function aviso(){
     if(!dp){ let h='<strong>💡 O prompt nativo ainda não apareceu.</strong> '; if(!swOk) h+='Para instalação completa são precisos <kbd>manifest.json</kbd> e <kbd>sw.js</kbd>.'; return h; }
@@ -1220,7 +1305,7 @@ function inicializarBotaoGoogle(){
    APP
    ============================== */
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v4';
+const CACHE_KEY='balcao_cache_v5';
 const IMG_MAX_SIZE=450;
 const IMG_QUALITY=0.65;
 const THUMB_SIZE=200;
@@ -1500,19 +1585,16 @@ function fitPreviewCard(){
 window.addEventListener('resize',function(){ fitPreviewCard(); });
 window.addEventListener('orientationchange',function(){ setTimeout(fitPreviewCard,200); });
 
-/* Modal Ver Etiqueta */
 function abrirPreviewModal(){
   const wrap=document.getElementById('previewModalWrap');
   const badge=document.getElementById('previewModalBadge');
-  const badgeOrig=document.getElementById('badgeSheet');
-  if(badgeOrig) badge.textContent=badgeOrig.textContent;
+  const bo=document.getElementById('badgeSheet');
+  if(bo) badge.textContent=bo.textContent;
   wrap.innerHTML='';
-  // Clona o cartão atual
   const orig=document.getElementById('mainLabelCard');
   const clone=orig.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
-  // Ajustar escala para caber no modal
   const vw=Math.min(window.innerWidth-40,720);
   const vh=window.innerHeight-160;
   const cw=orig.offsetWidth||380, ch=orig.offsetHeight||214;
@@ -1536,7 +1618,6 @@ document.getElementById('previewModal').addEventListener('click',function(e){
   if(e.target===document.getElementById('previewModal')) fecharPreviewModal();
 });
 
-/* Date clear */
 function updateDateClearButtons(){
   document.querySelectorAll('.date-clear-btn').forEach(function(btn){
     const t=document.getElementById(btn.dataset.target);
@@ -2204,10 +2285,7 @@ function getPrintDimensions(format,baseDims){
   if(!baseDims) return {width:70,height:38};
   return {width:Math.max(20,Math.min(210,baseDims.width||70)),height:Math.max(20,Math.min(297,baseDims.height||38))};
 }
-
-/* ⭐⭐⭐ CONSTRUÇÃO DAS PÁGINAS — combina itens do MESMO tamanho em cada folha ⭐⭐⭐ */
 function construirPaginasA4(container,groups,amanhecerQueue){
-  // Amanhecer: grelha fixa 3×7 = 21 por folha
   for(let i=0;i<amanhecerQueue.length;i+=21){
     const chunk=amanhecerQueue.slice(i,i+21);
     const wrapper=document.createElement("div"); wrapper.className="print-page-wrapper";
@@ -2229,7 +2307,6 @@ function construirPaginasA4(container,groups,amanhecerQueue){
     }
     wrapper.appendChild(grid); container.appendChild(wrapper);
   }
-  // Outros formatos: agrupa por dimensão exata (não só por nome) para juntar mesmo que venham de grupos diferentes
   const byDims={};
   groups.forEach(function(g){
     if(g.format==="amanhecer") return;
@@ -2241,19 +2318,19 @@ function construirPaginasA4(container,groups,amanhecerQueue){
     g.items.forEach(function(it){ byDims[key].items.push(it); });
   });
   Object.keys(byDims).forEach(function(key){
-    const {width,height,items}=byDims[key];
-    const lay=computeLayout(width,height);
-    for(let i=0;i<items.length;i+=lay.perPage){
-      const chunk=items.slice(i,i+lay.perPage);
+    const o=byDims[key];
+    const lay=computeLayout(o.width,o.height);
+    for(let i=0;i<o.items.length;i+=lay.perPage){
+      const chunk=o.items.slice(i,i+lay.perPage);
       const wrapper=document.createElement("div"); wrapper.className="print-page-wrapper";
       const grid=document.createElement("div"); grid.className="print-page-generic-grid";
-      grid.style.gridTemplateColumns="repeat("+lay.cols+", "+width+"mm)";
-      grid.style.gridAutoRows=height+"mm";
+      grid.style.gridTemplateColumns="repeat("+lay.cols+", "+o.width+"mm)";
+      grid.style.gridAutoRows=o.height+"mm";
       grid.style.gap=lay.gutter+"mm";
       chunk.forEach(function(d){
-        const c=buildLabelClone(d,{width:width,height:height},true);
-        c.style.setProperty("width",width+"mm","important");
-        c.style.setProperty("height",height+"mm","important");
+        const c=buildLabelClone(d,{width:o.width,height:o.height},true);
+        c.style.setProperty("width",o.width+"mm","important");
+        c.style.setProperty("height",o.height+"mm","important");
         grid.appendChild(c);
       });
       wrapper.appendChild(grid); container.appendChild(wrapper);
@@ -2430,23 +2507,23 @@ async function gerarPDFBlob(){
     g.items.forEach(function(it){ byDims[k].items.push(it); });
   });
   for(const k in byDims){
-    const {width,height,items:arr}=byDims[k];
-    const lay=computeLayout(width,height);
+    const o=byDims[k];
+    const lay=computeLayout(o.width,o.height);
     const G=lay.gutter;
-    for(let p=0;p<arr.length;p+=lay.perPage){
-      const ch=arr.slice(p,p+lay.perPage);
+    for(let p=0;p<o.items.length;p+=lay.perPage){
+      const ch=o.items.slice(p,p+lay.perPage);
       if(!fp) doc.addPage(); fp=false;
-      const tw=lay.cols*width+(lay.cols-1)*G;
+      const tw=lay.cols*o.width+(lay.cols-1)*G;
       const sx=(210-tw)/2+(offsetX||0);
       const sy=5+(offsetY||0);
       for(let idx=0;idx<ch.length;idx++){
         const r=Math.floor(idx/lay.cols), c=idx%lay.cols;
-        const x=sx+c*(width+G), y=sy+r*(height+G);
+        const x=sx+c*(o.width+G), y=sy+r*(o.height+G);
         const data=ch[idx];
-        const el=buildLabelClone(data,{width:width,height:height},true);
-        el.style.width=width+"mm"; el.style.height=height+"mm"; el.style.boxSizing="border-box"; el.style.overflow="hidden";
+        const el=buildLabelClone(data,{width:o.width,height:o.height},true);
+        el.style.width=o.width+"mm"; el.style.height=o.height+"mm"; el.style.boxSizing="border-box"; el.style.overflow="hidden";
         const du=await rl(el);
-        doc.addImage(du,'JPEG',x,y,width,height);
+        doc.addImage(du,'JPEG',x,y,o.width,o.height);
       }
     }
   }
