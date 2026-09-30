@@ -517,6 +517,13 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-close{background:#f0f2f5;color:#2c3440}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
+/* NOVO — badge estado cache/servidor */
+#dataStateBadge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:6px;margin-left:8px;text-transform:uppercase;letter-spacing:.3px;vertical-align:middle}
+#dataStateBadge.cache{background:#fff8e1;color:#7a5c00;border:1px solid #ffe082}
+#dataStateBadge.live{background:#f0fdf4;color:#14532d;border:1px solid #bbf7d0}
+#dataStateBadge.loading{background:#eff6ff;color:#1e3a8a;border:1px solid #bfdbfe}
+#dataStateBadge.offline{background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca}
+
 @media(max-width:900px){
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
@@ -994,7 +1001,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
       </details>
 
       <details class="drawer" open>
-        <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)</summary>
+        <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)<span id="dataStateBadge" class="cache">cache</span></summary>
         <div class="drawer-content" style="background:var(--panel-soft)">
           <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px">
             <button class="secondary" id="recarregarDbBtn" type="button" style="font-size:12px">🔄 Recarregar</button>
@@ -1003,6 +1010,9 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
           <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:10px">
             <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">🛠️ Reparar imagens</button>
             <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:10px">
+            <button class="secondary" id="limparOrfaosBtn" type="button" style="font-size:12px;border-color:#c0392b;color:#c0392b">🧹 Limpar entradas órfãs</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
           <div id="diagBox" class="diag-box"></div>
@@ -1184,7 +1194,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 "use strict";
 
 /* ============================================================
-   AUTENTICAÇÃO — JWT + sessão de 30 dias com renovação silenciosa
+   AUTENTICAÇÃO — JWT + sessão de 30 dias
    ============================================================ */
 const AUTH_KEY_JWT='balcao_jwt';
 const AUTH_KEY_EXP='balcao_jwt_exp';
@@ -1265,10 +1275,7 @@ window.handleCredentialResponse=function(response){
   if(!response||!response.credential) return;
   setStoredToken(response.credential);
   atualizarUICredenciais();
-  // Toast apenas quando é um login MANUAL (não silencioso)
-  if(!_silentReauth){
-    try{ toast('Sessão iniciada','success'); }catch(e){}
-  }
+  if(!_silentReauth){ try{ toast('Sessão iniciada','success'); }catch(e){} }
   carregarTudo();
 };
 function fazerLogout(){
@@ -1284,21 +1291,14 @@ function tentarReauthSilenciosa(){
     let done=false;
     function finish(result){
       if(done) return;
-      done=true;
-      _silentReauth=false;
-      _reauthPromise=null;
-      resolve(result);
+      done=true; _silentReauth=false; _reauthPromise=null; resolve(result);
     }
     _silentReauth=true;
     const tid=setTimeout(function(){ finish(false); },8000);
     const orig=window.handleCredentialResponse;
     window.handleCredentialResponse=function(r){ orig(r); clearTimeout(tid); finish(true); };
     try{
-      if(!window.google||!google.accounts||!google.accounts.id){
-        clearTimeout(tid);
-        finish(false);
-        return;
-      }
+      if(!window.google||!google.accounts||!google.accounts.id){ clearTimeout(tid); finish(false); return; }
       google.accounts.id.initialize({
         client_id:CLIENT_ID, callback:window.handleCredentialResponse,
         auto_select:true, cancel_on_tap_outside:false, itp_support:true, use_fedcm_for_prompt:true
@@ -1326,7 +1326,7 @@ function inicializarBotaoGoogle(){
 }
 
 /* ============================================================
-   HEADER — altura dinâmica
+   HEADER dinâmico
    ============================================================ */
 function ajustarAlturaHeader(){
   const hdr=document.getElementById('topHeader');
@@ -1344,7 +1344,7 @@ window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(aju
 document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAlturaHeader,100); });
 
 /* ============================================================
-   PWA — Banner instalação + Service Worker
+   PWA
    ============================================================ */
 (function setupPWA(){
   const isAndroid=/Android/i.test(navigator.userAgent);
@@ -1384,9 +1384,7 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
     banner.classList.add('closing');
     setTimeout(function(){ banner.classList.remove('show','closing'); },320);
   }
-  function silenciarPor30min(){
-    try{ localStorage.setItem(SILENCIADO_KEY,String(Date.now()+30*60*1000)); }catch(e){}
-  }
+  function silenciarPor30min(){ try{ localStorage.setItem(SILENCIADO_KEY,String(Date.now()+30*60*1000)); }catch(e){} }
   function ocultarDefinitivamente(){
     if(mostrarTimer) clearTimeout(mostrarTimer);
     if(esconderTimer) clearTimeout(esconderTimer);
@@ -1399,21 +1397,17 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
   }
 
   setTimeout(mostrarTemporariamente,2000);
-
   window.addEventListener('beforeinstallprompt',function(e){
     e.preventDefault(); dp=e;
     if(Date.now()>=silenciadoAte) mostrarTemporariamente();
   });
   window.addEventListener('appinstalled',function(){
-    dp=null;
-    ocultarDefinitivamente();
+    dp=null; ocultarDefinitivamente();
     try{ toast('Aplicação instalada!','success'); }catch(e){}
   });
-
   if(bannerClose){
     bannerClose.addEventListener('click',function(){
-      silenciarPor30min();
-      esconderBanner();
+      silenciarPor30min(); esconderBanner();
       if(mostrarTimer) clearTimeout(mostrarTimer);
       if(esconderTimer) clearTimeout(esconderTimer);
     });
@@ -1469,15 +1463,15 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
 })();
 
 /* ============================================================
-   API + CACHE
+   API + CACHE local + sincronização
    ============================================================ */
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
 const CACHE_KEY='balcao_cache_v10';
 const IMG_MAX_SIZE=800;
 const IMG_QUALITY=0.92;
 const THUMB_SIZE=200;
+const API_TIMEOUT_MS=45000;
 const NO_RETRY_FNS=['enviarEtiquetasEmail','otimizarBancoFruta'];
-const FORMATOS_VALIDOS=["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
 
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)||window.innerWidth<=900; }
 function ensureArray(v){ return Array.isArray(v)?v:(v?[v]:[]); }
@@ -1496,12 +1490,17 @@ function normalizarProdutoParaFila(p){
   o.processedPhoto=o.processedPhoto||o.fotoUrl||"";
   return o;
 }
-function sanitizarFormatoBD(d){
-  const fv=String((d&&(d.presetSizes||d.formato))||"").trim();
-  if(FORMATOS_VALIDOS.indexOf(fv)!==-1) return d;
-  d.presetSizes="70x38"; d.formato="70x38";
-  d.customWidth="70"; d.customHeight="38";
-  return d;
+function produtoVazio(p){
+  if(!p) return true;
+  const c=String(p.codigo||p.internalCode||'').trim();
+  const n=String(p.nome||p.product||'').trim();
+  return !c && !n;
+}
+function chaveProduto(p){
+  const c=String((p&&(p.codigo||p.internalCode))||'').trim();
+  if(c) return 'c:'+c;
+  const n=String((p&&(p.nome||p.product))||'').trim().toUpperCase();
+  return 'n:'+n;
 }
 const TOAST_ICONS={success:"✓",error:"✕",warning:"!",info:"i"};
 let _lastToastMsg="",_lastToastTime=0;
@@ -1530,6 +1529,12 @@ function setStatus(msg,type,opts){
   if(!msg){ el.textContent=""; el.classList.remove("show"); el.removeAttribute("data-type"); return; }
   type=type||"info"; el.textContent=msg; el.setAttribute("data-type",type); el.classList.add("show");
   if(type==="success"||type==="info"){ _statusTimer=setTimeout(function(){ if(el.textContent===msg){ el.classList.remove("show"); el.removeAttribute("data-type"); } },opts.duration||3200); }
+}
+function setDataState(state){
+  const el=document.getElementById('dataStateBadge'); if(!el) return;
+  el.classList.remove('cache','live','loading','offline');
+  el.classList.add(state);
+  el.textContent = state==='live'?'Drive ✓' : state==='loading'?'a carregar…' : state==='offline'?'offline' : 'cache';
 }
 function confirmDialog(msg){
   return new Promise(function(resolve){
@@ -1675,6 +1680,14 @@ async function removeBackgroundSmart(dataUrl){
     return new Promise(function(resolve){ removeBackgroundSimple(dataUrl,resolve); });
   }
 }
+async function fetchComTimeout(url,opts,ms){
+  const ctl=new AbortController();
+  const to=setTimeout(function(){ ctl.abort(); },ms||API_TIMEOUT_MS);
+  try{
+    const r=await fetch(url,Object.assign({},opts,{signal:ctl.signal}));
+    return r;
+  } finally { clearTimeout(to); }
+}
 async function api(fn,payload,retries,jaReaut){
   payload=payload||{};
   if(retries===undefined) retries=(NO_RETRY_FNS.indexOf(fn)!==-1)?0:2;
@@ -1685,7 +1698,11 @@ async function api(fn,payload,retries,jaReaut){
     throw new Error("Não autenticado.");
   }
   try{
-    const resp=await fetch(API_URL,{ method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify({fn:fn,payload:payload}) });
+    const resp=await fetchComTimeout(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({fn:fn,payload:payload})
+    },API_TIMEOUT_MS);
     if(resp.status===401){
       clearStoredToken(); atualizarUICredenciais();
       if(!jaReaut){ const ok=await tentarReauthSilenciosa(); if(ok) return api(fn,payload,retries,true); }
@@ -1697,7 +1714,11 @@ async function api(fn,payload,retries,jaReaut){
     if(!j.ok) throw new Error(j.error||'Erro no servidor');
     return j.data;
   }catch(e){
-    if(retries>0){ await new Promise(function(r){ setTimeout(r,900); }); return api(fn,payload,retries-1,jaReaut); }
+    const aborted=e&&(e.name==='AbortError'||String(e.message).indexOf('abort')>=0);
+    if(retries>0 && !aborted){
+      await new Promise(function(r){ setTimeout(r,1200); });
+      return api(fn,payload,retries-1,jaReaut);
+    }
     throw e;
   }
 }
@@ -1803,27 +1824,65 @@ document.addEventListener('click',function(e){
 document.addEventListener('input',function(e){ if(e.target&&e.target.type==='date') updateDateClearButtons(); });
 document.addEventListener('change',function(e){ if(e.target&&e.target.type==='date') updateDateClearButtons(); });
 
-async function carregarTudo(){
+/* ============================================================
+   SINCRONIZAÇÃO com o Drive
+   • Cache local = resposta imediata
+   • Servidor = fonte de verdade quando responde OK
+   • Se o servidor responde OK, substitui (remove fantasmas locais)
+   ============================================================ */
+async function gravarCache(){
+  try{
+    await localforage.setItem(CACHE_KEY,{
+      produtos:savedProducts,
+      banco:bancoFruta,
+      t:Date.now()
+    });
+  }catch(e){}
+}
+async function lerCache(){
   try{
     const c=await localforage.getItem(CACHE_KEY);
-    if(c){
-      if(Array.isArray(c.produtos)){ savedProducts=c.produtos; renderDb(); }
-      if(Array.isArray(c.banco)){ bancoFruta=c.banco; renderBancoFruta($("buscaBancoFruta").value); }
-    }
-  }catch(e){}
-  if(!getStoredToken()) return;
-  setStatus("A atualizar dados do Drive…","loading");
+    if(!c) return false;
+    if(Array.isArray(c.produtos)){ savedProducts=c.produtos; renderDb(); }
+    if(Array.isArray(c.banco)){ bancoFruta=c.banco; renderBancoFruta($("buscaBancoFruta").value); }
+    setDataState('cache');
+    return true;
+  }catch(e){ return false; }
+}
+async function carregarTudo(opts){
+  opts=opts||{};
+  const temToken=!!getStoredToken();
+  // 1) Pinta o cache imediatamente (resposta visual rápida)
+  if(!opts.skipCache) await lerCache();
+  // 2) Sem token → fica em modo cache
+  if(!temToken){ setDataState('cache'); return; }
+  setDataState('loading');
+  if(!opts.silent) setStatus("A sincronizar com o Drive…","loading");
   const [rProd,rBanco]=await Promise.all([
     api('listarProdutos').then(function(v){ return {ok:true,v:v}; }).catch(function(e){ return {ok:false,e:e.message}; }),
     api('listarBancoFruta').then(function(v){ return {ok:true,v:v}; }).catch(function(e){ return {ok:false,e:e.message}; })
   ]);
-  if(rProd.ok) savedProducts=ensureArray(rProd.v);
-  if(rBanco.ok) bancoFruta=ensureArray(rBanco.v);
-  renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-  try{ await localforage.setItem(CACHE_KEY,{produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-  if(!rProd.ok&&!rBanco.ok) setStatus("Sem ligação ao Drive.","error");
-  else if(!rProd.ok||!rBanco.ok) setStatus("Ligação parcial.","warning");
-  else setStatus("Sincronizado","success");
+  // 3) Se o servidor respondeu, SUBSTITUIR a lista (elimina fantasmas locais)
+  let mudou=false;
+  if(rProd.ok){
+    const nova=ensureArray(rProd.v).filter(function(p){ return !produtoVazio(p); });
+    if(JSON.stringify(nova)!==JSON.stringify(savedProducts)){ savedProducts=nova; mudou=true; }
+  }
+  if(rBanco.ok){
+    const novaB=ensureArray(rBanco.v);
+    if(JSON.stringify(novaB)!==JSON.stringify(bancoFruta)){ bancoFruta=novaB; mudou=true; }
+  }
+  if(mudou){ renderDb(); renderBancoFruta($("buscaBancoFruta").value); await gravarCache(); }
+  if(!rProd.ok&&!rBanco.ok){
+    setDataState('offline');
+    if(!opts.silent) setStatus("Sem ligação ao Drive — a usar cache.","warning",{duration:4000});
+  } else if(!rProd.ok||!rBanco.ok){
+    setDataState('cache');
+    if(!opts.silent) setStatus("Sincronização parcial.","warning");
+  } else {
+    setDataState('live');
+    if(!opts.silent) setStatus("Sincronizado","success");
+  }
 }
 function getFormData(){
   return {
@@ -1992,20 +2051,21 @@ function buildProdutoPayload(d){
   return {codigo:d.internalCode,nome:d.product,preco:d.price,oldPrice:d.oldPrice,isPromoActive:d.isPromoActive,promoPrice:d.promoPrice,promoMinQty:d.promoMinQty,promoUnit:d.promoUnit,promoStart:d.promoStart,promoEnd:d.promoEnd,unit:d.unit,origem:d.origem,categoria:d.categoria,calibre:d.calibre,ean:d.ean,loja:d.store,unidade:d.capacityUnit,capacidade:d.capacity,deposito:d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect,formato:d.presetSizes,customWidth:d.customWidth,customHeight:d.customHeight,fotoId:d.fotoId||'',fotoUrl:d.fotoUrl||'',email:(_currentUser&&_currentUser.email)||''};
 }
 function atualizarProdutoLocal(payload){
-  const idx=savedProducts.findIndex(function(p){
-    if(payload.codigo&&String(p.codigo||'').trim()===String(payload.codigo).trim()) return true;
-    if(!payload.codigo&&payload.nome&&String(p.nome||'').trim().toUpperCase()===String(payload.nome).trim().toUpperCase()) return true;
-    return false;
-  });
+  const chave=chaveProduto(payload);
+  const idx=savedProducts.findIndex(function(p){ return chaveProduto(p)===chave; });
   const novo=Object.assign({},payload,{atualizadoEm:new Date().toISOString(),utilizador:(_currentUser&&_currentUser.email)||'utilizador'});
   if(idx>=0) savedProducts[idx]=Object.assign({},savedProducts[idx],novo);
   else savedProducts.push(novo);
+  // Auto-limpeza: garante que não ficam produtos 100% vazios
+  savedProducts=savedProducts.filter(function(p){ return !produtoVazio(p); });
 }
 async function verificarProdutoEmBackground(){
   try{
     const lista=await api('listarProdutos');
-    savedProducts=ensureArray(lista); renderDb();
-    try{ await localforage.setItem(CACHE_KEY,{produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
+    savedProducts=ensureArray(lista).filter(function(p){ return !produtoVazio(p); });
+    renderDb();
+    await gravarCache();
+    setDataState('live');
   }catch(e){}
 }
 window.removeFromQueue=function(i){ printQueue.splice(i,1); renderQueue(); };
@@ -2036,10 +2096,10 @@ window.saveQueueItem=async function(i){
     const payload=buildProdutoPayload(d);
     await api('guardarProduto',payload);
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
-    try{ await localforage.setItem(CACHE_KEY,{produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
+    await gravarCache();
     const dt=((Date.now()-t0)/1000).toFixed(1);
     setStatus(""); toast("Guardado em "+dt+"s","success");
-    setTimeout(verificarProdutoEmBackground,2500);
+    setTimeout(verificarProdutoEmBackground,2000);
   }catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao guardar","error"); }
 };
 function renderDb(){
@@ -2049,7 +2109,10 @@ function renderDb(){
   savedProducts.map(function(p,i){ return {p:p,i:i}; }).sort(function(a,b){ return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt"); }).forEach(function(o){
     const d=o.p,i=o.i; const div=document.createElement("div"); div.className="list-item";
     const pr=(d.preco!==undefined&&d.preco!==""&&d.preco!==null)?(escapeHTML(d.preco)+"€"):"";
-    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+pr+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'">❌</button></div>';
+    const semNome=!d.nome||!String(d.nome).trim();
+    const semCod=!d.codigo||!String(d.codigo).trim();
+    const aviso=(semNome&&semCod)?' <span style="color:#c0392b;font-size:10px;font-weight:800">⚠ SEM NOME</span>':'';
+    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(d.nome||"(sem nome)")+aviso+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+pr+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'">❌</button></div>';
     c.appendChild(div);
   });
 }
@@ -2065,21 +2128,61 @@ async function saveToDb(){
     setStatus("A guardar no Drive…","loading");
     await api('guardarProduto',payload);
     atualizarProdutoLocal(payload); renderDb();
-    try{ await localforage.setItem(CACHE_KEY,{produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
+    await gravarCache();
     const dt=((Date.now()-t0)/1000).toFixed(1);
     setStatus(""); toast("\""+(payload.nome||payload.codigo)+"\" guardado em "+dt+"s","success");
-    setTimeout(verificarProdutoEmBackground,2500);
+    setTimeout(verificarProdutoEmBackground,2000);
   }catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao guardar produto","error"); }
 }
 window.duplicateFromDb=function(i){ const d=savedProducts[i]; if(!d) return; const c=JSON.parse(JSON.stringify(d)); c.codigo=(d.codigo||'NOVO')+'-COPIA'; setFormData(c); toast("Produto duplicado","info"); };
 window.loadFromDb=function(i){ const d=savedProducts[i]; if(!d) return; setFormData(d); toast("Produto carregado","success"); };
+
+/**
+ * removeFromDb — REMOÇÃO ROBUSTA
+ * • Envia código e nome reais (strings com trim)
+ * • Se o backend disser "não existe", remove mesmo assim do cache local
+ * • Remove SEMPRE da lista local no fim, para nunca deixar fantasmas
+ */
 window.removeFromDb=async function(i){
-  const d=savedProducts[i]; if(!d) return;
-  const n=d.nome||d.codigo||"produto sem nome";
-  if(!(await confirmDialog("Eliminar \""+n+"\"?"))) return;
+  const d=savedProducts[i]; if(!d){ toast("Produto não encontrado.","error"); return; }
+  const nomeExib=d.nome||d.codigo||"(sem nome)";
+  if(!(await confirmDialog("Eliminar \""+nomeExib+"\"?"))) return;
   setStatus("A eliminar…","loading");
-  try{ await api('apagarProduto',{codigo:d.codigo,nome:d.nome}); await carregarTudo(); setStatus(""); toast("Eliminado","success"); }
-  catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao eliminar","error"); }
+  const codigo=(d.codigo||'').toString().trim();
+  const nome=(d.nome||'').toString().trim();
+  let removidoNoServidor=false;
+  let aviso="";
+  try{
+    const r=await api('apagarProduto',{codigo:codigo,nome:nome});
+    if(r&&r.jaNaoExistia){ aviso=" (já não existia no Drive)"; }
+    removidoNoServidor=true;
+  }catch(e){
+    const msg=String(e&&e.message||'');
+    // Se o servidor diz que não encontrou, consideramos sucesso — é fantasma local
+    if(/não encontrado|nao encontrado|Sem produtos/i.test(msg)){
+      aviso=" (era entrada órfã — removida localmente)";
+      removidoNoServidor=true;
+    } else {
+      setStatus("Erro: "+msg,"error");
+      toast("Erro ao eliminar: "+msg,"error");
+      return;
+    }
+  }
+  // Remover SEMPRE do cache local
+  const antes=savedProducts.length;
+  savedProducts=savedProducts.filter(function(p,j){
+    if(j===i) return false;
+    // Remove também qualquer produto vazio duplicado
+    if(produtoVazio(p) && produtoVazio(d)) return false;
+    return true;
+  });
+  renderDb();
+  await gravarCache();
+  setStatus("");
+  const removidos=antes-savedProducts.length;
+  toast("Eliminado"+aviso+(removidos>1?" (+"+(removidos-1)+" órfãos)":""),"success");
+  // Em background, sincroniza com o Drive para garantir consistência
+  setTimeout(function(){ carregarTudo({silent:true}); },800);
 };
 window.queueFromDb=function(i){
   const d=savedProducts[i]; if(!d) return;
@@ -2106,7 +2209,7 @@ function renderBancoFruta(filtro){
   updateBancoCounts();
   if(lista.length===0){
     let msg;
-    if(bancoFruta.length===0) msg='Nenhuma imagem no banco ainda.';
+    if(bancoFruta.length===0) msg='Nenhuma imagem no banco ainda.<br><br>Use 📷 para adicionar ou 🔄 Sincronizar para carregar do Drive.';
     else if(bancoTipoFiltro==='fruta') msg='Sem frutas com esse filtro.';
     else msg='Sem legumes com esse filtro.';
     c.innerHTML='<div class="bf-empty">'+msg+'</div>'; return;
@@ -2136,7 +2239,7 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
     bancoFruta.push({nome:r.nome,fotoId:r.id,fotoUrl:r.url,tipo:r.tipo||tipo});
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     renderBancoFruta($("buscaBancoFruta").value);
-    try{ await localforage.setItem(CACHE_KEY,{produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
+    await gravarCache();
     setStatus("");
     const p=(tipo==="legume")?"Banco de Legumes":"Banco de Frutas";
     toast("Foto \""+r.nome+"\" guardada em "+p,"success",4500);
@@ -2771,7 +2874,7 @@ async function closeScanner(){
 }
 $("addToQueueBtn").addEventListener("click",addToQueue);
 $("saveDbBtn").addEventListener("click",saveToDb);
-$("recarregarDbBtn").addEventListener("click",carregarTudo);
+$("recarregarDbBtn").addEventListener("click",function(){ carregarTudo(); });
 $("printBtn").addEventListener("click",function(){ window.triggerPrint(); });
 $("emailLabelsBtn").addEventListener("click",function(){ enviarEtiquetasPorEmail(); });
 $("authLogoutBtn").addEventListener("click",function(e){ e.preventDefault(); fazerLogout(); });
@@ -2789,19 +2892,23 @@ $("printDbBtn").addEventListener("click",async function(){
   setTimeout(function(){ window.triggerPrint(); },100);
 });
 $("syncBancoBtn").addEventListener("click",async function(){
-  setStatus("A sincronizar…","loading");
-  try{ await api('sincronizarBancoFruta'); await carregarTudo(); toast("Banco sincronizado","success"); }
+  const btn=this; const t0=btn.textContent;
+  btn.disabled=true; btn.textContent="⏳…";
+  setStatus("A sincronizar banco de imagens…","loading");
+  try{ await api('sincronizarBancoFruta'); await carregarTudo({silent:true}); toast("Banco sincronizado","success"); }
   catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao sincronizar","error"); }
+  finally { btn.disabled=false; btn.textContent=t0; }
 });
 $("otimizarBancoBtn").addEventListener("click",async function(){
-  if(!(await confirmDialog("Reparar permissões de todas as imagens do banco?"))) return;
+  if(!(await confirmDialog("Reparar permissões de todas as imagens do banco?\n\nPode demorar 1-2 minutos."))) return;
   const btn=this; const t0=btn.textContent;
   btn.disabled=true; btn.textContent="⏳ A reparar…";
   setStatus("A reparar imagens…","loading");
   try{
     const r=await api('otimizarBancoFruta');
     const m=r&&r.mensagem?r.mensagem:('Reparadas: '+((r&&r.reparadas)||0)+'/'+((r&&r.total)||0));
-    setStatus(""); toast(m,"success",6000); await carregarTudo();
+    setStatus(""); toast(m,"success",6000);
+    await carregarTudo({silent:true});
   }catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao reparar","error"); }
   finally { btn.disabled=false; btn.textContent=t0; }
 });
@@ -2848,12 +2955,22 @@ $("bfTabs").addEventListener("click",function(e){
   $("bfTabs").querySelectorAll("button").forEach(function(b){ b.classList.toggle("active",b===btn); });
   renderBancoFruta($("buscaBancoFruta").value);
 });
-$("abrirBancoFrutaBtn").addEventListener("click",function(e){
+$("abrirBancoFrutaBtn").addEventListener("click",async function(e){
   e.preventDefault();
   bancoTipoFiltro='fruta';
   $("bfTabs").querySelectorAll("button").forEach(function(b){ b.classList.toggle("active",b.dataset.tipo==='fruta'); });
   $('bancoFrutaModal').classList.add('show');
-  renderBancoFruta($('buscaBancoFruta').value);
+  // Se o banco está vazio, tenta carregar do Drive automaticamente
+  if(bancoFruta.length===0 && getStoredToken()){
+    try{
+      const b=await api('listarBancoFruta');
+      bancoFruta=ensureArray(b);
+      renderBancoFruta('');
+      await gravarCache();
+    }catch(err){}
+  } else {
+    renderBancoFruta($('buscaBancoFruta').value);
+  }
 });
 $("fecharBancoFruta").addEventListener("click",function(){ $("bancoFrutaModal").classList.remove("show"); });
 let _buscaTimer=null;
@@ -2871,15 +2988,27 @@ $("diagnosticoBtn").addEventListener("click",async function(){
   const token=getStoredToken();
   if(token){ const e=parseInt(localStorage.getItem(AUTH_KEY_EXP)||'0',10); linhas.push("Token: válido ("+Math.max(0,Math.round((e-Date.now()/1000)/60))+" min)"); }
   else { linhas.push("Token: ausente ou expirado"); }
-  try{ const p=await api('ping'); linhas.push('<span class="ok">✔ ping</span> → '+p); }
+  linhas.push("Produtos locais: "+savedProducts.length);
+  linhas.push("Banco local: "+bancoFruta.length);
+  linhas.push("");
+  try{ const t0=Date.now(); const p=await api('ping'); linhas.push('<span class="ok">✔ ping</span> → '+p+' ('+(Date.now()-t0)+'ms)'); }
   catch(e){ linhas.push('<span class="err">✘ ping</span> → '+e.message); box.innerHTML=linhas.join("\n"); setStatus("Falha API","error"); toast("Falha na API","error"); return; }
-  await new Promise(function(r){ setTimeout(r,600); });
-  try{ const p=await api('listarProdutos'); linhas.push('<span class="ok">✔ listarProdutos</span> → '+(p?p.length:0)+" produtos"); }
+  try{ const t0=Date.now(); const p=await api('listarProdutos'); linhas.push('<span class="ok">✔ listarProdutos</span> → '+(p?p.length:0)+' itens ('+(Date.now()-t0)+'ms)'); }
   catch(e){ linhas.push('<span class="err">✘ listarProdutos</span> → '+e.message); }
-  await new Promise(function(r){ setTimeout(r,600); });
-  try{ const b=await api('listarBancoFruta'); linhas.push('<span class="ok">✔ listarBancoFruta</span> → '+(b?b.length:0)+" imagens"); }
+  try{ const t0=Date.now(); const b=await api('listarBancoFruta'); linhas.push('<span class="ok">✔ listarBancoFruta</span> → '+(b?b.length:0)+' itens ('+(Date.now()-t0)+'ms)'); }
   catch(e){ linhas.push('<span class="err">✘ listarBancoFruta</span> → '+e.message); }
   box.innerHTML=linhas.join("\n"); setStatus(""); toast("Diagnóstico concluído","success");
+});
+/* NOVO — Limpar entradas órfãs (produtos sem nome e sem código) */
+$("limparOrfaosBtn").addEventListener("click",async function(){
+  const orfaos=savedProducts.filter(produtoVazio);
+  if(orfaos.length===0){ toast("Não há entradas órfãs.","info"); return; }
+  if(!(await confirmDialog("Remover "+orfaos.length+" entrada(s) sem nome e sem código?\n\nEstas entradas só existem em cache local e não podem ser editadas."))) return;
+  const antes=savedProducts.length;
+  savedProducts=savedProducts.filter(function(p){ return !produtoVazio(p); });
+  renderDb();
+  await gravarCache();
+  toast("Removidas "+(antes-savedProducts.length)+" entradas órfãs","success");
 });
 $("previewSheetBtn").addEventListener("click",function(){
   const content=$("sheetPreviewContent"); content.innerHTML="";
@@ -3061,11 +3190,7 @@ document.addEventListener("change",function(e){
 });
 
 /* ============================================================
-   AUTOMAÇÃO — Renovação proativa do JWT
-   1) Ao voltar à aba: se a sessão de 30 dias é válida mas o token
-      já expirou (ou está perto), renova silenciosamente.
-   2) Timer de 20 min: verifica se o token está a <15 min de expirar
-      e renova antes de falhar. Evita o primeiro erro da sessão.
+   AUTOMAÇÃO — renovação proativa do JWT + sync periódico
    ============================================================ */
 document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='visible' && sessaoAindaValida() && !getStoredToken()){
@@ -3077,7 +3202,6 @@ setInterval(function(){
   try{
     const e=parseInt(localStorage.getItem(AUTH_KEY_EXP)||'0',10);
     const falta=e-Math.floor(Date.now()/1000);
-    // Se faltam <15 min para expirar, renova já (evita falhas em guardar)
     if(falta<900 && !_reauthPromise) tentarReauthSilenciosa();
   }catch(err){}
 },20*60*1000);
@@ -3086,6 +3210,8 @@ setInterval(function(){
   try{
     try{ const s=localStorage.getItem(AUTH_KEY_USER); if(s) _currentUser=JSON.parse(s); }catch(e){}
     atualizarUICredenciais();
+    // Cache primeiro (resposta instantânea)
+    await lerCache();
     let t=0;
     const ag=setInterval(function(){
       t++;
@@ -3093,19 +3219,14 @@ setInterval(function(){
         clearInterval(ag);
         inicializarBotaoGoogle();
         const tk=getStoredToken();
-        if(tk){ atualizarUICredenciais(); carregarTudo(); }
-        else if(sessaoAindaValida()){
-          // handleCredentialResponse já trata UI e carregarTudo — sem duplicações
-          tentarReauthSilenciosa();
-        } else {
-          setTimeout(function(){ tentarReauthSilenciosa(); },800);
-        }
+        if(tk){ atualizarUICredenciais(); carregarTudo({skipCache:true}); }
+        else if(sessaoAindaValida()){ tentarReauthSilenciosa(); }
+        else { setTimeout(function(){ tentarReauthSilenciosa(); },800); }
       } else if(t>40){ clearInterval(ag); }
     },200);
     applyOffsets(); updateOrientationVisibility(); updateDateClearButtons(); updateCard(); renderQueue();
     $("copiesCount").value="1";
     if(!$("capacity").value&&DEFAULTS_UNIDADE[$("capacityUnit").value]) $("capacity").value=DEFAULTS_UNIDADE[$("capacityUnit").value];
-    if(getStoredToken()) carregarTudo();
     setTimeout(fitPreviewCard,200);
     setTimeout(fitPreviewCard,600);
     setTimeout(ajustarAlturaHeader,100);
