@@ -529,10 +529,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
   body{background:#eef1f4;font-size:15px;padding-bottom:var(--safe-bottom);min-height:100dvh}
 
-  /* Espaçador para compensar header fixed — recalcula dinamicamente via JS */
   .hdr-spacer{height:var(--hdr-height-mobile)}
 
-  /* Header mobile: 2 linhas, fixo no topo */
   .top-header{
     flex-wrap:nowrap;
     padding:0;
@@ -551,7 +549,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     max-width:100%;
   }
 
-  /* Linha 1: marca + logos */
   .hdr-brand{
     display:flex;align-items:center;justify-content:space-between;
     gap:10px;width:100%;min-width:0;overflow:hidden;
@@ -566,7 +563,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .hdr-logos img{height:28px;max-width:60px}
   .hdr-logos .divider{height:22px}
 
-  /* Linha 2: Ver + Auth */
   .hdr-actions{
     display:flex;
     align-items:center;
@@ -622,7 +618,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     padding-right:max(var(--app-pad-x),var(--safe-right));
   }
 
-  /* Banner mobile */
   .install-banner{
     left:10px;right:10px;
     bottom:calc(10px + var(--safe-bottom));
@@ -1013,7 +1008,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
             <button class="secondary" id="syncBancoBtn" type="button" style="font-size:12px">🔄 Sincronizar</button>
           </div>
           <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:10px">
-            <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
+            <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">🛠️ Reparar imagens</button>
             <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
@@ -1198,6 +1193,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 const AUTH_KEY_JWT='balcao_jwt';
 const AUTH_KEY_EXP='balcao_jwt_exp';
 const AUTH_KEY_USER='balcao_jwt_user';
+const AUTH_KEY_LAST_LOGIN='balcao_last_login';   // NOVO — sessão 30 dias
+const SESSION_DIAS=30;                            // NOVO — sessão 30 dias
 const CLIENT_ID='268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 let _reauthPromise=null;
 let _currentUser=null;
@@ -1218,19 +1215,33 @@ function getStoredToken(){
     return t;
   }catch(e){ return null; }
 }
+// NOVO — verifica se a janela de 30 dias ainda está aberta
+function sessaoAindaValida(){
+  try{
+    const t=parseInt(localStorage.getItem(AUTH_KEY_LAST_LOGIN)||'0',10);
+    if(!t) return false;
+    return (Date.now()-t) < (SESSION_DIAS*24*60*60*1000);
+  }catch(e){ return false; }
+}
 function setStoredToken(token){
   try{
     const i=parseJwt(token)||{};
     const e=i.exp||(Math.floor(Date.now()/1000)+3600);
     localStorage.setItem(AUTH_KEY_JWT,token);
     localStorage.setItem(AUTH_KEY_EXP,String(e));
+    localStorage.setItem(AUTH_KEY_LAST_LOGIN,String(Date.now()));   // NOVO
     const u={email:i.email||'',name:i.name||'',picture:i.picture||''};
     localStorage.setItem(AUTH_KEY_USER,JSON.stringify(u));
     _currentUser=u;
   }catch(e){}
 }
 function clearStoredToken(){
-  try{ localStorage.removeItem(AUTH_KEY_JWT); localStorage.removeItem(AUTH_KEY_EXP); localStorage.removeItem(AUTH_KEY_USER); }catch(e){}
+  try{
+    localStorage.removeItem(AUTH_KEY_JWT);
+    localStorage.removeItem(AUTH_KEY_EXP);
+    localStorage.removeItem(AUTH_KEY_USER);
+    localStorage.removeItem(AUTH_KEY_LAST_LOGIN);   // NOVO
+  }catch(e){}
   _currentUser=null;
 }
 function atualizarUICredenciais(){
@@ -1240,8 +1251,9 @@ function atualizarUICredenciais(){
   const ic=document.getElementById('authIcon');
   if(!card||!t||!s||!ic) return;
   const token=getStoredToken();
-  if(token){
-    const info=_currentUser||(parseJwt(token)||{});
+  const sessaoOk=sessaoAindaValida();
+  if(token||sessaoOk){
+    const info=_currentUser||(token?parseJwt(token):null)||{};
     card.classList.add('logged');
     t.textContent='Sessão';
     s.textContent=info.email||info.name||'Ativo';
@@ -1304,7 +1316,6 @@ function inicializarBotaoGoogle(){
 
 /* ============================================================
    AJUSTE DINÂMICO DO HEADER — calcula altura real e aplica ao spacer
-   Funciona em browser E em APK instalada, sem depender de breakpoints
    ============================================================ */
 function ajustarAlturaHeader(){
   const hdr=document.getElementById('topHeader');
@@ -1445,8 +1456,8 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
 const CACHE_KEY='balcao_cache_v10';
-const IMG_MAX_SIZE=450;
-const IMG_QUALITY=0.65;
+const IMG_MAX_SIZE=800;      // NOVO — antes 450, imagens nítidas
+const IMG_QUALITY=0.92;      // NOVO — antes 0.65, sem perda visível
 const THUMB_SIZE=200;
 const NO_RETRY_FNS=['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FORMATOS_VALIDOS=["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
@@ -1956,12 +1967,14 @@ function addToQueue(){
   if($("appStatus").dataset.type==="error"){ toast("Corrija os erros.","error"); return; }
   const copies=Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
   const data=getFormData();
-  if(!data.product&&!data.price&&!data.internalCode){ toast("Preencha os dados.","warning"); return; }
+  // NOVO — Exige sempre Nome OU Código
+  if(!data.product && !data.internalCode){ toast("Preencha o Nome ou o Código.","warning"); return; }
   printQueue.push({data:data,copies:copies}); renderQueue();
   toast("Adicionado à fila","success");
 }
+// NOVO — Payload passa a incluir o email do utilizador autenticado
 function buildProdutoPayload(d){
-  return {codigo:d.internalCode,nome:d.product,preco:d.price,oldPrice:d.oldPrice,isPromoActive:d.isPromoActive,promoPrice:d.promoPrice,promoMinQty:d.promoMinQty,promoUnit:d.promoUnit,promoStart:d.promoStart,promoEnd:d.promoEnd,unit:d.unit,origem:d.origem,categoria:d.categoria,calibre:d.calibre,ean:d.ean,loja:d.store,unidade:d.capacityUnit,capacidade:d.capacity,deposito:d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect,formato:d.presetSizes,customWidth:d.customWidth,customHeight:d.customHeight,fotoId:d.fotoId||'',fotoUrl:d.fotoUrl||''};
+  return {codigo:d.internalCode,nome:d.product,preco:d.price,oldPrice:d.oldPrice,isPromoActive:d.isPromoActive,promoPrice:d.promoPrice,promoMinQty:d.promoMinQty,promoUnit:d.promoUnit,promoStart:d.promoStart,promoEnd:d.promoEnd,unit:d.unit,origem:d.origem,categoria:d.categoria,calibre:d.calibre,ean:d.ean,loja:d.store,unidade:d.capacityUnit,capacidade:d.capacity,deposito:d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect,formato:d.presetSizes,customWidth:d.customWidth,customHeight:d.customHeight,fotoId:d.fotoId||'',fotoUrl:d.fotoUrl||'',email:(_currentUser&&_currentUser.email)||''};
 }
 function atualizarProdutoLocal(payload){
   const idx=savedProducts.findIndex(function(p){
@@ -1969,7 +1982,7 @@ function atualizarProdutoLocal(payload){
     if(!payload.codigo&&payload.nome&&String(p.nome||'').trim().toUpperCase()===String(payload.nome).trim().toUpperCase()) return true;
     return false;
   });
-  const novo=Object.assign({},payload,{atualizadoEm:new Date().toISOString(),utilizador:'utilizador'});
+  const novo=Object.assign({},payload,{atualizadoEm:new Date().toISOString(),utilizador:(_currentUser&&_currentUser.email)||'utilizador'});
   if(idx>=0) savedProducts[idx]=Object.assign({},savedProducts[idx],novo);
   else savedProducts.push(novo);
 }
@@ -2766,15 +2779,15 @@ $("syncBancoBtn").addEventListener("click",async function(){
   catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao sincronizar","error"); }
 });
 $("otimizarBancoBtn").addEventListener("click",async function(){
-  if(!(await confirmDialog("Otimizar todas as imagens do banco?"))) return;
+  if(!(await confirmDialog("Reparar permissões de todas as imagens do banco?"))) return;
   const btn=this; const t0=btn.textContent;
-  btn.disabled=true; btn.textContent="⏳ A otimizar…";
-  setStatus("A otimizar…","loading");
+  btn.disabled=true; btn.textContent="⏳ A reparar…";
+  setStatus("A reparar imagens…","loading");
   try{
     const r=await api('otimizarBancoFruta');
-    const m=r&&r.mensagem?r.mensagem:('Otimizadas: '+((r&&r.total)||0));
+    const m=r&&r.mensagem?r.mensagem:('Reparadas: '+((r&&r.reparadas)||0)+'/'+((r&&r.total)||0));
     setStatus(""); toast(m,"success",6000); await carregarTudo();
-  }catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao otimizar","error"); }
+  }catch(e){ setStatus("Erro: "+e.message,"error"); toast("Erro ao reparar","error"); }
   finally { btn.disabled=false; btn.textContent=t0; }
 });
 $("clearQueueBtn").addEventListener("click",async function(){
@@ -3032,6 +3045,15 @@ document.addEventListener("change",function(e){
   if(printQueue[i]){ printQueue[i].copies=Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
 });
 
+// NOVO — renovação silenciosa ao voltar à aba, mantendo a sessão de 30 dias
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible' && !getStoredToken() && sessaoAindaValida()){
+    tentarReauthSilenciosa().then(function(ok){
+      if(ok){ atualizarUICredenciais(); carregarTudo(); }
+    });
+  }
+});
+
 (async function boot(){
   try{
     try{ const s=localStorage.getItem(AUTH_KEY_USER); if(s) _currentUser=JSON.parse(s); }catch(e){}
@@ -3044,7 +3066,14 @@ document.addEventListener("change",function(e){
         inicializarBotaoGoogle();
         const tk=getStoredToken();
         if(tk){ atualizarUICredenciais(); carregarTudo(); }
-        else { setTimeout(function(){ tentarReauthSilenciosa().then(function(){}); },800); }
+        else if(sessaoAindaValida()){
+          // Sessão de 30 dias — tenta renovar silenciosamente
+          tentarReauthSilenciosa().then(function(ok){
+            if(ok){ atualizarUICredenciais(); carregarTudo(); }
+          });
+        } else {
+          setTimeout(function(){ tentarReauthSilenciosa().then(function(){}); },800);
+        }
       } else if(t>40){ clearInterval(ag); }
     },200);
     applyOffsets(); updateOrientationVisibility(); updateDateClearButtons(); updateCard(); renderQueue();
