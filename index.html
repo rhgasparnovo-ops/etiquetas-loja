@@ -107,9 +107,6 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 }
 @supports (overflow-x:clip){.app{overflow-x:clip}}
 
-/* ============================================================
-   HEADER — DESKTOP: uma linha larga
-   ============================================================ */
 .top-header{
   position:fixed;
   top:0;left:0;right:0;
@@ -188,7 +185,6 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 .auth-card.logged .auth-card-btn{display:none}
 .auth-logout-btn svg{width:13px;height:13px}
 
-/* Spacer para compensar header fixed */
 .hdr-spacer{height:76px;width:100%}
 
 .install-banner{
@@ -521,9 +517,6 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-close{background:#f0f2f5;color:#2c3440}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
-/* ============================================================
-   MOBILE — HEADER FIXO EM 2 LINHAS IGUAL EM BROWSER E APK
-   ============================================================ */
 @media(max-width:900px){
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
@@ -1190,13 +1183,17 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 <script>
 "use strict";
 
+/* ============================================================
+   AUTENTICAÇÃO — JWT + sessão de 30 dias com renovação silenciosa
+   ============================================================ */
 const AUTH_KEY_JWT='balcao_jwt';
 const AUTH_KEY_EXP='balcao_jwt_exp';
 const AUTH_KEY_USER='balcao_jwt_user';
-const AUTH_KEY_LAST_LOGIN='balcao_last_login';   // NOVO — sessão 30 dias
-const SESSION_DIAS=30;                            // NOVO — sessão 30 dias
+const AUTH_KEY_LAST_LOGIN='balcao_last_login';
+const SESSION_DIAS=30;
 const CLIENT_ID='268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 let _reauthPromise=null;
+let _silentReauth=false;
 let _currentUser=null;
 
 function parseJwt(token){
@@ -1215,7 +1212,6 @@ function getStoredToken(){
     return t;
   }catch(e){ return null; }
 }
-// NOVO — verifica se a janela de 30 dias ainda está aberta
 function sessaoAindaValida(){
   try{
     const t=parseInt(localStorage.getItem(AUTH_KEY_LAST_LOGIN)||'0',10);
@@ -1229,7 +1225,7 @@ function setStoredToken(token){
     const e=i.exp||(Math.floor(Date.now()/1000)+3600);
     localStorage.setItem(AUTH_KEY_JWT,token);
     localStorage.setItem(AUTH_KEY_EXP,String(e));
-    localStorage.setItem(AUTH_KEY_LAST_LOGIN,String(Date.now()));   // NOVO
+    localStorage.setItem(AUTH_KEY_LAST_LOGIN,String(Date.now()));
     const u={email:i.email||'',name:i.name||'',picture:i.picture||''};
     localStorage.setItem(AUTH_KEY_USER,JSON.stringify(u));
     _currentUser=u;
@@ -1240,7 +1236,7 @@ function clearStoredToken(){
     localStorage.removeItem(AUTH_KEY_JWT);
     localStorage.removeItem(AUTH_KEY_EXP);
     localStorage.removeItem(AUTH_KEY_USER);
-    localStorage.removeItem(AUTH_KEY_LAST_LOGIN);   // NOVO
+    localStorage.removeItem(AUTH_KEY_LAST_LOGIN);
   }catch(e){}
   _currentUser=null;
 }
@@ -1269,7 +1265,10 @@ window.handleCredentialResponse=function(response){
   if(!response||!response.credential) return;
   setStoredToken(response.credential);
   atualizarUICredenciais();
-  try{ toast('Sessão iniciada','success'); }catch(e){}
+  // Toast apenas quando é um login MANUAL (não silencioso)
+  if(!_silentReauth){
+    try{ toast('Sessão iniciada','success'); }catch(e){}
+  }
   carregarTudo();
 };
 function fazerLogout(){
@@ -1283,22 +1282,34 @@ function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise=new Promise(function(resolve){
     let done=false;
-    const tid=setTimeout(function(){ if(!done){ done=true; _reauthPromise=null; resolve(false); } },8000);
+    function finish(result){
+      if(done) return;
+      done=true;
+      _silentReauth=false;
+      _reauthPromise=null;
+      resolve(result);
+    }
+    _silentReauth=true;
+    const tid=setTimeout(function(){ finish(false); },8000);
     const orig=window.handleCredentialResponse;
-    window.handleCredentialResponse=function(r){ orig(r); if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(true); } };
+    window.handleCredentialResponse=function(r){ orig(r); clearTimeout(tid); finish(true); };
     try{
-      if(!window.google||!google.accounts||!google.accounts.id){ clearTimeout(tid); _reauthPromise=null; done=true; return resolve(false); }
+      if(!window.google||!google.accounts||!google.accounts.id){
+        clearTimeout(tid);
+        finish(false);
+        return;
+      }
       google.accounts.id.initialize({
         client_id:CLIENT_ID, callback:window.handleCredentialResponse,
         auto_select:true, cancel_on_tap_outside:false, itp_support:true, use_fedcm_for_prompt:true
       });
       google.accounts.id.prompt(function(n){
         try{
-          if(n&&n.isNotDisplayed&&n.isNotDisplayed()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } }
-          if(n&&n.isSkippedMoment&&n.isSkippedMoment()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } }
+          if(n&&n.isNotDisplayed&&n.isNotDisplayed()){ clearTimeout(tid); finish(false); }
+          if(n&&n.isSkippedMoment&&n.isSkippedMoment()){ clearTimeout(tid); finish(false); }
         }catch(e){}
       });
-    }catch(e){ clearTimeout(tid); _reauthPromise=null; done=true; resolve(false); }
+    }catch(e){ clearTimeout(tid); finish(false); }
   });
   return _reauthPromise;
 }
@@ -1315,7 +1326,7 @@ function inicializarBotaoGoogle(){
 }
 
 /* ============================================================
-   AJUSTE DINÂMICO DO HEADER — calcula altura real e aplica ao spacer
+   HEADER — altura dinâmica
    ============================================================ */
 function ajustarAlturaHeader(){
   const hdr=document.getElementById('topHeader');
@@ -1332,6 +1343,9 @@ window.addEventListener('orientationchange',function(){ setTimeout(ajustarAltura
 window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(ajustarAlturaHeader,300); });
 document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAlturaHeader,100); });
 
+/* ============================================================
+   PWA — Banner instalação + Service Worker
+   ============================================================ */
 (function setupPWA(){
   const isAndroid=/Android/i.test(navigator.userAgent);
   const isMobileUA=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -1454,10 +1468,13 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
   }
 })();
 
+/* ============================================================
+   API + CACHE
+   ============================================================ */
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
 const CACHE_KEY='balcao_cache_v10';
-const IMG_MAX_SIZE=800;      // NOVO — antes 450, imagens nítidas
-const IMG_QUALITY=0.92;      // NOVO — antes 0.65, sem perda visível
+const IMG_MAX_SIZE=800;
+const IMG_QUALITY=0.92;
 const THUMB_SIZE=200;
 const NO_RETRY_FNS=['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FORMATOS_VALIDOS=["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
@@ -1967,12 +1984,10 @@ function addToQueue(){
   if($("appStatus").dataset.type==="error"){ toast("Corrija os erros.","error"); return; }
   const copies=Math.max(1,Math.min(500,parseInt($("copiesCount").value)||1));
   const data=getFormData();
-  // NOVO — Exige sempre Nome OU Código
   if(!data.product && !data.internalCode){ toast("Preencha o Nome ou o Código.","warning"); return; }
   printQueue.push({data:data,copies:copies}); renderQueue();
   toast("Adicionado à fila","success");
 }
-// NOVO — Payload passa a incluir o email do utilizador autenticado
 function buildProdutoPayload(d){
   return {codigo:d.internalCode,nome:d.product,preco:d.price,oldPrice:d.oldPrice,isPromoActive:d.isPromoActive,promoPrice:d.promoPrice,promoMinQty:d.promoMinQty,promoUnit:d.promoUnit,promoStart:d.promoStart,promoEnd:d.promoEnd,unit:d.unit,origem:d.origem,categoria:d.categoria,calibre:d.calibre,ean:d.ean,loja:d.store,unidade:d.capacityUnit,capacidade:d.capacity,deposito:d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect,formato:d.presetSizes,customWidth:d.customWidth,customHeight:d.customHeight,fotoId:d.fotoId||'',fotoUrl:d.fotoUrl||'',email:(_currentUser&&_currentUser.email)||''};
 }
@@ -3045,14 +3060,27 @@ document.addEventListener("change",function(e){
   if(printQueue[i]){ printQueue[i].copies=Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
 });
 
-// NOVO — renovação silenciosa ao voltar à aba, mantendo a sessão de 30 dias
+/* ============================================================
+   AUTOMAÇÃO — Renovação proativa do JWT
+   1) Ao voltar à aba: se a sessão de 30 dias é válida mas o token
+      já expirou (ou está perto), renova silenciosamente.
+   2) Timer de 20 min: verifica se o token está a <15 min de expirar
+      e renova antes de falhar. Evita o primeiro erro da sessão.
+   ============================================================ */
 document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='visible' && !getStoredToken() && sessaoAindaValida()){
-    tentarReauthSilenciosa().then(function(ok){
-      if(ok){ atualizarUICredenciais(); carregarTudo(); }
-    });
+  if(document.visibilityState==='visible' && sessaoAindaValida() && !getStoredToken()){
+    tentarReauthSilenciosa();
   }
 });
+setInterval(function(){
+  if(!sessaoAindaValida()) return;
+  try{
+    const e=parseInt(localStorage.getItem(AUTH_KEY_EXP)||'0',10);
+    const falta=e-Math.floor(Date.now()/1000);
+    // Se faltam <15 min para expirar, renova já (evita falhas em guardar)
+    if(falta<900 && !_reauthPromise) tentarReauthSilenciosa();
+  }catch(err){}
+},20*60*1000);
 
 (async function boot(){
   try{
@@ -3067,12 +3095,10 @@ document.addEventListener('visibilitychange',function(){
         const tk=getStoredToken();
         if(tk){ atualizarUICredenciais(); carregarTudo(); }
         else if(sessaoAindaValida()){
-          // Sessão de 30 dias — tenta renovar silenciosamente
-          tentarReauthSilenciosa().then(function(ok){
-            if(ok){ atualizarUICredenciais(); carregarTudo(); }
-          });
+          // handleCredentialResponse já trata UI e carregarTudo — sem duplicações
+          tentarReauthSilenciosa();
         } else {
-          setTimeout(function(){ tentarReauthSilenciosa().then(function(){}); },800);
+          setTimeout(function(){ tentarReauthSilenciosa(); },800);
         }
       } else if(t>40){ clearInterval(ag); }
     },200);
