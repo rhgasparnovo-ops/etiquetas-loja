@@ -15,14 +15,12 @@
 <meta name="apple-mobile-web-app-title" content="Etiquetas">
 <meta name="format-detection" content="telephone=no">
 <title>Etiquetas de Preços</title>
-
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
-
 <script>
 (function(){
-  var FK='balcao_force_v10';
+  var FK='balcao_force_v11';
   var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){
@@ -66,10 +64,8 @@
   });
 })();
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
 <script src="https://accounts.google.com/gsi/client?hl=pt-PT" async defer></script>
-
 <style>
 :root{
   --red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;
@@ -81,7 +77,6 @@
   --safe-right:env(safe-area-inset-right,0px);
   --app-pad-x:12px;
   --app-max-w:1400px;
-  --hdr-height-mobile:0px;
 }
 *{box-sizing:border-box}
 html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
@@ -89,33 +84,18 @@ html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;
 html{height:100%}
 body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100%;position:relative}
 img{max-width:100%}
-
 nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el],body[data-mobile-tab]>nav{
   display:none!important;visibility:hidden!important;opacity:0!important;
   width:0!important;height:0!important;max-width:0!important;max-height:0!important;
   overflow:hidden!important;position:absolute!important;left:-99999px!important;top:-99999px!important;
   pointer-events:none!important;z-index:-9999!important;margin:0!important;padding:0!important;border:none!important;
 }
-
-.app{
-  max-width:var(--app-max-w);
-  margin:0 auto;
-  padding:16px 20px 32px;
-  padding-left:max(20px, calc(20px + var(--safe-left)));
-  padding-right:max(20px, calc(20px + var(--safe-right)));
-  width:100%;min-width:0;overflow-x:hidden;
-}
+.app{max-width:var(--app-max-w);margin:0 auto;padding:16px 20px 32px;padding-left:max(20px,calc(20px + var(--safe-left)));padding-right:max(20px,calc(20px + var(--safe-right)));width:100%;min-width:0;overflow-x:hidden}
 @supports (overflow-x:clip){.app{overflow-x:clip}}
 
-/* ============================================================
-   HEADER — DESKTOP: uma linha larga
-   ============================================================ */
+/* ================= HEADER ================= */
 .top-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  z-index:8000;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:24px;flex-wrap:wrap;
+  position:fixed;top:0;left:0;right:0;z-index:8000;
   background:rgba(255,255,255,.98);
   -webkit-backdrop-filter:saturate(180%) blur(16px);
   backdrop-filter:saturate(180%) blur(16px);
@@ -128,22 +108,18 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
   min-height:76px;
 }
 .top-header-inner{
-  max-width:var(--app-max-w);
-  margin:0 auto;width:100%;
+  max-width:var(--app-max-w);margin:0 auto;width:100%;
   display:flex;align-items:center;justify-content:space-between;
-  gap:24px;flex-wrap:wrap;
+  gap:20px;flex-wrap:wrap;
 }
 .hdr-brand{display:flex;align-items:center;gap:16px;flex:1 1 auto;min-width:0}
-.hdr-title{
-  margin:0;font-size:18px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;
-  color:#1a1f28;display:flex;align-items:center;gap:10px;min-width:0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.hdr-title{margin:0;font-size:18px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#1a1f28;display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-title .h1-tag{font-size:24px;line-height:1;flex-shrink:0}
 .hdr-logos{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hdr-logos img{height:38px;width:auto;max-width:120px;object-fit:contain;opacity:.92}
 .hdr-logos .divider{width:1px;height:32px;background:#e0e6ed}
 .hdr-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-auth{display:flex;align-items:center;gap:10px;flex-shrink:0}
 
 .hdr-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -160,16 +136,10 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
   display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;
   background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;
   box-shadow:0 1px 4px rgba(15,23,42,.04);flex-shrink:0;
-  min-width:0;max-width:100%;overflow:hidden;transition:all .2s;
-  min-height:44px;
+  min-width:0;max-width:100%;overflow:hidden;transition:all .2s;min-height:44px;
 }
 .auth-card.logged{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
-.auth-card-icon{
-  width:32px;height:32px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,#c8102e,#a80d24);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 8px rgba(200,16,46,.22);
-}
+.auth-card-icon{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#c8102e,#a80d24);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(200,16,46,.22)}
 .auth-card.logged .auth-card-icon{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 3px 8px rgba(34,197,94,.22)}
 .auth-card-icon svg{width:16px;height:16px}
 .auth-card-text{display:flex;flex-direction:column;min-width:0;line-height:1.2}
@@ -179,69 +149,39 @@ nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tab
 .auth-card-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;max-width:100%;overflow:hidden}
 .auth-card-btn > div{max-width:100%}
 .auth-card-btn > div[data-gsi]{transform:scale(.88);transform-origin:center right;margin:-4px -8px}
-.auth-logout-btn{
-  display:none;align-items:center;gap:6px;padding:8px 14px;
-  background:#fff;color:#c0392b;border:1.5px solid #fecaca;border-radius:11px;
-  font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;min-height:38px;
-}
+.auth-logout-btn{display:none;align-items:center;gap:6px;padding:8px 14px;background:#fff;color:#c0392b;border:1.5px solid #fecaca;border-radius:11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;min-height:38px}
 .auth-card.logged .auth-logout-btn{display:inline-flex}
 .auth-card.logged .auth-card-btn{display:none}
 .auth-logout-btn svg{width:13px;height:13px}
 
-/* Spacer para compensar header fixed */
 .hdr-spacer{height:76px;width:100%}
 
+/* ================= BANNER ================= */
 .install-banner{
-  position:fixed;bottom:calc(12px + var(--safe-bottom));
-  left:12px;right:12px;
-  z-index:9500;
+  position:fixed;bottom:calc(12px + var(--safe-bottom));left:12px;right:12px;z-index:9500;
   max-width:440px;margin:0 auto;
-  background:linear-gradient(135deg,#1e8a4a 0%,#0d5a2f 100%);
-  color:#fff;border-radius:16px;
-  padding:12px 14px;
-  box-shadow:0 12px 40px rgba(0,0,0,.35),0 4px 12px rgba(0,0,0,.2);
+  background:linear-gradient(135deg,#1e8a4a 0%,#0d5a2f 100%);color:#fff;border-radius:16px;
+  padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.35),0 4px 12px rgba(0,0,0,.2);
   display:none;align-items:center;gap:12px;
-  font-family:inherit;
-  animation:bannerSlideUp .35s cubic-bezier(.4,0,.2,1);
-  pointer-events:auto;
+  animation:bannerSlideUp .35s cubic-bezier(.4,0,.2,1);pointer-events:auto;
 }
 .install-banner.show{display:flex}
 .install-banner.installed{display:none!important}
-.install-banner-icon{
-  width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
+.install-banner-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .install-banner-icon svg{width:24px;height:24px;stroke:#fff;fill:none}
 .install-banner-text{flex:1;min-width:0;line-height:1.3}
 .install-banner-text strong{display:block;font-size:14px;font-weight:900;letter-spacing:.3px;margin-bottom:2px}
 .install-banner-text span{font-size:12px;opacity:.92;font-weight:500;display:block}
 .install-banner-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
-.install-banner-btn{
-  width:auto;padding:9px 14px;border-radius:10px;border:none;
-  background:#fff;color:#0d5a2f;font-weight:900;font-size:13px;
-  cursor:pointer;min-height:40px;white-space:nowrap;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);letter-spacing:.2px;
-}
+.install-banner-btn{width:auto;padding:9px 14px;border-radius:10px;border:none;background:#fff;color:#0d5a2f;font-weight:900;font-size:13px;cursor:pointer;min-height:40px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15);letter-spacing:.2px}
 .install-banner-btn:active{transform:scale(.96)}
-.install-banner-close{
-  width:36px;height:36px;min-width:36px;min-height:36px;
-  padding:0;border-radius:50%;background:rgba(255,255,255,.15);
-  color:#fff;border:none;font-size:16px;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;flex-shrink:0;line-height:1;
-}
+.install-banner-close{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;border:none;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;line-height:1}
 .install-banner-close:active{transform:scale(.9)}
-@keyframes bannerSlideUp{
-  from{transform:translateY(120%);opacity:0}
-  to{transform:translateY(0);opacity:1}
-}
-@keyframes bannerSlideDown{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(120%);opacity:0}
-}
+@keyframes bannerSlideUp{from{transform:translateY(120%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes bannerSlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(120%);opacity:0}}
 .install-banner.closing{animation:bannerSlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
 
+/* ================= LAYOUT ================= */
 .grid{display:grid;grid-template-columns:440px minmax(0,1fr);gap:24px;align-items:start;min-width:0;max-width:100%;width:100%}
 .left-col{min-width:0;max-width:100%;overflow-x:hidden}
 .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px;min-width:0;max-width:100%}
@@ -271,10 +211,26 @@ button:active:not(:disabled){transform:scale(.97)}
 .size-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 .size-row-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
-.date-input-wrap{position:relative;display:flex;align-items:center;width:100%;max-width:100%;min-width:0;overflow:hidden}
-.date-input-wrap input[type="date"]{width:100%;max-width:100%;min-width:0;padding-right:42px;min-height:42px;display:block}
-.date-clear-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px;padding:0;border-radius:50%;background:#f0f2f5;border:1px solid #e0e5ea;color:#666;font-size:13px;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2}
-.date-clear-btn.show{display:flex}
+/* ================= DATAS (novo layout flex) ================= */
+.date-input-wrap{
+  display:flex;align-items:stretch;gap:6px;
+  width:100%;min-width:0;
+}
+.date-input-wrap input[type="date"]{
+  flex:1 1 auto;min-width:0;width:auto;
+  padding:9px 12px;min-height:42px;
+}
+.date-clear-btn{
+  flex:0 0 auto;width:40px;min-width:40px;min-height:42px;
+  padding:0;border-radius:8px;
+  background:#f0f2f5;border:1px solid #e0e5ea;color:#666;
+  font-size:14px;font-weight:900;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;line-height:1;
+  transition:all .15s;
+}
+.date-clear-btn.show{display:inline-flex}
+.date-clear-btn:hover{background:#c8102e;color:#fff;border-color:#c8102e}
 .dates-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
 #appStatus{display:none;align-items:center;gap:10px;margin:10px 0;padding:11px 14px;border-radius:10px;font:700 13px/1.4 system-ui,-apple-system,sans-serif;border:1px solid transparent;min-width:0;max-width:100%}
@@ -361,7 +317,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 1px}
 .col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
 .col-image.show{display:flex!important}
-.col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto;image-rendering:auto}
+.col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
 .item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1.05;margin-bottom:5px;letter-spacing:.3px;opacity:.92;white-space:normal;word-break:break-word;max-width:100%;width:100%;text-align:left}
 .product{font-weight:900;color:#000;line-height:1.05;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);overflow-wrap:anywhere}
@@ -521,43 +477,33 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
 .install-modal-close{background:#f0f2f5;color:#2c3440}
 .install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
-/* ============================================================
-   MOBILE — HEADER FIXO EM 2 LINHAS IGUAL EM BROWSER E APK
-   ============================================================ */
+/* ================= MOBILE — 3 LINHAS FIXAS ================= */
 @media(max-width:900px){
   html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
   @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
   body{background:#eef1f4;font-size:15px;padding-bottom:var(--safe-bottom);min-height:100dvh}
 
-  /* Espaçador para compensar header fixed — recalcula dinamicamente via JS */
-  .hdr-spacer{height:var(--hdr-height-mobile)}
-
-  /* Header mobile: 2 linhas, fixo no topo */
   .top-header{
-    flex-wrap:nowrap;
     padding:0;
     padding-top:var(--safe-top);
     min-height:auto;
     display:block;
   }
   .top-header-inner{
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-    justify-content:flex-start;
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
     gap:0;
     width:100%;
-    padding:10px 14px 10px;
-    max-width:100%;
+    padding:12px 14px;
   }
 
-  /* Linha 1: marca + logos */
+  /* LINHA 1 — Marca (título + logos) */
   .hdr-brand{
     display:flex;align-items:center;justify-content:space-between;
-    gap:10px;width:100%;min-width:0;overflow:hidden;
-    padding-bottom:10px;
+    gap:10px;width:100%;min-width:0;
+    padding-bottom:12px;
     border-bottom:1px solid #e8ebf0;
-    margin-bottom:10px;
+    margin-bottom:12px;
     flex-wrap:nowrap;
   }
   .hdr-title{font-size:15px;gap:8px;flex:1 1 auto;min-width:0}
@@ -566,55 +512,46 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .hdr-logos img{height:28px;max-width:60px}
   .hdr-logos .divider{height:22px}
 
-  /* Linha 2: Ver + Auth */
+  /* LINHA 2 — Botão Ver (largura total) */
   .hdr-actions{
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
     width:100%;
-    min-width:0;
-    flex-wrap:nowrap;
+    margin-bottom:12px;
   }
-
   .hdr-btn{
     display:inline-flex;
-    padding:10px 18px;
-    font-size:14px;
-    min-height:44px;
-    gap:7px;
-    flex-shrink:0;
+    width:100%;
+    justify-content:center;
+    padding:12px 18px;
+    font-size:14.5px;
+    min-height:48px;
+    gap:8px;
     border-radius:12px;
     font-weight:800;
   }
-  .hdr-btn svg{width:17px;height:17px}
+  .hdr-btn svg{width:18px;height:18px}
   .hdr-btn span{display:inline}
 
+  /* LINHA 3 — Auth (largura total, sozinha) */
+  .hdr-auth{
+    display:flex;
+    width:100%;
+  }
   .auth-card{
-    padding:5px 12px 5px 6px;
-    gap:8px;
+    width:100%;
+    justify-content:center;
+    padding:10px 14px;
+    min-height:50px;
+    gap:12px;
     border-radius:12px;
-    flex-shrink:0;
-    min-width:0;
-    min-height:44px;
-    margin-left:auto;
   }
-  .auth-card-icon{width:30px;height:30px;border-radius:9px}
-  .auth-card-icon svg{width:15px;height:15px}
+  .auth-card-icon{width:34px;height:34px;border-radius:10px}
+  .auth-card-icon svg{width:16px;height:16px}
   .auth-card-text{display:none}
-  .auth-card-btn > div[data-gsi]{
-    transform:scale(.76);
-    transform-origin:center right;
-    margin:-6px -10px;
-  }
-  .auth-logout-btn{
-    padding:8px 14px;
-    font-size:12.5px;
-    min-height:38px;
-    gap:5px;
-    border-radius:11px;
-  }
-  .auth-logout-btn svg{width:12px;height:12px}
+  .auth-card-btn{flex:0 0 auto}
+  .auth-card-btn > div[data-gsi]{transform:scale(1);transform-origin:center;margin:0}
+  .auth-logout-btn{padding:10px 18px;font-size:13.5px;min-height:42px;gap:6px;border-radius:11px}
+  .auth-logout-btn svg{width:14px;height:14px}
 
   .app{
     padding:10px var(--app-pad-x) 20px var(--app-pad-x);
@@ -622,14 +559,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     padding-right:max(var(--app-pad-x),var(--safe-right));
   }
 
-  /* Banner mobile */
-  .install-banner{
-    left:10px;right:10px;
-    bottom:calc(10px + var(--safe-bottom));
-    padding:12px 12px;
-    border-radius:14px;
-    gap:10px;
-  }
+  .install-banner{left:10px;right:10px;bottom:calc(10px + var(--safe-bottom));padding:12px;border-radius:14px;gap:10px}
   .install-banner-icon{width:40px;height:40px;border-radius:11px}
   .install-banner-icon svg{width:22px;height:22px}
   .install-banner-text strong{font-size:13.5px}
@@ -647,11 +577,22 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   input:focus,select:focus,textarea:focus{outline:none;border-color:#c8102e;background:#fff;box-shadow:0 0 0 3px rgba(200,16,46,.1)}
   input[type=range]{padding:0;height:8px;background:transparent;border:none;width:100%;max-width:100%}
   input[type=number]{font-size:16px;text-align:center;font-weight:700}
-  input[type="date"]{min-height:46px;font-size:15px;-webkit-appearance:none;appearance:none;width:100%;max-width:100%;min-width:0}
-  .date-input-wrap{width:100%;max-width:100%;min-width:0}
-  .date-input-wrap input[type="date"]{padding-right:44px}
-  .date-clear-btn{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;font-size:13px;right:6px}
+  input[type="date"]{min-height:48px;font-size:15px;-webkit-appearance:none;appearance:none;width:100%;max-width:100%;min-width:0}
+
+  /* Datas em mobile: coluna única, botão ✕ ao lado (sem sobrepor) */
   .dates-row{grid-template-columns:minmax(0,1fr);gap:10px}
+  .date-input-wrap{width:100%;min-width:0;gap:8px}
+  .date-input-wrap input[type="date"]{flex:1 1 auto;min-width:0;padding:12px 13px;min-height:48px;font-size:15px}
+  .date-clear-btn{
+    flex:0 0 auto;
+    width:46px;min-width:46px;
+    min-height:48px;
+    border-radius:10px;
+    font-size:15px;
+    background:#f0f2f5;
+    border:1.5px solid #e0e5ea;
+  }
+
   .format-select{font-size:15px;padding:13px 40px 13px 14px;min-height:50px;border-radius:12px;font-weight:800}
   button{padding:13px;font-size:15px;border-radius:13px;min-height:50px;font-weight:800}
   .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:16.5px;font-weight:900;padding:16px 14px;min-height:58px;border-radius:15px}
@@ -704,7 +645,8 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .hdr-title{font-size:14px}
   .hdr-title .h1-tag{font-size:20px}
   .hdr-logos img{height:24px;max-width:50px}
-  .hdr-btn{padding:9px 14px;font-size:13px}
+  .hdr-btn{padding:11px 14px;font-size:14px}
+  .auth-logout-btn{padding:9px 14px;font-size:13px;min-height:40px}
   .actions{grid-template-columns:minmax(0,1fr)}
   .install-banner{padding:10px;gap:8px}
   .install-banner-icon{width:36px;height:36px}
@@ -715,6 +657,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
   .install-banner-close{width:30px;height:30px;min-width:30px;min-height:30px;font-size:13px}
 }
 
+/* ================= PRINT ================= */
 @media screen{
   #printZone{display:none!important}
   #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
@@ -768,8 +711,10 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
     <div class="hdr-actions">
       <button type="button" class="hdr-btn" id="openPreviewBtn" title="Ver etiqueta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>Ver</span>
+        <span>Ver etiqueta</span>
       </button>
+    </div>
+    <div class="hdr-auth">
       <div class="auth-card" id="authCard">
         <div class="auth-card-icon" id="authIcon">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
@@ -787,7 +732,7 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
                data-context="signin"
                data-itp_support="true"></div>
           <div class="g_id_signin"
-               data-type="standard" data-theme="outline" data-size="medium"
+               data-type="standard" data-theme="outline" data-size="large"
                data-text="continue_with" data-shape="pill" data-logo_alignment="left"
                data-locale="pt-PT"></div>
         </div>
@@ -924,14 +869,14 @@ details.quick-drawer summary{cursor:pointer;font-weight:700}
                 <label for="promoStart">Início Oportunidade</label>
                 <div class="date-input-wrap">
                   <input id="promoStart" type="date">
-                  <button type="button" class="date-clear-btn" data-target="promoStart" title="Limpar">✕</button>
+                  <button type="button" class="date-clear-btn" data-target="promoStart" title="Limpar data">✕</button>
                 </div>
               </div>
               <div>
                 <label for="promoEnd">Fim Oportunidade</label>
                 <div class="date-input-wrap">
                   <input id="promoEnd" type="date">
-                  <button type="button" class="date-clear-btn" data-target="promoEnd" title="Limpar">✕</button>
+                  <button type="button" class="date-clear-btn" data-target="promoEnd" title="Limpar data">✕</button>
                 </div>
               </div>
             </div>
@@ -1298,27 +1243,20 @@ function inicializarBotaoGoogle(){
       auto_select:false, cancel_on_tap_outside:false, itp_support:true, use_fedcm_for_prompt:true
     });
     const h=document.querySelector('.g_id_signin');
-    if(h) google.accounts.id.renderButton(h,{ type:'standard',theme:'outline',size:'medium',text:'continue_with',shape:'pill',logo_alignment:'left',locale:'pt-PT' });
+    if(h) google.accounts.id.renderButton(h,{ type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'pill',logo_alignment:'left',locale:'pt-PT' });
   }catch(e){}
 }
 
-/* ============================================================
-   AJUSTE DINÂMICO DO HEADER — calcula altura real e aplica ao spacer
-   Funciona em browser E em APK instalada, sem depender de breakpoints
-   ============================================================ */
 function ajustarAlturaHeader(){
   const hdr=document.getElementById('topHeader');
   const spc=document.getElementById('hdrSpacer');
   if(!hdr||!spc) return;
   const h=hdr.getBoundingClientRect().height;
-  if(h>0){
-    document.documentElement.style.setProperty('--hdr-height-mobile',h+'px');
-    spc.style.height=h+'px';
-  }
+  if(h>0) spc.style.height=h+'px';
 }
-window.addEventListener('resize',function(){ ajustarAlturaHeader(); });
+window.addEventListener('resize',ajustarAlturaHeader);
 window.addEventListener('orientationchange',function(){ setTimeout(ajustarAlturaHeader,200); });
-window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(ajustarAlturaHeader,300); });
+window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(ajustarAlturaHeader,300); setTimeout(ajustarAlturaHeader,900); });
 document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAlturaHeader,100); });
 
 (function setupPWA(){
@@ -1372,9 +1310,7 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
   if('serviceWorker' in navigator&&isSecure){
     navigator.serviceWorker.getRegistrations().then(function(regs){ swOk=regs.some(function(r){ return r.active&&r.active.scriptURL.indexOf('sw.js')!==-1; }); }).catch(function(){});
   }
-
   setTimeout(mostrarTemporariamente,2000);
-
   window.addEventListener('beforeinstallprompt',function(e){
     e.preventDefault(); dp=e;
     if(Date.now()>=silenciadoAte) mostrarTemporariamente();
@@ -1384,7 +1320,6 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
     ocultarDefinitivamente();
     try{ toast('Aplicação instalada!','success'); }catch(e){}
   });
-
   if(bannerClose){
     bannerClose.addEventListener('click',function(){
       silenciarPor30min();
@@ -1393,7 +1328,6 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
       if(esconderTimer) clearTimeout(esconderTimer);
     });
   }
-
   function db(){ const ua=navigator.userAgent||''; if(/SamsungBrowser/i.test(ua)) return 'samsung'; if(/EdgA|EdgiOS|Edg\//i.test(ua)) return 'edge'; if(/OPR|Opera/i.test(ua)) return 'opera'; if(/Firefox|FxiOS/i.test(ua)) return 'firefox'; return 'chrome'; }
   function instr(){
     if(db()==='samsung'){
@@ -1444,7 +1378,7 @@ document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAltur
 })();
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v10';
+const CACHE_KEY='balcao_cache_v11';
 const IMG_MAX_SIZE=450;
 const IMG_QUALITY=0.65;
 const THUMB_SIZE=200;
@@ -3051,11 +2985,12 @@ document.addEventListener("change",function(e){
     $("copiesCount").value="1";
     if(!$("capacity").value&&DEFAULTS_UNIDADE[$("capacityUnit").value]) $("capacity").value=DEFAULTS_UNIDADE[$("capacityUnit").value];
     if(getStoredToken()) carregarTudo();
+    ajustarAlturaHeader();
+    setTimeout(ajustarAlturaHeader,100);
+    setTimeout(ajustarAlturaHeader,400);
+    setTimeout(ajustarAlturaHeader,900);
     setTimeout(fitPreviewCard,200);
     setTimeout(fitPreviewCard,600);
-    setTimeout(ajustarAlturaHeader,100);
-    setTimeout(ajustarAlturaHeader,500);
-    setTimeout(ajustarAlturaHeader,1500);
   }catch(err){}
 })();
 </script>
