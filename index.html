@@ -5,7 +5,7 @@
 <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="pt-PT">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-<meta name="Pragma" content="no-cache">
+<meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
 <meta name="theme-color" content="#ffffff">
@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <script>
 (function(){
-  var FK='balcao_force_v20';var jf=false;
+  var FK='balcao_force_v21';var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){var u=(r.active&&r.active.scriptURL)||(r.installing&&r.installing.scriptURL)||(r.waiting&&r.waiting.scriptURL)||'';if(u.indexOf('sw.js')===-1){try{r.unregister();}catch(e){}}});}).catch(function(){});}
   if('caches' in window){caches.keys().then(function(ks){ks.forEach(function(k){if(k!=='balcao-v1'){try{caches.delete(k);}catch(e){}}});}).catch(function(){});}
@@ -67,7 +67,7 @@ a{color:inherit;text-decoration:none}
 /* HEADER */
 .app-header{
   position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.9);
+  background:rgba(255,255,255,.92);
   -webkit-backdrop-filter:saturate(180%) blur(20px);
   backdrop-filter:saturate(180%) blur(20px);
   border-bottom:1px solid var(--line);
@@ -79,12 +79,12 @@ a{color:inherit;text-decoration:none}
 }
 .app-header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad)}
 .hdr-inner{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0}
-.hdr-brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
-.hdr-logos{display:flex;align-items:center;gap:8px;flex-shrink:0;background:#fff;padding:5px 10px;border-radius:12px;border:1px solid var(--line);box-shadow:0 1px 4px rgba(15,23,42,.04)}
-.hdr-logos img{height:28px;width:auto;max-width:70px;object-fit:contain}
-.hdr-logos .divider{width:1px;height:22px;background:var(--line)}
-.hdr-txt{display:flex;flex-direction:column;line-height:1.15;min-width:0;flex:1 1 auto;overflow:hidden}
-.hdr-txt strong{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-left{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1 1 auto}
+.hdr-logos{display:flex;align-items:center;gap:8px;align-self:flex-start;background:#fff;padding:5px 10px;border-radius:12px;border:1px solid var(--line);box-shadow:0 1px 4px rgba(15,23,42,.04)}
+.hdr-logos img{height:26px;width:auto;max-width:64px;object-fit:contain}
+.hdr-logos .divider{width:1px;height:20px;background:var(--line)}
+.hdr-txt{display:flex;line-height:1.1;min-width:0}
+.hdr-txt strong{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .icon-btn{width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--ink-2);border:1px solid var(--line);box-shadow:var(--sh-1);transition:all .18s;flex-shrink:0}
 .icon-btn:hover{background:var(--brand-soft);color:var(--brand);border-color:#fbd0d8}
@@ -109,11 +109,11 @@ a{color:inherit;text-decoration:none}
 @media (max-width:600px){
   .app-header{padding:10px 12px;padding-top:calc(10px + var(--safe-t))}
   .hdr-inner{gap:8px}
-  .hdr-brand{gap:8px}
+  .hdr-left{gap:6px}
   .hdr-logos{padding:4px 8px;gap:6px;border-radius:10px}
   .hdr-logos img{height:22px;max-width:50px}
-  .hdr-logos .divider{height:18px}
-  .hdr-txt strong{font-size:14px}
+  .hdr-logos .divider{height:16px}
+  .hdr-txt strong{font-size:16px}
   .icon-btn{width:36px;height:36px}
   .icon-btn svg{width:16px;height:16px}
   .auth-card{height:36px;padding:0 4px 0 3px}
@@ -121,34 +121,24 @@ a{color:inherit;text-decoration:none}
   .auth-icon svg{width:12px;height:12px}
 }
 @media (max-width:380px){
-  .hdr-logos img{height:20px;max-width:42px}
-  .hdr-txt strong{font-size:13px}
+  .hdr-logos img{height:20px;max-width:44px}
+  .hdr-txt strong{font-size:15px}
   .icon-btn{width:32px;height:32px}
-  .icon-btn svg{width:15px;height:15px}
+  .icon-btn svg{width:14px;height:14px}
 }
 
-/* TABS */
-.tabs{display:flex;gap:2px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:67px;z-index:98}
-.tabs::-webkit-scrollbar{display:none}
-.tabs button{flex-shrink:0;padding:14px 16px;color:var(--ink-2);font-size:13px;font-weight:700;border-bottom:3px solid transparent;display:inline-flex;align-items:center;gap:6px;transition:all .18s;white-space:nowrap}
-.tabs button:hover{color:var(--brand)}
-.tabs button.active{color:var(--brand);border-bottom-color:var(--brand)}
-.tabs button svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.tabs button .n-badge{background:var(--brand);color:#fff;font-size:10px;font-weight:900;padding:1px 6px;border-radius:var(--r-pill);min-width:18px;text-align:center}
-.tabs button .n-badge:empty{display:none}
-
 /* LAYOUT */
-.main{max-width:1500px;margin:0 auto;padding:22px 18px;padding-left:calc(18px + var(--safe-l));padding-right:calc(18px + var(--safe-r));padding-bottom:calc(120px + var(--safe-b))}
-.grid-main{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
-@media (min-width:1000px){.grid-main{grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:26px;align-items:start}.col-preview{position:sticky;top:100px}.main{padding:28px 32px 60px}}
+.main{max-width:1500px;margin:0 auto;padding:18px 16px;padding-left:calc(16px + var(--safe-l));padding-right:calc(16px + var(--safe-r));padding-bottom:calc(130px + var(--safe-b))}
+.grid-main{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+@media (min-width:1000px){.grid-main{grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:26px;align-items:start}.col-preview{position:sticky;top:100px}.main{padding:28px 32px 60px;padding-bottom:60px}}
 .col-form{display:flex;flex-direction:column;gap:16px;min-width:0}
 .col-preview{min-width:0}
 .view{display:none;flex-direction:column;gap:16px}
 body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,body[data-view="fila"] .view-fila,body[data-view="drive"] .view-drive,body[data-view="mais"] .view-mais{display:flex}
-@media (min-width:1000px){.view{display:flex!important}.tabs{display:none!important}}
+@media (min-width:1000px){.view{display:flex!important}}
 
 /* CARDS */
-.card{position:relative;background:var(--surface);border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-2);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden}
+.card{position:relative;background:var(--surface);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-2);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad);opacity:.85;border-radius:var(--r-lg) var(--r-lg) 0 0}
 .card.accent-blue::before{background:linear-gradient(90deg,#3b82f6,#6366f1)}
 .card.accent-green::before{background:linear-gradient(90deg,#10b981,#059669)}
@@ -186,7 +176,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .input-hero:focus{background:#fff!important;border-color:var(--brand)!important}
 .input-hero::placeholder{text-transform:none;font-weight:600}
 
-/* DATE FIX */
 .dates-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:0}
 @media (max-width:560px){.dates-row{grid-template-columns:1fr}}
 .date-input-wrap{display:flex;gap:6px;align-items:stretch;width:100%;max-width:100%;min-width:0;overflow:hidden}
@@ -228,7 +217,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;min-width:0;position:relative;overflow:hidden}
 .preview-scaler > .label-card{flex-shrink:0;transform-origin:top center}
 
-/* LABEL (verbatim) */
+/* LABEL */
 .label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
@@ -281,8 +270,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 
 /* BOTTOM NAV — 5 botões */
-.bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.96);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);max-width:480px;margin:0 auto}
-.bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:var(--ink-3);font-size:10px;font-weight:700;border-radius:18px;transition:all .18s;position:relative;min-height:auto}
+.bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);max-width:500px;margin:0 auto}
+.bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:var(--ink-3);font-size:10px;font-weight:700;border-radius:18px;transition:all .18s;position:relative;min-height:auto;letter-spacing:.02em}
 .bnav button.active{color:#fff;background:var(--brand-grad);box-shadow:0 4px 12px rgba(200,16,46,.28)}
 .bnav button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bnav button .n-badge{position:absolute;top:3px;right:calc(50% - 22px);background:var(--brand);color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:var(--r-pill);min-width:15px;text-align:center}
@@ -305,7 +294,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 #appStatus[data-type=loading]::before{background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;animation:spin .7s linear infinite;box-shadow:none;width:12px;height:12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* LIST ITEMS — nomes em 2 linhas */
+/* LIST ITEMS — genérico (Drive) */
 .list-item{display:flex;align-items:flex-start;gap:10px;padding:12px;margin-bottom:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);transition:all .16s}
 .list-item:hover{background:#fff;border-color:#fbd0d8;box-shadow:var(--sh-1)}
 .list-item:last-child{margin-bottom:0}
@@ -316,15 +305,15 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   -webkit-box-orient:vertical;
   overflow:hidden;
   white-space:normal;
-  font-size:13.5px;
+  font-size:14px;
   font-weight:700;
   color:var(--ink);
-  line-height:1.3;
+  line-height:1.35;
   word-break:break-word;
 }
-.list-item-info span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item-info span{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:11.5px;color:var(--ink-3);margin-top:4px;line-height:1.4}
 .list-item-actions{display:flex;gap:4px;flex-shrink:0;align-items:flex-start;padding-top:2px}
-.list-item-actions button{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface-3);color:var(--ink-2);transition:all .15s}
+.list-item-actions button{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface-3);color:var(--ink-2);transition:all .15s;flex-shrink:0}
 .list-item-actions button:active{transform:scale(.92)}
 .btn-remove{background:#fef2f2!important;color:#b91c1c!important}
 .btn-save-queue{background:#ecfdf5!important;color:#047857!important}
@@ -333,11 +322,24 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .copies-input{width:56px;height:36px;padding:0 6px;font-size:14px;font-weight:800;text-align:center;border-radius:var(--r-sm);background:#fff;border:1.5px solid var(--line);color:var(--ink)}
 .copies-input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
 .empty-msg{text-align:center;color:var(--ink-3);font-size:12.5px;padding:24px 12px;line-height:1.5}
-.chip-mini{display:inline-block;background:var(--brand-soft);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:800;color:var(--brand);margin-left:6px;text-transform:uppercase;vertical-align:middle}
+.chip-mini{display:inline-block;background:var(--brand-soft);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:800;color:var(--brand);text-transform:uppercase;vertical-align:middle;line-height:1.2;white-space:nowrap}
 .bc-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--r-pill);margin-left:6px}
 .bc-badge.ok{background:#ecfdf5;color:#047857}
 .bc-badge.warn{background:#fffbeb;color:#92400e}
 .bc-badge.err{background:#fef2f2;color:#991b1b}
+
+/* QUEUE ITEMS — layout em coluna para dar espaço ao nome */
+.queue-item{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:14px}
+.queue-item .list-item-info{width:100%}
+.queue-item .list-item-info strong{font-size:14.5px;-webkit-line-clamp:3}
+.queue-item .list-item-info span{font-size:12px}
+.queue-item .list-item-actions{display:flex;justify-content:flex-end;align-items:center;gap:6px;width:100%;padding-top:0;flex-wrap:nowrap}
+.queue-item .copies-input{width:80px;height:42px;font-size:15px}
+.queue-item .list-item-actions button{width:42px;height:42px;font-size:15px}
+@media (max-width:520px){
+  .queue-item .list-item-actions{gap:5px}
+  .queue-item .copies-input{flex:1 1 auto;min-width:60px;width:auto;max-width:none}
+}
 
 /* MODAIS */
 .confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.modal,.pro-print-overlay,.choice-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:99990}
@@ -350,11 +352,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .confirm-box .confirm-no{background:var(--surface-3);color:var(--ink-2)}
 .confirm-box .confirm-yes{background:var(--brand-grad);color:#fff;box-shadow:var(--sh-brand)}
 
-/* Choice modal — update vs new */
 .choice-modal{background:rgba(15,23,42,.65);z-index:100003;backdrop-filter:blur(8px)}
 .choice-box{background:#fff;border-radius:var(--r-xl);padding:26px;max-width:440px;width:100%;box-shadow:var(--sh-3)}
 .choice-box h3{margin:0 0 8px;font-size:18px;font-weight:800;color:var(--ink)}
-.choice-box p{margin:0 0 20px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.choice-box p{margin:0 0 20px;font-size:13.5px;color:var(--ink-2);line-height:1.5;white-space:pre-line}
 .choice-box .choice-actions{display:flex;flex-direction:column;gap:10px}
 .choice-box button{min-height:56px;padding:14px 18px;font-size:14.5px;font-weight:800;border-radius:var(--r-md);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .16s}
 .choice-box .choice-update{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 6px 18px rgba(16,185,129,.28)}
@@ -461,7 +462,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .install-banner-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
 .install-banner-btn{padding:9px 14px;border-radius:9px;border:none;background:#fff;color:var(--brand);font-weight:800;font-size:12.5px;min-height:38px}
 .install-banner-close{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;border:none;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0}
-.diag-box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:12px;font-family:var(--ff-mono);font-size:11px;color:var(--ink);white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;margin-top:10px;display:none;line-height:1.6}
+.diag-box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:12px;font-family:var(--ff-mono);font-size:11px;color:var(--ink);white-space:pre-wrap;word-break:break-word;max-height:280px;overflow:auto;margin-top:10px;display:none;line-height:1.6}
 .diag-box.show{display:block}
 .diag-box .ok{color:#047857;font-weight:800}
 .diag-box .err{color:#b91c1c;font-weight:800}
@@ -485,7 +486,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
   html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}
-  .app-header,.tabs,.main,.bnav,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
+  .app-header,.main,.bnav,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
   .print-page-wrapper{width:198mm!important;height:285mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
@@ -505,7 +506,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 
 <header class="app-header">
   <div class="hdr-inner">
-    <div class="hdr-brand">
+    <div class="hdr-left">
       <div class="hdr-logos">
         <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="" onerror="this.style.display='none'">
         <div class="divider"></div>
@@ -530,19 +531,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   </div>
 </header>
 
-<nav class="tabs">
-  <button type="button" data-view="editor" class="active" title="Editor"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
-  <button type="button" data-view="preview" title="Ver etiqueta"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver</button>
-  <button type="button" data-view="fila" title="Fila de impressão"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Fila <span class="n-badge" id="tabQueueBadge"></span></button>
-  <button type="button" data-view="drive" title="Etiquetas Guardadas no Drive"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
-  <button type="button" data-view="mais" title="Mais opções"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
-</nav>
-
 <main class="main">
   <div class="grid-main">
     <div class="col-form">
 
-      <!-- ============ EDITOR ============ -->
       <section class="view view-editor">
 
         <div class="card">
@@ -689,7 +681,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 
       </section>
 
-      <!-- ============ FILA ============ -->
       <section class="view view-fila">
         <div class="card">
           <div class="card-h"><div class="ic">🛒</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
@@ -699,10 +690,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
         </div>
       </section>
 
-      <!-- ============ DRIVE ============ -->
       <section class="view view-drive">
 
-        <!-- FOTOGRAFIA (movida do editor) -->
         <div class="card accent-green">
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Tira ou escolhe uma imagem para a etiqueta atual. Se fotografar para o banco, o artigo é guardado na pasta correspondente.</p>
@@ -719,41 +708,30 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
           <label class="check-row" for="useAI" title="Usa IA para melhor qualidade"><input type="checkbox" id="useAI" checked>🤖 Usar IA (melhor qualidade)</label>
         </div>
 
-        <!-- ETIQUETAS GUARDADAS -->
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
-          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Toque no <b>📥</b> para editar, <b>➕</b> para adicionar à fila, <b>📋</b> para duplicar ou <b>✕</b> para apagar.</p>
+          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Toque em <b>📥</b> para editar, <b>➕</b> para adicionar à fila, <b>📋</b> para duplicar ou <b>✕</b> para apagar.</p>
           <div class="row">
             <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" title="Recarregar lista do Drive">🔄 Recarregar</button>
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" title="Sincronizar banco de imagens com o Drive">🔄 Sincronizar</button>
           </div>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
-          <div id="diagBox" class="diag-box"></div>
         </div>
 
       </section>
 
-      <!-- ============ MAIS ============ -->
       <section class="view view-mais">
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Testa a ligação à API e lista os dados disponíveis no Drive.</p>
           <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button" title="Testar ligação à API">🩺 Testar ligação</button>
+          <div id="diagBox" class="diag-box"></div>
         </div>
 
         <div class="card">
           <div class="card-h"><div class="ic">📧</div><h3>Enviar por Email</h3></div>
-          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Envia o PDF das etiquetas (fila atual ou etiqueta em edição) por email.</p>
+          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Envia o PDF das etiquetas (fila atual) por email.</p>
           <button class="btn btn-primary btn-block" id="emailLabelsBtn" type="button" title="Enviar as etiquetas por email em PDF">📧 Enviar por Email</button>
-        </div>
-
-        <div class="card">
-          <div class="card-h"><div class="ic">ℹ️</div><h3>Sobre</h3></div>
-          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">
-            <b>Etiquetas Balcão</b><br>
-            Versão 20 · Cache v20<br>
-            API: <code style="font-family:var(--ff-mono);font-size:10.5px">balcao-api.rh-gasparnovo.workers.dev</code>
-          </p>
         </div>
       </section>
     </div>
@@ -844,7 +822,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   </div>
 </div>
 
-<!-- Choice modal: Update vs New -->
 <div class="choice-modal" id="choiceModal">
   <div class="choice-box">
     <h3 id="choiceTitle">Etiqueta já existe no Drive</h3>
@@ -1035,7 +1012,8 @@ function inicializarBotaoGoogle(){
       document.body.dataset.view=v;
       document.querySelectorAll('button[data-view]').forEach(function(b){ b.classList.toggle('active',b.dataset.view===v); });
       window.scrollTo({top:0,behavior:'smooth'});
-      requestAnimationFrame(function(){ fitPreviewCard(); });
+      setTimeout(function(){ fitPreviewCard(); },50);
+      setTimeout(function(){ fitPreviewCard(); },250);
     });
   });
 })();
@@ -1065,7 +1043,8 @@ function inicializarBotaoGoogle(){
   if('serviceWorker' in navigator&&isSecure){ navigator.serviceWorker.getRegistrations().then(function(regs){ swOk=regs.some(function(r){ return r.active&&r.active.scriptURL.indexOf('sw.js')!==-1; }); }).catch(function(){}); }
   setTimeout(mostrarTemporariamente,2000);
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); dp=e; if(Date.now()>=silenciadoAte) mostrarTemporariamente(); });
-  window.addEventListener('appinstalled',function(){ dp=null; ocultarDefinitivamente(); try{ toast('Aplicação instalada!','success'); }catch(e){} });
+  // Removido toast de "Aplicação instalada!" (duplicava mensagem)
+  window.addEventListener('appinstalled',function(){ dp=null; ocultarDefinitivamente(); });
   if(bannerClose){ bannerClose.addEventListener('click',function(){ silenciarPor30min(); esconderBanner(); if(mostrarTimer) clearTimeout(mostrarTimer); if(esconderTimer) clearTimeout(esconderTimer); }); }
   function db(){ const ua=navigator.userAgent||''; if(/SamsungBrowser/i.test(ua)) return 'samsung'; if(/EdgA|EdgiOS|Edg\//i.test(ua)) return 'edge'; if(/OPR|Opera/i.test(ua)) return 'opera'; if(/Firefox|FxiOS/i.test(ua)) return 'firefox'; return 'chrome'; }
   function instr(){
@@ -1093,7 +1072,7 @@ function inicializarBotaoGoogle(){
 })();
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v20';
+const CACHE_KEY='balcao_cache_v21';
 const IMG_MAX_SIZE=1600;
 const IMG_QUALITY=0.95;
 const THUMB_SIZE=200;
@@ -1306,7 +1285,7 @@ let bancoTipoFiltro='fruta';
 let camStream=null, camTrack=null, torchOn=false;
 let scanner=null, scanTrack=null, scanTorchOn=false;
 let offsetX=0, offsetY=0, marginLeft=4, marginRight=4;
-let editingCode=null; // código do produto a ser editado do Drive
+let editingCode=null;
 
 function fitPreviewCard(){
   const scaler=document.getElementById('previewScaler');
@@ -1325,6 +1304,18 @@ function fitPreviewCard(){
 }
 window.addEventListener('resize',fitPreviewCard);
 window.addEventListener('orientationchange',function(){ setTimeout(fitPreviewCard,200); });
+
+function forceReRender(){
+  try{
+    updateCardUnsafe();
+    updateEanBadge();
+    updateCapacityHint();
+    updateDateClearButtons();
+  }catch(e){}
+  setTimeout(fitPreviewCard, 30);
+  setTimeout(fitPreviewCard, 250);
+}
+
 function abrirPreviewModal(){
   const wrap=document.getElementById('previewModalWrap');
   const badge=document.getElementById('previewModalBadge');
@@ -1429,7 +1420,9 @@ function setFormData(d){
   globalOriginalPhoto=d.originalPhoto||d.fotoUrl||""; globalProcessedPhoto=d.processedPhoto||d.fotoUrl||"";
   $("photo").value="";
   $("customDimensionsRow").style.display=($("presetSizes").value==="custom")?"grid":"none";
-  updateOrientationVisibility(); updateDateClearButtons(); updateCard();
+  updateOrientationVisibility(); updateDateClearButtons();
+  updateCardUnsafe();
+  setValidationState(); updateEanBadge(); updateCapacityHint();
 }
 function markFieldError(id,has){ const el=$(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
@@ -1515,6 +1508,7 @@ function calcUnitInfo(capUnit){
   }
 }
 const DEFAULTS_UNIDADE={peso:"",g:"",lt:"1",cl:"0.75",ml:"1",un:"1",dz:"1",meia_dz:"1",dose:"1"};
+
 function renderQueue(){
   const c=$("queueListContainer");
   const qb=$("queueBadge"); if(qb) qb.textContent=printQueue.length;
@@ -1525,23 +1519,23 @@ function renderQueue(){
   if(printQueue.length===0){ c.innerHTML='<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div>'; return; }
   c.innerHTML="";
   printQueue.forEach(function(item,i){
-    const div=document.createElement("div"); div.className="list-item";
+    const div=document.createElement("div"); div.className="list-item queue-item";
     const fr=item.data.presetSizes||item.data.formato||"amanhecer";
     const fmt=(fr==="amanhecer")?"Amanhecer":fr;
     const jg=savedProducts.some(function(p){ return p.codigo&&item.data.internalCode&&String(p.codigo)===String(item.data.internalCode); });
     const ic=jg?"✅":"💾";
-    const pr=(item.data.price!==undefined&&item.data.price!==""&&item.data.price!==null)?(escapeHTML(item.data.price)+"€"):"S/ Preço";
-    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' · '+pr+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'" title="Número de cópias"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="Guardar no Drive">'+ic+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar item">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover da fila">✕</button></div>';
+    const pr=(item.data.price!==undefined&&item.data.price!==""&&item.data.price!==null)?(escapeHTML(item.data.price)+"€"):"S/ preço";
+    const ref=item.data.internalCode?('Ref: '+escapeHTML(item.data.internalCode)+' · '):"";
+    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+'</strong><span>'+ref+pr+' <span class="chip-mini">'+fmt+'</span></span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'" title="Número de cópias"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'" title="Guardar no Drive">'+ic+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'" title="Duplicar item">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'" title="Remover da fila">✕</button></div>';
     c.appendChild(div);
   });
 }
 function addToQueue(){
   setValidationState();
   if($("appStatus").dataset.type==="error"){ toast("Corrija os erros.","error"); return; }
-  const copies=Math.max(1,Math.min(500,parseInt($("copiesCount")?$("copiesCount").value:"1")||1));
   const data=getFormData();
   if(!data.product&&!data.price&&!data.internalCode){ toast("Preencha os dados.","warning"); return; }
-  printQueue.push({data:data,copies:copies}); renderQueue();
+  printQueue.push({data:data,copies:1}); renderQueue();
   toast("Adicionado à fila","success");
   setTimeout(function(){ document.body.dataset.view='fila'; document.querySelectorAll('button[data-view]').forEach(function(b){ b.classList.toggle('active',b.dataset.view==='fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 }
@@ -1604,15 +1598,12 @@ async function saveToDb(){
   const data=getFormData();
   if(!data.product&&!data.internalCode){ toast("Preencha um nome ou código.","warning"); return; }
 
-  // Se estávamos a editar uma etiqueta do Drive → perguntar sempre
   let forceNew = false;
   if(editingCode){
     const r = await choiceDialog('A etiqueta "'+(data.product||data.internalCode)+'" já existe no Drive (Ref: '+editingCode+').\n\nO que pretende fazer?','Etiqueta guardada encontrada');
     if(r==='cancel'){ return; }
     if(r==='new'){ forceNew = true; }
-    // 'update' → forceNew = false
   } else {
-    // Verificar se o código já existe (só se o código estiver preenchido)
     if(data.internalCode){
       const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim()===String(data.internalCode).trim(); });
       if(existe){
@@ -1624,7 +1615,6 @@ async function saveToDb(){
   }
 
   if(forceNew){
-    // Guardar como nova: se o código for igual, adiciona sufixo
     if(data.internalCode){
       const existe = savedProducts.some(function(p){ return p.codigo && String(p.codigo).trim()===String(data.internalCode).trim(); });
       if(existe){
@@ -1670,6 +1660,9 @@ window.loadFromDb=function(i){
   document.body.dataset.view='editor';
   document.querySelectorAll('button[data-view]').forEach(function(b){ b.classList.toggle('active',b.dataset.view==='editor'); });
   window.scrollTo({top:0,behavior:'smooth'});
+  // Forçar re-render completo
+  forceReRender();
+  setTimeout(forceReRender, 120);
   toast('Etiqueta carregada para edição','success');
 };
 window.removeFromDb=async function(i){
@@ -2201,9 +2194,8 @@ function blobToBase64(blob){ return new Promise(function(resolve,reject){ const 
 let _emailSending=false;
 async function enviarEtiquetasPorEmail(){
   if(_emailSending){ toast("Envio em curso.","warning"); return; }
-  const ef=$("presetSizes").value;
-  let n=0;
   if(printQueue.length===0){ toast("A fila está vazia. Adicione etiquetas primeiro.","warning"); return; }
+  let n=0;
   printQueue.forEach(function(q){ n+=q.copies; });
   if(n>45){ toast("Limite 45 etiquetas por envio.","error",8000); return; }
   const info=await pedirEmail(); if(!info) return;
