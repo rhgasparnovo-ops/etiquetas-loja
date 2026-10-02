@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <script>
 (function(){
-  var FK='balcao_force_v233';var jf=false;
+  var FK='balcao_force_v234';var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){var u=(r.active&&r.active.scriptURL)||(r.installing&&r.installing.scriptURL)||(r.waiting&&r.waiting.scriptURL)||'';if(u.indexOf('sw.js')===-1){try{r.unregister();}catch(e){}}});}).catch(function(){});}
   if('caches' in window){caches.keys().then(function(ks){ks.forEach(function(k){if(k!=='balcao-v1'){try{caches.delete(k);}catch(e){}}});}).catch(function(){});}
@@ -735,7 +735,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" title="Sincronizar banco de imagens com o Drive">🔄 Sincronizar</button>
           </div>
           <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" title="Recomprimir todas as imagens do Drive para ficarem mais leves (qualidade 82% a 1000px), acelerando o carregamento">📉 Otimizar imagens do Drive</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="limparSufixosBtn" type="button" style="border-color:#dc2626;color:#dc2626" title="Corrigir códigos que versões antigas alteraram com sufixo -XXXX. Remove o sufixo de etiquetas duplicadas.">🧹 Corrigir códigos automáticos</button>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
 
@@ -1095,7 +1094,7 @@ function inicializarBotaoGoogle(){
 })();
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v233';
+const CACHE_KEY='balcao_cache_v234';
 const IMG_MAX_SIZE=1600;
 const IMG_QUALITY=0.95;
 const THUMB_SIZE=200;
@@ -1117,12 +1116,6 @@ function normalizarProdutoParaFila(p){
   o.originalPhoto=o.originalPhoto||o.fotoUrl||"";
   o.processedPhoto=o.processedPhoto||o.fotoUrl||"";
   return o;
-}
-function sanitizarFormatoBD(d){
-  const fv=String((d&&(d.presetSizes||d.formato))||"").trim();
-  if(FORMATOS_VALIDOS.indexOf(fv)!==-1) return d;
-  d.presetSizes="70x38"; d.formato="70x38"; d.customWidth="70"; d.customHeight="38";
-  return d;
 }
 const TOAST_ICONS={success:"✓",error:"✕",warning:"!",info:"i"};
 let _lastToastMsg="",_lastToastTime=0;
@@ -1391,7 +1384,7 @@ async function carregarTudo(){
 function getFormData(){
   return {
     presetSizes:$("presetSizes").value, customWidth:$("customWidth").value, customHeight:$("customHeight").value,
-    store:$("store").value, internalCode:$("internalCode").value.trim().toUpperCase(), product:$("product").value.trim().toUpperCase(),
+    store:$("store").value, internalCode:$("internalCode").value.trim(), product:$("product").value.trim().toUpperCase(),
     origem:$("origem").value.trim().toUpperCase(), categoria:$("categoria").value.trim().toUpperCase(), calibre:$("calibre").value.trim().toUpperCase(),
     price:$("price").value, isPromoActive:$("isPromoActive").checked, oldPrice:$("oldPrice").value,
     capacity:$("capacity").value, capacityUnit:$("capacityUnit").value,
@@ -1555,7 +1548,7 @@ function addToQueue(){
 function buildProdutoPayload(d){ return {codigo:d.internalCode,nome:d.product,preco:d.price,oldPrice:d.oldPrice,isPromoActive:d.isPromoActive,promoPrice:d.promoPrice,promoMinQty:d.promoMinQty,promoUnit:d.promoUnit,promoStart:d.promoStart,promoEnd:d.promoEnd,unit:d.unit,origem:d.origem,categoria:d.categoria,calibre:d.calibre,ean:d.ean,loja:d.store,unidade:d.capacityUnit,capacidade:d.capacity,deposito:d.depositFeeSelect==='custom'?d.customDepositInput:d.depositFeeSelect,formato:d.presetSizes,customWidth:d.customWidth,customHeight:d.customHeight,fotoId:d.fotoId||'',fotoUrl:d.fotoUrl||''}; }
 function atualizarProdutoLocal(payload){
   const idx=savedProducts.findIndex(function(p){
-    if(payload.codigo&&String(p.codigo||'').trim()===String(payload.codigo).trim()) return true;
+    if(payload.codigo&&String(p.codigo||'').trim().toUpperCase()===String(payload.codigo).trim().toUpperCase()) return true;
     if(!payload.codigo&&payload.nome&&String(p.nome||'').trim().toUpperCase()===String(payload.nome).trim().toUpperCase()) return true;
     return false;
   });
@@ -1577,7 +1570,7 @@ window.saveQueueItem=async function(i){
   const item=printQueue[i]; if(!item){ toast("Item não encontrado.","error"); return; }
   const d=item.data;
   if(!d.product&&!d.internalCode){ toast("Preencha o nome ou código.","warning"); return; }
-  const ex=savedProducts.find(function(p){ return p.codigo&&d.internalCode&&String(p.codigo)===String(d.internalCode); });
+  const ex=savedProducts.find(function(p){ return p.codigo&&d.internalCode&&String(p.codigo).toUpperCase()===String(d.internalCode).toUpperCase(); });
   if(ex){ const sub=await confirmDialog("Já existe um produto com o código \""+d.internalCode+"\".\n\nSubstituir?"); if(!sub) return; }
   const t0=Date.now(); setStatus("A guardar no Drive…","loading");
   try{
@@ -1601,7 +1594,7 @@ function renderDb(){
     const d=o.p,i=o.i; const div=document.createElement("div"); div.className="list-item";
     const pr=(d.preco!==undefined&&d.preco!==""&&d.preco!==null)?(escapeHTML(d.preco)+"€"):"S/ preço";
     const ref=d.codigo?("Ref: "+escapeHTML(d.codigo)+" · "):"";
-    const isEditing = editingCode && String(editingCode)===String(d.codigo||"");
+    const isEditing = editingCode && String(editingCode).toUpperCase()===String(d.codigo||"").toUpperCase();
     div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+(isEditing?' <span class="chip-mini">A editar</span>':"")+'</strong><span>'+ref+pr+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'" title="Carregar para edição">📥</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'" title="Adicionar à fila de impressão">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'" title="Apagar do Drive">✕</button></div>';
     c.appendChild(div);
   });
@@ -1610,15 +1603,20 @@ async function saveToDb(){
   const data=getFormData();
   if(!data.product&&!data.internalCode){ toast("Preencha um nome ou código.","warning"); return; }
 
+  let modo='auto';
+  const codigoOriginal=editingCode?String(editingCode).trim():null;
+
   if(editingCode){
     const r = await choiceDialog('A etiqueta "'+(data.product||data.internalCode)+'" já existe no Drive (Ref: '+editingCode+').\n\nO que pretende fazer?','Etiqueta guardada encontrada');
     if(r==='cancel'){ return; }
+    modo=r;
   } else {
     if(data.internalCode){
-      const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim()===String(data.internalCode).trim(); });
+      const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim().toUpperCase()===String(data.internalCode).trim().toUpperCase(); });
       if(existe){
         const r = await choiceDialog('Já existe uma etiqueta com o código "'+data.internalCode+'" no Drive.\n\nO que pretende fazer?','Etiqueta já existe');
         if(r==='cancel'){ return; }
+        modo=r;
       }
     }
   }
@@ -1629,6 +1627,23 @@ async function saveToDb(){
     if(fotoUrl){ globalOriginalPhoto=fotoUrl; globalProcessedPhoto=fotoUrl; }
     const payload=buildProdutoPayload(data);
     payload.fotoId=fotoId; payload.fotoUrl=fotoUrl;
+
+    // ====== MODO ATUALIZAR: garantir substituição do registo original ======
+    if(modo==='update' && codigoOriginal){
+      const codigoAtual=String(payload.codigo||'').trim();
+      const mudouCodigo = codigoAtual && codigoAtual.toUpperCase()!==codigoOriginal.toUpperCase();
+      if(mudouCodigo){
+        // apagar o registo antigo antes de gravar o novo (com o novo código)
+        setStatus("A substituir etiqueta…","loading");
+        try{ await api('apagarProduto',{codigo:codigoOriginal,nome:''}); }catch(e){}
+        savedProducts=savedProducts.filter(function(p){ return String(p.codigo||'').trim().toUpperCase()!==codigoOriginal.toUpperCase(); });
+      } else if(!codigoAtual){
+        // sem código no formulário → usar o código original para garantir o update
+        payload.codigo=codigoOriginal;
+      }
+      // se o código não mudou → o backend atualiza automaticamente
+    }
+
     setStatus("A guardar no Drive…","loading");
     await api('guardarProduto',payload);
     atualizarProdutoLocal(payload); renderDb();
@@ -1652,23 +1667,6 @@ function updateEditingBanner(){
 }
 window.loadFromDb=function(i){
   const d=savedProducts[i]; if(!d) return;
-
-  // 🔎 Limpar sufixos automáticos "-\d{4}" que versões antigas adicionavam
-  if(d.codigo){
-    const cod = String(d.codigo).trim();
-    const m = cod.match(/^(.+)-(\d{4})$/);
-    if(m){
-      const codigoBase = m[1];
-      const existeBase = savedProducts.some(function(p, idx){
-        return idx !== i && p.codigo && String(p.codigo).trim() === codigoBase;
-      });
-      if(existeBase){
-        d.codigo = codigoBase;
-        setTimeout(function(){ toast('Sufixo automático removido do código','info',3500); }, 400);
-      }
-    }
-  }
-
   setFormData(d);
   editingCode = d.codigo || null;
   updateEditingBanner();
@@ -1797,61 +1795,6 @@ async function otimizarImagensDrive(){
   renderBancoFruta($("buscaBancoFruta").value);
   setStatus("");
   toast("✅ Otimizadas: " + done + (errs ? " · Erros: " + errs : ""), "success", 6500);
-}
-async function limparSufixosAutomaticos(){
-  const correcoes = [];
-  const codigosBase = {};
-  savedProducts.forEach(function(p){
-    const cod = String(p.codigo||'').trim();
-    if(cod && !/-\d{4}$/.test(cod)) codigosBase[cod] = true;
-  });
-  savedProducts.forEach(function(p){
-    const cod = String(p.codigo||'').trim();
-    const m = cod.match(/^(.+)-(\d{4})$/);
-    if(m && codigosBase[m[1]]){
-      correcoes.push({ original: cod, corrigido: m[1], produto: p });
-    }
-  });
-
-  if(correcoes.length === 0){
-    toast('Nenhum código automático encontrado para corrigir','info');
-    return;
-  }
-
-  const lista = correcoes.slice(0, 8).map(function(c){ return '• ' + c.original + '  →  ' + c.corrigido; }).join('\n');
-  const extra = correcoes.length > 8 ? '\n… e mais ' + (correcoes.length - 8) : '';
-
-  const ok = await confirmDialog(
-    'Encontrei ' + correcoes.length + ' código(s) com sufixo automático:\n\n' + lista + extra +
-    '\n\nCorrigir todos no Drive? (o sufixo é removido)'
-  );
-  if(!ok) return;
-
-  const btn = $("limparSufixosBtn");
-  const orig = btn ? btn.textContent : '';
-  if(btn){ btn.disabled = true; }
-  let done = 0, errs = 0;
-
-  for(let i = 0; i < correcoes.length; i++){
-    const c = correcoes[i];
-    if(btn) btn.textContent = "⏳ " + (i+1) + "/" + correcoes.length;
-    setStatus("A corrigir " + (i+1) + "/" + correcoes.length + "…","loading");
-    try{
-      await api('apagarProduto', { codigo: c.original, nome: c.produto.nome });
-      const idx = savedProducts.indexOf(c.produto);
-      if(idx >= 0) savedProducts.splice(idx, 1);
-      done++;
-    }catch(e){
-      errs++;
-      console.warn("Erro a corrigir " + c.original, e);
-    }
-  }
-
-  renderDb();
-  try{ await localforage.setItem(CACHE_KEY, { produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
-  if(btn){ btn.disabled = false; btn.textContent = orig || "🧹 Corrigir códigos automáticos"; }
-  setStatus("");
-  toast("✅ Corrigidos: " + done + (errs ? " · Erros: " + errs : ""), "success", 6500);
 }
 function parsePrice(v){
   if(v==null||String(v).trim()==="") return null;
@@ -2449,7 +2392,6 @@ document.getElementById('emailLabelsBtn').addEventListener("click",function(){ e
 document.getElementById('authLogoutBtn').addEventListener("click",function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('recarregarDbBtn').addEventListener("click",carregarTudo);
 document.getElementById('optimizarImagensBtn').addEventListener("click",otimizarImagensDrive);
-document.getElementById('limparSufixosBtn').addEventListener("click",limparSufixosAutomaticos);
 document.getElementById('syncBancoBtn').addEventListener("click",async function(){
   setStatus("A sincronizar…","loading");
   try{ await api('sincronizarBancoFruta'); await carregarTudo(); toast("Banco sincronizado","success"); }
