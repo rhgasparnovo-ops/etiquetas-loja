@@ -8,10 +8,10 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#c8102e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Etiquetas">
 <meta name="format-detection" content="telephone=no">
 <title>Etiquetas de Preços</title>
@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <script>
 (function(){
-  var FK='balcao_force_v12';
+  var FK='balcao_force_v11';
   var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){
@@ -36,520 +36,275 @@
       ks.forEach(function(k){ if(k!=='balcao-v1'){ try{ caches.delete(k); }catch(e){} } });
     }).catch(function(){});
   }
-  document.addEventListener('DOMContentLoaded',function(){
+  function killLegacy(){
+    var n=0;
+    var sel='.mobile-tab-bar,nav.tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el]';
     try{
-      document.querySelectorAll('nav.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,[data-tab-el]').forEach(function(el){ el.remove(); });
+      document.querySelectorAll(sel).forEach(function(el){
+        if(el.tagName==='NAV'||/tab-bar|mobile-tabs|tabs-bar/.test(el.className)){ el.remove(); n++; }
+      });
+      if(document.body&&document.body.hasAttribute('data-mobile-tab')){ document.body.removeAttribute('data-mobile-tab'); n++; }
     }catch(e){}
+    return n;
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var hl=!!(document.querySelector('.mobile-tab-bar,[data-mobile-tab]')||(document.body&&document.body.hasAttribute('data-mobile-tab')));
+    if(hl&&!jf){
+      try{ sessionStorage.setItem(FK,'1'); }catch(e){}
+      if('caches' in window){
+        caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); }).then(function(){
+          var u=location.href.split('#')[0], s=u.indexOf('?')===-1?'?':'&';
+          location.replace(u+s+'_v='+Date.now());
+        }).catch(function(){ location.reload(true); });
+      } else { location.reload(true); }
+      return;
+    }
+    killLegacy();
+    var c=0, wd=setInterval(function(){ killLegacy(); c++; if(c>=20) clearInterval(wd); },500);
   });
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
 <script src="https://accounts.google.com/gsi/client?hl=pt-PT" async defer></script>
-
 <style>
-/* =====================================================================
-   DESIGN SYSTEM — variáveis, tipografia, reset
-   ===================================================================== */
 :root{
-  --c-bg:#f5f6f8;
-  --c-surface:#ffffff;
-  --c-surface-2:#fafbfc;
-  --c-surface-3:#f1f3f5;
-  --c-border:#e8eaed;
-  --c-border-2:#d5d9de;
-  --c-text:#0d1117;
-  --c-text-2:#4b5563;
-  --c-text-3:#8b94a3;
-  --c-primary:#111827;
-  --c-primary-h:#1f2937;
-  --c-accent:#c8102e;
-  --c-accent-h:#a80d24;
-  --c-success:#059669;
-  --c-warn:#d97706;
-  --c-danger:#dc2626;
-  --c-info:#2563eb;
-  --r-1:6px; --r-2:10px; --r-3:14px; --r-4:20px; --r-pill:9999px;
-  --sh-1:0 1px 2px rgba(15,23,42,.04);
-  --sh-2:0 2px 8px rgba(15,23,42,.06);
-  --sh-3:0 8px 24px rgba(15,23,42,.08);
-  --sh-4:0 16px 40px rgba(15,23,42,.14);
-  --ff:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --ff-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
-  --safe-t:env(safe-area-inset-top,0px);
-  --safe-b:env(safe-area-inset-bottom,0px);
-  --safe-l:env(safe-area-inset-left,0px);
-  --safe-r:env(safe-area-inset-right,0px);
-  --offset-x:0mm; --offset-y:0mm; --col-left-y:0mm; --col-right-y:0mm;
-  --margin-left:4mm; --margin-right:4mm;
+  --red:#c8102e;--border:#d7d7d7;--bg:#f0f2f5;--panel:#fff;--panel-soft:#f8f9fa;
+  --text:#222;--text-soft:#666;--offset-x:0mm;--offset-y:0mm;--col-left-y:0mm;--col-right-y:0mm;
+  --margin-left:4mm;--margin-right:4mm;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-left:env(safe-area-inset-left,0px);
+  --safe-right:env(safe-area-inset-right,0px);
+  --app-pad-x:12px;
+  --app-max-w:1400px;
 }
-*,*::before,*::after{box-sizing:border-box}
-*{-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden}
+*{box-sizing:border-box}
+html,body{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0}
 @supports (overflow-x:clip){html,body{overflow-x:clip}}
-html{-webkit-text-size-adjust:100%}
-body{
-  font-family:var(--ff);
-  background:var(--c-bg);
-  color:var(--c-text);
-  font-size:14px;
-  line-height:1.5;
-  min-height:100vh;
-  min-height:100dvh;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-img{max-width:100%;display:block}
-button{font-family:inherit}
-input,select,textarea{font-family:inherit}
-
-/* Hide legacy leftovers */
-nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el]{
+html{height:100%}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100%;position:relative}
+img{max-width:100%}
+nav.mobile-tab-bar,.mobile-tab-bar,.tab-bar,.mobile-tabs,.tabs-bar,nav.tabs,.tabs,[data-mobile-tab],[data-tab-el],body[data-mobile-tab]>nav{
   display:none!important;visibility:hidden!important;opacity:0!important;
-  width:0!important;height:0!important;overflow:hidden!important;
-  position:absolute!important;left:-99999px!important;top:-99999px!important;
-  pointer-events:none!important;
+  width:0!important;height:0!important;max-width:0!important;max-height:0!important;
+  overflow:hidden!important;position:absolute!important;left:-99999px!important;top:-99999px!important;
+  pointer-events:none!important;z-index:-9999!important;margin:0!important;padding:0!important;border:none!important;
 }
+.app{max-width:var(--app-max-w);margin:0 auto;padding:16px 20px 32px;padding-left:max(20px,calc(20px + var(--safe-left)));padding-right:max(20px,calc(20px + var(--safe-right)));width:100%;min-width:0;overflow-x:hidden}
+@supports (overflow-x:clip){.app{overflow-x:clip}}
 
-/* =====================================================================
-   HEADER
-   ===================================================================== */
-.app-header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.88);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
-  backdrop-filter:saturate(180%) blur(14px);
-  border-bottom:1px solid var(--c-border);
-  padding:12px 20px;
-  padding-top:calc(12px + var(--safe-t));
-  padding-left:calc(20px + var(--safe-l));
-  padding-right:calc(20px + var(--safe-r));
+/* ================= HEADER ================= */
+.top-header{
+  position:fixed;top:0;left:0;right:0;z-index:8000;
+  background:rgba(255,255,255,.98);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
+  backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid #e6ebf2;
+  box-shadow:0 4px 20px rgba(15,23,42,.06);
+  padding:14px 24px;
+  padding-left:calc(24px + var(--safe-left));
+  padding-right:calc(24px + var(--safe-right));
+  padding-top:calc(14px + var(--safe-top));
+  min-height:76px;
 }
-.app-header-inner{
-  max-width:1400px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
+.top-header-inner{
+  max-width:var(--app-max-w);margin:0 auto;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;
 }
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand-mark{
-  width:40px;height:40px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,#c8102e 0%,#8b0a1f 100%);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:20px;font-weight:900;
-  box-shadow:0 4px 12px rgba(200,16,46,.22);
-}
-.brand-text{display:flex;flex-direction:column;min-width:0;line-height:1.15}
-.brand-text strong{font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--c-text)}
-.brand-text span{font-size:11.5px;font-weight:500;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.08em}
-.header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.hdr-brand{display:flex;align-items:center;gap:16px;flex:1 1 auto;min-width:0}
+.hdr-title{margin:0;font-size:18px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#1a1f28;display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-title .h1-tag{font-size:24px;line-height:1;flex-shrink:0}
+.hdr-logos{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-logos img{height:38px;width:auto;max-width:120px;object-fit:contain;opacity:.92}
+.hdr-logos .divider{width:1px;height:32px;background:#e0e6ed}
+.hdr-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-auth{display:flex;align-items:center;gap:10px;flex-shrink:0}
 
-.icon-btn{
-  width:40px;height:40px;min-width:40px;min-height:40px;padding:0;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--c-surface);border:1px solid var(--c-border);
-  border-radius:12px;color:var(--c-text-2);cursor:pointer;
-  transition:all .16s ease;
+.hdr-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:auto;padding:10px 18px;border-radius:12px;
+  background:linear-gradient(135deg,#0a52b8,#053780);color:#fff;border:none;
+  font-weight:800;font-size:13.5px;cursor:pointer;
+  box-shadow:0 3px 12px rgba(8,66,152,.24);white-space:nowrap;min-height:44px;
+  transition:all .18s cubic-bezier(.4,0,.2,1);letter-spacing:.2px;
 }
-.icon-btn:hover{background:var(--c-surface-3);color:var(--c-text)}
-.icon-btn:active{transform:scale(.94)}
-.icon-btn svg{width:18px;height:18px}
+.hdr-btn svg{width:17px;height:17px;flex-shrink:0}
+.hdr-btn:active{transform:scale(.96)}
 
 .auth-card{
-  display:flex;align-items:center;gap:10px;
-  padding:6px 6px 6px 14px;
-  background:var(--c-surface);border:1px solid var(--c-border);
-  border-radius:14px;height:44px;max-width:100%;min-width:0;
-  transition:all .2s ease;
+  display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;
+  background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;
+  box-shadow:0 1px 4px rgba(15,23,42,.04);flex-shrink:0;
+  min-width:0;max-width:100%;overflow:hidden;transition:all .2s;min-height:44px;
 }
-.auth-card.logged{background:#f0fdf4;border-color:#bbf7d0}
-.auth-card-icon{
-  width:26px;height:26px;border-radius:8px;flex-shrink:0;
-  background:linear-gradient(135deg,#dc2626,#991b1b);
-  color:#fff;display:flex;align-items:center;justify-content:center;
-}
-.auth-card.logged .auth-card-icon{background:linear-gradient(135deg,#22c55e,#16a34a)}
-.auth-card-icon svg{width:14px;height:14px}
-.auth-card-text{display:flex;flex-direction:column;line-height:1.15;min-width:0}
-.auth-card-text strong{font-size:11px;font-weight:800;color:var(--c-text);text-transform:uppercase;letter-spacing:.05em}
-.auth-card-text span{font-size:11.5px;color:var(--c-text-3);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.auth-card.logged{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
+.auth-card-icon{width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#c8102e,#a80d24);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(200,16,46,.22)}
+.auth-card.logged .auth-card-icon{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 3px 8px rgba(34,197,94,.22)}
+.auth-card-icon svg{width:16px;height:16px}
+.auth-card-text{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.auth-card-text strong{font-size:12px;font-weight:900;color:#1a1f28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.3px}
+.auth-card-text span{font-size:11px;color:#64748b;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .auth-card.logged .auth-card-text span{color:#14532d;font-weight:600}
-.auth-card-btn{display:flex;align-items:center;flex-shrink:0}
-.auth-card-btn > div[data-gsi]{transform:scale(.86);transform-origin:center right;margin:-4px -6px}
-.auth-logout-btn{
-  display:none;align-items:center;gap:6px;
-  padding:8px 14px;background:#fff;color:#b91c1c;
-  border:1px solid #fecaca;border-radius:10px;
-  font-size:12px;font-weight:700;cursor:pointer;
-  white-space:nowrap;
-}
+.auth-card-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;max-width:100%;overflow:hidden}
+.auth-card-btn > div{max-width:100%}
+.auth-card-btn > div[data-gsi]{transform:scale(.88);transform-origin:center right;margin:-4px -8px}
+.auth-logout-btn{display:none;align-items:center;gap:6px;padding:8px 14px;background:#fff;color:#c0392b;border:1.5px solid #fecaca;border-radius:11px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;min-height:38px}
 .auth-card.logged .auth-logout-btn{display:inline-flex}
 .auth-card.logged .auth-card-btn{display:none}
-.auth-logout-btn:hover{background:#fef2f2}
 .auth-logout-btn svg{width:13px;height:13px}
 
-/* =====================================================================
-   APP LAYOUT
-   ===================================================================== */
-.app{
-  max-width:1400px;margin:0 auto;
-  padding:24px 20px 40px;
-  padding-left:calc(20px + var(--safe-l));
-  padding-right:calc(20px + var(--safe-r));
-  padding-bottom:calc(40px + var(--safe-b));
-}
-.app-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,520px);
-  gap:24px;
-  align-items:start;
-}
-@media (min-width:1400px){
-  .app-grid{grid-template-columns:minmax(0,1fr) 560px}
-}
-.form-column{display:flex;flex-direction:column;gap:16px;min-width:0}
-.preview-column{min-width:0;position:sticky;top:88px}
+.hdr-spacer{height:76px;width:100%}
 
-/* =====================================================================
-   CARDS
-   ===================================================================== */
-.card{
-  background:var(--c-surface);
-  border:1px solid var(--c-border);
-  border-radius:var(--r-3);
-  overflow:hidden;
-  box-shadow:var(--sh-1);
+/* ================= BANNER ================= */
+.install-banner{
+  position:fixed;bottom:calc(12px + var(--safe-bottom));left:12px;right:12px;z-index:9500;
+  max-width:440px;margin:0 auto;
+  background:linear-gradient(135deg,#1e8a4a 0%,#0d5a2f 100%);color:#fff;border-radius:16px;
+  padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.35),0 4px 12px rgba(0,0,0,.2);
+  display:none;align-items:center;gap:12px;
+  animation:bannerSlideUp .35s cubic-bezier(.4,0,.2,1);pointer-events:auto;
 }
-.card-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;
-  border-bottom:1px solid var(--c-border);
-  background:var(--c-surface);
-  cursor:pointer;
-  user-select:none;
-  gap:8px;
-}
-.card-header h2{
-  margin:0;
-  font-size:13px;
-  font-weight:800;
-  color:var(--c-text);
-  letter-spacing:.02em;
-  text-transform:uppercase;
-  display:flex;align-items:center;gap:10px;
-  min-width:0;
-}
-.card-header h2 .ico{
-  width:26px;height:26px;border-radius:8px;flex-shrink:0;
-  background:var(--c-surface-3);color:var(--c-text-2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;
-}
-.card-header .badge{
-  font-size:11px;font-weight:800;padding:3px 9px;border-radius:var(--r-pill);
-  background:var(--c-surface-3);color:var(--c-text-2);
-  flex-shrink:0;
-}
-.card-header .chevron{
-  width:20px;height:20px;color:var(--c-text-3);
-  transition:transform .2s ease;flex-shrink:0;
-}
-.card[data-collapsed="true"] .card-header{border-bottom:none}
-.card[data-collapsed="true"] .card-body{display:none}
-.card[data-collapsed="true"] .chevron{transform:rotate(-90deg)}
-.card-body{padding:18px}
-@media (max-width:900px){
-  .card-header{padding:16px}
-  .card-body{padding:16px}
-}
+.install-banner.show{display:flex}
+.install-banner.installed{display:none!important}
+.install-banner-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.install-banner-icon svg{width:24px;height:24px;stroke:#fff;fill:none}
+.install-banner-text{flex:1;min-width:0;line-height:1.3}
+.install-banner-text strong{display:block;font-size:14px;font-weight:900;letter-spacing:.3px;margin-bottom:2px}
+.install-banner-text span{font-size:12px;opacity:.92;font-weight:500;display:block}
+.install-banner-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.install-banner-btn{width:auto;padding:9px 14px;border-radius:10px;border:none;background:#fff;color:#0d5a2f;font-weight:900;font-size:13px;cursor:pointer;min-height:40px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15);letter-spacing:.2px}
+.install-banner-btn:active{transform:scale(.96)}
+.install-banner-close{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;border:none;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;line-height:1}
+.install-banner-close:active{transform:scale(.9)}
+@keyframes bannerSlideUp{from{transform:translateY(120%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes bannerSlideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(120%);opacity:0}}
+.install-banner.closing{animation:bannerSlideDown .3s cubic-bezier(.4,0,.2,1) forwards}
 
-/* =====================================================================
-   FORM ELEMENTS
-   ===================================================================== */
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.field:last-child{margin-bottom:0}
-.field > label{
-  font-size:11.5px;
-  font-weight:700;
-  color:var(--c-text-2);
-  letter-spacing:.04em;
-  text-transform:uppercase;
-  display:flex;align-items:center;gap:6px;
-}
-.field > label .hint{font-weight:500;color:var(--c-text-3);text-transform:none;letter-spacing:0;font-size:11px}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field-row.three{grid-template-columns:1fr 1fr 1fr}
-@media (max-width:520px){
-  .field-row{grid-template-columns:1fr}
-  .field-row.three{grid-template-columns:1fr 1fr}
-}
+/* ================= LAYOUT ================= */
+.grid{display:grid;grid-template-columns:440px minmax(0,1fr);gap:24px;align-items:start;min-width:0;max-width:100%;width:100%}
+.left-col{min-width:0;max-width:100%;overflow-x:hidden}
+.panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px;min-width:0;max-width:100%}
+label{display:block;font-weight:700;margin:12px 0 5px;font-size:13px}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid #bbb;border-radius:7px;font-size:14px;font-family:inherit;background:#fff;color:var(--text);min-width:0;max-width:100%}
+input[type="text"], input[type="search"], textarea { text-transform: uppercase !important; }
+input[type=file]{padding:6px}
+input[type=range]{padding:0;height:6px;max-width:100%}
+.uppercase-input{text-transform:uppercase}
+input.input-error,select.input-error{border-color:#e74c3c!important;background:#fff5f5!important}
+button{cursor:pointer;font-weight:700;width:100%;padding:9px 12px;border-radius:10px;border:1px solid #bbb;font-size:14px;transition:all .18s cubic-bezier(.4,0,.2,1);letter-spacing:.2px;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:0;max-width:100%}
+button:hover{filter:brightness(.96)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:active:not(:disabled){transform:scale(.97)}
+.primary{background:linear-gradient(135deg,#d4162f,#a80d24);color:#fff;border:none;font-size:15px;padding:12px;box-shadow:0 3px 12px rgba(200,16,46,.28)}
+.success-btn{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff;border:none;font-size:15px;padding:12px;box-shadow:0 3px 12px rgba(23,107,58,.28)}
+.save-btn{background:linear-gradient(135deg,#0a52b8,#053780);color:#fff;border:none;font-size:14px;padding:10px;box-shadow:0 3px 12px rgba(8,66,152,.28)}
+.email-btn{background:linear-gradient(135deg,#6b21a8,#4c1d95);color:#fff;border:none;font-size:14px;padding:11px;box-shadow:0 3px 12px rgba(107,33,168,.28)}
+.email-btn:disabled{opacity:.6;cursor:wait}
+.secondary{background:#fff;border:1.5px solid #e4e8ee;color:#2c3440;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.warn-btn{background:linear-gradient(135deg,#fff8e1,#fff3c4);color:#7a5c00;border:1.5px solid #ffe082;font-size:13px;padding:9px}
+.format-select{margin-bottom:10px;background:linear-gradient(135deg,#fffdf5,#fff9db);border:1.5px solid #f6c23e;color:#1a1f28;font-weight:700;font-size:14px;padding:11px 40px 11px 14px;border-radius:10px;appearance:none;-webkit-appearance:none;background-image:linear-gradient(135deg,#fffdf5,#fff9db),url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a87600' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:0 0,calc(100% - 16px) 50%;background-repeat:no-repeat,no-repeat;background-size:100% 100%,12px 8px;cursor:pointer}
+.format-select optgroup{background:#fff;color:#7a5c00;font-weight:800;font-size:12px;text-transform:uppercase}
+.format-select option{background:#fff;color:#1a1f28;font-weight:600;font-size:14px}
+.actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:16px;min-width:0}
+.actions-full{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:10px;min-width:0}
+.actions-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px;min-width:0}
+.size-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
+.size-row-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
-input[type="text"],input[type="email"],input[type="number"],input[type="date"],input[type="search"],select,textarea{
-  width:100%;
-  padding:11px 14px;
-  background:var(--c-surface-2);
-  border:1px solid var(--c-border);
-  border-radius:var(--r-2);
-  font-size:14px;
-  color:var(--c-text);
-  font-weight:500;
-  transition:all .16s ease;
-  min-width:0;
+/* ================= DATAS (novo layout flex) ================= */
+.date-input-wrap{
+  display:flex;align-items:stretch;gap:6px;
+  width:100%;min-width:0;
 }
-input[type="text"],textarea,input[type="search"]{text-transform:uppercase}
-input:focus,select:focus,textarea:focus{
-  outline:none;
-  border-color:var(--c-primary);
-  background:#fff;
-  box-shadow:0 0 0 3px rgba(17,24,39,.06);
+.date-input-wrap input[type="date"]{
+  flex:1 1 auto;min-width:0;width:auto;
+  padding:9px 12px;min-height:42px;
 }
-input::placeholder,textarea::placeholder{color:var(--c-text-3);text-transform:none;font-weight:400}
-input[type=file]{
-  padding:8px 12px;background:var(--c-surface-2);cursor:pointer;
-  font-size:12.5px;
+.date-clear-btn{
+  flex:0 0 auto;width:40px;min-width:40px;min-height:42px;
+  padding:0;border-radius:8px;
+  background:#f0f2f5;border:1px solid #e0e5ea;color:#666;
+  font-size:14px;font-weight:900;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;line-height:1;
+  transition:all .15s;
 }
-input[type=file]::file-selector-button{
-  padding:6px 12px;margin-right:12px;border:none;border-radius:8px;
-  background:var(--c-surface-3);color:var(--c-text);font-weight:700;font-size:12.5px;cursor:pointer;
-  font-family:inherit;
-}
-input[type=range]{
-  padding:0;background:transparent;border:none;width:100%;
-  height:6px;border-radius:3px;appearance:none;-webkit-appearance:none;
-}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
-  background:var(--c-primary);border:3px solid #fff;
-  box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;
-}
-input[type=range]::-moz-range-thumb{
-  width:20px;height:20px;border-radius:50%;
-  background:var(--c-primary);border:3px solid #fff;cursor:pointer;
-}
-input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--c-surface-3)}
-input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--c-surface-3)}
-input.input-error,select.input-error{
-  border-color:var(--c-danger)!important;
-  background:#fff5f5!important;
-}
-input[type=number]{text-align:left}
+.date-clear-btn.show{display:inline-flex}
+.date-clear-btn:hover{background:#c8102e;color:#fff;border-color:#c8102e}
+.dates-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
 
-/* Custom checkbox */
-.check-row{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;
-  background:var(--c-surface-2);
-  border:1px solid var(--c-border);
-  border-radius:var(--r-2);
-  cursor:pointer;user-select:none;
-  font-size:13px;font-weight:600;color:var(--c-text-2);
-  transition:all .16s ease;
-  margin-bottom:8px;
-}
-.check-row:hover{background:var(--c-surface-3)}
-.check-row input[type=checkbox]{
-  width:18px;height:18px;min-width:18px;
-  accent-color:var(--c-primary);cursor:pointer;margin:0;
-}
-.check-row.checked{background:#f0fdf4;border-color:#bbf7d0;color:#14532d}
-
-/* =====================================================================
-   BUTTONS
-   ===================================================================== */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:12px 18px;
-  border-radius:var(--r-2);
-  border:1px solid transparent;
-  font-size:14px;font-weight:700;
-  letter-spacing:.01em;
-  cursor:pointer;
-  transition:all .16s ease;
-  min-height:46px;
-  line-height:1.1;
-  white-space:nowrap;
-  text-decoration:none;
-}
-.btn:active:not(:disabled){transform:scale(.97)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn svg{width:16px;height:16px;flex-shrink:0}
-
-.btn-primary{background:var(--c-primary);color:#fff}
-.btn-primary:hover:not(:disabled){background:var(--c-primary-h)}
-
-.btn-accent{background:var(--c-accent);color:#fff;box-shadow:0 3px 12px rgba(200,16,46,.22)}
-.btn-accent:hover:not(:disabled){background:var(--c-accent-h)}
-
-.btn-success{background:var(--c-success);color:#fff}
-.btn-success:hover:not(:disabled){background:#047857}
-
-.btn-ghost{background:var(--c-surface);border-color:var(--c-border);color:var(--c-text-2)}
-.btn-ghost:hover:not(:disabled){background:var(--c-surface-3);color:var(--c-text)}
-
-.btn-soft{background:var(--c-surface-3);color:var(--c-text);border-color:transparent}
-.btn-soft:hover:not(:disabled){background:#e5e7eb}
-
-.btn-block{width:100%}
-.btn-sm{min-height:38px;padding:8px 14px;font-size:12.5px}
-.btn-lg{min-height:54px;padding:15px 22px;font-size:15px;font-weight:800}
-
-.btn-group{display:flex;gap:8px;flex-wrap:wrap}
-
-/* =====================================================================
-   CHIPS
-   ===================================================================== */
-.chips-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.chips-label{
-  font-size:10.5px;font-weight:800;color:var(--c-text-3);
-  text-transform:uppercase;letter-spacing:.06em;
-  margin:14px 0 0;display:block;
-}
-.chips-label:first-child{margin-top:0}
-.chip-btn{
-  padding:6px 11px;font-size:12px;font-weight:600;
-  background:var(--c-surface);border:1px solid var(--c-border);
-  border-radius:var(--r-pill);
-  color:var(--c-text-2);cursor:pointer;user-select:none;
-  transition:all .16s ease;display:inline-block;
-  line-height:1.2;
-}
-.chip-btn:hover{background:var(--c-surface-3);border-color:var(--c-border-2);color:var(--c-text)}
-.chip-btn:active{transform:scale(.95)}
-.chip-btn[data-field=origem]{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
-.chip-btn[data-field=categoria]{background:#fffbeb;border-color:#fde68a;color:#92400e}
-.chip-btn[data-field=calibre]{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
-.chip-btn.chip-nc{background:var(--c-surface-3);border-color:var(--c-border);color:var(--c-text-2);font-weight:800}
-
-/* =====================================================================
-   STATUS BAR
-   ===================================================================== */
-#appStatus{
-  display:none;align-items:center;gap:10px;
-  margin:12px 0 0;padding:11px 14px;
-  font-size:12.5px;font-weight:600;line-height:1.4;
-  border-radius:var(--r-2);
-  border:1px solid transparent;
-  min-width:0;
-}
+#appStatus{display:none;align-items:center;gap:10px;margin:10px 0;padding:11px 14px;border-radius:10px;font:700 13px/1.4 system-ui,-apple-system,sans-serif;border:1px solid transparent;min-width:0;max-width:100%}
 #appStatus.show{display:flex}
-#appStatus::before{content:"";flex-shrink:0;width:8px;height:8px;border-radius:50%}
 #appStatus[data-type=error]{color:#7f1d1d;background:#fef2f2;border-color:#fecaca}
-#appStatus[data-type=error]::before{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.15)}
 #appStatus[data-type=success]{color:#14532d;background:#f0fdf4;border-color:#bbf7d0}
-#appStatus[data-type=success]::before{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.15)}
 #appStatus[data-type=warning]{color:#78350f;background:#fffbeb;border-color:#fde68a}
-#appStatus[data-type=warning]::before{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}
 #appStatus[data-type=info],#appStatus[data-type=loading]{color:#1e3a8a;background:#eff6ff;border-color:#bfdbfe}
+#appStatus::before{content:"";flex-shrink:0;width:16px;height:16px;border-radius:50%;display:block}
+#appStatus[data-type=error]::before{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.15)}
+#appStatus[data-type=success]::before{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+#appStatus[data-type=warning]::before{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}
 #appStatus[data-type=info]::before{background:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
-#appStatus[data-type=loading]::before{
-  background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;
-  animation:statusSpin .7s linear infinite;box-shadow:none;width:12px;height:12px;
-}
+#appStatus[data-type=loading]::before{background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;animation:statusSpin .7s linear infinite;box-shadow:none;width:14px;height:14px}
 @keyframes statusSpin{to{transform:rotate(360deg)}}
 
-/* =====================================================================
-   LIST ITEMS (queue, db)
-   ===================================================================== */
-.list-item{
-  display:flex;align-items:center;gap:10px;
-  padding:12px;margin-bottom:8px;
-  background:var(--c-surface);
-  border:1px solid var(--c-border);
-  border-radius:var(--r-2);
-  min-width:0;
-}
-.list-item:last-child{margin-bottom:0}
-.list-item-info{flex:1 1 auto;min-width:0}
-.list-item-info strong{
-  display:block;font-size:13px;font-weight:700;color:var(--c-text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.list-item-info span{
-  display:block;font-size:11.5px;color:var(--c-text-3);margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.list-item-actions{display:flex;gap:4px;flex-shrink:0;align-items:center}
-.list-item-actions button{
-  width:34px;height:34px;min-width:34px;min-height:34px;
-  padding:0;border-radius:8px;
-  display:inline-flex;align-items:center;justify-content:center;
-  font-size:14px;line-height:1;cursor:pointer;border:1px solid transparent;
-  background:var(--c-surface-3);color:var(--c-text-2);
-  transition:all .16s ease;
-}
-.list-item-actions button:hover{background:#e5e7eb;color:var(--c-text)}
-.list-item-actions button:active{transform:scale(.92)}
-.btn-remove{background:#fef2f2!important;color:#b91c1c!important;border-color:#fecaca!important}
-.btn-remove:hover{background:#fee2e2!important}
-.btn-save-queue{background:#ecfdf5!important;color:#047857!important;border-color:#a7f3d0!important}
-.btn-dup{background:#eff6ff!important;color:#1d4ed8!important;border-color:#bfdbfe!important}
-.btn-load{background:#ecfdf5!important;color:#047857!important;border-color:#a7f3d0!important}
-.copies-input{
-  width:56px;height:34px;padding:0 8px;font-size:13px;font-weight:700;
-  text-align:center;border-radius:8px;background:var(--c-surface-3);
-  border:1px solid var(--c-border);color:var(--c-text);
-}
-.empty-msg{
-  text-align:center;color:var(--c-text-3);font-size:12.5px;
-  padding:20px 12px;line-height:1.5;
-}
-.chip-mini{
-  display:inline-block;background:var(--c-surface-3);
-  border-radius:var(--r-1);padding:2px 7px;font-size:10px;font-weight:800;
-  color:var(--c-text-2);margin-left:6px;text-transform:uppercase;
-  letter-spacing:.04em;vertical-align:middle;
-}
-.bc-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--r-pill);margin-left:6px;letter-spacing:.03em}
-.bc-badge.ok{background:#ecfdf5;color:#047857}
-.bc-badge.warn{background:#fffbeb;color:#92400e}
-.bc-badge.err{background:#fef2f2;color:#991b1b}
+details.drawer{margin-top:12px;background:var(--panel-soft);border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:0;max-width:100%}
+details.drawer summary{cursor:pointer;font-weight:700;padding:12px;background:var(--panel-soft);border-radius:8px;user-select:none;list-style:none;min-width:0}
+details.drawer summary::-webkit-details-marker{display:none}
+details.drawer[open] summary{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:1px solid var(--border)}
+.drawer-content{padding:12px;background:#fff;border-bottom-left-radius:8px;border-bottom-right-radius:8px;min-width:0;max-width:100%}
+details.quick-drawer{margin-top:8px;background:var(--panel-soft);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;min-width:0;max-width:100%}
+details.quick-drawer summary{cursor:pointer;font-weight:700}
+.chips-group{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px}
+.chips-label{width:100%;font-size:11px;color:var(--text-soft);font-weight:800;margin-top:10px;text-transform:uppercase}
+.chip-btn{padding:4px 9px;font-size:11px;font-weight:600;background:#fff;border:1px solid #ced6e0;border-radius:5px;cursor:pointer;display:inline-block;user-select:none;width:auto}
+.chip-btn[data-field=origem]{background:#e8f4ff;border-color:#a4c8e8;color:#084298}
+.chip-btn[data-field=categoria]{background:#fff4e6;border-color:#f5c98b;color:#8a4b00}
+.chip-btn[data-field=calibre]{background:#eefbe9;border-color:#b5d99f;color:#2d6b1f}
+.chip-btn.chip-nc{background:#f3f4f6;border-color:#d1d5db;color:#4b5563;font-weight:800}
+.list-item{background:#fff;border:1px solid var(--border);padding:10px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0;max-width:100%}
+.list-item-info{flex:1 1 auto;min-width:0;overflow:hidden}
+.list-item-info strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item-info span{color:var(--text-soft);font-size:11px;display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item-actions{display:flex;gap:4px;flex-shrink:0;align-items:center;flex-wrap:nowrap}
+.list-item-actions button{padding:4px 7px;font-size:11px;width:auto;border-radius:4px;min-width:auto}
+.copies-input{width:50px;padding:4px 6px;font-size:12px;text-align:center;font-weight:700}
+.btn-remove{background:#fff0f0;color:#c0392b;border:1px solid #fab1a0}
+.btn-save-queue{background:#eaf7ef;color:#176b3a;border:1px solid #9bd5b1}
+.btn-load{background:#eef9f0;color:#27ae60;border:1px solid #a3cb38}
+.btn-dup{background:#eef1ff;color:#4c5fd5;border:1px solid #a5b0e8}
+.empty-msg{text-align:center;color:#b2bec3;font-style:italic;padding:10px 0;font-size:12px}
+.chip-mini{display:inline-block;background:#fff3cd;border:1px solid #ffe69c;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:800;color:#664d03;margin-left:4px;text-transform:uppercase}
+.bc-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;margin-left:6px}
+.bc-badge.ok{background:#eaf7ef;color:#176b3a}
+.bc-badge.warn{background:#fff5e6;color:#8a4b00}
+.bc-badge.err{background:#fff0f0;color:#9d1c1c}
+.fruit-panel{background:#f0f8ff;border:1px solid #b6d4fe;padding:12px;border-radius:8px;margin-bottom:12px;display:none;min-width:0;max-width:100%}
+.fruit-panel h4{margin:0 0 8px 0;color:#084298;font-size:13px}
+.promo-panel{background:#fff5f5;border:1px solid #fed7d7;padding:10px;border-radius:8px;margin-top:8px;min-width:0}
+.fruit-promo-panel{background:#fff5f5;border:2px solid #c8102e;padding:12px;border-radius:8px;margin-top:10px;display:none;min-width:0}
+.fruit-promo-panel h4{margin:0 0 8px 0;color:#c8102e;font-size:13px;font-weight:800}
+.offset-panel{background:#fff9db;border:1px solid #ffe066;border-radius:8px;padding:12px;min-width:0}
+.offset-row{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;gap:8px;margin-bottom:6px}
+.offset-row label{margin:0;font-size:12px}
+.offset-value{text-align:center;font-family:monospace;font-size:12px;font-weight:800;color:#664d03}
+.offset-hint{font-size:11px;color:#856404;margin-top:6px;line-height:1.4}
+.offset-section-title{font-size:11px;font-weight:900;color:#7c5a0c;text-transform:uppercase;margin:10px 0 6px}
+.offset-divider{border-top:1px dashed #ffe066;margin:10px 0}
+.photo-action-btn{background:#fff;border:1.5px solid #176b3a;color:#176b3a;font-weight:800;margin-top:6px}
+.photo-bank-panel{margin-top:12px;padding:14px;background:linear-gradient(135deg,#eef4ff,#dee9ff);border:1.5px dashed #b6d4fe;border-radius:12px}
+.pb-header{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:900;color:#084298;text-transform:uppercase;margin-bottom:10px}
+.pb-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-width:0}
+.pb-actions button{background:#fff;border:1.5px solid #084298;color:#084298;font-weight:800;font-size:12px;padding:12px 8px;border-radius:10px;min-height:auto;display:flex;align-items:center;justify-content:center;gap:5px}
+.pb-hint{font-size:11px;color:#084298;margin-top:9px;line-height:1.4;opacity:.85}
 
-/* =====================================================================
-   LABEL PREVIEW
-   ===================================================================== */
-.preview-shell{
-  background:#eef0f3;
-  background-image:
-    linear-gradient(45deg,#e6e9ec 25%,transparent 25%),
-    linear-gradient(-45deg,#e6e9ec 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,#e6e9ec 75%),
-    linear-gradient(-45deg,transparent 75%,#e6e9ec 75%);
-  background-size:16px 16px;
-  background-position:0 0,0 8px,8px -8px,-8px 0;
-  border:1px solid var(--c-border);
-  border-radius:var(--r-3);
-  padding:24px;
-  min-height:520px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-start;
-  overflow:hidden;
-}
-.sheet-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:#fff;border:1px solid var(--c-border);
-  padding:6px 14px;border-radius:var(--r-pill);
-  font-size:12px;font-weight:800;color:var(--c-text-2);
-  box-shadow:var(--sh-1);margin-bottom:20px;
-  text-transform:uppercase;letter-spacing:.04em;
-  max-width:100%;text-align:center;
-}
-.preview-wrap{width:100%;display:flex;justify-content:center;min-width:0}
-.preview-scaler{
-  display:flex;justify-content:center;align-items:flex-start;
-  width:100%;min-width:0;position:relative;overflow:hidden;
-}
-.preview-scaler > .label-card{flex-shrink:0;transform-origin:top center}
+.preview-container{background:#dfe4ea;border:1px solid #ced6e0;border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:580px;overflow:hidden;position:sticky;top:100px;min-width:0;max-width:100%}
+.sheet-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:18px;text-align:center;max-width:100%}
+.preview-wrap{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;padding:10px;overflow:hidden;min-width:0}
+.preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;overflow:hidden;position:relative;min-width:0}
+.preview-scaler > .label-card{flex-shrink:0;transform-origin:top center;backface-visibility:hidden}
 
-/* ============ THE LABEL (verbatim — critical for print) ============ */
-.label-card{
-  background:#fff!important;border:1px solid #333;
-  box-shadow:0 10px 25px rgba(0,0,0,.18);
-  display:flex!important;flex-direction:column!important;
-  justify-content:space-between!important;
-  box-sizing:border-box!important;overflow:hidden!important;
-  position:relative!important;border-radius:2px;
-  padding:2px 4px!important;
-  container-type:inline-size;
-  --header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%;
-  text-rendering:geometricPrecision;
-}
+.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%;text-rendering:geometricPrecision}
 .header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
@@ -596,483 +351,371 @@ input[type=number]{text-align:left}
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
-.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,
-.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
+.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 
-/* =====================================================================
-   TOASTS
-   ===================================================================== */
-.toast-container{
-  position:fixed;top:calc(80px + var(--safe-t));right:20px;z-index:100000;
-  display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:380px;
-}
-.toast{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 15px;background:#fff;border-radius:var(--r-2);
-  box-shadow:var(--sh-3);font-size:13.5px;font-weight:600;
-  color:var(--c-text);border-left:3px solid var(--c-text-3);
-  opacity:0;transform:translateX(20px) scale(.96);
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-  pointer-events:auto;min-width:260px;
-}
-.toast.show{opacity:1;transform:translateX(0) scale(1)}
-.toast-icon{
-  flex-shrink:0;width:24px;height:24px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:900;color:#fff;line-height:1;
-}
-.toast-body{flex:1;min-width:0;word-break:break-word;line-height:1.35}
-.toast-close{
-  flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;
-  background:transparent;color:var(--c-text-3);cursor:pointer;padding:0;
-  font-size:12px;font-weight:900;line-height:1;display:flex;
-  align-items:center;justify-content:center;
-}
-.toast-close:hover{background:var(--c-surface-3);color:var(--c-text)}
-.toast.success{border-left-color:var(--c-success)}
-.toast.success .toast-icon{background:linear-gradient(135deg,#22c55e,#16a34a)}
-.toast.error{border-left-color:var(--c-danger)}
-.toast.error .toast-icon{background:linear-gradient(135deg,#ef4444,#dc2626)}
-.toast.warning{border-left-color:var(--c-warn)}
-.toast.warning .toast-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
-.toast.info{border-left-color:var(--c-info)}
-.toast.info .toast-icon{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.preview-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(15,18,22,.92);align-items:center;justify-content:center;padding:16px;padding-top:calc(16px + var(--safe-top));padding-bottom:calc(16px + var(--safe-bottom));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.preview-modal.show{display:flex;flex-direction:column;gap:12px}
+.preview-modal-badge{background:#fff;border:1px solid #b2bec3;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;max-width:100%;color:#1a1f28}
+.preview-modal-wrap{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;overflow:auto;flex:1 1 auto}
+.preview-modal-close{position:fixed;top:calc(16px + var(--safe-top));right:16px;width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;background:rgba(255,255,255,.96);color:#1a1f28;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;border:none;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;z-index:9501}
+.preview-modal-close:active{transform:scale(.92)}
 
-/* =====================================================================
-   MODALS — generic chrome
-   ===================================================================== */
-.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.modal,.sheet-preview,.pro-print-overlay{
-  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-  padding:20px;z-index:99990;
-}
-.confirm-overlay.show,.name-modal.show,.email-modal.show,.install-modal.show,
-.preview-modal.show,.modal.show,.sheet-preview.show,.pro-print-overlay.show{display:flex}
-
-.confirm-overlay{background:rgba(15,18,22,.55);z-index:100001;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.confirm-box{background:#fff;border-radius:var(--r-4);padding:24px;max-width:400px;width:100%;box-shadow:var(--sh-4)}
-.confirm-box p{margin:0 0 20px;font-size:14.5px;font-weight:600;line-height:1.5;color:var(--c-text);white-space:pre-line}
-.confirm-box .confirm-actions{display:flex;gap:10px}
-.confirm-box .confirm-actions button{flex:1;min-height:48px;padding:12px;font-size:14px;font-weight:700;border-radius:var(--r-2);border:1px solid transparent;cursor:pointer}
-.confirm-box .confirm-no{background:var(--c-surface-3);border-color:var(--c-border);color:var(--c-text)}
-.confirm-box .confirm-yes{background:var(--c-primary);color:#fff}
-.confirm-box .confirm-yes:hover{background:var(--c-primary-h)}
-
-.name-modal,.email-modal{background:rgba(15,18,22,.65);z-index:100002;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.name-modal-box,.email-modal-box{background:#fff;border-radius:var(--r-4);padding:24px;max-width:460px;width:100%;box-shadow:var(--sh-4);max-height:92vh;overflow:auto}
-.name-modal-box h3,.email-modal-box h3{margin:0 0 4px;font-size:18px;font-weight:800;color:var(--c-text);letter-spacing:-.01em}
-.name-modal-box p,.email-modal-box p{margin:0 0 16px;font-size:13px;color:var(--c-text-2);line-height:1.5}
-.name-modal-box input,.email-modal-box input{width:100%;margin-bottom:14px}
-.name-modal-box label,.email-modal-box label{display:block;font-size:11.5px;font-weight:700;color:var(--c-text-2);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 6px}
-.name-modal-box label:first-of-type{margin-top:0}
-.name-modal-box .tipo-label-title{display:block;font-size:11px;font-weight:800;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
-.name-modal-actions,.email-modal-actions{display:flex;gap:10px;margin-top:16px}
-.name-modal-actions button,.email-modal-actions button{flex:1;min-height:48px;padding:12px;font-size:14px;font-weight:700;border-radius:var(--r-2);border:1px solid transparent;cursor:pointer}
-.name-modal-no,.email-modal-no{background:var(--c-surface-3);border-color:var(--c-border);color:var(--c-text)}
-.name-modal-yes{background:var(--c-success);color:#fff}
-.name-modal-yes:disabled{background:#cbd5e1;color:#64748b;cursor:not-allowed}
-.email-modal-yes{background:var(--c-primary);color:#fff}
-
-.tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
-.tipo-selector button{
-  background:var(--c-surface-2);border:2px solid var(--c-border);border-radius:var(--r-3);
-  padding:16px 10px;cursor:pointer;display:flex;flex-direction:column;
-  align-items:center;gap:6px;color:var(--c-text-2);font-weight:700;
-  font-size:12px;min-height:auto;position:relative;transition:all .16s ease;
-  font-family:inherit;
-}
-.tipo-selector button:hover{background:var(--c-surface-3)}
-.tipo-selector button.active{border-color:var(--c-accent);background:#fff5f5;color:var(--c-accent)}
-.tipo-selector button.active::after{
-  content:"✓";position:absolute;top:6px;right:8px;
-  width:20px;height:20px;border-radius:50%;
-  background:var(--c-accent);color:#fff;font-size:11px;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-}
-.tipo-selector .tipo-icon{font-size:28px;line-height:1}
-.tipo-selector .tipo-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
-.tipo-hint{
-  display:block;font-size:11.5px;font-weight:700;
-  margin:2px 0 12px;padding:8px 12px;border-radius:var(--r-2);
-  background:#fffbeb;color:#92400e;text-align:center;border:1px solid #fde68a;
-}
-.tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
-
-.preview-modal{background:rgba(15,18,22,.94);z-index:9500;flex-direction:column;gap:16px;padding-top:calc(20px + var(--safe-t));padding-bottom:calc(20px + var(--safe-b))}
-.preview-modal-badge{background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--c-text-2);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3)}
-.preview-modal-wrap{display:flex;justify-content:center;align-items:center;width:100%;overflow:auto;flex:1 1 auto}
-.preview-modal-close{
-  position:fixed;top:calc(16px + var(--safe-t));right:20px;
-  width:44px;height:44px;border-radius:50%;
-  background:rgba(255,255,255,.94);color:var(--c-text);border:none;
-  font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:9501;box-shadow:var(--sh-3);
-}
-.preview-modal-close:hover{background:#fff}
-
-.modal{background:rgba(15,18,22,.9);z-index:99999;flex-direction:column;gap:14px;padding:16px}
-.modal-panel{background:#fff;border-radius:var(--r-4);padding:20px;max-width:1100px;width:100%;max-height:92vh;overflow:auto;box-shadow:var(--sh-4)}
-.modal-title{font-size:18px;font-weight:800;margin:0 0 12px;letter-spacing:-.01em}
-#camVideo{max-width:95vw;max-height:70vh;background:#000;border-radius:var(--r-3)}
-#reader{width:92vw;max-width:520px;background:#000;border-radius:var(--r-3)}
-.cam-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.cam-actions button{width:auto;min-width:130px}
-
-.sheet-preview{background:rgba(15,18,22,.85);z-index:9000;align-items:flex-start;padding:20px;overflow:auto}
-.sheet-preview-inner{background:#fff;border-radius:var(--r-3);padding:20px;max-width:96vw;max-height:94vh;overflow:auto;box-shadow:var(--sh-4)}
-.sheet-preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}
-.sheet-preview-header h3{margin:0;font-size:16px;font-weight:800}
-.sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
-.preview-page-amanhecer{
-  display:grid;grid-template-columns:66mm 66mm 66mm;
-  grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;
-  width:198mm;height:278mm;background:#fff;margin:0 auto;
-}
-.preview-page-amanhecer .label-card{width:66mm!important;box-shadow:none!important;border:1px dashed #ccc!important}
+.sheet-preview{display:none;position:fixed;inset:0;z-index:9000;background:rgba(20,24,28,.85);align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
+.sheet-preview.show{display:flex}
+.sheet-preview-inner{background:#fff;border-radius:12px;padding:20px;max-width:95vw;max-height:95vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);min-width:0}
+.sheet-preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.sheet-preview-header h3{margin:0;font-size:16px;min-width:0}
+.sheet-preview-content{display:flex;flex-direction:column;align-items:flex-start;gap:16px;min-width:0;max-width:100%}
+.preview-page-amanhecer{display:grid;grid-template-columns:66mm 66mm 66mm;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm;width:198mm;height:278mm;background:#fff;margin:0 auto}
+.preview-page-amanhecer .label-card{width:66mm!important;box-shadow:none!important;border:1px dashed #ccc!important;overflow:hidden!important}
 .preview-page-amanhecer .label-card:nth-child(1),.preview-page-amanhecer .label-card:nth-child(2),.preview-page-amanhecer .label-card:nth-child(3){height:38mm!important}
 .preview-page-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 .preview-page-amanhecer .label-card.empty{visibility:hidden}
-.preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:var(--sh-3)}
+.preview-group-flex{display:flex;flex-wrap:wrap;gap:3mm;background:#fff;padding:5mm;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.15);max-width:100%;min-width:0}
 
-.pro-print-overlay{background:rgba(15,18,22,.65);z-index:99998;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.pro-print-box{
-  min-width:280px;padding:28px;border-radius:var(--r-4);
-  background:#fff;box-shadow:var(--sh-4);display:grid;gap:12px;text-align:center;
-}
-.pro-print-box strong{font-size:15px;font-weight:800}
-.pro-print-box .print-tip{font-size:12px;color:var(--c-text-2);line-height:1.5}
-.pro-spinner{
-  width:32px;height:32px;margin:auto;border-radius:50%;
-  border:3px solid var(--c-surface-3);border-top-color:var(--c-primary);
-  animation:prospin .7s linear infinite;
-}
+.pro-print-overlay{display:none;position:fixed;inset:0;z-index:99998;background:rgba(20,24,28,.58);align-items:center;justify-content:center;padding:20px}
+.pro-print-overlay.show{display:flex}
+.pro-print-box{min-width:300px;max-width:90vw;padding:24px;border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.3);display:grid;gap:10px;text-align:center}
+.pro-print-box .print-tip{font-size:12px;color:#666;line-height:1.4;margin-top:4px}
+.pro-spinner{width:28px;height:28px;margin:auto;border:3px solid #dfe4e8;border-top-color:#333;border-radius:50%;animation:prospin .7s linear infinite}
 @keyframes prospin{to{transform:rotate(360deg)}}
 
-/* image bank */
-.bf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
-.bf-card{
-  cursor:pointer;border:1px solid var(--c-border);border-radius:var(--r-2);
-  overflow:hidden;text-align:center;background:var(--c-surface-2);
-  position:relative;transition:all .16s ease;
-}
-.bf-card:hover{border-color:var(--c-primary);box-shadow:var(--sh-2);transform:translateY(-2px)}
-.bf-card img{width:100%;height:120px;object-fit:contain;background:#fff;display:block}
-.bf-card .bf-nome{font-size:11.5px;font-weight:700;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--c-text)}
-.bf-card .bf-tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:900;padding:3px 8px;border-radius:var(--r-pill);text-transform:uppercase;letter-spacing:.04em}
-.bf-card .bf-tag.fruta{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
-.bf-card .bf-tag.legume{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-.bf-modal-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.bf-modal-header h3{margin:0;font-size:18px;font-weight:800}
+.modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,18,22,.88);align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:16px;overflow:auto}
+.modal.show{display:flex}
+.modal-panel{background:#fff;border-radius:12px;padding:16px;max-width:1100px;width:100%;max-height:94vh;overflow:auto;min-width:0}
+.modal-title{font-size:16px;font-weight:800;margin:0 0 10px}
+#camVideo{max-width:95vw;max-height:70vh;background:#111;border-radius:8px}
+#reader{width:92vw;max-width:520px;background:#000;border-radius:8px}
+.bf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;min-width:0}
+.bf-card{cursor:pointer;border:1px solid #ddd;border-radius:8px;overflow:hidden;text-align:center;background:#fafafa;position:relative;min-width:0}
+.bf-card img{width:100%;height:110px;object-fit:contain;background:#fff;display:block}
+.bf-card .bf-nome{font-size:12px;font-weight:700;padding:5px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bf-card .bf-tag{position:absolute;top:4px;left:4px;font-size:10px;font-weight:900;padding:2px 6px;border-radius:6px;text-transform:uppercase}
+.bf-card .bf-tag.fruta{background:#fff3cd;color:#7c5a0c;border:1px solid #ffe69c}
+.bf-card .bf-tag.legume{background:#e6f7e9;color:#176b3a;border:1px solid #b7e3c2}
+.cam-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cam-actions button{width:auto;padding:10px 22px}
+.bf-modal-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.bf-modal-header h3{margin:0;font-size:17px;font-weight:900;color:#1a1f28;min-width:0}
 .bf-modal-actions{display:flex;gap:8px;flex-wrap:wrap}
-.bf-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--c-border);padding:0}
-.bf-tabs button{
-  flex:1;background:transparent;border:none;border-bottom:2px solid transparent;
-  color:var(--c-text-3);font-weight:800;font-size:13px;padding:12px 8px;
-  border-radius:0;min-height:auto;cursor:pointer;font-family:inherit;
-  display:flex;align-items:center;justify-content:center;gap:8px;transition:all .16s ease;
-}
-.bf-tabs button:hover{color:var(--c-text-2)}
-.bf-tabs button.active{color:var(--c-accent);border-bottom-color:var(--c-accent)}
-.bf-count{display:inline-block;background:var(--c-surface-3);color:var(--c-text-2);font-size:10px;padding:2px 8px;border-radius:var(--r-pill);font-weight:900;min-width:22px;text-align:center}
-.bf-tabs button.active .bf-count{background:var(--c-accent);color:#fff}
-.bf-search-row{margin-bottom:14px}
-.bf-empty{text-align:center;padding:40px 16px;color:var(--c-text-3);font-size:13px;line-height:1.5}
+.bf-modal-actions button{width:auto;padding:8px 14px;font-size:12px;border-radius:9px;min-height:auto}
+.bf-tabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:2px solid #eef1f5;padding:0}
+.bf-tabs button{flex:1;background:transparent;border:none;border-bottom:3px solid transparent;color:#7a8391;font-weight:800;font-size:13px;padding:11px 8px;border-radius:0;min-height:auto;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.bf-tabs button.active{color:#c8102e;border-bottom-color:#c8102e}
+.bf-count{display:inline-block;background:#eef1f4;color:#5a6470;font-size:10px;padding:1px 7px;border-radius:8px;font-weight:900;min-width:20px;text-align:center}
+.bf-tabs button.active .bf-count{background:#c8102e;color:#fff}
+.bf-search-row{margin-bottom:12px}
+.bf-empty{text-align:center;padding:30px 10px;color:#9aa4b0;font-style:italic;font-size:13px;line-height:1.5}
 
-.install-modal{background:rgba(15,18,22,.7);z-index:100004;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.install-modal-box{background:#fff;border-radius:var(--r-4);padding:28px;max-width:480px;width:100%;box-shadow:var(--sh-4);max-height:92vh;overflow:auto}
-.install-modal-box h3{margin:0 0 6px;font-size:20px;font-weight:800}
-.install-modal-box .install-sub{font-size:13px;color:var(--c-text-2);margin:0 0 20px;line-height:1.5}
-.install-step{display:flex;gap:14px;padding:14px;background:var(--c-surface-2);border-radius:var(--r-2);margin-bottom:10px;border:1px solid var(--c-border)}
-.install-step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--c-primary);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
-.install-step-text{flex:1;font-size:13.5px;line-height:1.5;color:var(--c-text)}
-.install-step-text strong{display:block;font-weight:800;margin-bottom:2px}
-.install-step-text span{color:var(--c-text-2);font-size:13px}
-.install-step kbd{display:inline-block;padding:1px 7px;background:#fff;border:1px solid var(--c-border-2);border-bottom-width:2px;border-radius:5px;font-family:var(--ff-mono);font-size:12px;font-weight:800;color:var(--c-text);margin:0 2px}
-.install-warning{margin-top:14px;padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r-2);font-size:12.5px;color:#78350f;line-height:1.5}
-.install-modal-actions{display:flex;gap:10px;margin-top:20px}
-.install-modal-actions button{flex:1;min-height:50px;font-weight:800;border-radius:var(--r-2);border:none;cursor:pointer;font-family:inherit;font-size:14px}
-.install-modal-close{background:var(--c-surface-3);color:var(--c-text)}
-.install-modal-ok{background:var(--c-primary);color:#fff}
+.toast-container{position:fixed;top:calc(100px + var(--safe-top));right:20px;z-index:100000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:380px}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border-radius:12px;box-shadow:0 12px 32px rgba(15,23,42,.18);font-weight:600;font-size:14px;line-height:1.35;color:#1a1f28;border-left:4px solid #64748b;opacity:0;transform:translateX(28px) scale(.96);transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:auto;min-width:260px}
+.toast.show{opacity:1;transform:translateX(0) scale(1)}
+.toast-icon{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.toast-body{flex:1;min-width:0;word-break:break-word}
+.toast-close{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:none;background:transparent;color:#94a3b8;cursor:pointer;padding:0;font-size:13px;font-weight:900;line-height:1;margin:0;min-width:22px;display:flex;align-items:center;justify-content:center}
+.toast.success{border-left-color:#16a34a}
+.toast.success .toast-icon{background:linear-gradient(135deg,#22c55e,#16a34a)}
+.toast.error{border-left-color:#dc2626}
+.toast.error .toast-icon{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.toast.warning{border-left-color:#f59e0b}
+.toast.warning .toast-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+.toast.info{border-left-color:#2563eb}
+.toast.info .toast-icon{background:linear-gradient(135deg,#3b82f6,#2563eb)}
 
-/* =====================================================================
-   DIAG BOX
-   ===================================================================== */
-.diag-box{
-  background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-2);
-  padding:12px;font-family:var(--ff-mono);font-size:11px;color:var(--c-text);
-  white-space:pre-wrap;word-break:break-word;max-height:240px;overflow:auto;
-  margin-top:10px;display:none;line-height:1.6;
-}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100001;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-overlay.show{display:flex}
+.confirm-box{background:#fff;border-radius:14px;padding:22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);min-width:0}
+.confirm-box p{margin:0 0 18px 0;font-size:15px;font-weight:600;line-height:1.4;color:#222;white-space:pre-line}
+.confirm-box .confirm-actions{display:flex;gap:10px}
+.confirm-box .confirm-actions button{flex:1;padding:12px;font-size:14px;width:auto}
+.confirm-box .confirm-actions .confirm-no{background:#f0f2f5;border:1px solid #ccc;color:#222}
+.confirm-box .confirm-actions .confirm-yes{background:#c8102e;color:#fff;border-color:#c8102e}
+
+.name-modal,.email-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100002;align-items:center;justify-content:center;padding:20px}
+.name-modal.show,.email-modal.show{display:flex}
+.name-modal-box,.email-modal-box{background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:95vh;overflow:auto;min-width:0}
+.name-modal-box h3,.email-modal-box h3{margin:0 0 6px 0;font-size:16px;font-weight:900;color:#1a1f28}
+.name-modal-box p,.email-modal-box p{margin:0 0 14px 0;font-size:13px;color:#4a5560;line-height:1.4}
+.name-modal-box input,.email-modal-box input{width:100%;margin-bottom:16px;padding:12px;border:1.5px solid #d8dee5;border-radius:10px;font-size:15px;background:#fafbfc}
+.name-modal-box .tipo-label-title{display:block;font-size:11px;font-weight:900;color:#6b7280;text-transform:uppercase;margin-bottom:8px}
+.name-modal-actions,.email-modal-actions{display:flex;gap:10px;margin-top:6px}
+.name-modal-actions button,.email-modal-actions button{flex:1;padding:13px;font-size:14px;border-radius:11px;font-weight:800;border:none;cursor:pointer}
+.name-modal-no,.email-modal-no{background:#f0f2f5;color:#2c3440}
+.name-modal-yes{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
+.name-modal-yes:disabled{background:#cbd5e1;color:#64748b;cursor:not-allowed;opacity:.85}
+.email-modal-yes{background:linear-gradient(135deg,#6b21a8,#4c1d95);color:#fff}
+
+.tipo-selector{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:6px;min-width:0}
+.tipo-selector button{background:#f8f9fa;border:2px solid #e0e5ea;border-radius:12px;padding:16px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#5a6470;font-weight:800;font-size:13px;min-height:auto;width:auto;position:relative}
+.tipo-selector button.active{border-color:#c8102e;background:#fff5f5;color:#c8102e;box-shadow:0 0 0 4px rgba(200,16,46,.12)}
+.tipo-selector button.active::after{content:"✓";position:absolute;top:6px;right:8px;width:22px;height:22px;border-radius:50%;background:#c8102e;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.tipo-selector .tipo-icon{font-size:32px;line-height:1}
+.tipo-selector .tipo-label{font-size:14px;font-weight:900;text-transform:uppercase}
+.tipo-hint{display:block;font-size:11.5px;font-weight:700;margin:2px 0 12px 0;padding:7px 12px;border-radius:8px;background:#fef3c7;color:#92400e;text-align:center;border:1px solid #fde68a}
+.tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
+
+.diag-box{background:#f8f9fa;border:1px solid #e0e5ea;border-radius:8px;padding:10px;font-family:monospace;font-size:11px;color:#333;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;margin-top:8px;display:none}
 .diag-box.show{display:block}
-.diag-box .ok{color:#047857;font-weight:800}
-.diag-box .err{color:#b91c1c;font-weight:800}
+.diag-box .ok{color:#176b3a;font-weight:800}
+.diag-box .err{color:#c0392b;font-weight:800}
 
-/* =====================================================================
-   INSTALL BANNER (mobile PWA)
-   ===================================================================== */
-.install-banner{
-  position:fixed;bottom:calc(12px + var(--safe-b));
-  left:12px;right:12px;z-index:9500;max-width:440px;margin:0 auto;
-  background:linear-gradient(135deg,#059669 0%,#065f46 100%);
-  color:#fff;border-radius:var(--r-3);padding:14px 16px;
-  box-shadow:0 12px 40px rgba(0,0,0,.35);display:none;align-items:center;gap:12px;
-  animation:bannerUp .35s cubic-bezier(.4,0,.2,1);
-}
-.install-banner.show{display:flex}
-.install-banner.closing{animation:bannerDown .3s cubic-bezier(.4,0,.2,1) forwards}
-.install-banner-icon{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.install-banner-icon svg{width:22px;height:22px;stroke:#fff;fill:none}
-.install-banner-text{flex:1;min-width:0;line-height:1.3}
-.install-banner-text strong{display:block;font-size:13.5px;font-weight:800;margin-bottom:2px}
-.install-banner-text span{font-size:11.5px;opacity:.92;display:block}
-.install-banner-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
-.install-banner-btn{padding:9px 14px;border-radius:9px;border:none;background:#fff;color:#065f46;font-weight:800;font-size:12.5px;cursor:pointer;min-height:38px}
-.install-banner-close{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:none;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0}
-@keyframes bannerUp{from{transform:translateY(120%);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes bannerDown{from{transform:translateY(0);opacity:1}to{transform:translateY(120%);opacity:0}}
+.install-modal{display:none;position:fixed;inset:0;background:rgba(15,18,22,.7);z-index:100004;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.install-modal.show{display:flex}
+.install-modal-box{background:#fff;border-radius:20px;padding:26px;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.4);max-height:90vh;overflow:auto;min-width:0}
+.install-modal-box h3{margin:0 0 6px 0;font-size:19px;font-weight:900;color:#1a1f28;display:flex;align-items:center;gap:8px}
+.install-modal-box .install-sub{font-size:13px;color:#64748b;margin:0 0 18px 0;line-height:1.5}
+.install-step{display:flex;gap:14px;padding:14px;background:#f8fafc;border-radius:12px;margin-bottom:10px;border:1px solid #e2e8f0;align-items:flex-start}
+.install-step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c8102e,#a80d24);color:#fff;font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center}
+.install-step-text{flex:1;min-width:0;font-size:14px;line-height:1.5;color:#1a1f28}
+.install-step-text strong{display:block;font-weight:800;margin-bottom:2px;font-size:14.5px}
+.install-step-text span{color:#4a5560;font-size:13px}
+.install-step kbd{display:inline-block;padding:1px 7px;background:#fff;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;font-family:monospace;font-size:12px;font-weight:800;color:#1a1f28;margin:0 2px}
+.install-warning{margin-top:12px;padding:12px;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;font-size:12px;color:#78350f;line-height:1.5}
+.install-modal-actions{display:flex;gap:10px;margin-top:18px}
+.install-modal-actions button{flex:1;padding:14px;font-size:14px;border-radius:12px;font-weight:800;border:none;cursor:pointer;min-height:52px}
+.install-modal-close{background:#f0f2f5;color:#2c3440}
+.install-modal-ok{background:linear-gradient(135deg,#1e8a4a,#0d5a2f);color:#fff}
 
-/* =====================================================================
-   MOBILE NAV (bottom tabs)
-   ===================================================================== */
-.mobile-nav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;z-index:8500;
-  background:rgba(255,255,255,.96);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
-  backdrop-filter:saturate(180%) blur(14px);
-  border-top:1px solid var(--c-border);
-  padding:6px 8px calc(6px + var(--safe-b));
-  padding-left:calc(8px + var(--safe-l));
-  padding-right:calc(8px + var(--safe-r));
-}
-.mobile-nav-inner{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
-  max-width:600px;margin:0 auto;
-}
-.mobile-nav button{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:8px 4px;background:transparent;border:none;
-  color:var(--c-text-3);font-size:10.5px;font-weight:700;cursor:pointer;
-  border-radius:10px;min-height:auto;font-family:inherit;
-  transition:all .16s ease;position:relative;
-}
-.mobile-nav button:hover{background:var(--c-surface-3)}
-.mobile-nav button.active{color:var(--c-primary);background:var(--c-surface-3)}
-.mobile-nav button svg{width:20px;height:20px}
-.mobile-nav button .n-badge{
-  position:absolute;top:4px;right:calc(50% - 22px);
-  background:var(--c-accent);color:#fff;
-  font-size:9px;font-weight:900;padding:1px 5px;border-radius:var(--r-pill);
-  min-width:16px;text-align:center;
-}
-.mobile-nav button .n-badge:empty{display:none}
+/* ================= MOBILE — 3 LINHAS FIXAS ================= */
+  @media(max-width:900px){
+  html,body{overflow-x:hidden!important;width:100%!important;max-width:100%!important;overscroll-behavior-y:contain}
+  @supports (overflow-x:clip){html,body{overflow-x:clip!important}}
+  body{background:#eef1f4;font-size:15px;padding-bottom:var(--safe-bottom);min-height:100dvh}
 
-/* =====================================================================
-   MOBILE LAYOUT
-   ===================================================================== */
-@media (max-width:900px){
-  .app{padding:16px 14px 100px}
-  .app-grid{grid-template-columns:1fr;gap:16px}
-  .preview-column{position:static}
-  .preview-shell{padding:16px;min-height:auto}
+  .top-header{
+    padding:0;
+    padding-top:var(--safe-top);
+    min-height:auto;
+    display:block;
+  }
+  .top-header-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:0;
+    width:100%;
+    padding:12px 14px;
+  }
 
-  .mobile-nav{display:block}
+  /* LINHA 1 — Marca (título + logos) */
+  .hdr-brand{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;width:100%;min-width:0;
+    padding-bottom:12px;
+    border-bottom:1px solid #e8ebf0;
+    margin-bottom:12px;
+    flex-wrap:nowrap;
+  }
+  .hdr-title{font-size:15px;gap:8px;flex:1 1 auto;min-width:0}
+  .hdr-title .h1-tag{font-size:22px;line-height:1}
+  .hdr-logos{gap:6px;flex-shrink:0}
+  .hdr-logos img{height:28px;max-width:60px}
+  .hdr-logos .divider{height:22px}
 
-  /* Tabs behaviour */
-  body[data-view="form"] .preview-column{display:none}
-  body[data-view="preview"] .form-column{display:none}
-  body[data-view="preview"] .preview-column{display:block}
-  body[data-view="more"] .form-column{display:none}
-  body[data-view="more"] .preview-column{display:none}
-  body[data-view="more"] .more-panel{display:flex}
+  /* LINHA 2 — Botão Ver (largura total) */
+  .hdr-actions{
+    display:flex;
+    width:100%;
+    margin-bottom:12px;
+  }
+  .hdr-btn{
+    display:inline-flex;
+    width:100%;
+    justify-content:center;
+    padding:12px 18px;
+    font-size:14.5px;
+    min-height:48px;
+    gap:8px;
+    border-radius:12px;
+    font-weight:800;
+  }
+  .hdr-btn svg{width:18px;height:18px}
+  .hdr-btn span{display:inline}
 
-  /* Actions float above bottom nav */
-  .actions-card{padding:14px;position:sticky;bottom:80px;z-index:80;box-shadow:var(--sh-3)}
+  /* LINHA 3 — Auth (largura total, sozinha) */
+  .hdr-auth{
+    display:flex;
+    width:100%;
+  }
+  .auth-card{
+    width:100%;
+    justify-content:center;
+    padding:10px 14px;
+    min-height:50px;
+    gap:12px;
+    border-radius:12px;
+  }
+  .auth-card-icon{width:34px;height:34px;border-radius:10px}
+  .auth-card-icon svg{width:16px;height:16px}
+  .auth-card-text{display:none}
+  .auth-card-btn{flex:0 0 auto}
+  .auth-card-btn > div[data-gsi]{transform:scale(1);transform-origin:center;margin:0}
+  .auth-logout-btn{padding:10px 18px;font-size:13.5px;min-height:42px;gap:6px;border-radius:11px}
+  .auth-logout-btn svg{width:14px;height:14px}
+
+  .app{
+    padding:10px var(--app-pad-x) 20px var(--app-pad-x);
+    padding-left:max(var(--app-pad-x),var(--safe-left));
+    padding-right:max(var(--app-pad-x),var(--safe-right));
+  }
+
+  .install-banner{left:10px;right:10px;bottom:calc(10px + var(--safe-bottom));padding:12px;border-radius:14px;gap:10px}
+  .install-banner-icon{width:40px;height:40px;border-radius:11px}
+  .install-banner-icon svg{width:22px;height:22px}
+  .install-banner-text strong{font-size:13.5px}
+  .install-banner-text span{font-size:11.5px}
+  .install-banner-btn{padding:9px 13px;font-size:13px;min-height:40px;border-radius:9px}
+  .install-banner-close{width:32px;height:32px;min-width:32px;min-height:32px;font-size:14px}
+
+  .grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .left-col{order:1}
+  .preview-container{display:none!important}
+
+  .panel{border-radius:14px;padding:14px;margin-bottom:10px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.03);background:#fff;min-width:0;max-width:100%}
+  label{font-size:11px;margin:10px 0 4px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;font-weight:800}
+  input,select,textarea{padding:12px 13px;font-size:16px;border-radius:10px;border:1.5px solid #d8dee5;background:#fafbfc;min-width:0;max-width:100%}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#c8102e;background:#fff;box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+  input[type=range]{padding:0;height:8px;background:transparent;border:none;width:100%;max-width:100%}
+  input[type=number]{font-size:16px;text-align:center;font-weight:700}
+  input[type="date"]{min-height:48px;font-size:15px;-webkit-appearance:none;appearance:none;width:100%;max-width:100%;min-width:0}
+
+  /* Datas em mobile: coluna única, botão ✕ ao lado (sem sobrepor) */
+  .dates-row{grid-template-columns:minmax(0,1fr);gap:10px}
+  .date-input-wrap{width:100%;min-width:0;gap:8px}
+  .date-input-wrap input[type="date"]{flex:1 1 auto;min-width:0;padding:12px 13px;min-height:48px;font-size:15px}
+  .date-clear-btn{
+    flex:0 0 auto;
+    width:46px;min-width:46px;
+    min-height:48px;
+    border-radius:10px;
+    font-size:15px;
+    background:#f0f2f5;
+    border:1.5px solid #e0e5ea;
+  }
+
+  .format-select{font-size:15px;padding:13px 40px 13px 14px;min-height:50px;border-radius:12px;font-weight:800}
+  button{padding:13px;font-size:15px;border-radius:13px;min-height:50px;font-weight:800}
+  .primary{background:linear-gradient(135deg,#e61937 0%,#c8102e 50%,#a80d24 100%);border:none;font-size:16.5px;font-weight:900;padding:16px 14px;min-height:58px;border-radius:15px}
+  .success-btn,.save-btn,.email-btn{font-size:15px;padding:14px;min-height:52px;border-radius:14px}
+  .secondary{font-size:12px;padding:12px 8px;min-height:48px;border-radius:12px}
+  .warn-btn{min-height:48px;border-radius:12px}
+  details.drawer{border-radius:14px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden;background:#fff}
+  details.drawer summary{padding:14px 16px;font-size:14px;font-weight:800;color:#1a1f28;background:#fff;display:flex;align-items:center;justify-content:space-between}
+  details.drawer summary::after{content:"▾";font-size:14px;color:#a8b2be;font-weight:900;margin-left:auto}
+  details.drawer[open] summary::after{transform:rotate(180deg);color:#c8102e}
+  .chip-btn{padding:8px 13px;font-size:12.5px;border-radius:9px;min-height:34px;font-weight:800}
+  .list-item{padding:11px;border-radius:11px;gap:8px;border:none;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:7px}
+  .list-item-actions button{padding:8px 9px;font-size:13px;border-radius:10px;min-width:40px;min-height:40px}
+  .copies-input{width:52px;padding:8px 6px;font-size:14px;border-radius:8px}
+  .size-row,.size-row-3{gap:8px}
+  .actions,.actions-full,.actions-3{gap:8px}
+  .actions-3{grid-template-columns:minmax(0,1fr)}
+  .size-row-3{grid-template-columns:minmax(0,1fr)}
+
+  .modal{padding:0;gap:12px;overflow:hidden}
+  .modal-panel{border-radius:0;max-height:100dvh;height:100dvh;padding:16px;padding-top:calc(16px + var(--safe-top));padding-bottom:calc(16px + var(--safe-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #reader{width:100vw;max-width:100vw;border-radius:0}
+  #camVideo{max-width:100vw;max-height:65vh;border-radius:14px}
+  .cam-actions{padding:0 16px 16px;width:100%;gap:8px;padding-bottom:calc(16px + var(--safe-bottom))}
+  .cam-actions button{flex:1;padding:15px 16px;font-size:16px;min-height:56px;border-radius:15px;font-weight:900}
+  .bf-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+  .bf-card img{height:100px}
+
+  .toast-container{top:auto;bottom:calc(90px + var(--safe-bottom));right:12px;left:12px;max-width:none;gap:8px}
+  .toast{min-width:auto;font-size:13.5px;padding:13px 14px;transform:translateY(20px) scale(.98)}
+  .toast.show{transform:translateY(0) scale(1)}
+  .confirm-overlay{padding:16px}
+  .confirm-box{border-radius:18px;padding:22px 20px}
+  .sheet-preview{padding:0;align-items:stretch}
+  .sheet-preview-inner{border-radius:0;padding:14px;max-height:100dvh;height:100dvh;max-width:100vw;width:100vw;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:calc(14px + var(--safe-top));padding-bottom:calc(14px + var(--safe-bottom))}
+  .sheet-preview-content{width:100%;align-items:stretch}
+  .pb-actions button{font-size:13px;padding:13px 10px;min-height:50px}
+  .bf-tabs button{font-size:12px;padding:12px 4px}
+  .bf-modal-actions button{font-size:12px;padding:10px 12px;min-height:auto}
+  .tipo-selector button{padding:16px 10px}
+  .tipo-selector .tipo-icon{font-size:34px}
+  .offset-row{grid-template-columns:52px minmax(0,1fr) 52px}
+  .offset-value{font-size:11px}
+  #appStatus{font-size:12.5px;padding:10px 12px}
+  .install-modal-box,.name-modal-box,.email-modal-box{border-radius:18px;padding:20px 18px}
+  .install-modal-box h3,.name-modal-box h3,.email-modal-box h3{font-size:17px}
+  .install-modal-actions button,.name-modal-actions button,.email-modal-actions button{padding:14px;font-size:15px;min-height:50px;border-radius:12px}
 }
-@media (min-width:901px){
-  .mobile-nav{display:none!important}
-  .more-panel{display:flex}
-  body{--more-display:flex}
+@media(max-width:420px){
+  .hdr-title{font-size:14px}
+  .hdr-title .h1-tag{font-size:20px}
+  .hdr-logos img{height:24px;max-width:50px}
+  .hdr-btn{padding:11px 14px;font-size:14px}
+  .auth-logout-btn{padding:9px 14px;font-size:13px;min-height:40px}
+  .actions{grid-template-columns:minmax(0,1fr)}
+  .install-banner{padding:10px;gap:8px}
+  .install-banner-icon{width:36px;height:36px}
+  .install-banner-icon svg{width:20px;height:20px}
+  .install-banner-text strong{font-size:13px}
+  .install-banner-text span{font-size:11px}
+  .install-banner-btn{padding:8px 12px;font-size:12.5px;min-height:38px}
+  .install-banner-close{width:30px;height:30px;min-width:30px;min-height:30px;font-size:13px}
 }
 
-/* Hide preview-column on mobile when more is active */
-@media (max-width:900px){
-  .more-panel{display:none;flex-direction:column;gap:16px}
-}
-
-/* Icon-only buttons */
-.icon-btn-sm{
-  width:34px;height:34px;padding:0;border-radius:var(--r-2);
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--c-surface-3);border:none;color:var(--c-text-2);
-  cursor:pointer;transition:all .16s ease;
-}
-.icon-btn-sm:hover{background:#e5e7eb;color:var(--c-text)}
-.icon-btn-sm:active{transform:scale(.92)}
-.icon-btn-sm svg{width:16px;height:16px}
-
-/* Date input with clear button */
-.date-input-wrap{display:flex;gap:6px;align-items:stretch}
-.date-input-wrap input[type="date"]{flex:1;min-width:0}
-.date-clear-btn{
-  flex:0 0 auto;width:44px;min-height:44px;padding:0;
-  background:var(--c-surface-3);border:1px solid var(--c-border);
-  border-radius:var(--r-2);color:var(--c-text-2);font-size:14px;font-weight:900;
-  cursor:pointer;display:none;align-items:center;justify-content:center;
-}
-.date-clear-btn.show{display:inline-flex}
-.date-clear-btn:hover{background:var(--c-accent);color:#fff;border-color:var(--c-accent)}
-
-/* Offset panel */
-.offset-panel{display:flex;flex-direction:column;gap:10px}
-.offset-section-title{
-  font-size:10.5px;font-weight:900;color:var(--c-text-3);
-  text-transform:uppercase;letter-spacing:.06em;margin:10px 0 2px;
-}
-.offset-section-title:first-child{margin-top:0}
-.offset-row{display:grid;grid-template-columns:44px 1fr 52px;align-items:center;gap:10px}
-.offset-row label{font-size:12px;font-weight:700;color:var(--c-text-2);margin:0}
-.offset-value{text-align:right;font-family:var(--ff-mono);font-size:11.5px;font-weight:700;color:var(--c-text-2)}
-.offset-hint{font-size:11.5px;color:var(--c-text-3);margin-top:8px;line-height:1.5}
-.offset-divider{border-top:1px solid var(--c-border);margin:4px 0}
-
-/* Format select — bigger */
-.format-select{
-  width:100%;padding:14px 40px 14px 16px;
-  background:var(--c-surface-2);border:1px solid var(--c-border);
-  border-radius:var(--r-2);font-size:14.5px;font-weight:700;
-  color:var(--c-text);
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-position:calc(100% - 16px) 50%;background-repeat:no-repeat;
-  cursor:pointer;min-height:52px;
-}
-.format-select optgroup{background:#fff;color:var(--c-text-3);font-weight:800;font-size:11px;text-transform:uppercase}
-.format-select option{background:#fff;color:var(--c-text);font-weight:600;font-size:14px}
-
-/* =====================================================================
-   PRINT
-   ===================================================================== */
+/* ================= PRINT ================= */
 @media screen{
   #printZone{display:none!important}
-  #printZone.measure{
-    display:block!important;position:fixed!important;left:-99999px!important;top:0!important;
-    width:210mm!important;pointer-events:none!important;visibility:visible!important;
-    opacity:1!important;z-index:-1!important;background:#fff!important;
-  }
-  #printZone.measure .print-page-wrapper{
-    width:210mm!important;height:297mm!important;overflow:hidden!important;
-    box-sizing:border-box!important;position:relative!important;background:#fff!important;
-    display:block!important;padding:0!important;
-  }
-  #printZone.measure .print-sheet-amanhecer{
-    display:grid!important;
-    grid-template-columns:66mm 66mm 66mm!important;
-    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important;
-  }
+  #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
+  #printZone.measure .print-page-wrapper{width:210mm!important;height:297mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important}
+  #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}
   #printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}
-  #printZone.measure .label-card{
-    background:#fff!important;border:1px solid transparent!important;
-    margin:0!important;box-sizing:border-box!important;padding:2px 4px!important;
-  }
+  #printZone.measure .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}
   #printZone.measure .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-  #printZone.measure .calib-sheet{
-    display:grid!important;
-    grid-template-columns:66mm 66mm 66mm!important;
-    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    width:198mm!important;height:278mm!important;margin:6mm auto 0!important;
-  }
-  #printZone.measure .calib-cell{
-    border:1px dashed #d33!important;display:flex!important;align-items:center!important;
-    justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;
-    background:#fff5f5!important;
-  }
+  #printZone.measure .calib-sheet{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important}
+  #printZone.measure .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 }
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
-  html,body{
-    width:auto!important;height:auto!important;margin:0!important;padding:0!important;
-    background:#fff!important;
-    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;
-  }
-  .app-header,.app,.mobile-nav,.toast-container,.install-banner,.pro-print-overlay,
-  .modal,.sheet-preview,.confirm-overlay,.name-modal,.email-modal,.install-modal,
-  .preview-modal{display:none!important}
-  #printZone{
-    display:block!important;position:static!important;left:auto!important;top:auto!important;
-    width:auto!important;visibility:visible!important;opacity:1!important;
-    margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important;
-  }
-  #printZone,#printZone *{
-    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;
-    transform:none!important;zoom:1!important;animation:none!important;transition:none!important;
-  }
-  .print-page-wrapper{
-    width:198mm!important;height:285mm!important;overflow:hidden!important;
-    box-sizing:border-box!important;position:relative!important;background:#fff!important;
-    display:block!important;padding:0!important;
-    page-break-after:always!important;break-after:page!important;
-  }
+  html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  .app,.sheet-preview,.pro-print-overlay,.modal,.toast-container,.confirm-overlay,.name-modal,.email-modal,.top-header,.install-modal,.mobile-tab-bar,.preview-modal,.install-banner,.hdr-spacer{display:none!important}
+  #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
+  #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
+  .print-page-wrapper{width:198mm!important;height:285mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
   .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
-  .print-sheet-amanhecer{
-    display:grid!important;
-    grid-template-columns:66mm 66mm 66mm!important;
-    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important;
-  }
+  .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important}
   .print-page-generic-grid{display:grid!important;margin:0 auto!important}
-  #printZone .label-card{
-    background:#fff!important;border:1px solid transparent!important;margin:0!important;
-    box-sizing:border-box!important;
-    page-break-inside:avoid!important;break-inside:avoid!important;
-    padding:2px 4px!important;
-  }
+  #printZone .label-card{background:#fff!important;border:1px solid transparent!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
   #printZone .print-page-generic-grid .label-card{border:1px solid #222!important}
   #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),
   #printZone .print-sheet-amanhecer .label-card:nth-child(2),
   #printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
-  .calib-sheet{
-    display:grid!important;
-    grid-template-columns:66mm 66mm 66mm!important;
-    grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;
-    width:198mm!important;height:278mm!important;margin:0 auto!important;
-  }
-  .calib-cell{
-    border:1px dashed #d33!important;display:flex!important;align-items:center!important;
-    justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;
-    background:#fff5f5!important;
-  }
+  .calib-sheet{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important}
+  .calib-cell{border:1px dashed #d33!important;display:flex!important;align-items:center!important;justify-content:center!important;font:900 14px Arial!important;color:#c8102e!important;background:#fff5f5!important}
 }
 </style>
 </head>
+<body>
 
-<body data-view="form">
-
-<!-- ============ HEADER ============ -->
-<header class="app-header">
-  <div class="app-header-inner">
-    <div class="brand">
-      <div class="brand-mark">🏷️</div>
-      <div class="brand-text">
-        <strong>Etiquetas de Preços</strong>
-        <span>Balcão Agrícola</span>
+<header class="top-header" id="topHeader">
+  <div class="top-header-inner">
+    <div class="hdr-brand">
+      <h1 class="hdr-title"><span class="h1-tag">🏷️</span> <span>Etiquetas de Preços</span></h1>
+      <div class="hdr-logos">
+        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="" onerror="this.style.opacity=.3">
+        <div class="divider"></div>
+        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="" onerror="this.style.opacity=.3">
       </div>
     </div>
-    <div class="header-actions">
-      <button type="button" class="icon-btn" id="openPreviewBtn" title="Ver etiqueta">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
+    <div class="hdr-actions">
+      <button type="button" class="hdr-btn" id="openPreviewBtn" title="Ver etiqueta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Ver etiqueta</span>
       </button>
+    </div>
+    <div class="hdr-auth">
       <div class="auth-card" id="authCard">
         <div class="auth-card-icon" id="authIcon">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
@@ -1094,10 +737,8 @@ input[type=number]{text-align:left}
                data-text="continue_with" data-shape="pill" data-logo_alignment="left"
                data-locale="pt-PT"></div>
         </div>
-        <button type="button" class="auth-logout-btn" id="authLogoutBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
+        <button type="button" class="auth-logout-btn" id="authLogoutBtn" title="Terminar sessão">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Sair
         </button>
       </div>
@@ -1105,377 +746,164 @@ input[type=number]{text-align:left}
   </div>
 </header>
 
-<!-- ============ APP ============ -->
-<main class="app">
-  <div class="app-grid">
+<div class="hdr-spacer" id="hdrSpacer"></div>
 
-    <!-- ============ FORM COLUMN ============ -->
-    <div class="form-column">
-
-      <!-- FORMATO -->
-      <section class="card" data-collapsible>
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">📐</span> Formato & Loja</h2>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </header>
-        <div class="card-body">
-          <select id="presetSizes" class="format-select">
-            <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Etiquetas Amanhecer · 70×38/40</option></optgroup>
-            <optgroup label="🍎 Fruta e Legumes">
-              <option value="125x80">🍎 Suporte · 125×80</option>
-              <option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option>
-            </optgroup>
-            <optgroup label="📄 Tabuletas">
-              <option value="A6">📄 Tabuleta A6 · 148×105</option>
-              <option value="frutaPromoA6">💡 Tabuleta A6 Leve 2+ · 148×105</option>
-              <option value="A5">📄 Tabuleta A5 · 210×148</option>
-              <option value="100x70">🏷️ Cartaz Médio · 100×70</option>
-            </optgroup>
-            <optgroup label="🏷️ Prateleira">
-              <option value="105x38">🏷 Longa · 105×38</option>
-              <option value="70x38">🏷️ Standard · 70×38</option>
-              <option value="65x38">🏷️ Média · 65×38</option>
-            </optgroup>
-            <optgroup label="⚙️ Outro"><option value="custom">⚙️ Tamanho Personalizado…</option></optgroup>
-          </select>
-
-          <div id="customDimensionsRow" class="field-row" style="display:none;margin-top:12px">
-            <div class="field">
-              <label>Largura (mm)</label>
-              <input id="customWidth" type="number" min="10" max="300" value="70">
-            </div>
-            <div class="field">
-              <label>Altura (mm)</label>
-              <input id="customHeight" type="number" min="10" max="300" value="38">
-            </div>
-          </div>
-
-          <div class="field" style="margin-top:14px">
-            <label>Loja</label>
-            <select id="store">
-              <option value="PATAIAS" selected>PATAIAS</option>
-              <option value="GARCIA">GARCIA</option>
-            </select>
-          </div>
+<div class="app">
+  <div class="grid">
+    <div class="left-col">
+      <section class="panel">
+        <label for="presetSizes">Medida / Formato da Etiqueta</label>
+        <select id="presetSizes" class="format-select">
+          <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Etiquetas Amanhecer · 70×38/40</option></optgroup>
+          <optgroup label="🍎 Fruta e Legumes">
+            <option value="125x80">🍎 Suporte · 125×80</option>
+            <option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option>
+          </optgroup>
+          <optgroup label="📄 Tabuletas">
+            <option value="A6">📄 Tabuleta A6 · 148×105</option>
+            <option value="frutaPromoA6">💡 Tabuleta A6 Leve 2+ · 148×105</option>
+            <option value="A5">📄 Tabuleta A5 · 210×148</option>
+            <option value="100x70">🏷️ Cartaz Médio · 100×70</option>
+          </optgroup>
+          <optgroup label="🏷️ Prateleira">
+            <option value="105x38">🏷 Longa · 105×38</option>
+            <option value="70x38">🏷️ Standard · 70×38</option>
+            <option value="65x38">🏷️ Média · 65×38</option>
+          </optgroup>
+          <optgroup label="⚙️ Outro"><option value="custom">⚙️ Tamanho Personalizado…</option></optgroup>
+        </select>
+        <div class="size-row" id="customDimensionsRow" style="display:none;margin-bottom:8px;background:#fff9db;padding:8px;border-radius:6px;border:1px dashed #fab005">
+          <div><label for="customWidth" style="margin-top:0;font-size:12px">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
+          <div><label for="customHeight" style="margin-top:0;font-size:12px">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
         </div>
+        <div style="width:100%"><label for="store" style="margin-top:0">Loja</label><select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select></div>
       </section>
 
-      <!-- PRODUTO -->
-      <section class="card" data-collapsible>
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">📝</span> Produto</h2>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </header>
-        <div class="card-body">
-          <div class="field">
-            <label for="product">Nome do Produto</label>
-            <input id="product" type="text" class="uppercase-input" placeholder="Ex.: MAÇÃ GALA NACIONAL" autocomplete="off">
-          </div>
-          <div class="field">
-            <label for="internalCode">Código Interno <span class="hint">(opcional)</span></label>
-            <input id="internalCode" type="text" class="uppercase-input" placeholder="Ex.: 1234" autocomplete="off">
-          </div>
-
-          <!-- Painel Fruta/Legumes -->
-          <div id="fruitPanel" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--c-border)">
-            <div class="field-row three">
-              <div class="field">
-                <label>Origem</label>
-                <input id="origem" type="text" class="uppercase-input" placeholder="PORTUGAL">
-              </div>
-              <div class="field">
-                <label>Categoria</label>
-                <input id="categoria" type="text" class="uppercase-input" placeholder="EXTRA">
-              </div>
-              <div class="field">
-                <label>Calibre</label>
-                <input id="calibre" type="text" class="uppercase-input" placeholder="70/75">
-              </div>
+      <details class="drawer" open>
+        <summary>📝 Editar Dados do Produto</summary>
+        <div class="drawer-content">
+          <label for="internalCode" style="margin-top:0">Código Interno</label>
+          <input id="internalCode" type="text" class="uppercase-input">
+          <label for="product">Produto / Variedade</label>
+          <input id="product" type="text" class="uppercase-input">
+          <div class="fruit-panel" id="fruitPanel">
+            <h4>🍎 Origem, Categoria e Calibre</h4>
+            <div class="size-row-3">
+              <div><label for="origem" style="font-size:11px;margin-top:0">Origem</label><input id="origem" type="text" class="uppercase-input"></div>
+              <div><label for="categoria" style="font-size:11px;margin-top:0">Categoria</label><input id="categoria" type="text" class="uppercase-input"></div>
+              <div><label for="calibre" style="font-size:11px;margin-top:0">Calibre</label><input id="calibre" type="text" class="uppercase-input"></div>
             </div>
-
-            <details style="margin-top:12px;background:var(--c-surface-2);border:1px solid var(--c-border);border-radius:var(--r-2)">
-              <summary style="cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:800;color:var(--c-text-2);list-style:none;user-select:none">⚡ Códigos rápidos</summary>
-              <div style="padding:0 14px 14px">
-                <span class="chips-label">🌍 Europa</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="origem" data-val="PORTUGAL">Portugal</span><span class="chip-btn" data-field="origem" data-val="ESPANHA">Espanha</span><span class="chip-btn" data-field="origem" data-val="FRANÇA">França</span><span class="chip-btn" data-field="origem" data-val="ITÁLIA">Itália</span><span class="chip-btn" data-field="origem" data-val="HOLANDA">Holanda</span><span class="chip-btn" data-field="origem" data-val="ALEMANHA">Alemanha</span><span class="chip-btn" data-field="origem" data-val="BÉLGICA">Bélgica</span><span class="chip-btn" data-field="origem" data-val="GRÉCIA">Grécia</span><span class="chip-btn" data-field="origem" data-val="POLÓNIA">Polónia</span><span class="chip-btn" data-field="origem" data-val="ROMÉNIA">Roménia</span><span class="chip-btn" data-field="origem" data-val="TURQUIA">Turquia</span>
-                </div>
-                <span class="chips-label">🌍 África</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="origem" data-val="MARROCOS">Marrocos</span><span class="chip-btn" data-field="origem" data-val="EGITO">Egito</span><span class="chip-btn" data-field="origem" data-val="ÁFRICA DO SUL">África do Sul</span><span class="chip-btn" data-field="origem" data-val="QUÉNIA">Quénia</span><span class="chip-btn" data-field="origem" data-val="SENEGAL">Senegal</span><span class="chip-btn" data-field="origem" data-val="COSTA DO MARFIM">Costa do Marfim</span><span class="chip-btn" data-field="origem" data-val="TUNÍSIA">Tunísia</span>
-                </div>
-                <span class="chips-label">🌎 América</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="origem" data-val="BRASIL">Brasil</span><span class="chip-btn" data-field="origem" data-val="CHILE">Chile</span><span class="chip-btn" data-field="origem" data-val="PERU">Peru</span><span class="chip-btn" data-field="origem" data-val="ARGENTINA">Argentina</span><span class="chip-btn" data-field="origem" data-val="COLÔMBIA">Colômbia</span><span class="chip-btn" data-field="origem" data-val="EQUADOR">Equador</span><span class="chip-btn" data-field="origem" data-val="COSTA RICA">Costa Rica</span><span class="chip-btn" data-field="origem" data-val="MÉXICO">México</span><span class="chip-btn" data-field="origem" data-val="EUA">EUA</span><span class="chip-btn" data-field="origem" data-val="CANADÁ">Canadá</span>
-                </div>
-                <span class="chips-label">🌏 Ásia / Oceânia</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="origem" data-val="ÍNDIA">Índia</span><span class="chip-btn" data-field="origem" data-val="CHINA">China</span><span class="chip-btn" data-field="origem" data-val="TAILÂNDIA">Tailândia</span><span class="chip-btn" data-field="origem" data-val="VIETNAME">Vietname</span><span class="chip-btn" data-field="origem" data-val="ISRAEL">Israel</span><span class="chip-btn" data-field="origem" data-val="NOVA ZELÂNDIA">Nova Zelândia</span><span class="chip-btn" data-field="origem" data-val="AUSTRÁLIA">Austrália</span>
-                </div>
-                <span class="chips-label">🏅 Categoria UE</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="categoria" data-val="EXTRA">Extra</span><span class="chip-btn" data-field="categoria" data-val="I">I</span><span class="chip-btn" data-field="categoria" data-val="II">II</span><span class="chip-btn" data-field="categoria" data-val="III">III</span><span class="chip-btn chip-nc" data-field="categoria" data-val="N/C">N/C</span>
-                </div>
-                <span class="chips-label">📏 Calibre</span>
-                <div class="chips-group">
-                  <span class="chip-btn" data-field="calibre" data-val="30+">30+</span><span class="chip-btn" data-field="calibre" data-val="55/60">55/60</span><span class="chip-btn" data-field="calibre" data-val="60/65">60/65</span><span class="chip-btn" data-field="calibre" data-val="65/70">65/70</span><span class="chip-btn" data-field="calibre" data-val="70/75">70/75</span><span class="chip-btn" data-field="calibre" data-val="75/80">75/80</span><span class="chip-btn" data-field="calibre" data-val="80/85">80/85</span><span class="chip-btn" data-field="calibre" data-val="85/90">85/90</span><span class="chip-btn" data-field="calibre" data-val="90/95">90/95</span><span class="chip-btn" data-field="calibre" data-val="95/100">95/100</span><span class="chip-btn" data-field="calibre" data-val="100/110">100/110</span><span class="chip-btn" data-field="calibre" data-val="110/120">110/120</span><span class="chip-btn" data-field="calibre" data-val="120/135">120/135</span><span class="chip-btn chip-nc" data-field="calibre" data-val="N/C">N/C</span>
-                </div>
+            <details class="quick-drawer">
+              <summary>⚡ Códigos rápidos</summary>
+              <div class="chips-label">🌍 Europa</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="PORTUGAL">Portugal</span><span class="chip-btn" data-field="origem" data-val="ESPANHA">Espanha</span><span class="chip-btn" data-field="origem" data-val="FRANÇA">França</span><span class="chip-btn" data-field="origem" data-val="ITÁLIA">Itália</span><span class="chip-btn" data-field="origem" data-val="HOLANDA">Holanda</span><span class="chip-btn" data-field="origem" data-val="ALEMANHA">Alemanha</span><span class="chip-btn" data-field="origem" data-val="BÉLGICA">Bélgica</span><span class="chip-btn" data-field="origem" data-val="GRÉCIA">Grécia</span><span class="chip-btn" data-field="origem" data-val="POLÓNIA">Polónia</span><span class="chip-btn" data-field="origem" data-val="ROMÉNIA">Roménia</span><span class="chip-btn" data-field="origem" data-val="TURQUIA">Turquia</span>
+              </div>
+              <div class="chips-label">🌍 África</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="MARROCOS">Marrocos</span><span class="chip-btn" data-field="origem" data-val="EGITO">Egito</span><span class="chip-btn" data-field="origem" data-val="ÁFRICA DO SUL">África do Sul</span><span class="chip-btn" data-field="origem" data-val="QUÉNIA">Quénia</span><span class="chip-btn" data-field="origem" data-val="SENEGAL">Senegal</span><span class="chip-btn" data-field="origem" data-val="COSTA DO MARFIM">Costa do Marfim</span><span class="chip-btn" data-field="origem" data-val="TUNÍSIA">Tunísia</span>
+              </div>
+              <div class="chips-label">🌎 América</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="BRASIL">Brasil</span><span class="chip-btn" data-field="origem" data-val="CHILE">Chile</span><span class="chip-btn" data-field="origem" data-val="PERU">Peru</span><span class="chip-btn" data-field="origem" data-val="ARGENTINA">Argentina</span><span class="chip-btn" data-field="origem" data-val="COLÔMBIA">Colômbia</span><span class="chip-btn" data-field="origem" data-val="EQUADOR">Equador</span><span class="chip-btn" data-field="origem" data-val="COSTA RICA">Costa Rica</span><span class="chip-btn" data-field="origem" data-val="MÉXICO">México</span><span class="chip-btn" data-field="origem" data-val="EUA">EUA</span><span class="chip-btn" data-field="origem" data-val="CANADÁ">Canadá</span>
+              </div>
+              <div class="chips-label">🌏 Ásia / Oceânia</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="origem" data-val="ÍNDIA">Índia</span><span class="chip-btn" data-field="origem" data-val="CHINA">China</span><span class="chip-btn" data-field="origem" data-val="TAILÂNDIA">Tailândia</span><span class="chip-btn" data-field="origem" data-val="VIETNAME">Vietname</span><span class="chip-btn" data-field="origem" data-val="ISRAEL">Israel</span><span class="chip-btn" data-field="origem" data-val="NOVA ZELÂNDIA">Nova Zelândia</span><span class="chip-btn" data-field="origem" data-val="AUSTRÁLIA">Austrália</span>
+              </div>
+              <div class="chips-label">🏅 Categoria UE</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="categoria" data-val="EXTRA">Extra</span><span class="chip-btn" data-field="categoria" data-val="I">I</span><span class="chip-btn" data-field="categoria" data-val="II">II</span><span class="chip-btn" data-field="categoria" data-val="III">III</span><span class="chip-btn chip-nc" data-field="categoria" data-val="N/C">N/C</span>
+              </div>
+              <div class="chips-label">📏 Calibre</div>
+              <div class="chips-group">
+                <span class="chip-btn" data-field="calibre" data-val="30+">30+</span><span class="chip-btn" data-field="calibre" data-val="55/60">55/60</span><span class="chip-btn" data-field="calibre" data-val="60/65">60/65</span><span class="chip-btn" data-field="calibre" data-val="65/70">65/70</span><span class="chip-btn" data-field="calibre" data-val="70/75">70/75</span><span class="chip-btn" data-field="calibre" data-val="75/80">75/80</span><span class="chip-btn" data-field="calibre" data-val="80/85">80/85</span><span class="chip-btn" data-field="calibre" data-val="85/90">85/90</span><span class="chip-btn" data-field="calibre" data-val="90/95">90/95</span><span class="chip-btn" data-field="calibre" data-val="95/100">95/100</span><span class="chip-btn" data-field="calibre" data-val="100/110">100/110</span><span class="chip-btn" data-field="calibre" data-val="110/120">110/120</span><span class="chip-btn" data-field="calibre" data-val="120/135">120/135</span>
+                <span class="chip-btn chip-nc" data-field="calibre" data-val="N/C">N/C</span>
               </div>
             </details>
           </div>
-        </div>
-      </section>
-
-      <!-- PREÇO -->
-      <section class="card" data-collapsible>
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">💶</span> Preço & Quantidade</h2>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </header>
-        <div class="card-body">
-          <div class="field-row">
-            <div class="field">
-              <label for="price">Preço de Venda (€)</label>
-              <input id="price" type="text" inputmode="decimal" placeholder="0,00">
+          <div class="fruit-promo-panel" id="fruitPromoPanel">
+            <h4>💡 Oportunidade "Leve X ou mais"</h4>
+            <div class="size-row">
+              <div><label for="promoMinQty" style="margin-top:0;font-size:11px">Qtd. mínima</label><input id="promoMinQty" type="number" min="1" step="1" value="2"></div>
+              <div><label for="promoUnit" style="margin-top:0;font-size:11px">Unidade</label><select id="promoUnit"><option value="KG" selected>Quilos (KG)</option><option value="UN">Unidades (UN)</option></select></div>
             </div>
-            <div class="field">
-              <label for="oldPrice">Preço Anterior (€) <span class="hint">opcional</span></label>
-              <input id="oldPrice" type="text" inputmode="decimal" placeholder="0,00">
+            <label for="promoPrice" style="margin-top:8px;font-size:11px">Preço Especial (€)</label>
+            <input id="promoPrice" type="text" inputmode="decimal" style="border-color:#c8102e;background:#fff9fb">
+          </div>
+          <div id="standardPricePanel">
+            <label for="price">Preço de Venda (€)</label>
+            <input id="price" type="text" inputmode="decimal">
+            <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="isPromoActive" style="width:auto"> 💡 Mostrar Oportunidade</label>
+            <div id="promoBox" class="promo-panel" style="display:none">
+              <label for="oldPrice" style="margin-top:0;font-size:11px;color:#c8102e">Preço Normal Anterior (€)</label>
+              <input id="oldPrice" type="text" inputmode="decimal">
             </div>
-          </div>
-
-          <label class="check-row" for="isPromoActive" style="margin-top:10px">
-            <input type="checkbox" id="isPromoActive">
-            💡 Mostrar Oportunidade / Desconto
-          </label>
-
-          <div class="field-row" style="margin-top:14px">
-            <div class="field">
-              <label for="capacity">Quantidade / Medida</label>
-              <input id="capacity" type="number" min="0.001" step="0.001" placeholder="Ex.: 1">
-              <div id="capacityHint" style="display:none;font-size:11.5px;color:#1e40af;margin-top:6px;font-weight:700;padding:6px 10px;background:#eff6ff;border-radius:6px;border-left:3px solid #1e40af"></div>
-            </div>
-            <div class="field">
-              <label for="capacityUnit">Unidade</label>
-              <select id="capacityUnit">
-                <optgroup label="⚖️ Peso"><option value="peso" selected>Quilos (KG)</option><option value="g">Gramas (g)</option></optgroup>
-                <optgroup label="🥤 Volume"><option value="lt">Litros (LT)</option><option value="cl">Centilitros (cl)</option><option value="ml">Mililitros (ml)</option></optgroup>
-                <optgroup label="🔢 Contagem"><option value="un">Unidade (UN)</option><option value="dz">Dúzia</option><option value="meia_dz">Meia Dúzia</option><option value="dose">Dose</option></optgroup>
-              </select>
-            </div>
-          </div>
-
-          <!-- Painel de promoção especial (fruta) -->
-          <div class="fruit-promo-panel" id="fruitPromoPanel" style="display:none;margin-top:14px;padding:14px;background:#fff5f5;border:2px solid var(--c-accent);border-radius:var(--r-2)">
-            <h4 style="margin:0 0 12px;font-size:12.5px;font-weight:800;color:var(--c-accent);text-transform:uppercase;letter-spacing:.04em">💡 Oportunidade "Leve X ou mais"</h4>
-            <div class="field-row">
-              <div class="field">
-                <label for="promoMinQty">Qtd. mínima</label>
-                <input id="promoMinQty" type="number" min="1" step="1" value="2">
-              </div>
-              <div class="field">
-                <label for="promoUnit">Unidade</label>
-                <select id="promoUnit"><option value="KG" selected>Quilos (KG)</option><option value="UN">Unidades (UN)</option></select>
-              </div>
-            </div>
-            <div class="field" style="margin-top:6px">
-              <label for="promoPrice">Preço Especial (€)</label>
-              <input id="promoPrice" type="text" inputmode="decimal" style="border-color:var(--c-accent);background:#fff9fb">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CÓDIGO DE BARRAS -->
-      <section class="card" data-collapsible>
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">📊</span> Código de Barras</h2>
-          <span class="badge" id="eanBadge" style="display:none">—</span>
-        </header>
-        <div class="card-body">
-          <div class="field">
-            <label for="ean">EAN-13 / EAN-14 / Code128</label>
-            <input id="ean" type="text" placeholder="Ex.: 5601234567890" autocomplete="off">
-          </div>
-          <button type="button" class="btn btn-ghost btn-block" id="scanEanBtn" style="margin-top:4px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="7" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="13" y1="12" x2="13" y2="12"/><line x1="16" y1="12" x2="16" y2="12"/></svg>
-            Ler código de barras
-          </button>
-        </div>
-      </section>
-
-      <!-- FOTOGRAFIA -->
-      <section class="card" data-collapsible>
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">📷</span> Fotografia</h2>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </header>
-        <div class="card-body">
-          <div class="field">
-            <label for="photo">Ficheiro de imagem</label>
-            <input id="photo" type="file" accept="image/*">
-          </div>
-          <div class="field-row" style="margin-top:12px">
-            <button type="button" class="btn btn-ghost" id="openCameraBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              Tirar foto
-            </button>
-            <button type="button" class="btn btn-ghost" id="abrirBancoFrutaBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              Banco
-            </button>
-          </div>
-          <button type="button" class="btn btn-ghost btn-block" id="fotoBancoBtn" style="margin-top:8px">
-            📷 Fotografar para o banco de imagens
-          </button>
-
-          <label class="check-row" for="autoRemoveBg" style="margin-top:14px">
-            <input type="checkbox" id="autoRemoveBg" checked>
-            ✨ Remover fundo automaticamente
-          </label>
-          <label class="check-row" for="useAI">
-            <input type="checkbox" id="useAI" checked>
-            🤖 Usar IA (melhor qualidade)
-          </label>
-        </div>
-      </section>
-
-      <!-- EXTRAS -->
-      <section class="card" data-collapsible data-collapsed="true">
-        <header class="card-header" data-toggle>
-          <h2><span class="ico">⚙️</span> Extras & Validade</h2>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </header>
-        <div class="card-body">
-          <div class="field">
-            <label for="unit">Informação extra <span class="hint">opcional</span></label>
-            <input id="unit" type="text" placeholder="Ex.: CAIXA 5KG">
-          </div>
-
-          <div class="field">
-            <label for="depositFeeSelect">Taxa Volta</label>
-            <select id="depositFeeSelect">
-              <option value="" selected>Nenhuma</option>
-              <option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option>
-              <option value="custom">Outro valor...</option>
-            </select>
-          </div>
-          <div class="field" id="customDepositField" style="display:none">
-            <label for="customDepositInput">Valor da taxa</label>
-            <input id="customDepositInput" type="text" placeholder="Ex.: Acresce 0,15 € Volta">
-          </div>
-
-          <div class="field-row" style="margin-top:14px">
-            <div class="field">
-              <label for="promoStart">Início Oportunidade</label>
-              <div class="date-input-wrap">
-                <input id="promoStart" type="date">
-                <button type="button" class="date-clear-btn" data-target="promoStart" title="Limpar">✕</button>
-              </div>
-            </div>
-            <div class="field">
-              <label for="promoEnd">Fim Oportunidade</label>
-              <div class="date-input-wrap">
-                <input id="promoEnd" type="date">
-                <button type="button" class="date-clear-btn" data-target="promoEnd" title="Limpar">✕</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ACTIONS -->
-      <section class="card actions-card">
-        <div class="card-body">
-          <div class="field">
-            <label for="copiesCount">Nº de Etiquetas</label>
-            <input id="copiesCount" type="number" min="1" max="100" value="1">
-          </div>
-          <div id="appStatus" role="status" aria-live="polite"></div>
-
-          <div class="field-row" style="margin-top:14px">
-            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Adicionar à Fila
-            </button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Guardar
-            </button>
-          </div>
-
-          <button class="btn btn-accent btn-block btn-lg" id="printBtn" type="button" style="margin-top:10px">
-            🖨️ Imprimir [F9]
-          </button>
-
-          <div class="field-row three" style="margin-top:10px;grid-template-columns:1fr 1fr 1fr">
-            <button class="btn btn-ghost btn-sm" id="previewSheetBtn" type="button">👁️ Ver Folha</button>
-            <button class="btn btn-ghost btn-sm" id="printDbBtn" type="button">🗃️ Imprimir BD</button>
-            <button class="btn btn-ghost btn-sm" id="clearBtn" type="button">🗑️ Limpar</button>
-          </div>
-
-          <button class="btn btn-ghost btn-block" id="emailLabelsBtn" type="button" style="margin-top:10px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Enviar por Email (PDF)
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============ PREVIEW COLUMN ============ -->
-    <div class="preview-column">
-      <div class="preview-shell">
-        <div id="badgeSheet" class="sheet-badge">⭐ Etiquetas Amanhecer</div>
-        <div class="preview-wrap">
-          <div class="preview-scaler" id="previewScaler">
-            <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
-              <div class="header">
-                <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" onerror="this.style.opacity=.3" alt=""></div>
-                <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" onerror="this.style.opacity=.3" alt=""></div>
-                <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
-              </div>
-              <div class="main-content">
-                <div class="col-desc">
-                  <div class="item-code" id="cardCode" style="display:none"></div>
-                  <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
-                  <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
-                  <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
-                  <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
+            <div style="margin-top:8px">
+              <div class="size-row">
+                <div>
+                  <label for="capacity">Quantidade / Medida</label>
+                  <input id="capacity" type="number" min="0.001" step="0.001" value="">
+                  <div id="capacityHint" style="font-size:11.5px;color:#084298;margin-top:5px;font-weight:800;display:none;padding:4px 8px;background:#eef4ff;border-radius:6px;border-left:3px solid #084298"></div>
                 </div>
-                <div class="col-price">
-                  <div class="price-wrapper">
-                    <div class="promo-top-row" id="cardPromoTopRow" style="display:none"><span class="old-price" id="cardOldPrice"></span><span class="promo-tag" id="cardPromoTag"></span></div>
-                    <div class="price" id="cardPrice">0,00<span class="unit-inline">€/KG</span></div>
-                  </div>
+                <div>
+                  <label for="capacityUnit">Unidade</label>
+                  <select id="capacityUnit">
+                    <optgroup label="⚖️ Peso"><option value="peso" selected>Quilos (KG)</option><option value="g">Gramas (g)</option></optgroup>
+                    <optgroup label="🥤 Volume"><option value="lt">Litros (LT)</option><option value="cl">Centilitros (cl)</option><option value="ml">Mililitros (ml)</option></optgroup>
+                    <optgroup label="🔢 Contagem"><option value="un">Unidade (UN)</option><option value="dz">Dúzia</option><option value="meia_dz">Meia Dúzia</option><option value="dose">Dose</option></optgroup>
+                  </select>
                 </div>
-                <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt=""></div>
               </div>
-              <div class="fruit-promo-prices" id="cardFruitPromo">
-                <div class="fp-box fp-normal"><div class="fp-label">PREÇO NORMAL</div><div class="fp-price" id="cardFpNormalPrice">0,00 €</div><div class="fp-unit" id="cardFpNormalUnit">/ KG</div></div>
-                <div class="fp-box fp-promo"><div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div><div class="fp-price" id="cardFpPromoPrice">0,00 €</div><div class="fp-unit" id="cardFpPromoUnit">/ KG</div></div>
+            </div>
+            <div style="margin-top:8px">
+              <label for="depositFeeSelect">Taxa Volta</label>
+              <select id="depositFeeSelect"><option value="" selected>Nenhuma</option><option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option><option value="custom">Outro valor...</option></select>
+              <input id="customDepositInput" type="text" style="display:none;margin-top:6px">
+            </div>
+            <div style="margin-top:8px">
+              <label for="unit">Informação Extra (Opcional)</label>
+              <input id="unit" type="text">
+            </div>
+            <div class="dates-row" style="margin-top:8px">
+              <div>
+                <label for="promoStart">Início Oportunidade</label>
+                <div class="date-input-wrap">
+                  <input id="promoStart" type="date">
+                  <button type="button" class="date-clear-btn" data-target="promoStart" title="Limpar data">✕</button>
+                </div>
               </div>
-              <div class="fruit-full-bar" id="cardFruit"></div>
-              <div class="barcode-container" id="cardBarcodeBox">
-                <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
-                <div class="ean-text" id="cardBarcodeText"></div>
-              </div>
-              <div class="footer-container">
-                <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
-                <div class="print-date" id="cardPrintDate"></div>
+              <div>
+                <label for="promoEnd">Fim Oportunidade</label>
+                <div class="date-input-wrap">
+                  <input id="promoEnd" type="date">
+                  <button type="button" class="date-clear-btn" data-target="promoEnd" title="Limpar data">✕</button>
+                </div>
               </div>
             </div>
           </div>
+          <label for="ean" style="color:#084298">Código de Barras (EAN) <span id="eanBadge" class="bc-badge" style="display:none"></span></label>
+          <input id="ean" type="text" style="text-transform:uppercase;border-color:#b6d4fe;background:#f8fbff">
+          <button type="button" class="secondary" id="scanEanBtn" style="margin-top:6px;border-color:#084298;color:#084298">📷 Ler código de barras</button>
+          <label for="photo">Fotografia do Produto</label>
+          <input id="photo" type="file" accept="image/*">
+          <button type="button" class="photo-action-btn" id="openCameraBtn">📷 Tirar foto agora</button>
+          <div class="photo-bank-panel">
+            <div class="pb-header"><span>📚</span><span>Banco de Imagens</span></div>
+            <div class="pb-actions">
+              <button type="button" id="abrirBancoFrutaBtn">🍎🥬 Escolher do banco</button>
+              <button type="button" id="fotoBancoBtn">📷 Fotografar para o banco</button>
+            </div>
+            <div class="pb-hint">Escolhe uma imagem ou fotografa um novo artigo — vais sempre indicar se é <b>Fruta</b> ou <b>Legume</b> e o nome.</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="autoRemoveBg" checked style="width:auto"> ✨ Remover fundo automaticamente</label>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:6px;font-weight:600;font-size:12px;cursor:pointer"><input type="checkbox" id="useAI" checked style="width:auto"> 🤖 Usar IA (melhor qualidade)</label>
         </div>
-      </div>
-    </div>
+      </details>
 
-    <!-- ============ MORE PANEL (mobile) ============ -->
-    <div class="more-panel" style="display:none">
-      <section class="card">
-        <header class="card-header">
-          <h2><span class="ico">🎯</span> Ajustes de Impressão</h2>
-        </header>
-        <div class="card-body">
+      <details class="drawer">
+        <summary>🎯 Ajustes de Impressão</summary>
+        <div class="drawer-content">
           <div class="offset-panel">
             <div class="offset-section-title">🌐 Deslocamento global</div>
             <div class="offset-row"><label for="offsetXRange">↔ X</label><input id="offsetXRange" type="range" min="-30" max="30" step="0.5" value="0"><span class="offset-value" id="offsetXVal">0 mm</span></div>
@@ -1489,89 +917,106 @@ input[type=number]{text-align:left}
             <div class="offset-row"><label for="marginLeftRange">↔ Esq</label><input id="marginLeftRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginLeftVal">4 mm</span></div>
             <div class="offset-row"><label for="marginRightRange">↔ Dir</label><input id="marginRightRange" type="range" min="0" max="15" step="0.5" value="4"><span class="offset-value" id="marginRightVal">4 mm</span></div>
             <div class="offset-hint">💡 A margem de segurança é aplicada automaticamente na impressão.</div>
-            <div class="field-row" style="margin-top:12px">
-              <button class="btn btn-ghost btn-sm" id="printCalibBtn" type="button">📏 Calibração</button>
-              <button class="btn btn-ghost btn-sm" id="resetOffsetBtn" type="button">↺ Reiniciar</button>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px">
+              <button class="warn-btn" id="printCalibBtn" type="button">📏 Calibração</button>
+              <button class="secondary" id="resetOffsetBtn" type="button">↺ Reiniciar</button>
             </div>
           </div>
         </div>
-      </section>
+      </details>
 
-      <section class="card">
-        <header class="card-header">
-          <h2><span class="ico">🛒</span> Fila de Impressão <span class="badge" id="queueBadge">0</span></h2>
-        </header>
-        <div class="card-body">
-          <div id="queueListContainer"><div class="empty-msg">A fila está vazia.</div></div>
-          <button class="btn btn-ghost btn-block btn-sm" style="margin-top:10px;border-color:#fecaca;color:#b91c1c;display:none" id="clearQueueBtn">🗑️ Limpar Fila</button>
+      <section class="panel">
+        <div class="size-row"><div><label for="copiesCount" style="margin-top:0">Nº de Etiquetas</label><input id="copiesCount" type="number" min="1" max="100" value="1"></div></div>
+        <div id="appStatus" role="status" aria-live="polite"></div>
+        <div class="actions">
+          <button class="success-btn" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
+          <button class="save-btn" id="saveDbBtn" type="button">💾 Guardar no Drive</button>
+        </div>
+        <div class="actions-full"><button class="primary" id="printBtn" type="button">🖨️ Imprimir [F9]</button></div>
+        <div class="actions-3">
+          <button class="secondary" id="previewSheetBtn" type="button" style="font-size:12px">👁️ Ver Folha</button>
+          <button class="secondary" id="printDbBtn" type="button" style="font-size:12px">🗃️ Imprimir BD</button>
+          <button class="secondary" id="clearBtn" type="button" style="font-size:12px">🗑️ Limpar</button>
+        </div>
+        <div class="actions-full" style="margin-top:10px">
+          <button class="email-btn" id="emailLabelsBtn" type="button">📧 Enviar etiquetas por Email (PDF)</button>
         </div>
       </section>
 
-      <section class="card">
-        <header class="card-header">
-          <h2><span class="ico">🗃️</span> Produtos Guardados <span class="badge" id="dbBadge">0</span></h2>
-        </header>
-        <div class="card-body">
-          <div class="field-row" style="margin-bottom:8px">
-            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button">🔄 Recarregar</button>
-            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button">🔄 Sincronizar</button>
+      <details class="drawer">
+        <summary>🛒 Fila de Impressão (<span id="queueBadge">0</span>)</summary>
+        <div class="drawer-content" style="background:var(--panel-soft)">
+          <div id="queueListContainer"><div class="empty-msg">A fila está vazia.</div></div>
+          <button class="secondary" style="margin-top:10px;border-color:#e74c3c;color:#c0392b;display:none" id="clearQueueBtn">🗑️ Limpar Fila</button>
+        </div>
+      </details>
+
+      <details class="drawer" open>
+        <summary>🗃️ Produtos Guardados no Drive (<span id="dbBadge">0</span>)</summary>
+        <div class="drawer-content" style="background:var(--panel-soft)">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px">
+            <button class="secondary" id="recarregarDbBtn" type="button" style="font-size:12px">🔄 Recarregar</button>
+            <button class="secondary" id="syncBancoBtn" type="button" style="font-size:12px">🔄 Sincronizar</button>
           </div>
-          <div class="field-row" style="margin-bottom:12px">
-            <button class="btn btn-ghost btn-sm" id="otimizarBancoBtn" type="button">📉 Otimizar</button>
-            <button class="btn btn-ghost btn-sm" id="diagnosticoBtn" type="button">🩺 Testar</button>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:10px">
+            <button class="secondary" id="otimizarBancoBtn" type="button" style="font-size:12px;border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
+            <button class="secondary" id="diagnosticoBtn" type="button" style="font-size:12px;border-color:#084298;color:#084298">🩺 Testar</button>
           </div>
-          <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
+          <div id="dbListContainer"><div class="empty-msg">A carregar do Drive…</div></div>
           <div id="diagBox" class="diag-box"></div>
         </div>
-      </section>
-
-      <section class="card">
-        <header class="card-header">
-          <h2><span class="ico">💾</span> Backup / Restauração</h2>
-        </header>
-        <div class="card-body">
-          <p style="font-size:12.5px;color:var(--c-text-2);margin:0 0 14px;line-height:1.5">
-            Exporta todos os <b>produtos</b>, <b>fila</b> e <b>preferências</b> num único ficheiro JSON.
-          </p>
-          <div class="field-row">
-            <button class="btn btn-ghost" id="exportJsonBtn" type="button">📤 Exportar</button>
-            <button class="btn btn-ghost" id="importJsonBtn" type="button">📥 Importar</button>
-          </div>
-          <input type="file" id="importJsonFile" accept="application/json,.json" style="display:none">
-          <div id="backupInfo" style="font-size:12px;color:var(--c-text-2);margin-top:12px;line-height:1.5"></div>
-        </div>
-      </section>
+      </details>
     </div>
 
+    <section class="preview-container">
+      <div id="badgeSheet" class="sheet-badge">⭐ Etiquetas Amanhecer</div>
+      <div class="preview-wrap" id="previewWrap">
+        <div class="preview-scaler" id="previewScaler">
+          <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
+            <div class="header">
+              <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" onerror="this.style.opacity=.3" alt=""></div>
+              <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" onerror="this.style.opacity=.3" alt=""></div>
+              <div class="header-store-container"><div class="store-text" id="cardStore">PATAIAS</div></div>
+            </div>
+            <div class="main-content">
+              <div class="col-desc">
+                <div class="item-code" id="cardCode" style="display:none"></div>
+                <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
+                <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
+                <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
+                <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
+              </div>
+              <div class="col-price">
+                <div class="price-wrapper">
+                  <div class="promo-top-row" id="cardPromoTopRow" style="display:none"><span class="old-price" id="cardOldPrice"></span><span class="promo-tag" id="cardPromoTag"></span></div>
+                  <div class="price" id="cardPrice">0,00<span class="unit-inline">€/KG</span></div>
+                </div>
+              </div>
+              <div class="col-image" id="cardPhotoBox"><img id="cardPhotoImg" src="" alt=""></div>
+            </div>
+            <div class="fruit-promo-prices" id="cardFruitPromo">
+              <div class="fp-box fp-normal"><div class="fp-label">PREÇO NORMAL</div><div class="fp-price" id="cardFpNormalPrice">0,00 €</div><div class="fp-unit" id="cardFpNormalUnit">/ KG</div></div>
+              <div class="fp-box fp-promo"><div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div><div class="fp-price" id="cardFpPromoPrice">0,00 €</div><div class="fp-unit" id="cardFpPromoUnit">/ KG</div></div>
+            </div>
+            <div class="fruit-full-bar" id="cardFruit"></div>
+            <div class="barcode-container" id="cardBarcodeBox">
+              <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
+              <div class="ean-text" id="cardBarcodeText"></div>
+            </div>
+            <div class="footer-container">
+              <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
+              <div class="print-date" id="cardPrintDate"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-</main>
+</div>
 
-<!-- ============ MOBILE NAV ============ -->
-<nav class="mobile-nav">
-  <div class="mobile-nav-inner">
-    <button type="button" data-view="form" class="active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Editor
-    </button>
-    <button type="button" data-view="preview">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      Ver
-    </button>
-    <button type="button" data-view="more">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-      Mais
-    </button>
-    <button type="button" data-view="print" id="mobilePrintBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Imprimir
-    </button>
-  </div>
-</nav>
-
-<!-- ============ INSTALL BANNER ============ -->
 <div class="install-banner" id="installBanner">
   <div class="install-banner-icon">
-    <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
       <polyline points="7 10 12 15 17 10"/>
       <line x1="12" y1="15" x2="12" y2="3"/>
@@ -1587,7 +1032,6 @@ input[type=number]{text-align:left}
   </div>
 </div>
 
-<!-- ============ PREVIEW MODAL ============ -->
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose" aria-label="Fechar">✕</button>
   <div class="preview-modal-badge" id="previewModalBadge">⭐ Etiquetas Amanhecer</div>
@@ -1596,8 +1040,6 @@ input[type=number]{text-align:left}
 
 <div id="printZone"></div>
 <div class="toast-container" id="toastContainer" role="region" aria-live="polite"></div>
-
-<!-- ============ CONFIRM ============ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg"></p>
@@ -1607,8 +1049,6 @@ input[type=number]{text-align:left}
     </div>
   </div>
 </div>
-
-<!-- ============ SAVE-BANCO MODAL ============ -->
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3>📷 Guardar foto no banco</h3>
@@ -1620,15 +1060,13 @@ input[type=number]{text-align:left}
     </div>
     <div class="tipo-hint" id="saveBancoTipoHint">⚠️ Escolha obrigatória: Fruta ou Legume</div>
     <span class="tipo-label-title">2. Nome do artigo *</span>
-    <input id="saveBancoName" type="text" placeholder="Ex.: MAÇÃ GALA NACIONAL" style="text-transform:uppercase;font-weight:700;font-size:15px;padding:13px">
+    <input id="saveBancoName" type="text" placeholder="Ex.: MAÇÃ GALA NACIONAL" style="text-transform:uppercase;font-weight:800;font-size:16px;padding:14px">
     <div class="name-modal-actions">
       <button type="button" class="name-modal-no" id="saveBancoCancel">Cancelar</button>
       <button type="button" class="name-modal-yes" id="saveBancoConfirm" disabled>Guardar</button>
     </div>
   </div>
 </div>
-
-<!-- ============ EMAIL MODAL ============ -->
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
@@ -1645,8 +1083,6 @@ input[type=number]{text-align:left}
     </div>
   </div>
 </div>
-
-<!-- ============ INSTALL MODAL ============ -->
 <div class="install-modal" id="installModal">
   <div class="install-modal-box">
     <h3 id="installTitle">📲 Instalar aplicação</h3>
@@ -1659,29 +1095,23 @@ input[type=number]{text-align:left}
     </div>
   </div>
 </div>
-
-<!-- ============ CAMERA ============ -->
 <div class="modal" id="cameraModal">
   <video id="camVideo" autoplay playsinline muted></video>
   <canvas id="camCanvas" style="display:none"></canvas>
   <div class="cam-actions">
-    <button id="camSnap" class="btn btn-accent">📸 Capturar</button>
-    <button id="camClose" class="btn btn-ghost">✕ Fechar</button>
+    <button id="camSnap" class="primary">📸 Capturar</button>
+    <button id="camClose" class="secondary">✕ Fechar</button>
   </div>
 </div>
-
-<!-- ============ SCANNER ============ -->
 <div class="modal" id="scannerModal">
   <div id="reader"></div>
-  <button id="scanClose" class="btn btn-ghost" style="width:auto;padding:10px 22px">✕ Fechar</button>
+  <button id="scanClose" class="secondary" style="width:auto;padding:10px 22px">✕ Fechar</button>
 </div>
-
-<!-- ============ IMAGE BANK MODAL ============ -->
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div class="bf-modal-header">
       <h3 class="modal-title" style="margin:0">📚 Banco de Frutas e Legumes</h3>
-      <div class="bf-modal-actions"><button id="fecharBancoFruta" class="btn btn-ghost btn-sm" type="button">✕ Fechar</button></div>
+      <div class="bf-modal-actions"><button id="fecharBancoFruta" class="secondary" type="button">✕ Fechar</button></div>
     </div>
     <div class="bf-tabs" id="bfTabs">
       <button type="button" data-tipo="fruta" class="active">🍎 Frutas <span class="bf-count" id="bfCountFruta">0</span></button>
@@ -1691,28 +1121,23 @@ input[type=number]{text-align:left}
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
-
-<!-- ============ SHEET PREVIEW ============ -->
 <div class="sheet-preview" id="sheetPreview">
   <div class="sheet-preview-inner">
     <div class="sheet-preview-header">
       <h3 id="sheetPreviewTitle">👁️ Pré-visualização</h3>
-      <button class="btn btn-ghost btn-sm" id="sheetPreviewClose" type="button">✕ Fechar</button>
+      <button class="secondary" id="sheetPreviewClose" type="button" style="width:auto;padding:8px 14px">✕ Fechar</button>
     </div>
     <div id="sheetPreviewContent" class="sheet-preview-content"></div>
   </div>
 </div>
-
-<!-- ============ PRO PRINT OVERLAY ============ -->
 <div class="pro-print-overlay" id="proPrintOverlay">
   <div class="pro-print-box">
     <div class="pro-spinner"></div>
     <strong>A preparar impressão…</strong>
-    <div class="print-tip">Se o diálogo não abrir, use <b>Partilhar → Imprimir</b>.</div>
+    <div class="print-tip">Se o diálogo não abrir automaticamente, use <b>Partilhar → Imprimir</b>.</div>
   </div>
 </div>
 
-<!-- ===================== SCRIPT ===================== -->
 <script>
 "use strict";
 
@@ -1767,7 +1192,7 @@ function atualizarUICredenciais(){
     card.classList.add('logged');
     t.textContent='Sessão';
     s.textContent=info.email||info.name||'Ativo';
-    ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    ic.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   } else {
     card.classList.remove('logged');
     t.textContent='Sessão';
@@ -1786,13 +1211,16 @@ window.handleCredentialResponse=async function(response){
     });
     const j = await res.json();
     if(!j.ok) throw new Error(j.error);
+
     const permToken = j.data.sessionToken;
     const user = j.data.user;
-    const exp = Math.floor(Date.now()/1000) + (365*24*3600);
+    const exp = Math.floor(Date.now()/1000) + (365*24*3600); // 1 ano de validade
+
     localStorage.setItem(AUTH_KEY_JWT, permToken);
     localStorage.setItem(AUTH_KEY_EXP, String(exp));
     localStorage.setItem(AUTH_KEY_USER, JSON.stringify(user));
     _currentUser = user;
+
     atualizarUICredenciais();
     setStatus("","");
     try{ toast('Sessão permanente iniciada!','success'); }catch(e){}
@@ -1844,7 +1272,18 @@ function inicializarBotaoGoogle(){
   }catch(e){}
 }
 
-/* ============ PWA INSTALL ============ */
+function ajustarAlturaHeader(){
+  const hdr=document.getElementById('topHeader');
+  const spc=document.getElementById('hdrSpacer');
+  if(!hdr||!spc) return;
+  const h=hdr.getBoundingClientRect().height;
+  if(h>0) spc.style.height=h+'px';
+}
+window.addEventListener('resize',ajustarAlturaHeader);
+window.addEventListener('orientationchange',function(){ setTimeout(ajustarAlturaHeader,200); });
+window.addEventListener('load',function(){ ajustarAlturaHeader(); setTimeout(ajustarAlturaHeader,300); setTimeout(ajustarAlturaHeader,900); });
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(ajustarAlturaHeader,100); });
+
 (function setupPWA(){
   const isAndroid=/Android/i.test(navigator.userAgent);
   const isMobileUA=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -1891,6 +1330,7 @@ function inicializarBotaoGoogle(){
     if(esconderTimer) clearTimeout(esconderTimer);
     if(banner) banner.remove();
   }
+
   let swOk=false;
   if('serviceWorker' in navigator&&isSecure){
     navigator.serviceWorker.getRegistrations().then(function(regs){ swOk=regs.some(function(r){ return r.active&&r.active.scriptURL.indexOf('sw.js')!==-1; }); }).catch(function(){});
@@ -1962,16 +1402,14 @@ function inicializarBotaoGoogle(){
   }
 })();
 
-/* ============ CONSTANTS ============ */
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v12';
+const CACHE_KEY='balcao_cache_v11';
 const IMG_MAX_SIZE=1600;
 const IMG_QUALITY=0.95;
 const THUMB_SIZE=200;
 const NO_RETRY_FNS=['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FORMATOS_VALIDOS=["amanhecer","125x80","frutaPromo125x80","A6","frutaPromoA6","A5","100x70","105x38","70x38","65x38"];
 
-/* ============ HELPERS ============ */
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)||window.innerWidth<=900; }
 function ensureArray(v){ return Array.isArray(v)?v:(v?[v]:[]); }
 function normalizarProdutoParaFila(p){
@@ -2060,8 +1498,7 @@ function pedirNomeTipoArtigo(v0){
       modal.classList.remove("show"); confirmBtn.onclick=null;
       document.getElementById("saveBancoCancel").onclick=null;
       input.onkeydown=null; input.oninput=null; modal.onclick=null;
-      boxTipo.querySelectorAll("button").forEach(function(b){ b.onclick=null; });
-      resolve(r);
+      boxTipo.querySelectorAll("button").forEach(function(b){ b.onclick=null; }); resolve(r);
     }
     confirmBtn.onclick=function(){
       const v=(input.value||"").trim().toUpperCase();
@@ -2297,33 +1734,6 @@ document.addEventListener('click',function(e){
 document.addEventListener('input',function(e){ if(e.target&&e.target.type==='date') updateDateClearButtons(); });
 document.addEventListener('change',function(e){ if(e.target&&e.target.type==='date') updateDateClearButtons(); });
 
-/* ============ MOBILE NAV ============ */
-(function setupMobileNav(){
-  const nav=document.querySelector('.mobile-nav');
-  if(!nav) return;
-  nav.querySelectorAll('button[data-view]').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      const v=btn.dataset.view;
-      if(v==='print'){ window.triggerPrint(); return; }
-      document.body.dataset.view=v;
-      nav.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active',b===btn); });
-      requestAnimationFrame(function(){ fitPreviewCard(); });
-    });
-  });
-  if(window.innerWidth>900) document.body.removeAttribute('data-view');
-})();
-
-/* ============ COLLAPSIBLE CARDS ============ */
-document.querySelectorAll('.card[data-collapsible]').forEach(function(card){
-  const hdr=card.querySelector('[data-toggle]');
-  if(!hdr) return;
-  hdr.addEventListener('click',function(){
-    const c=card.getAttribute('data-collapsed')==='true';
-    card.setAttribute('data-collapsed',c?'false':'true');
-  });
-});
-
-/* ============ APP LOGIC (verbatim) ============ */
 async function carregarTudo(){
   try{
     const c=await localforage.getItem(CACHE_KEY);
@@ -2373,15 +1783,14 @@ function setFormData(d){
   $("origem").value=d.origem||""; $("categoria").value=d.categoria||""; $("calibre").value=d.calibre||"";
   $("price").value=d.price||d.preco||""; $("oldPrice").value=d.oldPrice||"";
   const isP=(d.isPromoActive===true||d.isPromoActive==='true'||d.isPromoActive==='TRUE')||(d.isPromoActive===undefined&&!!d.oldPrice);
-  $("isPromoActive").checked=isP;
-  const lbl=$("isPromoActive").closest("label"); if(lbl) lbl.classList.toggle("checked",isP);
+  $("isPromoActive").checked=isP; $("promoBox").style.display=isP?"block":"none";
   const u=d.capacityUnit||d.unidade||"peso"; $("capacityUnit").value=u;
   const cap=(d.capacity!==undefined&&d.capacity!=="")?d.capacity:(d.capacidade!==undefined&&d.capacidade!==""?d.capacidade:"");
   $("capacity").value=cap!==""?cap:"";
   const dep=d.depositFeeSelect!==undefined?d.depositFeeSelect:(d.deposito||"");
-  if(['','Acresce 0,10 € Volta'].indexOf(dep)>=0){ $("depositFeeSelect").value=dep; $("customDepositInput").value=""; $("customDepositField").style.display="none"; }
-  else if(dep){ $("depositFeeSelect").value="custom"; $("customDepositInput").value=dep; $("customDepositField").style.display="block"; }
-  else { $("depositFeeSelect").value=""; $("customDepositInput").value=""; $("customDepositField").style.display="none"; }
+  if(['','Acresce 0,10 € Volta'].indexOf(dep)>=0){ $("depositFeeSelect").value=dep; $("customDepositInput").value=""; $("customDepositInput").style.display="none"; }
+  else if(dep){ $("depositFeeSelect").value="custom"; $("customDepositInput").value=dep; $("customDepositInput").style.display="block"; }
+  else { $("depositFeeSelect").value=""; $("customDepositInput").value=""; $("customDepositInput").style.display="none"; }
   $("unit").value=d.unit||"";
   $("promoStart").value=String(d.promoStart||"").slice(0,10);
   $("promoEnd").value=String(d.promoEnd||"").slice(0,10);
@@ -2485,9 +1894,8 @@ function calcUnitInfo(capUnit){
   }
 }
 const DEFAULTS_UNIDADE={peso:"",g:"",lt:"1",cl:"0.75",ml:"1",un:"1",dz:"1",meia_dz:"1",dose:"1"};
-function renderQueue(){
+  function renderQueue(){
   const c=$("queueListContainer"); $("queueBadge").textContent=printQueue.length;
-  const mb=$("mobileQueueBadge"); if(mb) mb.textContent=printQueue.length||"";
   if(printQueue.length===0){ c.innerHTML='<div class="empty-msg">A fila está vazia.</div>'; $("clearQueueBtn").style.display="none"; $("printBtn").textContent="🖨️ Imprimir [F9]"; return; }
   $("clearQueueBtn").style.display="block"; let total=0; c.innerHTML="";
   printQueue.forEach(function(item,i){
@@ -2497,7 +1905,7 @@ function renderQueue(){
     const jg=savedProducts.some(function(p){ return p.codigo&&item.data.internalCode&&String(p.codigo)===String(item.data.internalCode); });
     const ic=jg?"✅":"💾";
     const pr=(item.data.price!==undefined&&item.data.price!==""&&item.data.price!==null)?(escapeHTML(item.data.price)+"€"):"S/ Preço";
-    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' · '+pr+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'">'+ic+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'">✕</button></div>';
+    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(item.data.product||"Sem Nome")+' <span class="chip-mini">'+fmt+'</span></strong><span>Ref: '+escapeHTML(item.data.internalCode||"N/A")+' | '+pr+'</span></div><div class="list-item-actions"><input type="number" class="copies-input" value="'+item.copies+'" min="1" max="500" data-action="copies" data-index="'+i+'"><button class="btn-save-queue" data-action="save-queue" data-index="'+i+'">'+ic+'</button><button class="btn-dup" data-action="dup-queue" data-index="'+i+'">📋</button><button class="btn-remove" data-action="remove-queue" data-index="'+i+'">❌</button></div>';
     c.appendChild(div);
   });
   $("printBtn").innerHTML='🖨️ Imprimir Fila ('+total+' etiq.) [F9]';
@@ -2572,7 +1980,7 @@ function renderDb(){
   savedProducts.map(function(p,i){ return {p:p,i:i}; }).sort(function(a,b){ return String(a.p.nome||"").localeCompare(String(b.p.nome||""),"pt"); }).forEach(function(o){
     const d=o.p,i=o.i; const div=document.createElement("div"); div.className="list-item";
     const pr=(d.preco!==undefined&&d.preco!==""&&d.preco!==null)?(escapeHTML(d.preco)+"€"):"";
-    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' · '+pr+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'">✕</button></div>';
+    div.innerHTML='<div class="list-item-info"><strong>'+escapeHTML(d.nome||"Sem Nome")+'</strong><span>Ref: '+escapeHTML(d.codigo||"N/A")+' | '+pr+'</span></div><div class="list-item-actions"><button class="btn-load" data-action="load-db" data-index="'+i+'">📥</button><button class="btn-dup" data-action="dup-db" data-index="'+i+'">📋</button><button class="btn-dup" data-action="queue-db" data-index="'+i+'">➕</button><button class="btn-remove" data-action="remove-db" data-index="'+i+'">❌</button></div>';
     c.appendChild(div);
   });
 }
@@ -2743,6 +2151,7 @@ function updateOrientationVisibility(){
   $("fruitPromoPanel").style.display=isFP?"block":"none";
   const lbl=$("isPromoActive").closest("label");
   if(lbl) lbl.style.display=isFP?"none":"flex";
+  if(isFP) $("promoBox").style.display="none";
 }
 function updateCapacityHint(){
   const h=document.getElementById("capacityHint"); if(!h) return;
@@ -2755,8 +2164,8 @@ function updateCapacityHint(){
   h.textContent="→ "+pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.refSuffix;
   h.style.display="block";
   const r=pu/pn;
-  if(r>100||r<0.01){ h.style.background="#fff7ed"; h.style.borderLeftColor="#d97706"; h.style.color="#9a3412"; }
-  else { h.style.background="#eff6ff"; h.style.borderLeftColor="#1e40af"; h.style.color="#1e40af"; }
+  if(r>100||r<0.01){ h.style.background="#fff5e6"; h.style.borderLeftColor="#f6c23e"; h.style.color="#7c5a0c"; }
+  else { h.style.background="#eef4ff"; h.style.borderLeftColor="#084298"; h.style.color="#084298"; }
 }
 function reAdaptClone(c){ autoAdaptImage(c); }
 function applyPrintSizes(card,dims){
@@ -3483,14 +2892,8 @@ $("presetSizes").addEventListener("change",function(){
   $("copiesCount").value="1";
   updateOrientationVisibility(); updateCard();
 });
-$("isPromoActive").addEventListener("change",function(){
-  const lbl=this.closest("label"); if(lbl) lbl.classList.toggle("checked",this.checked);
-  updateCard();
-});
-$("depositFeeSelect").addEventListener("change",function(){
-  $("customDepositField").style.display=(this.value==="custom")?"flex":"none";
-  updateCard();
-});
+$("isPromoActive").addEventListener("change",function(){ $("promoBox").style.display=this.checked?"block":"none"; updateCard(); });
+$("depositFeeSelect").addEventListener("change",function(){ $("customDepositInput").style.display=(this.value==="custom")?"block":"none"; updateCard(); });
 $("capacityUnit").addEventListener("change",function(){
   const c=$("capacity"); const d=DEFAULTS_UNIDADE[this.value];
   c.value=(d!==undefined)?d:"";
@@ -3521,10 +2924,8 @@ $("clearBtn").addEventListener("click",async function(){
   if(!(await confirmDialog("Limpar todos os campos?"))) return;
   ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre"].forEach(function(id){ if($(id)) $(id).value=""; });
   $("depositFeeSelect").value="";
-  $("customDepositField").style.display="none";
   $("capacityUnit").value="peso"; $("capacity").value="";
-  $("isPromoActive").checked=false;
-  const lbl=$("isPromoActive").closest("label"); if(lbl) lbl.classList.remove("checked");
+  $("isPromoActive").checked=false; $("promoBox").style.display="none";
   $("promoMinQty").value="2"; $("promoUnit").value="KG"; $("promoPrice").value="";
   globalOriginalPhoto=""; globalProcessedPhoto="";
   $("photo").value=""; $("autoRemoveBg").checked=true; $("useAI").checked=true;
@@ -3590,129 +2991,6 @@ document.addEventListener("change",function(e){
   if(printQueue[i]){ printQueue[i].copies=Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); }
 });
 
-/* ============ BACKUP / RESTORE — formato etiquetas-AAAA-MM-DD.json ============ */
-function exportarEstadoJSON(){
-  try{
-    const capMap = { peso:"kg", g:"g", lt:"lt", cl:"cl", ml:"ml",
-                     un:"un", dz:"dz", meia_dz:"meia_dz", dose:"dose" };
-    const state = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      products: Array.isArray(savedProducts) ? savedProducts.map(function(p){ return Object.assign({}, p); }) : [],
-      queue: Array.isArray(printQueue) ? printQueue.map(function(q){
-        return { data: Object.assign({}, q.data), copies: Math.max(1, parseInt(q.copies)||1) };
-      }) : [],
-      preferences: {
-        store: ($("store") && $("store").value) || "PATAIAS",
-        format: ($("presetSizes") && $("presetSizes").value) || "70x38",
-        capacityUnit: ($("capacityUnit") && capMap[$("capacityUnit").value]) || "kg"
-      }
-    };
-    const txt  = JSON.stringify(state, null, 2);
-    const blob = new Blob([txt], { type: "application/json;charset=utf-8" });
-    const url  = URL.createObjectURL(blob);
-    const dt   = new Date().toISOString().slice(0,10);
-    const a    = document.createElement("a");
-    a.href = url;
-    a.download = "etiquetas-" + dt + ".json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-    const info = $("backupInfo");
-    if(info) info.innerHTML = "✅ Exportado em <b>" + new Date().toLocaleString("pt-PT") +
-                              "</b><br>📦 Produtos: <b>" + state.products.length +
-                              "</b> · 🛒 Fila: <b>" + state.queue.length + "</b>";
-    toast("Backup exportado","success");
-  }catch(e){
-    toast("Erro ao exportar: " + e.message, "error");
-  }
-}
-async function importarEstadoJSON(file){
-  if(!file){ return false; }
-  if(file.size > 20*1024*1024){ toast("Ficheiro demasiado grande (>20 MB)","error"); return false; }
-  return new Promise(function(resolve){
-    const r = new FileReader();
-    r.onerror = function(){ toast("Erro a ler o ficheiro","error"); resolve(false); };
-    r.onload  = async function(ev){
-      try{
-        const state = JSON.parse(ev.target.result);
-        if(!state || typeof state !== "object") throw new Error("JSON inválido");
-        const products = Array.isArray(state.products) ? state.products : [];
-        const queue    = Array.isArray(state.queue)    ? state.queue    : [];
-        const prefs    = state.preferences || {};
-        const msg =
-          "Importar este backup?\n\n" +
-          "• Versão: " + (state.version || "?") + "\n" +
-          (state.exportedAt ? "• Exportado em: " + new Date(state.exportedAt).toLocaleString("pt-PT") + "\n" : "") +
-          "• Produtos: " + products.length + "\n" +
-          "• Fila: " + queue.length + "\n\n" +
-          "⚠️ Isto vai substituir os dados atuais (produtos + fila).";
-        if(!(await confirmDialog(msg))){ resolve(false); return; }
-        setStatus("A importar backup…","loading");
-        if(prefs.store && $("store")) $("store").value = prefs.store;
-        if(prefs.format && $("presetSizes")){
-          const opt = $("presetSizes").querySelector('option[value="' + prefs.format + '"]');
-          if(opt) $("presetSizes").value = prefs.format;
-        }
-        if(prefs.capacityUnit && $("capacityUnit")){
-          const inv = { kg:"peso", g:"g", lt:"lt", cl:"cl", ml:"ml",
-                        un:"un", dz:"dz", meia_dz:"meia_dz", dose:"dose" };
-          const v = inv[prefs.capacityUnit] || prefs.capacityUnit;
-          const optU = $("capacityUnit").querySelector('option[value="' + v + '"]');
-          if(optU) $("capacityUnit").value = v;
-        }
-        savedProducts = products.map(function(p){
-          const n = normalizarProdutoParaFila(Object.assign({}, p));
-          return sanitizarFormatoBD(n);
-        });
-        printQueue = queue
-          .filter(function(q){ return q && q.data; })
-          .map(function(q){
-            const d = normalizarProdutoParaFila(Object.assign({}, q.data));
-            const c = Math.max(1, Math.min(500, parseInt(q.copies) || 1));
-            return { data: d, copies: c };
-          });
-        renderDb();
-        renderQueue();
-        updateOrientationVisibility();
-        updateDateClearButtons();
-        updateCard();
-        try{
-          await localforage.setItem(CACHE_KEY, {
-            produtos: savedProducts, banco: bancoFruta, t: Date.now()
-          });
-        }catch(e){}
-        const info = $("backupInfo");
-        if(info) info.innerHTML = "✅ Importado em <b>" + new Date().toLocaleString("pt-PT") +
-                                  "</b><br>📦 Produtos: <b>" + savedProducts.length +
-                                  "</b> · 🛒 Fila: <b>" + printQueue.length + "</b>";
-        setStatus("");
-        toast("Backup importado com sucesso","success");
-        resolve(true);
-      }catch(err){
-        setStatus("");
-        toast("Erro ao importar: " + err.message, "error");
-        resolve(false);
-      }
-    };
-    r.readAsText(file);
-  });
-}
-(function wireBackupButtons(){
-  const btnExp = document.getElementById("exportJsonBtn");
-  const btnImp = document.getElementById("importJsonBtn");
-  const inpFile= document.getElementById("importJsonFile");
-  if(btnExp) btnExp.addEventListener("click", exportarEstadoJSON);
-  if(btnImp && inpFile) btnImp.addEventListener("click", function(){ inpFile.click(); });
-  if(inpFile) inpFile.addEventListener("change", async function(e){
-    const f = e.target.files && e.target.files[0];
-    e.target.value = "";
-    if(f) await importarEstadoJSON(f);
-  });
-})();
-
-/* ============ BOOT ============ */
 (async function boot(){
   try{
     try{ const s=localStorage.getItem(AUTH_KEY_USER); if(s) _currentUser=JSON.parse(s); }catch(e){}
@@ -3732,6 +3010,10 @@ async function importarEstadoJSON(file){
     $("copiesCount").value="1";
     if(!$("capacity").value&&DEFAULTS_UNIDADE[$("capacityUnit").value]) $("capacity").value=DEFAULTS_UNIDADE[$("capacityUnit").value];
     if(getStoredToken()) carregarTudo();
+    ajustarAlturaHeader();
+    setTimeout(ajustarAlturaHeader,100);
+    setTimeout(ajustarAlturaHeader,400);
+    setTimeout(ajustarAlturaHeader,900);
     setTimeout(fitPreviewCard,200);
     setTimeout(fitPreviewCard,600);
   }catch(err){}
