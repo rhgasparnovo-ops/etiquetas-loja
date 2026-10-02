@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <script>
 (function(){
-  var FK='balcao_force_v231';var jf=false;
+  var FK='balcao_force_v232';var jf=false;
   try{ jf=sessionStorage.getItem(FK)==='1'; }catch(e){}
   if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){var u=(r.active&&r.active.scriptURL)||(r.installing&&r.installing.scriptURL)||(r.waiting&&r.waiting.scriptURL)||'';if(u.indexOf('sw.js')===-1){try{r.unregister();}catch(e){}}});}).catch(function(){});}
   if('caches' in window){caches.keys().then(function(ks){ks.forEach(function(k){if(k!=='balcao-v1'){try{caches.delete(k);}catch(e){}}});}).catch(function(){});}
@@ -135,39 +135,14 @@ a{color:inherit;text-decoration:none}
 .view{display:none;flex-direction:column;gap:16px}
 body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,body[data-view="fila"] .view-fila,body[data-view="drive"] .view-drive,body[data-view="mais"] .view-mais{display:flex}
 
-/* Desktop: menu inferior + views uma de cada vez (igual ao telemóvel) */
 @media (min-width:1000px){
-  .main{
-    padding:28px 32px 100px;
-    padding-bottom:calc(100px + var(--safe-b));
-  }
+  .main{padding:28px 32px 100px;padding-bottom:calc(100px + var(--safe-b))}
   .grid-main{grid-template-columns:1fr;gap:20px}
   .col-preview{display:none;position:static}
-
-  /* Editor: 2 colunas (form + preview sticky) */
-  body[data-view="editor"] .grid-main{
-    grid-template-columns:minmax(0,1fr) minmax(0,540px);
-    gap:26px;
-    align-items:start;
-  }
-  body[data-view="editor"] .col-preview{
-    display:block !important;
-    position:sticky;
-    top:100px;
-  }
-  body[data-view="editor"] .col-preview .view-preview{
-    display:flex !important;
-    flex-direction:column;
-    gap:16px;
-  }
-
-  /* Ver: preview grande, centrado */
-  body[data-view="preview"] .col-preview{
-    display:block !important;
-    max-width:820px;
-    margin:0 auto;
-    width:100%;
-  }
+  body[data-view="editor"] .grid-main{grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:26px;align-items:start}
+  body[data-view="editor"] .col-preview{display:block !important;position:sticky;top:100px}
+  body[data-view="editor"] .col-preview .view-preview{display:flex !important;flex-direction:column;gap:16px}
+  body[data-view="preview"] .col-preview{display:block !important;max-width:820px;margin:0 auto;width:100%}
 }
 
 /* CARDS */
@@ -302,7 +277,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 
-/* BOTTOM NAV (sempre visível) */
+/* BOTTOM NAV */
 .bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);max-width:500px;margin:0 auto}
 .bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:var(--ink-3);font-size:10px;font-weight:700;border-radius:18px;transition:all .18s;position:relative;min-height:auto;letter-spacing:.02em}
 .bnav button.active{color:#fff;background:var(--brand-grad);box-shadow:0 4px 12px rgba(200,16,46,.28)}
@@ -1119,7 +1094,7 @@ function inicializarBotaoGoogle(){
 })();
 
 const API_URL='https://balcao-api.rh-gasparnovo.workers.dev/';
-const CACHE_KEY='balcao_cache_v231';
+const CACHE_KEY='balcao_cache_v232';
 const IMG_MAX_SIZE=1600;
 const IMG_QUALITY=0.95;
 const THUMB_SIZE=200;
@@ -1334,6 +1309,7 @@ let scanner=null, scanTrack=null, scanTorchOn=false;
 let offsetX=0, offsetY=0, marginLeft=4, marginRight=4;
 let editingCode=null;
 let _printCleanupTimer=null;
+let _restoreQueueAfterPrint=null;
 
 function fitPreviewCard(){
   const scaler=document.getElementById('previewScaler');
@@ -1633,28 +1609,15 @@ async function saveToDb(){
   const data=getFormData();
   if(!data.product&&!data.internalCode){ toast("Preencha um nome ou código.","warning"); return; }
 
-  let forceNew = false;
   if(editingCode){
     const r = await choiceDialog('A etiqueta "'+(data.product||data.internalCode)+'" já existe no Drive (Ref: '+editingCode+').\n\nO que pretende fazer?','Etiqueta guardada encontrada');
     if(r==='cancel'){ return; }
-    if(r==='new'){ forceNew = true; }
   } else {
     if(data.internalCode){
       const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim()===String(data.internalCode).trim(); });
       if(existe){
         const r = await choiceDialog('Já existe uma etiqueta com o código "'+data.internalCode+'" no Drive.\n\nO que pretende fazer?','Etiqueta já existe');
         if(r==='cancel'){ return; }
-        if(r==='new'){ forceNew = true; }
-      }
-    }
-  }
-
-  if(forceNew){
-    if(data.internalCode){
-      const existe = savedProducts.some(function(p){ return p.codigo && String(p.codigo).trim()===String(data.internalCode).trim(); });
-      if(existe){
-        data.internalCode = data.internalCode + '-' + Date.now().toString().slice(-4);
-        $("internalCode").value = data.internalCode;
       }
     }
   }
@@ -1889,7 +1852,6 @@ function updateCapacityHint(){
   h.textContent="→ "+pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.refSuffix;
   h.style.display="block";
 }
-function reAdaptClone(c){ autoAdaptImage(c); }
 function applyPrintSizes(card,dims){
   if(!card||!dims||!dims.width) return;
   const s=Math.min(dims.width/70,dims.height/38)*(card.classList.contains("layout-fruit-promo")?0.8:1);
