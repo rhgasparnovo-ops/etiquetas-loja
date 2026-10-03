@@ -199,7 +199,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.has-discount .price{font-size:clamp(16px,7.5cqw,44px)}
 .label-card.has-discount .col-price{background:radial-gradient(ellipse at center,rgba(200,16,46,.055) 0%,rgba(200,16,46,0) 72%);border-radius:6px}
 
-/* ETIQUETAS GRANDES — AUMENTAR */
 .label-card.size-large .promo-badge{font-size:clamp(12px,4cqw,20px)!important;padding:0.72em 1.9em 0.74em!important}
 .label-card.size-large .promo-badge .pb-label{font-size:0.85em!important}
 .label-card.size-large .promo-badge .pb-value{font-size:2em!important}
@@ -365,11 +364,12 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
 .tipo-label-title{display:block;font-size:11px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
 
-/* PREVIEW MODAL + ZOOM */
+/* ============ PREVIEW MODAL + ZOOM (CORRIGIDO) ============ */
 .preview-modal{background:rgba(15,23,42,.94);z-index:9500;flex-direction:column;gap:14px;padding-top:calc(16px + var(--safe-t));padding-bottom:calc(88px + var(--safe-b));position:relative}
 .preview-modal-badge{background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3);flex-shrink:0;align-self:center}
-.preview-modal-wrap{display:flex;justify-content:center;align-items:flex-start;width:100%;overflow:auto;flex:1;padding:16px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.preview-holder{position:relative;flex-shrink:0;transform-origin:top left;margin:auto}
+.preview-modal-wrap{display:block;width:100%;overflow:auto;flex:1;min-height:0;padding:16px;text-align:center;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.preview-buffer{display:inline-block;vertical-align:top;position:relative;flex-shrink:0;text-align:left;line-height:0}
+.preview-scaler-outer{display:block;position:relative;transform-origin:top left;line-height:0;background:#fff}
 .preview-modal-close{position:fixed;top:calc(16px + var(--safe-t));right:20px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);border:none;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9501;box-shadow:var(--sh-3)}
 .preview-zoom-bar{position:fixed;bottom:calc(16px + var(--safe-b));left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.96);border-radius:var(--r-pill);padding:6px;box-shadow:var(--sh-3);z-index:9501;border:1px solid var(--line)}
 .preview-zoom-bar button{min-width:44px;height:44px;padding:0 12px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink-2);font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;transition:all .16s;border:none;cursor:pointer}
@@ -986,7 +986,7 @@ let offsetX=0, offsetY=0, marginLeft=4, marginRight=4;
 let editingCode=null;
 let _printCleanupTimer=null, _restoreQueueAfterPrint=null;
 let _previewZoom = 0;
-let _previewCloneEl = null, _previewHolderEl = null, _previewBaseW = 0, _previewBaseH = 0;
+let _previewScalerEl = null, _previewBufferEl = null, _previewBaseW = 0, _previewBaseH = 0;
 
 function formatDatePT(iso){ const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); if(!m) return ""; return m[3]+"/"+m[2]+"/"+m[1]; }
 function getInfoExtraText(){ const tipo=$("infoExtraTipo").value; if(!tipo) return ""; if(tipo==="consumir"){ const d=$("infoExtraData").value; return "CONSUMIR DE PREFERÊNCIA ANTES DE "+(d?formatDatePT(d):"__/__/____"); } if(tipo==="danificado") return "ARTIGO COM EMBALAGEM DANIFICADA"; if(tipo==="validade"){ const d=$("infoExtraData").value; return "APROXIMAÇÃO PRAZO DE VALIDADE "+(d?formatDatePT(d):"__/__/____"); } if(tipo==="outro") return ($("infoExtraTexto").value||"").trim().toUpperCase(); return ""; }
@@ -1010,9 +1010,9 @@ function fitPreviewCard(){
 window.addEventListener('resize',fitPreviewCard);
 window.addEventListener('orientationchange',function(){ setTimeout(fitPreviewCard,200); });
 
-/* ============ PREVIEW MODAL COM ZOOM (CORRIGIDO) ============ */
+/* ============ PREVIEW MODAL COM ZOOM ============ */
 function applyPreviewZoom(){
-  if(!_previewCloneEl || !_previewHolderEl) return;
+  if(!_previewScalerEl || !_previewBufferEl) return;
   const wrap = document.getElementById('previewModalWrap');
   if(!wrap) return;
   const wrapRect = wrap.getBoundingClientRect();
@@ -1021,20 +1021,15 @@ function applyPreviewZoom(){
   let scale;
   if(_previewZoom === 0){ scale = Math.min(1, availW/_previewBaseW, availH/_previewBaseH); }
   else { scale = _previewZoom; }
-  const scaledW = Math.round(_previewBaseW * scale);
-  const scaledH = Math.round(_previewBaseH * scale);
-  _previewCloneEl.style.width = _previewBaseW + 'px';
-  _previewCloneEl.style.height = _previewBaseH + 'px';
-  _previewCloneEl.style.position = 'absolute';
-  _previewCloneEl.style.top = '0';
-  _previewCloneEl.style.left = '0';
-  _previewCloneEl.style.transform = 'scale(' + scale + ')';
-  _previewCloneEl.style.transformOrigin = 'top left';
-  _previewCloneEl.style.transformBox = 'fill-box';
-  _previewHolderEl.style.width = scaledW + 'px';
-  _previewHolderEl.style.height = scaledH + 'px';
-  _previewHolderEl.style.position = 'relative';
-  _previewHolderEl.style.overflow = 'visible';
+  if(!isFinite(scale) || scale <= 0) scale = 1;
+  const scaledW = Math.max(20, Math.round(_previewBaseW * scale));
+  const scaledH = Math.max(20, Math.round(_previewBaseH * scale));
+  _previewBufferEl.style.width = scaledW + 'px';
+  _previewBufferEl.style.height = scaledH + 'px';
+  _previewScalerEl.style.width = _previewBaseW + 'px';
+  _previewScalerEl.style.height = _previewBaseH + 'px';
+  _previewScalerEl.style.transformOrigin = 'top left';
+  _previewScalerEl.style.transform = 'scale(' + scale + ')';
   const lbl = document.getElementById('zoomLabel');
   if(lbl) lbl.textContent = Math.round(scale * 100) + '%';
 }
@@ -1052,45 +1047,42 @@ function abrirPreviewModal(){
   const PX_PER_MM = 3.7795;
   const realW = Math.max(60, Math.round(dims.width * PX_PER_MM));
   const realH = Math.max(40, Math.round(dims.height * PX_PER_MM));
-  clone.style.cssText = '';
+  const buffer = document.createElement('div');
+  buffer.className = 'preview-buffer';
+  buffer.style.width = realW + 'px';
+  buffer.style.height = realH + 'px';
+  const scaler = document.createElement('div');
+  scaler.className = 'preview-scaler-outer';
+  scaler.style.width = realW + 'px';
+  scaler.style.height = realH + 'px';
+  scaler.style.transformOrigin = 'top left';
+  scaler.style.background = '#fff';
+  scaler.style.boxShadow = '0 10px 40px rgba(0,0,0,.6)';
   clone.style.width = realW + 'px';
   clone.style.height = realH + 'px';
-  clone.style.position = 'absolute';
-  clone.style.top = '0';
-  clone.style.left = '0';
   clone.style.margin = '0';
-  clone.style.transformOrigin = 'top left';
   clone.style.boxSizing = 'border-box';
-  clone.style.display = 'flex';
-  clone.style.flexDirection = 'column';
-  clone.style.justifyContent = 'space-between';
+  clone.style.lineHeight = 'normal';
   clone.style.background = '#fff';
-  const holder = document.createElement('div');
-  holder.className = 'preview-holder';
-  holder.style.position = 'relative';
-  holder.style.width = realW + 'px';
-  holder.style.height = realH + 'px';
-  holder.style.flexShrink = '0';
-  holder.style.background = '#fff';
-  holder.style.boxShadow = '0 10px 40px rgba(0,0,0,.6)';
-  holder.appendChild(clone);
-  wrap.appendChild(holder);
-  _previewCloneEl = clone;
-  _previewHolderEl = holder;
+  scaler.appendChild(clone);
+  buffer.appendChild(scaler);
+  wrap.appendChild(buffer);
+  _previewScalerEl = scaler;
+  _previewBufferEl = buffer;
   _previewBaseW = realW;
   _previewBaseH = realH;
   _previewZoom = 0;
   document.body.classList.add('preview-open');
   document.getElementById('previewModal').classList.add('show');
   requestAnimationFrame(function(){ applyPreviewZoom(); });
-  setTimeout(applyPreviewZoom, 50);
-  setTimeout(applyPreviewZoom, 200);
+  setTimeout(applyPreviewZoom, 100);
+  setTimeout(applyPreviewZoom, 300);
 }
 function fecharPreviewModal(){
   document.getElementById('previewModal').classList.remove('show');
   document.getElementById('previewModalWrap').innerHTML='';
   document.body.classList.remove('preview-open');
-  _previewCloneEl = null; _previewHolderEl = null;
+  _previewScalerEl = null; _previewBufferEl = null;
 }
 document.getElementById('floatingPreviewBtn').addEventListener('click', abrirPreviewModal);
 document.getElementById('previewModalClose').addEventListener('click', fecharPreviewModal);
@@ -1110,8 +1102,8 @@ document.getElementById('zoomOutBtn').addEventListener('click', function(){
 document.getElementById('zoomFitBtn').addEventListener('click', function(){ _previewZoom = 0; applyPreviewZoom(); });
 document.getElementById('zoomResetBtn').addEventListener('click', function(){ _previewZoom = 1; applyPreviewZoom(); });
 function getCurrentAutoScale(){
-  if(!_previewCloneEl) return 1;
-  const m = /scale\(([^)]+)\)/.exec(_previewCloneEl.style.transform || '');
+  if(!_previewScalerEl) return 1;
+  const m = /scale\(([^)]+)\)/.exec(_previewScalerEl.style.transform || '');
   return m ? parseFloat(m[1]) : 1;
 }
 window.addEventListener('resize', function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(); });
@@ -1320,7 +1312,6 @@ async function resolverFotoParaPayload(d){
   return {fotoId:up.id,fotoUrl:up.url};
 }
 
-/* Guardar item da fila — com forceNew quando user escolhe "nova" */
 window.saveQueueItem=async function(i){
   const item=printQueue[i]; if(!item){ toast("Item não encontrado.","error"); return; }
   const d=item.data;
@@ -1363,7 +1354,6 @@ function renderDb(){
   });
 }
 
-/* Guardar a partir do editor — com forceNew quando user escolhe "nova" */
 async function saveToDb(){
   const data=getFormData();
   if(!data.product&&!data.internalCode){ toast("Preencha um nome ou código.","warning"); return; }
