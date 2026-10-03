@@ -2489,9 +2489,10 @@ function autoAdaptImage(card){
    AUTO-LAYOUT UNIVERSAL
    Organiza todos os elementos conforme o espaço disponível.
    NUNCA reduz: descrição, preço principal, % desconto.
-   Ordem de sacrifício (do menos para o mais importante):
-   1) Rodapé  2) Acresce  3) Código interno  4) Origem/Cat/Cal
-   5) Info extra  6) Código de barras  7) Preço unitário
+   NUNCA esconde: rodapé (texto legal + data de impressão).
+   Ordem de sacrifício (do menos → mais importante):
+   1) Código interno  2) Acresce Volta  3) Info extra
+   4) Origem/Cat/Cal  5) Preço unitário  6) Código de barras
    ============================================================ */
 function autoLayoutCard(card){
   if(!card) return;
@@ -2503,31 +2504,31 @@ function autoLayoutCard(card){
   });
   card.style.removeProperty("padding");
 
-  // 2) Verifica se o cartão tem overflow real
+  // 2) Verificação rigorosa de overflow (tolerância 4px para evitar falsos positivos)
   const cardOverflow = function(){
     const cr = card.getBoundingClientRect();
     if(cr.height <= 0) return false;
+    const TOL = 4;
     const kids = card.children;
     for(let i=0;i<kids.length;i++){
       const k = kids[i];
       if(!_vis(k)) continue;
       const kr = k.getBoundingClientRect();
       if(kr.height === 0) continue;
-      if(kr.bottom > cr.bottom + 1) return true;
-      if(kr.top < cr.top - 1) return true;
+      if(kr.bottom > cr.bottom + TOL) return true;
+      if(kr.top < cr.top - TOL) return true;
     }
     const mc = card.querySelector(".main-content");
-    if(mc && _overflowX(mc)) return true;
-    if(mc && _overflowY(mc)) return true;
+    if(mc && _vis(mc) && _overflowY(mc)) return true;
     const desc = card.querySelector(".col-desc");
-    if(desc && _overflowY(desc)) return true;
+    if(desc && _vis(desc) && _overflowY(desc)) return true;
     return false;
   };
 
-  // 3) Nada a fazer se já cabe
+  // 3) Se já cabe, não faz nada
   if(!cardOverflow()) return;
 
-  // 4) Esconde por prioridade até caber
+  // 4) Esconde por prioridade — rodapé NÃO está na lista
   const hide = function(sel){
     const el = card.querySelector(sel);
     if(!el || !_vis(el)) return false;
@@ -2536,140 +2537,34 @@ function autoLayoutCard(card){
     return !cardOverflow();
   };
 
-  if(hide(".footer-container")) return;
+  // Ordem: menos crítico → mais crítico
+  if(hide(".item-code")) return;
   if(hide("#cardDeposit")) return;
   if(hide(".card-deposit")) return;
-  if(hide(".item-code")) return;
-  if(hide(".fruit-full-bar")) return;
   if(hide(".extra-unit")) return;
-  if(hide(".barcode-container")) return;
+  if(hide(".fruit-full-bar")) return;
   if(hide(".unit-price-text")) return;
+  if(hide(".barcode-container")) return;
 
-  // 5) Último recurso: reduz ligeiramente o padding
-  card.style.setProperty("padding","1px 3px","important");
-}
-function updateCardUnsafe(){
-  try{
-    const storeVal=$("store").value||"PATAIAS";
-    const productVal=($("product").value||"").trim().toUpperCase();
-    const codeVal=($("internalCode").value||"").trim().toUpperCase();
-    const barcodeToDraw=($("ean").value||"").trim().toUpperCase();
-    const priceNum=parsePrice($("price").value);
-    const oldPriceNum=parsePrice($("oldPrice").value);
-    const promoPriceNum=parsePrice($("promoPrice").value);
-    const isPromo=$("isPromoActive").checked;
-    const fv=$("presetSizes").value;
-    const isAmanhecer=fv==="amanhecer";
-    const isFP=isFruitPromoFormat(fv);
-    const dims=getDimensions();
-    const capUnit=$("capacityUnit").value;
-    const capNum=parseFloat($("capacity").value)||0;
-    const card=$("mainLabelCard");
-    if(isFP) card.classList.add("layout-fruit-promo");
-    else card.classList.remove("layout-fruit-promo");
-    const PREV_MAX_W=480, PREV_MAX_H=340;
-    if(isAmanhecer){
-      card.style.width="380px"; card.style.height="214px";
-      applySizeClass(card,70,38);
-      $("badgeSheet").textContent="Amanhecer · 70×38";
-    } else {
-      let pw=dims.width*3.2, ph=dims.height*3.2;
-      const ratio=pw/ph;
-      if(pw>PREV_MAX_W){ pw=PREV_MAX_W; ph=pw/ratio; }
-      if(ph>PREV_MAX_H){ ph=PREV_MAX_H; pw=ph*ratio; }
-      card.style.width=pw+"px"; card.style.height=ph+"px";
-      applySizeClass(card,dims.width,dims.height);
-      $("badgeSheet").textContent=(isFP?"Fruta Oportunidade · ":"")+dims.width+" × "+dims.height+" mm";
-    }
-    $("cardStore").textContent=storeVal;
-    setProductText($("cardProduct"),productVal||"NOME DO PRODUTO");
-    if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent=codeVal; }
-    else { $("cardCode").style.display="none"; }
-    const info=calcUnitInfo(capUnit);
-    const row=$("cardPromoTopRow");
-    const badgeVal=$("cardPromoBadgeValue");
-    const oldPriceEl=$("cardOldPrice");
-    let hasDiscount=false;
-    if(isPromo&&oldPriceNum!==null&&!isFP){
-      row.classList.add("show");
-      oldPriceEl.classList.add("show");
-      oldPriceEl.textContent=oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.mainSuffix;
-      if(priceNum!==null&&oldPriceNum>priceNum){
-        const d=Math.max(1,Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100));
-        badgeVal.textContent=d+"%";
-        hasDiscount=true;
-      } else { badgeVal.textContent="0%"; }
-    } else {
-      row.classList.remove("show");
-      oldPriceEl.classList.remove("show");
-      oldPriceEl.textContent="";
-    }
-    card.classList.toggle("has-discount",hasDiscount);
-    if(priceNum!==null){
-      const f=priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
-      if(capNum>0){
-        $("cardPrice").innerHTML=f+'<span class="unit-inline">'+info.mainSuffix+'</span>';
-        const pu=priceNum/(capNum*info.normalizar);
-        $("cardUnitPrice").innerHTML=pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.refSuffix;
-        $("cardUnitPrice").style.display="block";
-      } else {
-        $("cardPrice").innerHTML=f+'<span class="unit-inline">'+info.mainSuffix+'</span>';
-        $("cardUnitPrice").style.display="none";
+  // 5) Rodapé — só reduz a fonte, NUNCA esconde
+  const footer = card.querySelector(".footer-container");
+  if(footer && _vis(footer)){
+    const pt = footer.querySelector(".promo-text");
+    if(pt){
+      let i=0;
+      while(i<20){
+        const cur = parseFloat(getComputedStyle(pt).fontSize);
+        if(!cur || cur < 3.5) break;
+        pt.style.setProperty("font-size", (cur*0.88) + "px", "important");
+        i++;
+        void footer.offsetHeight;
+        if(!cardOverflow()) return;
       }
-    } else {
-      $("cardPrice").innerHTML='0,00<span class="unit-inline">'+info.mainSuffix+'</span>';
-      $("cardUnitPrice").style.display="none";
     }
-    if(isFP){
-      const pu=$("promoUnit").value||"KG";
-      const pm=$("promoMinQty").value||"2";
-      $("cardFpNormalPrice").textContent=(priceNum!==null)?priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €":"0,00 €";
-      $("cardFpNormalUnit").textContent="/ "+pu;
-      $("cardFpPromoPrice").textContent=(promoPriceNum!==null)?promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €":"0,00 €";
-      $("cardFpPromoUnit").textContent="/ "+pu;
-      $("cardFpPromoLabel").textContent=(pu==="KG")?"LEVE "+pm+" KG OU MAIS":"LEVE "+pm+" UN OU MAIS";
-    }
-    const org=($("origem").value||"").trim().toUpperCase();
-    const cat=($("categoria").value||"").trim().toUpperCase();
-    const cal=($("calibre").value||"").trim().toUpperCase();
-    const parts=[];
-    if(org) parts.push("Origem: "+org);
-    if(cat) parts.push("Cat. "+cat);
-    if(cal) parts.push("Cal. "+cal);
-    if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent=parts.join(" • "); }
-    else { $("cardFruit").style.display="none"; }
-    const dep=$("depositFeeSelect").value;
-    const depVal=dep==="custom"?$("customDepositInput").value.trim():dep;
-    if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent=depVal; }
-    else { $("cardDeposit").style.display="none"; }
-    const eu=getInfoExtraText();
-    if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent=eu; }
-    else { $("cardExtraUnit").style.display="none"; }
-    const activePhoto=($("autoRemoveBg").checked&&globalProcessedPhoto)?globalProcessedPhoto:globalOriginalPhoto;
-    const photoBox=$("cardPhotoBox");
-    if(activePhoto&&!card.classList.contains("size-tiny")){
-      card.classList.add("has-image"); photoBox.classList.add("show"); $("cardPhotoImg").src=activePhoto;
-    } else {
-      card.classList.remove("has-image","img-tight","img-mini","img-hidden"); photoBox.classList.remove("show");
-    }
-    const bcBox=$("cardBarcodeBox");
-    if(barcodeToDraw&&!card.classList.contains("size-tiny")){
-      bcBox.classList.add("show");
-      $("cardBarcodeText").textContent=barcodeToDraw.toUpperCase();
-      drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
-    } else {
-      bcBox.classList.remove("show");
-    }
-    $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
-    $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
-    autoAdaptImage(card);
-    autoFitExtraUnit(card);
-    autoFitDeposit(card);
-    autoFitDescription(card);
-    autoFitPromoArea(card);
-    autoFitFooterText(card);
-    autoLayoutCard(card);
-  }catch(err){}
+  }
+
+  // 6) Último recurso: reduz ligeiramente o padding do cartão
+  card.style.setProperty("padding","1px 3px","important");
 }
 
 /* ============================================================
