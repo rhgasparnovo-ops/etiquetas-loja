@@ -215,7 +215,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-xl .extra-unit{font-size:clamp(11px,3cqw,19px)!important}
 
 .deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block;overflow-wrap:anywhere;max-width:100%}
-.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:anywhere;word-break:break-word;max-width:100%;width:100%;text-align:left;display:block}
+.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;-webkit-hyphens:auto;max-width:100%;width:100%;text-align:left;display:block;flex-shrink:0;transform-origin:left top}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
 .barcode-container.show{display:flex!important}
@@ -820,7 +820,7 @@ html.is-apk body{overscroll-behavior-y:none}
 
 <div class="pro-print-overlay" id="proPrintOverlay"><div class="pro-print-box"><div class="pro-spinner"></div><strong>A preparar impressão…</strong></div></div>
 
-<!-- ===== PARTE 3 CONTINUA AQUI (o <script> final) ===== -->
+<!-- ===== PARTE 3 CONTINUA AQUI ===== -->
   <script>
 "use strict";
 
@@ -2309,6 +2309,51 @@ function autoFitFooterText(card){
     i++; void pt.offsetHeight;
   }
 }
+/* ===== NOVO: AUTO-FIT DA INFORMAÇÃO EXTRA (nunca corta) ===== */
+function autoFitExtraUnit(card){
+  if(!card) return;
+  const desc = card.querySelector(".col-desc");
+  const el = card.querySelector(".extra-unit");
+  if(!desc || !el) return;
+  const txt = (el.textContent || "").trim();
+  // reset
+  el.style.removeProperty("font-size");
+  el.style.removeProperty("line-height");
+  el.style.removeProperty("transform");
+  el.style.removeProperty("transform-origin");
+  el.style.removeProperty("margin-top");
+  el.style.removeProperty("letter-spacing");
+  if(!txt || !_vis(el)) return;
+  void el.offsetHeight;
+  if(!_overflowY(desc)) return;
+
+  // 1) Reduzir font-size (mín. 3px)
+  let g1 = 0;
+  while(g1 < 80){
+    const cur = parseFloat(getComputedStyle(el).fontSize);
+    if(!cur || cur <= 3) break;
+    el.style.setProperty("font-size", Math.max(3, cur * 0.95) + "px", "important");
+    g1++; void el.offsetHeight;
+    if(!_overflowY(desc)) return;
+  }
+
+  // 2) Apertar line-height e remover margens
+  el.style.setProperty("line-height", "1", "important");
+  el.style.setProperty("margin-top", "0", "important");
+  el.style.setProperty("letter-spacing", "-0.01em", "important");
+  void el.offsetHeight;
+  if(!_overflowY(desc)) return;
+
+  // 3) Último recurso: transform scale
+  let s = 1, g2 = 0;
+  while(s > 0.55 && g2 < 20){
+    s -= 0.05;
+    el.style.setProperty("transform", "scale(" + s + ")", "important");
+    el.style.setProperty("transform-origin", "left top", "important");
+    g2++; void el.offsetHeight;
+    if(!_overflowY(desc)) return;
+  }
+}
 function autoFitPromoArea(card){
   if(!card) return;
   const pc=card.querySelector(".col-price"); if(!pc) return;
@@ -2368,11 +2413,11 @@ function autoFitDescription(card){
   void desc.offsetHeight;
   const fits=function(){ return !_overflowY(desc); };
   if(fits()) return;
-  const reducers=[extra,unitEl,codeEl,prod].filter(Boolean);
-  const mins={'item-code':5,'product':5,'unit-price-text':4.5,'extra-unit':4.5};
+  const reducers=[unitEl,codeEl,prod].filter(Boolean);
+  const mins={'item-code':5,'product':5,'unit-price-text':4.5};
   for(let k=0;k<reducers.length;k++){
     const el=reducers[k];
-    const cls=el.classList.contains('item-code')?'item-code':el.classList.contains('product')?'product':el.classList.contains('unit-price-text')?'unit-price-text':'extra-unit';
+    const cls=el.classList.contains('item-code')?'item-code':el.classList.contains('product')?'product':'unit-price-text';
     const minF=mins[cls]||4.5;
     let i=0;
     while(i<40){
@@ -2512,7 +2557,9 @@ function updateCardUnsafe(){
     }
     $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
     $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
+    /* ===== AUTO-FIT (ordem importa) ===== */
     autoAdaptImage(card);
+    autoFitExtraUnit(card);
     autoFitDescription(card);
     autoFitPromoArea(card);
     autoFitFooterText(card);
@@ -2536,6 +2583,7 @@ function buildLabelClone(data,dims,forPrint){
   if(svg){ svg.innerHTML=""; if(eanVal) drawBarcode(svg,eanVal); }
   if(forPrint) applyPrintSizes(clone,dims);
   const prodEl=clone.querySelector(".product"); if(prodEl) autoFitTextSync(prodEl);
+  autoFitExtraUnit(clone);
   autoFitDescription(clone);
   autoFitPromoArea(clone);
   autoFitFooterText(clone);
@@ -2651,6 +2699,7 @@ function triggerPrint(){
     try{
       pz.querySelectorAll(".label-card").forEach(function(card){
         const pe=card.querySelector(".product"); if(pe) autoFitTextSync(pe);
+        autoFitExtraUnit(card);
         autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card);
         if(card.classList.contains("has-image")) autoAdaptImage(card);
       });
@@ -2734,6 +2783,7 @@ async function gerarPDFBlob(){
     rz.appendChild(el);
     try{ await preloadImagesAsDataURLs(el); }catch(e){}
     const pe=el.querySelector(".product"); if(pe) autoFitTextSync(pe);
+    autoFitExtraUnit(el);
     autoFitDescription(el); autoFitPromoArea(el); autoFitFooterText(el);
     if(el.classList.contains("has-image")) autoAdaptImage(el);
     await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,60); }); });
