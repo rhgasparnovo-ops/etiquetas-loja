@@ -364,7 +364,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
 .tipo-label-title{display:block;font-size:11px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
 
-/* ============ PREVIEW MODAL + ZOOM (POPUP CENTRADO) ============ */
 .preview-modal{position:fixed;inset:0;display:none;z-index:9500;background:rgba(10,15,30,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .preview-modal.show{display:block}
 .preview-modal-badge{position:absolute;top:calc(14px + var(--safe-t));left:50%;transform:translateX(-50%);background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3);z-index:9502;white-space:nowrap;max-width:calc(100vw - 120px);overflow:hidden;text-overflow:ellipsis}
@@ -462,15 +461,44 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .fruit-promo-panel h4{margin:0 0 12px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.04em}
 #capacityHint{font-size:11.5px;color:#1e40af;margin-top:6px;font-weight:700;padding:6px 10px;background:#eff6ff;border-radius:6px;border-left:3px solid #1e40af;display:none}
 #infoExtraDataField,#infoExtraTextoField{display:none}
+
+/* ===== APK MODE: MESMO LAYOUT QUE O BROWSER ===== */
 html.is-apk body{overscroll-behavior-y:none}
-html.is-apk .app-header{padding-top:calc(14px + var(--safe-t))}
-html.is-apk .bnav{bottom:calc(12px + var(--safe-b))}
-html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
+/* Não alterar posicionamento no modo APK — mantém idêntico ao browser */
+
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.card-h .ic{width:32px;height:32px;font-size:14px;border-radius:10px}.card-h h3{font-size:13px}.btn{font-size:14px;min-height:46px;padding:11px 18px}.btn-lg{font-size:15px;min-height:52px}}
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}#printZone.measure .print-page-wrapper{width:210mm!important;height:297mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important}#printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}#printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}#printZone.measure .label-card{background:#fff!important;border:1.5px dashed #222!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}#printZone.measure .print-page-generic-grid .label-card{border:1.5px dashed #222!important}#printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
 @media print{@page{size:A4 portrait;margin:6mm!important}html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}.app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}#printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}#printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}.print-page-wrapper{width:198mm!important;height:285mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}.print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}.print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important}.print-page-generic-grid{display:grid!important;margin:0 auto!important}#printZone .label-card{background:#fff!important;border:1.5px dashed #222!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}#printZone .print-page-generic-grid .label-card{border:1.5px dashed #222!important}#printZone .print-sheet-amanhecer .label-card{width:66mm!important}#printZone .print-sheet-amanhecer .label-card:nth-child(1),#printZone .print-sheet-amanhecer .label-card:nth-child(2),#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
 </style>
-</head>
+
+<!-- ===== CORREÇÃO APK: FORÇA VIEWPORT MOBILE NO WEBVIEW ===== -->
+<script>
+(function correctWebViewViewport(){
+  function correct(){
+    try{
+      const ua = navigator.userAgent || '';
+      const isWebView = /\bwv\b/.test(ua) || /; wv\)/.test(ua);
+      if(!isWebView) return;
+      const screenW = Math.min(window.screen.width || 360, window.screen.height || 640);
+      const winW = window.innerWidth;
+      if(winW > screenW * 1.3){
+        const vp = document.querySelector('meta[name="viewport"]');
+        if(vp){ vp.setAttribute('content','width=' + screenW + ',initial-scale=1,maximum-scale=5,user-scalable=yes'); }
+        document.documentElement.style.width = screenW + 'px';
+        document.documentElement.style.maxWidth = screenW + 'px';
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.width = screenW + 'px';
+        document.body.style.maxWidth = screenW + 'px';
+        document.body.style.overflowX = 'hidden';
+      }
+    }catch(e){}
+  }
+  correct();
+  window.addEventListener('load', correct);
+  setTimeout(correct, 300);
+  setTimeout(correct, 1500);
+})();
+</script>
 <body data-view="editor">
 
 <header class="app-header">
@@ -796,7 +824,9 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 <div class="modal" id="bancoFrutaModal"><div class="modal-panel"><div class="bf-modal-header"><h3 class="modal-title" style="margin:0">Banco de Frutas e Legumes</h3><button id="fecharBancoFruta" class="btn btn-ghost btn-sm" type="button">✕</button></div><div class="bf-tabs" id="bfTabs"><button type="button" data-tipo="fruta" class="active">Frutas <span class="bf-count" id="bfCountFruta">0</span></button><button type="button" data-tipo="legume">Legumes <span class="bf-count" id="bfCountLegume">0</span></button></div><div class="bf-search-row"><input id="buscaBancoFruta" placeholder="Procurar…"></div><div id="gradeBancoFruta" class="bf-grid"></div></div></div>
 
 <div class="pro-print-overlay" id="proPrintOverlay"><div class="pro-print-box"><div class="pro-spinner"></div><strong>A preparar impressão…</strong></div></div>
-<script>
+
+<!-- ===== PARTE 3 CONTINUA AQUI (o <script> final) ===== -->
+  <script>
 "use strict";
 
 /* ============================================================
@@ -2998,7 +3028,7 @@ document.addEventListener("keydown",function(ev){
 (function(){
   const code=$("internalCode"), sync=$("syncCodeToEan"), wrap=$("syncToggleWrap");
   if(!code||!sync) return;
-  try{ const saved=localStorage.getItem(SYNC_EAN_KEY); if(saved==='1'){ sync.checked=true; if(wrap) wrap.classList.add("active"); } }catch(e){}
+  try{ const saved=localStorage.getItem(SYNC_EAN_KEY); if(saved==='1'){ sync.checked=true; if(wrap) wrap.classList.add('active'); } }catch(e){}
   function aplicar(){ if(!sync.checked) return; const v=String(code.value||"").trim().toUpperCase(); if(v){ $("ean").value=v; updateEanBadge(); } }
   code.addEventListener("input",function(){ aplicar(); updateCard(); });
   sync.addEventListener("change",function(){
