@@ -3,7 +3,7 @@
   "name": "Etiquetas de Preços",
   "short_name": "Etiquetas",
   "description": "Sistema profissional de impressão de etiquetas de preços",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=999",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
