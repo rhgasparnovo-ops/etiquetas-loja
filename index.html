@@ -214,8 +214,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-xl.has-discount .price{font-size:clamp(28px,10cqw,76px)!important}
 .label-card.size-xl .extra-unit{font-size:clamp(11px,3cqw,19px)!important}
 
-.deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block;overflow-wrap:anywhere;max-width:100%}
-/* ===== Informação extra — SEM hífenes, quebra natural só quando inevitável ===== */
+/* ===== Acresce Volta — agora numa linha própria entre o preço e o código de barras ===== */
+#cardDeposit{display:flex;justify-content:center;align-items:center;width:100%;padding:1px 0;flex-shrink:0;overflow:hidden;box-sizing:border-box}
+.deposit-box{font-size:clamp(5.5px,1.9cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;border-radius:3px;padding:1px 6px;font-weight:900;line-height:1.15;display:inline-block;overflow-wrap:anywhere;max-width:100%;text-transform:uppercase;text-align:center;letter-spacing:.01em}
+
 .extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:break-word;word-break:normal;hyphens:none;-webkit-hyphens:none;-ms-hyphens:none;max-width:100%;width:100%;text-align:left;display:block;flex-shrink:0;transform-origin:left top}
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
@@ -236,7 +238,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
-.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
+.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny #cardDeposit{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 .label-card.size-tiny .promo-badge-row{display:none!important}
@@ -735,7 +737,6 @@ html.is-apk body{overscroll-behavior-y:none}
                     <div class="item-code" id="cardCode" style="display:none"></div>
                     <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
                     <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
-                    <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
                     <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
                   </div>
                   <div class="col-price">
@@ -752,6 +753,7 @@ html.is-apk body{overscroll-behavior-y:none}
                   <div class="fp-box fp-promo"><div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div><div class="fp-price" id="cardFpPromoPrice">0,00 €</div><div class="fp-unit" id="cardFpPromoUnit">/ KG</div></div>
                 </div>
                 <div class="fruit-full-bar" id="cardFruit"></div>
+                <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
                 <div class="barcode-container" id="cardBarcodeBox">
                   <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
                   <div class="ean-text" id="cardBarcodeText"></div>
@@ -2237,7 +2239,7 @@ function applyPrintSizes(card,dims){
   const set=function(sel,mm){ const el=card.querySelector(sel); if(el) el.style.setProperty("font-size",(mm*s).toFixed(3)+"mm","important"); };
   set(".store-text",2.8); set(".item-code",1.9); set(".product",3.2);
   set(".unit-price-text",2.2); set(".price",6.8); set(".price .unit-inline",2.8);
-  set(".old-price",2.9); set(".deposit-box",1.7);
+  set(".old-price",2.9); set(".deposit-box",1.9);
   set(".extra-unit",2.2); set(".fruit-full-bar",2.2); set(".ean-text",1.8);
   set(".promo-text",1.7); set(".print-date",1.5);
   set(".promo-badge",3.0);
@@ -2254,7 +2256,6 @@ function _overflowY(p){
   }
   return false;
 }
-/* ===== NOVO: verifica overflow horizontal dos filhos ===== */
 function _overflowX(p){
   if(!p) return false;
   const pr=p.getBoundingClientRect(); if(!pr.width) return false;
@@ -2318,48 +2319,27 @@ function autoFitFooterText(card){
     i++; void pt.offsetHeight;
   }
 }
-/* ============================================================
-   AUTO-FIT DA INFORMAÇÃO EXTRA
-   - Sem hífenes (as palavras nunca são cortadas com -)
-   - Verifica vertical E horizontal
-   - Reduz fonte até caber, sem sobrepor nada
-   - Aplica em todas as etiquetas automaticamente
-   ============================================================ */
 function autoFitExtraUnit(card){
   if(!card) return;
   const desc = card.querySelector(".col-desc");
   const el = card.querySelector(".extra-unit");
   if(!desc || !el) return;
   const txt = (el.textContent || "").trim();
-
-  // 1) Reset completo
   el.style.removeProperty("font-size");
   el.style.removeProperty("line-height");
   el.style.removeProperty("transform");
   el.style.removeProperty("transform-origin");
   el.style.removeProperty("margin-top");
   el.style.removeProperty("letter-spacing");
-  el.style.removeProperty("hyphens");
-  el.style.removeProperty("-webkit-hyphens");
-  el.style.removeProperty("word-break");
-  el.style.removeProperty("overflow-wrap");
-  el.style.removeProperty("white-space");
-
-  // 2) Forçar SEMPRE: sem hífenes, quebra natural apenas nos espaços
   el.style.setProperty("hyphens", "none", "important");
   el.style.setProperty("-webkit-hyphens", "none", "important");
   el.style.setProperty("word-break", "normal", "important");
   el.style.setProperty("overflow-wrap", "break-word", "important");
   el.style.setProperty("white-space", "normal", "important");
-
   if(!txt || !_vis(el)) return;
   void el.offsetHeight;
-
-  // Verifica as duas dimensões
   const overflow2D = function(){ return _overflowY(desc) || _overflowX(desc); };
   if(!overflow2D()) return;
-
-  // 3) Reduzir font-size progressivamente (mínimo 2.5px)
   let g1 = 0;
   while(g1 < 120){
     const cur = parseFloat(getComputedStyle(el).fontSize);
@@ -2368,15 +2348,11 @@ function autoFitExtraUnit(card){
     g1++; void el.offsetHeight;
     if(!overflow2D()) return;
   }
-
-  // 4) Apertar line-height, margens e espaçamento de letras
   el.style.setProperty("line-height", "1", "important");
   el.style.setProperty("margin-top", "0", "important");
   el.style.setProperty("letter-spacing", "-0.02em", "important");
   void el.offsetHeight;
   if(!overflow2D()) return;
-
-  // 5) Último recurso: transform scale (visual, mantém a integridade do texto)
   let s = 1, g2 = 0;
   while(s > 0.5 && g2 < 20){
     s -= 0.05;
@@ -2445,7 +2421,6 @@ function autoFitDescription(card){
   void desc.offsetHeight;
   const fits=function(){ return !_overflowY(desc)&&!_overflowX(desc); };
   if(fits()) return;
-  /* Nota: "extra" excluído — tem tratamento dedicado em autoFitExtraUnit */
   const reducers=[unitEl,codeEl,prod].filter(Boolean);
   const mins={'item-code':5,'product':5,'unit-price-text':4.5};
   for(let k=0;k<reducers.length;k++){
@@ -2568,7 +2543,7 @@ function updateCardUnsafe(){
     else { $("cardFruit").style.display="none"; }
     const dep=$("depositFeeSelect").value;
     const depVal=dep==="custom"?$("customDepositInput").value.trim():dep;
-    if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent=depVal; }
+    if(depVal){ $("cardDeposit").style.display="flex"; $("cardDepositText").textContent=depVal; }
     else { $("cardDeposit").style.display="none"; }
     const eu=getInfoExtraText();
     if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent=eu; }
@@ -2590,7 +2565,6 @@ function updateCardUnsafe(){
     }
     $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
     $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
-    /* ===== AUTO-FIT — ordem importa ===== */
     autoAdaptImage(card);
     autoFitExtraUnit(card);
     autoFitDescription(card);
