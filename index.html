@@ -293,7 +293,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 
-/* Oportunidade/Desconto escondido em formatos "Leve 2+ ou mais" */
 body[data-format="fruit-promo"] #promoCard{display:none!important}
 body[data-format="fruit-promo"] #promoBox{display:none!important}
 
@@ -638,7 +637,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <div class="fld">
               <label for="internalCode">Código interno</label>
               <div class="code-with-sync">
-                <input id="internalCode" type="text" inputmode="numeric" title="Código de referência interna">
+                <input id="internalCode" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" title="Código de referência interna (números ou letras)">
                 <label class="sync-toggle" id="syncToggleWrap" title="Copiar código interno para o código de barras">
                   <input type="checkbox" id="syncCodeToEan">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
@@ -659,7 +658,11 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             </div>
             <div class="fld">
               <label for="store">Loja</label>
-              <select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select>
+              <select id="store">
+                <option value="PATAIAS" selected>PATAIAS</option>
+                <option value="GARCIA">GARCIA</option>
+                <option value="GARCIA/PATAIAS">GARCIA/PATAIAS</option>
+              </select>
             </div>
           </div>
           <div class="fld">
@@ -1475,7 +1478,7 @@ function updateInfoExtraVisibility(){
 }
 
 /* ============================================================
-   6. TOAST + STATUS — nunca duplicar
+   6. TOAST + STATUS
    ============================================================ */
 const TOAST_ICONS = {success:"✓", error:"✕", warning:"!", info:"i"};
 let _lastToastMsg = "", _lastToastTime = 0;
@@ -1528,7 +1531,6 @@ function setGlobalStatus(msg, type, opts){
   }, dur);
 }
 
-/* STATUS unificado — mostra SÓ num sítio (local OU global, nunca os dois) */
 let _statusTimer = null;
 let _statusLast = {key: '', t: 0};
 function setStatus(msg, type, opts){
@@ -1875,7 +1877,7 @@ window.addEventListener('resize', fitPreviewCard);
 window.addEventListener('orientationchange', function(){ setTimeout(fitPreviewCard, 200); });
 
 /* ============================================================
-   11. PREVIEW MODAL CORRIGIDO
+   11. PREVIEW MODAL
    ============================================================ */
 let _previewScalerEl = null, _previewStageEl  = null;
 let _previewBaseW = 0, _previewBaseH = 0;
@@ -2175,7 +2177,6 @@ function setFormData(d){
     $("customDepositInput").value = "";
     $("customDepositField").style.display = "none";
   }
-  // Info extra
   const ti = d.infoExtraTipo || "";
   const selTi = $("infoExtraTipo");
   const hasOpt = Array.prototype.some.call(selTi.options, function(o){ return o.value === ti; });
@@ -2952,17 +2953,12 @@ function updateOrientationVisibility(){
   const fv = $("presetSizes").value;
   const show = isLargeFormat(fv);
   const isFP = isFruitPromoFormat(fv);
-
-  // Marcar o body — o CSS esconde automaticamente a Oportunidade/Desconto
   document.body.dataset.format = isFP ? 'fruit-promo' : 'normal';
-
   const fruitEl = $("fruitCard");
   if(fruitEl) fruitEl.style.display = (show || fv === "A6" || fv === "125x80" || fv === "frutaPromo125x80" || fv === "frutaPromoA6") ? "flex" : "none";
-
   $("fruitPromoPanel").style.display = isFP ? "block" : "none";
   const pc = $("promoCard");
   if(pc) pc.style.display = isFP ? "none" : "flex";
-
   if(isFP){
     const cb = $("isPromoActive");
     if(cb && cb.checked){
@@ -2977,10 +2973,6 @@ function updateOrientationVisibility(){
     }
   }
 }
-
-/* ============================================================
-   APPLY PRINT SIZES — mm reais
-   ============================================================ */
 function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
   card.classList.add('print-locked');
