@@ -364,14 +364,17 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
 .tipo-label-title{display:block;font-size:11px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
 
-/* ============ PREVIEW MODAL + ZOOM (CORRIGIDO) ============ */
-.preview-modal{background:rgba(15,23,42,.94);z-index:9500;flex-direction:column;gap:14px;padding-top:calc(16px + var(--safe-t));padding-bottom:calc(88px + var(--safe-b));position:relative}
-.preview-modal-badge{background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3);flex-shrink:0;align-self:center}
-.preview-modal-wrap{display:block;width:100%;overflow:auto;flex:1;min-height:0;padding:16px;text-align:center;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.preview-buffer{display:inline-block;vertical-align:top;position:relative;flex-shrink:0;text-align:left;line-height:0}
-.preview-scaler-outer{display:block;position:relative;transform-origin:top left;line-height:0;background:#fff}
-.preview-modal-close{position:fixed;top:calc(16px + var(--safe-t));right:20px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);border:none;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9501;box-shadow:var(--sh-3)}
-.preview-zoom-bar{position:fixed;bottom:calc(16px + var(--safe-b));left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.96);border-radius:var(--r-pill);padding:6px;box-shadow:var(--sh-3);z-index:9501;border:1px solid var(--line)}
+/* ============ PREVIEW MODAL + ZOOM (POPUP CENTRADO) ============ */
+.preview-modal{position:fixed;inset:0;display:none;z-index:9500;background:rgba(10,15,30,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.preview-modal.show{display:block}
+.preview-modal-badge{position:absolute;top:calc(14px + var(--safe-t));left:50%;transform:translateX(-50%);background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3);z-index:9502;white-space:nowrap;max-width:calc(100vw - 120px);overflow:hidden;text-overflow:ellipsis}
+.preview-modal-close{position:fixed;top:calc(14px + var(--safe-t));right:14px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);border:none;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9502;box-shadow:var(--sh-3)}
+.preview-modal-stage{position:absolute;left:0;right:0;top:calc(70px + var(--safe-t));bottom:calc(96px + var(--safe-b));overflow:hidden;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;cursor:default}
+.preview-modal-stage.pannable{cursor:grab}
+.preview-modal-stage.dragging{cursor:grabbing}
+.preview-modal-scaler{position:relative;flex-shrink:0;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08);transform-origin:center center;will-change:transform;border-radius:2px;transition:transform .12s ease-out}
+.preview-modal-scaler.no-anim{transition:none}
+.preview-zoom-bar{position:fixed;bottom:calc(16px + var(--safe-b));left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.98);border-radius:var(--r-pill);padding:6px;box-shadow:var(--sh-3);z-index:9502;border:1px solid var(--line)}
 .preview-zoom-bar button{min-width:44px;height:44px;padding:0 12px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink-2);font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;transition:all .16s;border:none;cursor:pointer}
 .preview-zoom-bar button:active{transform:scale(.94)}
 .preview-zoom-bar button:hover{background:var(--brand-soft);color:var(--brand)}
@@ -756,15 +759,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 </div>
 
 <div class="preview-modal" id="previewModal">
-  <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
   <div class="preview-modal-badge" id="previewModalBadge">Amanhecer · 70×38</div>
-  <div class="preview-modal-wrap" id="previewModalWrap"></div>
+  <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
+  <div class="preview-modal-stage" id="previewModalStage"></div>
   <div class="preview-zoom-bar" id="previewZoomBar">
     <button type="button" id="zoomOutBtn" title="Reduzir">−</button>
     <span class="zoom-label" id="zoomLabel">100%</span>
     <button type="button" id="zoomInBtn" title="Aumentar">+</button>
-    <button type="button" id="zoomFitBtn" title="Ajustar à janela">Ajustar</button>
-    <button type="button" id="zoomResetBtn" title="Tamanho real">1:1</button>
+    <button type="button" id="zoomFitBtn" title="Ajustar">Ajustar</button>
+    <button type="button" id="zoomResetBtn" title="1:1">1:1</button>
   </div>
 </div>
 
@@ -1010,103 +1013,202 @@ function fitPreviewCard(){
 window.addEventListener('resize',fitPreviewCard);
 window.addEventListener('orientationchange',function(){ setTimeout(fitPreviewCard,200); });
 
-/* ============ PREVIEW MODAL COM ZOOM ============ */
-function applyPreviewZoom(){
-  if(!_previewScalerEl || !_previewBufferEl) return;
-  const wrap = document.getElementById('previewModalWrap');
-  if(!wrap) return;
-  const wrapRect = wrap.getBoundingClientRect();
-  const availW = Math.max(100, wrapRect.width - 32);
-  const availH = Math.max(80, wrapRect.height - 32);
-  let scale;
-  if(_previewZoom === 0){ scale = Math.min(1, availW/_previewBaseW, availH/_previewBaseH); }
-  else { scale = _previewZoom; }
-  if(!isFinite(scale) || scale <= 0) scale = 1;
-  const scaledW = Math.max(20, Math.round(_previewBaseW * scale));
-  const scaledH = Math.max(20, Math.round(_previewBaseH * scale));
-  _previewBufferEl.style.width = scaledW + 'px';
-  _previewBufferEl.style.height = scaledH + 'px';
-  _previewScalerEl.style.width = _previewBaseW + 'px';
-  _previewScalerEl.style.height = _previewBaseH + 'px';
-  _previewScalerEl.style.transformOrigin = 'top left';
-  _previewScalerEl.style.transform = 'scale(' + scale + ')';
-  const lbl = document.getElementById('zoomLabel');
-  if(lbl) lbl.textContent = Math.round(scale * 100) + '%';
+/* ============ PREVIEW MODAL COM ZOOM (POPUP CENTRADO) ============ */
+let _previewScalerEl=null,_previewStageEl=null,_previewBaseW=0,_previewBaseH=0;
+let _previewZoom=0;
+let _previewPanX=0,_previewPanY=0;
+let _previewScale=1;
+let _previewPointers=new Map();
+let _previewPinchStart=null;
+let _previewDragStart=null;
+
+function getStageAvail(){
+  const stage=_previewStageEl;
+  if(!stage) return {w:100,h:100};
+  const r=stage.getBoundingClientRect();
+  return {w:Math.max(40,r.width-40),h:Math.max(40,r.height-40)};
 }
+function applyPreviewZoom(noAnim){
+  if(!_previewScalerEl||!_previewStageEl) return;
+  const avail=getStageAvail();
+  let scale;
+  if(_previewZoom===0){ scale=Math.min(1,avail.w/_previewBaseW,avail.h/_previewBaseH); }
+  else { scale=_previewZoom; }
+  if(!isFinite(scale)||scale<=0) scale=1;
+  const dispW=_previewBaseW*scale, dispH=_previewBaseH*scale;
+  const maxPanX=Math.max(0,(dispW-avail.w)/2);
+  const maxPanY=Math.max(0,(dispH-avail.h)/2);
+  if(_previewPanX>maxPanX) _previewPanX=maxPanX;
+  if(_previewPanX<-maxPanX) _previewPanX=-maxPanX;
+  if(_previewPanY>maxPanY) _previewPanY=maxPanY;
+  if(_previewPanY<-maxPanY) _previewPanY=-maxPanY;
+  _previewScale=scale;
+  if(noAnim) _previewScalerEl.classList.add('no-anim');
+  else _previewScalerEl.classList.remove('no-anim');
+  _previewScalerEl.style.transform='translate('+_previewPanX+'px,'+_previewPanY+'px) scale('+scale+')';
+  if(maxPanX>0||maxPanY>0) _previewStageEl.classList.add('pannable');
+  else _previewStageEl.classList.remove('pannable');
+  const lbl=document.getElementById('zoomLabel');
+  if(lbl) lbl.textContent=Math.round(scale*100)+'%';
+}
+function setPreviewZoom(newScale){
+  _previewZoom=Math.max(0.15,Math.min(5,newScale));
+  applyPreviewZoom();
+}
+function resetPreviewPan(){ _previewPanX=0; _previewPanY=0; }
+
 function abrirPreviewModal(){
-  const wrap = document.getElementById('previewModalWrap');
-  const badge = document.getElementById('previewModalBadge');
-  const bo = document.getElementById('badgeSheet');
-  if(bo) badge.textContent = bo.textContent;
-  wrap.innerHTML = '';
-  const orig = document.getElementById('mainLabelCard');
-  const clone = orig.cloneNode(true);
+  const modal=document.getElementById('previewModal');
+  const stage=document.getElementById('previewModalStage');
+  const badge=document.getElementById('previewModalBadge');
+  const bo=document.getElementById('badgeSheet');
+  if(bo) badge.textContent=bo.textContent;
+  if(!modal||!stage) return;
+  stage.innerHTML='';
+  const orig=document.getElementById('mainLabelCard');
+  const clone=orig.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
-  const dims = getDimensions();
-  const PX_PER_MM = 3.7795;
-  const realW = Math.max(60, Math.round(dims.width * PX_PER_MM));
-  const realH = Math.max(40, Math.round(dims.height * PX_PER_MM));
-  const buffer = document.createElement('div');
-  buffer.className = 'preview-buffer';
-  buffer.style.width = realW + 'px';
-  buffer.style.height = realH + 'px';
-  const scaler = document.createElement('div');
-  scaler.className = 'preview-scaler-outer';
-  scaler.style.width = realW + 'px';
-  scaler.style.height = realH + 'px';
-  scaler.style.transformOrigin = 'top left';
-  scaler.style.background = '#fff';
-  scaler.style.boxShadow = '0 10px 40px rgba(0,0,0,.6)';
-  clone.style.width = realW + 'px';
-  clone.style.height = realH + 'px';
-  clone.style.margin = '0';
-  clone.style.boxSizing = 'border-box';
-  clone.style.lineHeight = 'normal';
-  clone.style.background = '#fff';
+  const dims=getDimensions();
+  const PX_PER_MM=3.7795;
+  const realW=Math.max(60,Math.round(dims.width*PX_PER_MM));
+  const realH=Math.max(40,Math.round(dims.height*PX_PER_MM));
+  const scaler=document.createElement('div');
+  scaler.className='preview-modal-scaler';
+  scaler.style.width=realW+'px';
+  scaler.style.height=realH+'px';
+  clone.style.width=realW+'px';
+  clone.style.height=realH+'px';
+  clone.style.margin='0';
+  clone.style.flexShrink='0';
+  clone.style.boxSizing='border-box';
+  clone.style.position='relative';
   scaler.appendChild(clone);
-  buffer.appendChild(scaler);
-  wrap.appendChild(buffer);
-  _previewScalerEl = scaler;
-  _previewBufferEl = buffer;
-  _previewBaseW = realW;
-  _previewBaseH = realH;
-  _previewZoom = 0;
+  stage.appendChild(scaler);
+  _previewScalerEl=scaler;
+  _previewStageEl=stage;
+  _previewBaseW=realW;
+  _previewBaseH=realH;
+  _previewZoom=0;
+  resetPreviewPan();
+  _previewPointers.clear();
+  _previewPinchStart=null;
+  _previewDragStart=null;
   document.body.classList.add('preview-open');
-  document.getElementById('previewModal').classList.add('show');
-  requestAnimationFrame(function(){ applyPreviewZoom(); });
-  setTimeout(applyPreviewZoom, 100);
-  setTimeout(applyPreviewZoom, 300);
+  modal.classList.add('show');
+  requestAnimationFrame(function(){ applyPreviewZoom(true); });
+  setTimeout(function(){ applyPreviewZoom(true); },80);
+  setTimeout(function(){ applyPreviewZoom(true); },250);
 }
 function fecharPreviewModal(){
-  document.getElementById('previewModal').classList.remove('show');
-  document.getElementById('previewModalWrap').innerHTML='';
+  const modal=document.getElementById('previewModal');
+  if(modal) modal.classList.remove('show');
+  const stage=document.getElementById('previewModalStage');
+  if(stage) stage.innerHTML='';
   document.body.classList.remove('preview-open');
-  _previewScalerEl = null; _previewBufferEl = null;
+  _previewScalerEl=null; _previewStageEl=null;
+  _previewPointers.clear(); _previewPinchStart=null; _previewDragStart=null;
 }
-document.getElementById('floatingPreviewBtn').addEventListener('click', abrirPreviewModal);
-document.getElementById('previewModalClose').addEventListener('click', fecharPreviewModal);
-document.getElementById('previewModal').addEventListener('click', function(e){ if(e.target === document.getElementById('previewModal')) fecharPreviewModal(); });
-document.getElementById('zoomInBtn').addEventListener('click', function(){
-  const cur = getCurrentAutoScale();
-  if(_previewZoom === 0){ _previewZoom = Math.min(4, Math.max(0.2, cur * 1.25)); }
-  else { _previewZoom = Math.min(4, _previewZoom * 1.25); }
-  applyPreviewZoom();
+document.getElementById('floatingPreviewBtn').addEventListener('click',abrirPreviewModal);
+document.getElementById('previewModalClose').addEventListener('click',fecharPreviewModal);
+document.getElementById('previewModal').addEventListener('click',function(e){
+  if(e.target===document.getElementById('previewModal')) fecharPreviewModal();
 });
-document.getElementById('zoomOutBtn').addEventListener('click', function(){
-  const cur = getCurrentAutoScale();
-  if(_previewZoom === 0){ _previewZoom = Math.max(0.15, cur * 0.8); }
-  else { _previewZoom = Math.max(0.15, _previewZoom * 0.8); }
-  applyPreviewZoom();
+document.getElementById('zoomInBtn').addEventListener('click',function(){
+  const base=(_previewZoom===0)?_previewScale:_previewZoom;
+  setPreviewZoom(base*1.25);
 });
-document.getElementById('zoomFitBtn').addEventListener('click', function(){ _previewZoom = 0; applyPreviewZoom(); });
-document.getElementById('zoomResetBtn').addEventListener('click', function(){ _previewZoom = 1; applyPreviewZoom(); });
-function getCurrentAutoScale(){
-  if(!_previewScalerEl) return 1;
-  const m = /scale\(([^)]+)\)/.exec(_previewScalerEl.style.transform || '');
-  return m ? parseFloat(m[1]) : 1;
-}
-window.addEventListener('resize', function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(); });
+document.getElementById('zoomOutBtn').addEventListener('click',function(){
+  const base=(_previewZoom===0)?_previewScale:_previewZoom;
+  setPreviewZoom(base*0.8);
+});
+document.getElementById('zoomFitBtn').addEventListener('click',function(){
+  _previewZoom=0; resetPreviewPan(); applyPreviewZoom();
+});
+document.getElementById('zoomResetBtn').addEventListener('click',function(){
+  resetPreviewPan(); setPreviewZoom(1);
+});
+
+/* Pinch + drag com Pointer Events */
+(function(){
+  const stage=document.getElementById('previewModalStage');
+  if(!stage) return;
+  stage.addEventListener('pointerdown',function(e){
+    if(!_previewScalerEl) return;
+    try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+    _previewPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(_previewPointers.size===2){
+      const pts=[..._previewPointers.values()];
+      const dx=pts[0].x-pts[1].x, dy=pts[0].y-pts[1].y;
+      _previewPinchStart={
+        dist:Math.max(1,Math.hypot(dx,dy)),
+        scale:_previewScale
+      };
+      _previewDragStart=null;
+      stage.classList.remove('dragging');
+    } else if(_previewPointers.size===1){
+      stage.classList.add('dragging');
+      _previewDragStart={x:e.clientX,y:e.clientY,panX:_previewPanX,panY:_previewPanY};
+    }
+  });
+  stage.addEventListener('pointermove',function(e){
+    if(!_previewPointers.has(e.pointerId)) return;
+    _previewPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(_previewPointers.size===2 && _previewPinchStart){
+      const pts=[..._previewPointers.values()];
+      const dx=pts[0].x-pts[1].x, dy=pts[0].y-pts[1].y;
+      const dist=Math.max(1,Math.hypot(dx,dy));
+      const newScale=Math.max(0.15,Math.min(5,_previewPinchStart.scale*(dist/_previewPinchStart.dist)));
+      _previewZoom=newScale;
+      applyPreviewZoom(true);
+    } else if(_previewPointers.size===1 && _previewDragStart){
+      const dx=e.clientX-_previewDragStart.x;
+      const dy=e.clientY-_previewDragStart.y;
+      _previewPanX=_previewDragStart.panX+dx;
+      _previewPanY=_previewDragStart.panY+dy;
+      applyPreviewZoom(true);
+    }
+  });
+  function releasePointer(e){
+    _previewPointers.delete(e.pointerId);
+    try{ stage.releasePointerCapture(e.pointerId); }catch(err){}
+    if(_previewPointers.size<2) _previewPinchStart=null;
+    if(_previewPointers.size===0){
+      stage.classList.remove('dragging');
+      _previewDragStart=null;
+    } else if(_previewPointers.size===1){
+      const remaining=[..._previewPointers.values()][0];
+      _previewDragStart={x:remaining.x,y:remaining.y,panX:_previewPanX,panY:_previewPanY};
+    }
+  }
+  stage.addEventListener('pointerup',releasePointer);
+  stage.addEventListener('pointercancel',releasePointer);
+  stage.addEventListener('pointerleave',releasePointer);
+
+  /* Wheel zoom (desktop) */
+  stage.addEventListener('wheel',function(e){
+    if(!_previewScalerEl) return;
+    e.preventDefault();
+    const base=(_previewZoom===0)?_previewScale:_previewZoom;
+    const delta=e.deltaY<0?1.1:0.9;
+    setPreviewZoom(base*delta);
+  },{passive:false});
+
+  /* Duplo clique = reset */
+  stage.addEventListener('dblclick',function(){
+    _previewZoom=0; resetPreviewPan(); applyPreviewZoom();
+  });
+})();
+
+/* Recalcular ao rodar o ecrã */
+window.addEventListener('resize',function(){
+  if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true);
+});
+window.addEventListener('orientationchange',function(){
+  setTimeout(function(){
+    if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true);
+  },200);
+});
 
 function updateDateClearButtons(){ document.querySelectorAll('.date-clear-btn').forEach(function(btn){ const t=document.getElementById(btn.dataset.target); if(!t) return; if(t.value&&t.value.trim()!=='') btn.classList.add('show'); else btn.classList.remove('show'); }); }
 document.addEventListener('click',function(e){ const btn=e.target.closest('.date-clear-btn'); if(!btn) return; e.preventDefault(); const input=document.getElementById(btn.dataset.target); if(!input) return; input.value=''; input.dispatchEvent(new Event('input',{bubbles:true})); input.dispatchEvent(new Event('change',{bubbles:true})); updateDateClearButtons(); toast('Data removida','info'); });
