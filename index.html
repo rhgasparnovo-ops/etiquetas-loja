@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover,user-scalable=yes">
 <meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -46,18 +46,27 @@
   --ff-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
   --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
   --safe-l:env(safe-area-inset-left,0px);--safe-r:env(safe-area-inset-right,0px);
+  --vh:1vh; /* fallback dinâmico para WebView/APK */
 }
 html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden}
 @supports (overflow-x:clip){html,body{overflow-x:clip}}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{
   font-family:var(--ff);color:var(--ink);font-size:15px;line-height:1.5;
-  min-height:100dvh;-webkit-font-smoothing:antialiased;background:var(--bg);
+  min-height:100vh;min-height:100dvh;
+  -webkit-font-smoothing:antialiased;background:var(--bg);
   background-image:
     radial-gradient(circle at 0% 0%, #ffe4e9 0%, transparent 45%),
     radial-gradient(circle at 100% 15%, #e6efff 0%, transparent 40%),
     radial-gradient(circle at 50% 100%, #f0e6ff 0%, transparent 45%);
   background-attachment:fixed;
+}
+/* Fallback robusto para WebView/APK antigos (sem dvh) */
+@supports not (height: 100dvh){
+  body{min-height:calc(var(--vh, 1vh) * 100)}
+}
+@supports (-webkit-touch-callout:none){
+  body{min-height:-webkit-fill-available}
 }
 img{max-width:100%;display:block}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
@@ -467,6 +476,11 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .fruit-promo-panel h4{margin:0 0 12px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.04em}
 #capacityHint{font-size:11.5px;color:#1e40af;margin-top:6px;font-weight:700;padding:6px 10px;background:#eff6ff;border-radius:6px;border-left:3px solid #1e40af;display:none}
 
+/* ===== APK / WebView específico ===== */
+html.is-apk body{overscroll-behavior-y:none}
+html.is-apk .app-header{padding-top:calc(14px + var(--safe-t))}
+html.is-apk .bnav{bottom:calc(12px + var(--safe-b))}
+
 @media (max-width:600px){
   .card{padding:16px}
   .card-h{padding-bottom:10px}
@@ -649,7 +663,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
         </div>
         <div id="fruitPanel" style="display:none"></div>
 
-        <div class="card accent-amber">
+        <!-- CARD DE OPORTUNIDADE / DESCONTO — só visível fora do formato Leve 2+ -->
+        <div class="card accent-amber" id="promoCard">
           <div class="card-h"><div class="ic">💡</div><h3>Oportunidade / Desconto</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Preenche o preço anterior para mostrar o desconto. Deixa vazio se não houver promoção.</p>
           <label class="check-row" title="Ativa a apresentação do preço anterior e percentagem de desconto">
@@ -947,6 +962,28 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 
 <script>
 "use strict";
+
+/* ================= FIX VIEWPORT APK / WebView ================= */
+(function fixViewport(){
+  function setVh(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} }
+  setVh();
+  window.addEventListener('resize', setVh, {passive:true});
+  window.addEventListener('orientationchange', function(){ setTimeout(setVh, 120); }, {passive:true});
+  if(window.visualViewport){ try{ window.visualViewport.addEventListener('resize', setVh, {passive:true}); }catch(e){} }
+  // Deteção de APK/WebView vs. browser normal
+  try{
+    const ua = navigator.userAgent || '';
+    const isWebView = /\bwv\b/.test(ua) || /Version\/[\d.]+.*Chrome/.test(ua) || (window.Android && window.Android !== undefined) || /; wv\)/.test(ua);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const isFileProtocol = location.protocol === 'file:';
+    if(isWebView || isStandalone || isFileProtocol){
+      document.documentElement.classList.add('is-apk');
+    }
+  }catch(e){}
+  // Reaplica o tamanho da preview ao virar/redimensionar
+  window.addEventListener('resize', function(){ setTimeout(function(){ try{ fitPreviewCard(); }catch(e){} }, 120); }, {passive:true});
+})();
+
 const AUTH_KEY_JWT='balcao_jwt';
 const AUTH_KEY_EXP='balcao_jwt_exp';
 const AUTH_KEY_USER='balcao_jwt_user';
@@ -1628,20 +1665,16 @@ async function saveToDb(){
     const payload=buildProdutoPayload(data);
     payload.fotoId=fotoId; payload.fotoUrl=fotoUrl;
 
-    // ====== MODO ATUALIZAR: garantir substituição do registo original ======
     if(modo==='update' && codigoOriginal){
       const codigoAtual=String(payload.codigo||'').trim();
       const mudouCodigo = codigoAtual && codigoAtual.toUpperCase()!==codigoOriginal.toUpperCase();
       if(mudouCodigo){
-        // apagar o registo antigo antes de gravar o novo (com o novo código)
         setStatus("A substituir etiqueta…","loading");
         try{ await api('apagarProduto',{codigo:codigoOriginal,nome:''}); }catch(e){}
         savedProducts=savedProducts.filter(function(p){ return String(p.codigo||'').trim().toUpperCase()!==codigoOriginal.toUpperCase(); });
       } else if(!codigoAtual){
-        // sem código no formulário → usar o código original para garantir o update
         payload.codigo=codigoOriginal;
       }
-      // se o código não mudou → o backend atualiza automaticamente
     }
 
     setStatus("A guardar no Drive…","loading");
@@ -1852,10 +1885,22 @@ function updateOrientationVisibility(){
   const fv=$("presetSizes").value;
   const show=isLargeFormat(fv);
   const isFP=isFruitPromoFormat(fv);
-  const fruitEl=$("fruitCard"); if(fruitEl) fruitEl.style.display=(show||fv==="A6"||fv==="125x80"||fv==="frutaPromo125x80"||fv==="frutaPromoA6")?"flex":"none";
+  const fruitEl=$("fruitCard");
+  if(fruitEl) fruitEl.style.display=(show||fv==="A6"||fv==="125x80"||fv==="frutaPromo125x80"||fv==="frutaPromoA6")?"flex":"none";
   $("fruitPromoPanel").style.display=isFP?"block":"none";
-  const lbl=$("isPromoActive").closest("label");
-  if(lbl) lbl.style.display=isFP?"none":"flex";
+
+  // Esconde o CARD COMPLETO de "Oportunidade / Desconto" nos formatos Leve 2+
+  const pc=$("promoCard");
+  if(pc) pc.style.display=isFP?"none":"flex";
+
+  // Limpa o estado da promoção quando entra num formato Leve 2+
+  if(isFP){
+    const cb=$("isPromoActive");
+    if(cb && cb.checked){
+      cb.checked=false;
+      const lbl=cb.closest("label"); if(lbl) lbl.classList.remove("checked");
+    }
+  }
 }
 function updateCapacityHint(){
   const h=document.getElementById("capacityHint"); if(!h) return;
@@ -1963,7 +2008,7 @@ function updateCardUnsafe(){
     setProductText($("cardProduct"),productVal||"NOME DO PRODUTO");
     if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent=codeVal; } else { $("cardCode").style.display="none"; }
     const info=calcUnitInfo(capUnit);
-    if(isPromo&&oldPriceNum!==null){
+    if(isPromo&&oldPriceNum!==null&&!isFP){
       $("cardPromoTopRow").style.display="flex";
       $("cardOldPrice").textContent=oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
       if(priceNum!==null&&oldPriceNum>priceNum){
