@@ -1,9 +1,8 @@
 {
-  "id": "/etiquetas-app/",
   "name": "Etiquetas de Preços",
   "short_name": "Etiquetas",
   "description": "Sistema profissional de impressão de etiquetas de preços",
-  "start_url": "./index.html?v=999",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
