@@ -195,6 +195,19 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .date-clear-btn.show{display:inline-flex}
 .date-clear-btn:active{background:var(--brand);color:#fff;border-color:var(--brand)}
 
+/* Toggle código interno → EAN */
+.code-with-sync{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
+.code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
+.sync-toggle{display:flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-md);cursor:pointer;user-select:none;font-size:11px;font-weight:800;color:var(--ink-3);transition:all .16s;white-space:nowrap;flex-shrink:0;min-width:56px;letter-spacing:.03em}
+.sync-toggle:hover{background:var(--surface-3)}
+.sync-toggle input[type=checkbox]{display:none}
+.sync-toggle.active{background:var(--brand-tint);border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.09)}
+.sync-toggle svg{flex-shrink:0}
+@media (max-width:480px){
+  .sync-toggle{padding:0 8px;gap:3px;min-width:44px}
+  .sync-toggle .sync-label-full{display:none}
+}
+
 /* ============ BUTTONS ============ */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:var(--r-pill);font-size:14.5px;font-weight:700;letter-spacing:.01em;transition:all .16s;min-height:48px;line-height:1.1;white-space:nowrap;text-decoration:none;border:1.5px solid transparent}
 .btn:active:not(:disabled){transform:scale(.97)}
@@ -221,9 +234,9 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .chip-btn[data-field=calibre]{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
 .chip-btn.chip-nc{background:var(--surface-3);color:var(--ink-2);font-weight:800}
 
-/* ============ PREVIEW (desktop) ============ */
+/* ============ PREVIEW ============ */
 .preview-shell{background:radial-gradient(circle at 20% 20%, rgba(200,16,46,.06), transparent 50%),radial-gradient(circle at 80% 80%, rgba(99,102,241,.05), transparent 50%),linear-gradient(135deg,#f5f7fa,#eef1f6);border:1px solid var(--line);border-radius:var(--r-xl);padding:26px 18px;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden;box-shadow:var(--sh-2)}
-.sheet-badge{display:inline-flex;align-items:center;gap:6px;background:#fff;padding:8px 16px;border-radius:var(--r-pill);font-size:11.5px;font-weight:800;color:var(--brand);box-shadow:var(--sh-1);margin-bottom:20px;text-transform:uppercase;letter-spacing:.05em;max-width:100%;text-align:center;border:1px solid #fbd0d8}
+.sheet-badge{display:none!important}
 .preview-wrap{width:100%;display:flex;justify-content:center;min-width:0}
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden}
 .preview-scaler > .label-card{flex-shrink:0;transform-origin:top center;max-width:100%}
@@ -279,6 +292,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
+
+/* Oportunidade/Desconto escondido em formatos "Leve 2+ ou mais" */
+body[data-format="fruit-promo"] #promoCard{display:none!important}
+body[data-format="fruit-promo"] #promoBox{display:none!important}
 
 /* ============ BOTTOM NAV ============ */
 .bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);max-width:500px;margin:0 auto}
@@ -368,7 +385,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .bc-badge.ok{background:#ecfdf5;color:#047857}
 .bc-badge.warn{background:#fffbeb;color:#92400e}
 .bc-badge.err{background:#fef2f2;color:#991b1b}
-
 .queue-item{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:14px}
 .queue-item .list-item-info{width:100%}
 .queue-item .list-item-info strong{font-size:13px;-webkit-line-clamp:3;font-weight:700;letter-spacing:0}
@@ -391,7 +407,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .confirm-box button{flex:1;min-height:48px;padding:12px;font-size:14px;font-weight:800;border-radius:var(--r-pill);border:none;cursor:pointer;transition:all .16s}
 .confirm-box .confirm-no{background:var(--surface-3);color:var(--ink-2)}
 .confirm-box .confirm-yes{background:var(--brand-grad);color:#fff;box-shadow:var(--sh-brand)}
-
 .choice-modal{background:rgba(15,23,42,.65);z-index:100003;backdrop-filter:blur(8px)}
 .choice-box{background:#fff;border-radius:var(--r-xl);padding:26px;max-width:440px;width:100%;box-shadow:var(--sh-3)}
 .choice-box h3{margin:0 0 8px;font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
@@ -402,7 +417,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .choice-box .choice-new{background:var(--brand-grad);color:#fff;box-shadow:var(--sh-brand)}
 .choice-box .choice-cancel{background:var(--surface-3);color:var(--ink-2);min-height:46px}
 .choice-box .choice-actions button:active{transform:scale(.97)}
-
 .name-modal,.email-modal{background:rgba(15,23,42,.65);z-index:100002;backdrop-filter:blur(8px)}
 .name-modal-box,.email-modal-box{background:#fff;border-radius:var(--r-xl);padding:24px;max-width:460px;width:100%;box-shadow:var(--sh-3);max-height:92vh;overflow:auto}
 .name-modal-box h3,.email-modal-box h3{margin:0 0 6px;font-size:17px;font-weight:800;letter-spacing:-.01em}
@@ -427,7 +441,7 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .tipo-hint[data-ok="1"]{background:#f0fdf4;color:#14532d;border-color:#bbf7d0}
 .tipo-label-title{display:block;font-size:11px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
 .preview-modal{background:rgba(15,23,42,.94);z-index:9500;flex-direction:column;gap:16px;padding-top:calc(20px + var(--safe-t));padding-bottom:calc(20px + var(--safe-b))}
-.preview-modal-badge{background:#fff;border-radius:var(--r-pill);padding:8px 18px;font-size:12px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--sh-3)}
+.preview-modal-badge{display:none!important}
 .preview-modal-wrap{display:flex;justify-content:center;align-items:center;width:100%;overflow:auto;flex:1}
 .preview-modal-close{position:fixed;top:calc(16px + var(--safe-t));right:20px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);border:none;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9501;box-shadow:var(--sh-3)}
 .modal{background:rgba(15,23,42,.92);z-index:99999;flex-direction:column;gap:14px;padding:16px}
@@ -536,54 +550,17 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 }
 .queue-item .copies-input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(200,16,46,.12)}
 
-/* ============ PREVIEW MODAL SCALER (novo) ============ */
-.preview-modal-scaler{
-  position:relative;
-  flex-shrink:0;
-  transform-origin:center center;
-  will-change:transform;
-  transition:transform .12s ease-out;
-}
+.preview-modal-scaler{position:relative;flex-shrink:0;transform-origin:center center;will-change:transform;transition:transform .12s ease-out}
 .preview-modal-scaler.no-anim{transition:none}
-#previewModalStage{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  touch-action:none;
-  user-select:none;
-  -webkit-user-select:none;
-}
+#previewModalStage{display:flex;align-items:center;justify-content:center;width:100%;height:100%;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 #previewModalStage.pannable{cursor:grab}
 #previewModalStage.dragging{cursor:grabbing}
-#previewZoomBar{
-  position:fixed;
-  bottom:calc(16px + var(--safe-b));
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:6px;
-  align-items:center;
-  background:rgba(255,255,255,.98);
-  border-radius:var(--r-pill);
-  padding:6px;
-  box-shadow:var(--sh-3);
-  z-index:9502;
-  border:1px solid var(--line);
-}
-#previewZoomBar button{
-  min-width:44px;height:44px;padding:0 12px;border-radius:var(--r-pill);
-  background:var(--surface-2);color:var(--ink-2);font-size:13px;font-weight:900;
-  display:flex;align-items:center;justify-content:center;transition:all .16s;
-  border:none;cursor:pointer;
-}
+#previewZoomBar{position:fixed;bottom:calc(16px + var(--safe-b));left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.98);border-radius:var(--r-pill);padding:6px;box-shadow:var(--sh-3);z-index:9502;border:1px solid var(--line)}
+#previewZoomBar button{min-width:44px;height:44px;padding:0 12px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink-2);font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;transition:all .16s;border:none;cursor:pointer}
 #previewZoomBar button:active{transform:scale(.94)}
 #previewZoomBar button:hover{background:var(--brand-soft);color:var(--brand)}
 #previewZoomBar .zoom-label{font-size:11px;font-weight:800;color:var(--ink-3);padding:0 6px;min-width:44px;text-align:center;letter-spacing:.03em}
 
-/* ============ PRINT ============ */
 @media screen{
   #printZone{display:none!important}
   #printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}
@@ -591,7 +568,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   #printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}
   #printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}
   #printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}
-  #printZone.measure .print-page-generic-grid .label-card{border:1px dashed #999!important}
   #printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
   #printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
@@ -602,22 +578,11 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   .app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}
-  .print-page-wrapper{
-    width:198mm!important;
-    overflow:hidden!important;
-    box-sizing:border-box!important;
-    position:relative!important;
-    background:#fff!important;
-    display:block!important;
-    padding:0!important;
-    page-break-after:always!important;
-    break-after:page!important;
-  }
+  .print-page-wrapper{width:198mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
   .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
   .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important}
   .print-page-generic-grid{display:grid!important;margin:0 auto!important}
   #printZone .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
-  #printZone .print-page-generic-grid .label-card{border:1px dashed #999!important}
   #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),#printZone .print-sheet-amanhecer .label-card:nth-child(2),#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
@@ -625,7 +590,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 </style>
 </head>
 
-<body data-view="editor">
+<body data-view="editor" data-format="normal">
 
 <header class="app-header">
   <div class="hdr-inner">
@@ -645,7 +610,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div id="g_id_onload" data-client_id="268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false" data-cancel_on_tap_outside="false" data-context="signin" data-itp_support="true"></div>
           <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large" data-text="continue_with" data-shape="pill" data-logo_alignment="left" data-locale="pt-PT"></div>
         </div>
-        <button type="button" class="auth-logout" id="authLogoutBtn" title="Terminar a sessão atual">Sair</button>
+        <button type="button" class="auth-logout" id="authLogoutBtn">Sair</button>
       </div>
     </div>
   </div>
@@ -667,16 +632,26 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
           <div class="fld">
             <label for="product">Nome do produto</label>
-            <input id="product" type="text" class="input-hero" autocomplete="off" title="Nome que aparece na etiqueta">
+            <input id="product" type="text" class="input-hero" autocomplete="off">
           </div>
           <div class="row">
-            <div class="fld"><label for="internalCode">Código interno</label><input id="internalCode" type="text" inputmode="numeric" title="Código de referência interna"></div>
-            <div class="fld"><label for="price">Preço de venda (€)</label><input id="price" type="text" inputmode="decimal" title="Preço por quilo ou unidade"></div>
+            <div class="fld">
+              <label for="internalCode">Código interno</label>
+              <div class="code-with-sync">
+                <input id="internalCode" type="text" inputmode="numeric" title="Código de referência interna">
+                <label class="sync-toggle" id="syncToggleWrap" title="Copiar código interno para o código de barras">
+                  <input type="checkbox" id="syncCodeToEan">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
+                  <span class="sync-label-full">→ EAN</span>
+                </label>
+              </div>
+            </div>
+            <div class="fld"><label for="price">Preço de venda (€)</label><input id="price" type="text" inputmode="decimal"></div>
           </div>
           <div class="row">
             <div class="fld">
               <label for="capacityUnit">Unidade</label>
-              <select id="capacityUnit" title="Unidade de medida do preço">
+              <select id="capacityUnit">
                 <optgroup label="⚖️ Peso"><option value="peso" selected>Quilos (KG)</option><option value="g">Gramas (g)</option></optgroup>
                 <optgroup label="🥤 Volume"><option value="lt">Litros (LT)</option><option value="cl">Centilitros (cl)</option><option value="ml">Mililitros (ml)</option></optgroup>
                 <optgroup label="🔢 Contagem"><option value="un">Unidade (UN)</option><option value="dz">Dúzia</option><option value="meia_dz">Meia Dúzia</option><option value="dose">Dose</option></optgroup>
@@ -684,22 +659,21 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             </div>
             <div class="fld">
               <label for="store">Loja</label>
-              <select id="store" title="Loja a que pertence a etiqueta"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select>
+              <select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select>
             </div>
           </div>
           <div class="fld">
             <label for="presetSizes">Formato da etiqueta</label>
-            <select id="presetSizes" title="Escolha o tamanho/formato da etiqueta">
+            <select id="presetSizes">
               <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Amanhecer · 70×38/40</option></optgroup>
               <optgroup label="🍎 Fruta e Legumes"><option value="125x80">🍎 Suporte · 125×80</option><option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option></optgroup>
               <optgroup label="📄 Tabuletas"><option value="A6">📄 A6 · 148×105</option><option value="frutaPromoA6">💡 A6 Leve 2+ · 148×105</option><option value="A5">📄 A5 · 210×148</option><option value="100x70">🏷️ Cartaz · 100×70</option></optgroup>
-              <optgroup label="🏷️ Prateleira"><option value="105x38">🏷 Longa · 105×38</option><option value="70x38">🏷️ Standard · 70×38</option><option value="65x38">🏷️ Média · 65×38</option></optgroup>
               <optgroup label="⚙️ Outro"><option value="custom">⚙️ Personalizado…</option></optgroup>
             </select>
           </div>
           <div id="customDimensionsRow" class="row" style="display:none">
-            <div class="fld"><label for="customWidth">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70" title="Largura personalizada"></div>
-            <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38" title="Altura personalizada"></div>
+            <div class="fld"><label for="customWidth">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
+            <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
           </div>
         </div>
 
@@ -711,20 +685,20 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           </div>
           <div class="fld">
             <label for="ean">EAN-13 / EAN-14 / Code128</label>
-            <input id="ean" type="text" title="Introduza ou leia o código de barras do produto">
+            <input id="ean" type="text">
           </div>
-          <button type="button" class="btn btn-soft btn-block" id="scanEanBtn" title="Ler código de barras com a câmara">📷 Ler código com a câmara</button>
+          <button type="button" class="btn btn-soft btn-block" id="scanEanBtn">📷 Ler código com a câmara</button>
         </div>
 
         <div class="card accent-green" id="fruitCard" style="display:none">
           <div class="card-h"><div class="ic">🍎</div><h3>Origem · Categoria · Calibre</h3></div>
           <div class="row-3">
-            <div class="fld"><label for="origem">Origem</label><input id="origem" type="text" title="País de origem"></div>
-            <div class="fld"><label for="categoria">Categoria</label><input id="categoria" type="text" title="Categoria UE"></div>
-            <div class="fld"><label for="calibre">Calibre</label><input id="calibre" type="text" title="Calibre do produto"></div>
+            <div class="fld"><label for="origem">Origem</label><input id="origem" type="text"></div>
+            <div class="fld"><label for="categoria">Categoria</label><input id="categoria" type="text"></div>
+            <div class="fld"><label for="calibre">Calibre</label><input id="calibre" type="text"></div>
           </div>
           <details style="background:var(--surface-2);border-radius:var(--r-md);padding:4px 0;margin-top:8px">
-            <summary style="cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:800;color:var(--ink-2);list-style:none" title="Abre lista de códigos rápidos">⚡ Códigos rápidos</summary>
+            <summary style="cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:800;color:var(--ink-2);list-style:none">⚡ Códigos rápidos</summary>
             <div style="padding:0 14px 14px">
               <span class="chips-label">🌍 Europa</span>
               <div class="chips-group">
@@ -755,10 +729,10 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div id="fruitPromoPanel" class="fruit-promo-panel" style="display:none">
             <h4>💡 Oportunidade "Leve X ou mais"</h4>
             <div class="row">
-              <div class="fld"><label for="promoMinQty">Qtd. mínima</label><input id="promoMinQty" type="number" min="1" step="1" value="2" title="Quantidade mínima para aplicar o preço especial"></div>
-              <div class="fld"><label for="promoUnit">Unidade</label><select id="promoUnit" title="Unidade da promoção"><option value="KG" selected>KG</option><option value="UN">UN</option></select></div>
+              <div class="fld"><label for="promoMinQty">Qtd. mínima</label><input id="promoMinQty" type="number" min="1" step="1" value="2"></div>
+              <div class="fld"><label for="promoUnit">Unidade</label><select id="promoUnit"><option value="KG" selected>KG</option><option value="UN">UN</option></select></div>
             </div>
-            <div class="fld" style="margin-top:12px"><label for="promoPrice">Preço Especial (€)</label><input id="promoPrice" type="text" inputmode="decimal" title="Preço promocional"></div>
+            <div class="fld" style="margin-top:12px"><label for="promoPrice">Preço Especial (€)</label><input id="promoPrice" type="text" inputmode="decimal"></div>
           </div>
         </div>
         <div id="fruitPanel" style="display:none"></div>
@@ -766,13 +740,13 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         <div class="card accent-amber" id="promoCard">
           <div class="card-h"><div class="ic">💡</div><h3>Oportunidade / Desconto</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Preenche o preço anterior para mostrar o desconto. Deixa vazio se não houver promoção.</p>
-          <label class="check-row" title="Ativa a apresentação do preço anterior e percentagem de desconto">
+          <label class="check-row" for="isPromoActive">
             <input type="checkbox" id="isPromoActive">
             <span>Mostrar preço anterior e percentagem de desconto</span>
           </label>
           <div class="fld" id="promoBox">
             <label for="oldPrice">Preço Normal Anterior (€)</label>
-            <input id="oldPrice" type="text" inputmode="decimal" title="Preço antes do desconto">
+            <input id="oldPrice" type="text" inputmode="decimal">
           </div>
         </div>
 
@@ -780,36 +754,51 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div class="card-h"><div class="ic">⚙️</div><h3>Quantidade & Extras</h3></div>
           <div class="fld">
             <label for="capacity">Quantidade / Medida</label>
-            <input id="capacity" type="number" min="0.001" step="0.001" title="Quantidade a que se refere o preço">
+            <input id="capacity" type="number" min="0.001" step="0.001">
             <div id="capacityHint"></div>
           </div>
-          <div class="fld"><label for="unit">Informação extra <span class="hint">opcional</span></label><input id="unit" type="text" title="Informação adicional"></div>
+
+          <div class="fld">
+            <label for="infoExtraTipo">Informação extra <span class="hint">opcional</span></label>
+            <select id="infoExtraTipo">
+              <option value="" selected>Nenhuma</option>
+              <option value="consumir">Consumir de preferência antes de…</option>
+              <option value="validade">Aproximação do prazo de validade…</option>
+              <option value="danificado">Embalagem danificada</option>
+            </select>
+          </div>
+          <div class="fld" id="infoExtraDataField" style="display:none">
+            <label for="infoExtraData">Data a incluir</label>
+            <div class="date-input-wrap">
+              <input id="infoExtraData" type="date">
+              <button type="button" class="date-clear-btn" data-target="infoExtraData">✕</button>
+            </div>
+          </div>
+
           <div class="fld">
             <label for="depositFeeSelect">Taxa Volta</label>
-            <select id="depositFeeSelect" title="Taxa de embalagem a devolver">
+            <select id="depositFeeSelect">
               <option value="" selected>Nenhuma</option>
               <option value="Acresce 0,10 € Volta">Acresce 0,10 € Volta</option>
               <option value="custom">Outro valor...</option>
             </select>
           </div>
-          <div class="fld" id="customDepositField" style="display:none"><label for="customDepositInput">Valor da taxa</label><input id="customDepositInput" type="text" title="Texto personalizado"></div>
+          <div class="fld" id="customDepositField" style="display:none"><label for="customDepositInput">Valor da taxa</label><input id="customDepositInput" type="text"></div>
           <div class="dates-row">
-            <div class="fld"><label for="promoStart">Início Oportunidade</label><div class="date-input-wrap"><input id="promoStart" type="date" title="Data de início"><button type="button" class="date-clear-btn" data-target="promoStart" title="Limpar">✕</button></div></div>
-            <div class="fld"><label for="promoEnd">Fim Oportunidade</label><div class="date-input-wrap"><input id="promoEnd" type="date" title="Data de fim"><button type="button" class="date-clear-btn" data-target="promoEnd" title="Limpar">✕</button></div></div>
+            <div class="fld"><label for="promoStart">Início Oportunidade</label><div class="date-input-wrap"><input id="promoStart" type="date"><button type="button" class="date-clear-btn" data-target="promoStart">✕</button></div></div>
+            <div class="fld"><label for="promoEnd">Fim Oportunidade</label><div class="date-input-wrap"><input id="promoEnd" type="date"><button type="button" class="date-clear-btn" data-target="promoEnd">✕</button></div></div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
-          <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:12.5px;color:#9a3412;font-weight:700;line-height:1.4">
-            ✏️ A editar etiqueta guardada no Drive
-          </div>
+          <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:12.5px;color:#9a3412;font-weight:700;line-height:1.4">✏️ A editar etiqueta guardada no Drive</div>
           <div class="row">
-            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" title="Adicionar este produto à fila de impressão">➕ Adicionar à Fila</button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" title="Guardar este produto no Google Drive">💾 Guardar</button>
+            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button">➕ Adicionar à Fila</button>
+            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button">💾 Guardar</button>
           </div>
-          <button class="btn btn-soft btn-block" id="clearBtn" type="button" title="Limpar todos os campos do formulário">🗑️ Limpar formulário</button>
+          <button class="btn btn-soft btn-block" id="clearBtn" type="button">🗑️ Limpar formulário</button>
         </div>
 
       </section>
@@ -818,54 +807,51 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         <div class="card">
           <div class="card-h"><div class="ic">🛒</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
           <div id="queueListContainer"><div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div></div>
-          <button class="btn btn-primary btn-block btn-lg" id="printBtn" type="button" style="margin-top:12px" title="Imprimir todas as etiquetas da fila">🖨️ Imprimir Fila</button>
-          <button class="btn btn-soft btn-block btn-sm" style="margin-top:8px;color:#b91c1c;display:none" id="clearQueueBtn" title="Apagar toda a fila">🗑️ Limpar Fila</button>
+          <button class="btn btn-primary btn-block btn-lg" id="printBtn" type="button" style="margin-top:12px">🖨️ Imprimir Fila</button>
+          <button class="btn btn-soft btn-block btn-sm" style="margin-top:8px;color:#b91c1c;display:none" id="clearQueueBtn" type="button">🗑️ Limpar Fila</button>
         </div>
       </section>
 
       <section class="view view-drive">
-
         <div class="card accent-green">
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
-          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Tira ou escolhe uma imagem para a etiqueta atual. O botão "Fotografar para o banco" guarda diretamente no banco de imagens.</p>
+          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Tira ou escolhe uma imagem para a etiqueta atual.</p>
           <div class="fld">
             <label for="photo">Ficheiro de imagem</label>
-            <input id="photo" type="file" accept="image/*" title="Escolher uma imagem do dispositivo">
+            <input id="photo" type="file" accept="image/*">
           </div>
           <div class="row">
-            <button type="button" class="btn btn-ghost" id="openCameraBtn" title="Tirar uma fotografia com a câmara do telemóvel">📷 Tirar Foto</button>
-            <button type="button" class="btn btn-ghost" id="abrirBancoFrutaBtn" title="Escolher uma imagem do banco de frutas e legumes">📚 Banco</button>
+            <button type="button" class="btn btn-ghost" id="openCameraBtn">📷 Tirar Foto</button>
+            <button type="button" class="btn btn-ghost" id="abrirBancoFrutaBtn">📚 Banco</button>
           </div>
-          <button type="button" class="btn btn-soft btn-block" id="fotoBancoBtn" title="Tirar foto e guardar diretamente no banco de imagens">📥 Fotografar para o banco</button>
-          <label class="check-row" for="autoRemoveBg" title="Remove automaticamente o fundo da imagem"><input type="checkbox" id="autoRemoveBg" checked><span>✨ Remover fundo automaticamente</span></label>
-          <label class="check-row" for="useAI" title="Usa IA para melhor qualidade"><input type="checkbox" id="useAI" checked><span>🤖 Usar IA (melhor qualidade)</span></label>
+          <button type="button" class="btn btn-soft btn-block" id="fotoBancoBtn">📥 Fotografar para o banco</button>
+          <label class="check-row" for="autoRemoveBg"><input type="checkbox" id="autoRemoveBg" checked><span>✨ Remover fundo automaticamente</span></label>
+          <label class="check-row" for="useAI"><input type="checkbox" id="useAI" checked><span>🤖 Usar IA (melhor qualidade)</span></label>
         </div>
 
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
-          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Toque em <b>📥</b> para editar, <b>➕</b> para adicionar à fila ou <b>✕</b> para apagar.</p>
+          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Toque em 📥 para editar, ➕ para adicionar à fila ou ✕ para apagar.</p>
           <div class="row">
-            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" title="Recarregar lista do Drive">🔄 Recarregar</button>
-            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" title="Sincronizar banco de imagens com o Drive">🔄 Sincronizar</button>
+            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button">🔄 Recarregar</button>
+            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button">🔄 Sincronizar</button>
           </div>
-          <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" title="Recomprimir todas as imagens do Drive para ficarem mais leves (qualidade 82% a 1000px), acelerando o carregamento">📉 Otimizar imagens do Drive</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens do Drive</button>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
-
       </section>
 
       <section class="view view-mais">
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Testa a ligação à API e lista os dados disponíveis no Drive.</p>
-          <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button" title="Testar ligação à API">🩺 Testar ligação</button>
+          <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button">🩺 Testar ligação</button>
           <div id="diagBox" class="diag-box"></div>
         </div>
-
         <div class="card">
           <div class="card-h"><div class="ic">📧</div><h3>Enviar por Email</h3></div>
           <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">Envia o PDF das etiquetas (fila atual) por email.</p>
-          <button class="btn btn-primary btn-block" id="emailLabelsBtn" type="button" title="Enviar as etiquetas por email em PDF">📧 Enviar por Email</button>
+          <button class="btn btn-primary btn-block" id="emailLabelsBtn" type="button">📧 Enviar por Email</button>
         </div>
       </section>
     </div>
@@ -873,7 +859,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <div class="col-preview">
       <section class="view view-preview">
         <div class="preview-shell">
-          <div id="badgeSheet" class="sheet-badge">⭐ Amanhecer · 70×38</div>
+          <div id="badgeSheet" class="sheet-badge"></div>
           <div class="preview-wrap">
             <div class="preview-scaler" id="previewScaler">
               <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
@@ -921,13 +907,13 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 </main>
 
 <nav class="bnav">
-  <button type="button" data-view="editor" class="active" title="Editor"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
-  <button type="button" data-view="fila" title="Fila de impressão"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
-  <button type="button" data-view="drive" title="Drive"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
-  <button type="button" data-view="mais" title="Mais opções"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
+  <button type="button" data-view="editor" class="active"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
+  <button type="button" data-view="fila"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
+  <button type="button" data-view="drive"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
+  <button type="button" data-view="mais"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
 </nav>
 
-<button type="button" class="floating-preview" id="floatingPreviewBtn" title="Ver etiqueta em ecrã inteiro" aria-label="Ver etiqueta em ecrã inteiro">
+<button type="button" class="floating-preview" id="floatingPreviewBtn">
   <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 </button>
 
@@ -935,21 +921,21 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   <div class="install-banner-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
   <div class="install-banner-text"><strong>📲 Instalar aplicação</strong><span>Acesso rápido no ecrã inicial</span></div>
   <div class="install-banner-actions">
-    <button type="button" class="install-banner-btn" id="installBannerBtn" title="Instalar aplicação">Instalar</button>
-    <button type="button" class="install-banner-close" id="installBannerClose" title="Fechar">✕</button>
+    <button type="button" class="install-banner-btn" id="installBannerBtn">Instalar</button>
+    <button type="button" class="install-banner-close" id="installBannerClose">✕</button>
   </div>
 </div>
 
 <div class="preview-modal" id="previewModal">
-  <button type="button" class="preview-modal-close" id="previewModalClose" title="Fechar">✕</button>
-  <div class="preview-modal-badge" id="previewModalBadge">⭐ Amanhecer</div>
+  <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
+  <div class="preview-modal-badge" id="previewModalBadge"></div>
   <div id="previewModalStage"></div>
   <div id="previewZoomBar">
-    <button type="button" id="zoomOutBtn" title="Reduzir">−</button>
+    <button type="button" id="zoomOutBtn">−</button>
     <span class="zoom-label" id="zoomLabel">100%</span>
-    <button type="button" id="zoomInBtn" title="Aumentar">+</button>
-    <button type="button" id="zoomFitBtn" title="Ajustar">Ajustar</button>
-    <button type="button" id="zoomResetBtn" title="1:1">1:1</button>
+    <button type="button" id="zoomInBtn">+</button>
+    <button type="button" id="zoomFitBtn">Ajustar</button>
+    <button type="button" id="zoomResetBtn">1:1</button>
   </div>
 </div>
 
@@ -960,8 +946,8 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   <div class="confirm-box">
     <p id="confirmMsg"></p>
     <div class="confirm-actions">
-      <button type="button" class="confirm-no" id="confirmNo" title="Cancelar">Cancelar</button>
-      <button type="button" class="confirm-yes" id="confirmYes" title="Confirmar">Confirmar</button>
+      <button type="button" class="confirm-no" id="confirmNo">Cancelar</button>
+      <button type="button" class="confirm-yes" id="confirmYes">Confirmar</button>
     </div>
   </div>
 </div>
@@ -971,9 +957,9 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <h3 id="choiceTitle">Etiqueta já existe no Drive</h3>
     <p id="choiceMsg">O que pretende fazer?</p>
     <div class="choice-actions">
-      <button type="button" class="choice-update" id="choiceUpdate" title="Substituir a etiqueta existente">♻️ Atualizar etiqueta existente</button>
-      <button type="button" class="choice-new" id="choiceNew" title="Guardar como nova etiqueta">➕ Guardar nova etiqueta</button>
-      <button type="button" class="choice-cancel" id="choiceCancel" title="Cancelar">Cancelar</button>
+      <button type="button" class="choice-update" id="choiceUpdate">♻️ Atualizar etiqueta existente</button>
+      <button type="button" class="choice-new" id="choiceNew">➕ Guardar nova etiqueta</button>
+      <button type="button" class="choice-cancel" id="choiceCancel">Cancelar</button>
     </div>
   </div>
 </div>
@@ -984,15 +970,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <p>Escolhe a pasta de destino e dá um nome ao artigo.</p>
     <span class="tipo-label-title">1. Pasta de destino *</span>
     <div class="tipo-selector" id="saveBancoTipo">
-      <button type="button" data-tipo="fruta" title="Guardar em Banco de Frutas"><span class="tipo-icon">🍎</span><span class="tipo-label">Fruta</span></button>
-      <button type="button" data-tipo="legume" title="Guardar em Banco de Legumes"><span class="tipo-icon">🥬</span><span class="tipo-label">Legume</span></button>
+      <button type="button" data-tipo="fruta"><span class="tipo-icon">🍎</span><span class="tipo-label">Fruta</span></button>
+      <button type="button" data-tipo="legume"><span class="tipo-icon">🥬</span><span class="tipo-label">Legume</span></button>
     </div>
     <div class="tipo-hint" id="saveBancoTipoHint">⚠️ Escolha obrigatória: Fruta ou Legume</div>
     <span class="tipo-label-title">2. Nome do artigo *</span>
     <input id="saveBancoName" type="text" style="text-transform:uppercase;font-weight:700">
     <div class="name-modal-actions">
-      <button type="button" class="name-modal-no" id="saveBancoCancel" title="Cancelar">Cancelar</button>
-      <button type="button" class="name-modal-yes" id="saveBancoConfirm" disabled title="Guardar">Guardar</button>
+      <button type="button" class="name-modal-no" id="saveBancoCancel">Cancelar</button>
+      <button type="button" class="name-modal-yes" id="saveBancoConfirm" disabled>Guardar</button>
     </div>
   </div>
 </div>
@@ -1002,14 +988,14 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <h3>📧 Enviar etiquetas por email</h3>
     <p>O PDF é gerado e enviado pelo servidor.</p>
     <label for="emailDestino">Email de destino</label>
-    <input id="emailDestino" type="email" title="Email para onde enviar o PDF">
+    <input id="emailDestino" type="email">
     <label for="emailAssunto">Assunto</label>
-    <input id="emailAssunto" type="text" value="Etiquetas" title="Assunto do email">
+    <input id="emailAssunto" type="text" value="Etiquetas">
     <label for="emailCorpo">Mensagem (opcional)</label>
-    <input id="emailCorpo" type="text" title="Texto do email">
+    <input id="emailCorpo" type="text">
     <div class="email-modal-actions">
-      <button type="button" class="email-modal-no" id="emailCancel" title="Cancelar">Cancelar</button>
-      <button type="button" class="email-modal-yes" id="emailConfirm" title="Enviar">📧 Enviar email</button>
+      <button type="button" class="email-modal-no" id="emailCancel">Cancelar</button>
+      <button type="button" class="email-modal-yes" id="emailConfirm">📧 Enviar email</button>
     </div>
   </div>
 </div>
@@ -1021,8 +1007,8 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <div id="installSteps"></div>
     <div id="installWarningBox"></div>
     <div class="install-modal-actions">
-      <button type="button" class="install-modal-close" id="installClose" title="Fechar">Fechar</button>
-      <button type="button" class="install-modal-ok" id="installTry" title="Instalar">⬇️ Instalar agora</button>
+      <button type="button" class="install-modal-close" id="installClose">Fechar</button>
+      <button type="button" class="install-modal-ok" id="installTry">⬇️ Instalar agora</button>
     </div>
   </div>
 </div>
@@ -1030,34 +1016,34 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 <div class="modal" id="cameraModal">
   <div class="cam-wrap">
     <video id="camVideo" autoplay playsinline muted></video>
-    <button type="button" class="torch-btn off" id="camTorch" title="Ligar/desligar o flash">💡</button>
+    <button type="button" class="torch-btn off" id="camTorch">💡</button>
   </div>
   <canvas id="camCanvas" style="display:none"></canvas>
   <div class="cam-actions">
-    <button id="camSnap" class="btn btn-primary" title="Capturar fotografia">📸 Capturar</button>
-    <button id="camClose" class="btn btn-ghost" title="Fechar câmara">✕ Fechar</button>
+    <button id="camSnap" class="btn btn-primary">📸 Capturar</button>
+    <button id="camClose" class="btn btn-ghost">✕ Fechar</button>
   </div>
 </div>
 
 <div class="modal" id="scannerModal">
   <div class="cam-wrap">
     <div id="reader"></div>
-    <button type="button" class="torch-btn off" id="scanTorch" title="Ligar/desligar o flash">💡</button>
+    <button type="button" class="torch-btn off" id="scanTorch">💡</button>
   </div>
-  <button id="scanClose" class="btn btn-ghost" style="width:auto;padding:10px 22px" title="Fechar leitor">✕ Fechar</button>
+  <button id="scanClose" class="btn btn-ghost" style="width:auto;padding:10px 22px">✕ Fechar</button>
 </div>
 
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div class="bf-modal-header">
       <h3 class="modal-title" style="margin:0">📚 Banco de Frutas e Legumes</h3>
-      <button id="fecharBancoFruta" class="btn btn-ghost btn-sm" type="button" title="Fechar">✕</button>
+      <button id="fecharBancoFruta" class="btn btn-ghost btn-sm" type="button">✕</button>
     </div>
     <div class="bf-tabs" id="bfTabs">
-      <button type="button" data-tipo="fruta" class="active" title="Ver frutas">🍎 Frutas <span class="bf-count" id="bfCountFruta">0</span></button>
-      <button type="button" data-tipo="legume" title="Ver legumes">🥬 Legumes <span class="bf-count" id="bfCountLegume">0</span></button>
+      <button type="button" data-tipo="fruta" class="active">🍎 Frutas <span class="bf-count" id="bfCountFruta">0</span></button>
+      <button type="button" data-tipo="legume">🥬 Legumes <span class="bf-count" id="bfCountLegume">0</span></button>
     </div>
-    <div class="bf-search-row"><input id="buscaBancoFruta" placeholder="🔍 Procurar…" title="Pesquisar por nome"></div>
+    <div class="bf-search-row"><input id="buscaBancoFruta" placeholder="🔍 Procurar…"></div>
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
@@ -1073,7 +1059,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 "use strict";
 
 /* ============================================================
-   0. VIEWPORT FIX — APK / WebView / iOS
+   0. VIEWPORT FIX
    ============================================================ */
 (function fixViewport(){
   function setVh(){
@@ -1083,7 +1069,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   window.addEventListener('resize', setVh, {passive:true});
   window.addEventListener('orientationchange', function(){ setTimeout(setVh, 120); }, {passive:true});
   if(window.visualViewport){ try{ window.visualViewport.addEventListener('resize', setVh, {passive:true}); }catch(e){} }
-
   try{
     const ua = navigator.userAgent || '';
     const isWebView = /\bwv\b/.test(ua) || /; wv\)/.test(ua);
@@ -1091,7 +1076,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     const isFileProtocol = location.protocol === 'file:';
     if(isWebView || isStandalone || isFileProtocol){ document.documentElement.classList.add('is-apk'); }
   }catch(e){}
-
   window.addEventListener('resize', function(){ setTimeout(function(){ try{ fitPreviewCard(); }catch(e){} }, 120); }, {passive:true});
 })();
 
@@ -1112,13 +1096,13 @@ const THUMB_SIZE   = 200;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 const FETCH_TIMEOUT_MS = 25000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
+const SYNC_EAN_KEY = 'balcao_sync_ean';
 
 /* ============================================================
    2. AUTENTICAÇÃO
    ============================================================ */
 let _reauthPromise = null;
 let _currentUser = null;
-
 function parseJwt(token){
   if(!token) return null;
   try{
@@ -1168,7 +1152,6 @@ function atualizarUICredenciais(){
     ic.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>';
   }
 }
-
 window.handleCredentialResponse = async function(response){
   if(!response || !response.credential) return;
   setStatus("A iniciar sessão...", "loading");
@@ -1189,22 +1172,20 @@ window.handleCredentialResponse = async function(response){
     _currentUser = user;
     atualizarUICredenciais();
     setStatus("Sessão iniciada", "success");
-    try{ toast('Sessão iniciada com sucesso!', 'success'); }catch(e){}
+    toast('Sessão iniciada com sucesso!', 'success');
     carregarTudo();
   }catch(err){
     setStatus("Erro no login", "error");
     toast('Erro no login: ' + err.message, 'error');
   }
 };
-
 function fazerLogout(){
   clearStoredToken();
   atualizarUICredenciais();
   try{ if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
-  try{ toast('Sessão terminada', 'info'); }catch(e){}
+  toast('Sessão terminada', 'info');
   setTimeout(function(){ location.reload(); }, 400);
 }
-
 function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise = new Promise(function(resolve){
@@ -1239,7 +1220,6 @@ function tentarReauthSilenciosa(){
   });
   return _reauthPromise;
 }
-
 function inicializarBotaoGoogle(){
   if(!window.google || !google.accounts || !google.accounts.id) return;
   try{
@@ -1281,7 +1261,7 @@ const _navButtons = [];
 })();
 
 /* ============================================================
-   4. PWA / INSTALAÇÃO
+   4. PWA
    ============================================================ */
 (function setupPWA(){
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -1465,9 +1445,37 @@ function fetchComTimeout(url, opts, ms){
   const merged = Object.assign({}, opts || {}, { signal: controller.signal });
   return fetch(url, merged).finally(function(){ clearTimeout(tid); });
 }
+function formatDatePT(iso){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  if(!m) return "";
+  return m[3] + "/" + m[2] + "/" + m[1];
+}
+function getInfoExtraText(){
+  const tipo = document.getElementById("infoExtraTipo").value;
+  if(!tipo) return "";
+  if(tipo === "consumir"){
+    const d = document.getElementById("infoExtraData").value;
+    return "CONSUMIR DE PREFERÊNCIA ANTES DE " + (d ? formatDatePT(d) : "__/__/____");
+  }
+  if(tipo === "danificado") return "ARTIGO COM EMBALAGEM DANIFICADA";
+  if(tipo === "validade"){
+    const d = document.getElementById("infoExtraData").value;
+    return "APROXIMAÇÃO PRAZO DE VALIDADE " + (d ? formatDatePT(d) : "__/__/____");
+  }
+  return "";
+}
+function updateInfoExtraVisibility(){
+  const el = document.getElementById("infoExtraTipo");
+  if(!el) return;
+  const tipo = el.value;
+  const dataField = document.getElementById("infoExtraDataField");
+  const needsDate = (tipo === "consumir" || tipo === "validade");
+  if(dataField) dataField.style.display = needsDate ? "flex" : "none";
+  updateDateClearButtons();
+}
 
 /* ============================================================
-   6. TOAST + STATUS
+   6. TOAST + STATUS — nunca duplicar
    ============================================================ */
 const TOAST_ICONS = {success:"✓", error:"✕", warning:"!", info:"i"};
 let _lastToastMsg = "", _lastToastTime = 0;
@@ -1475,7 +1483,7 @@ function toast(msg, type, duration){
   if(!msg) return;
   type = (type || "info").toLowerCase();
   const now = Date.now();
-  if(msg === _lastToastMsg && (now - _lastToastTime) < 2000) return;
+  if(msg === _lastToastMsg && (now - _lastToastTime) < 3000) return;
   _lastToastMsg = msg; _lastToastTime = now;
   duration = duration || (type === "error" ? 5500 : type === "warning" ? 4500 : 3200);
   const c = document.getElementById("toastContainer"); if(!c) return;
@@ -1520,28 +1528,42 @@ function setGlobalStatus(msg, type, opts){
   }, dur);
 }
 
+/* STATUS unificado — mostra SÓ num sítio (local OU global, nunca os dois) */
 let _statusTimer = null;
+let _statusLast = {key: '', t: 0};
 function setStatus(msg, type, opts){
+  const now = Date.now();
+  const key = String(msg || '') + '|' + String(type || '');
+  if(key === _statusLast.key && (now - _statusLast.t) < 1500) return;
+  _statusLast = {key: key, t: now};
+
   const el = document.getElementById("appStatus");
-  if(el){
-    if(_statusTimer){ clearTimeout(_statusTimer); _statusTimer = null; }
-    if(!msg){
-      el.textContent = "";
-      el.classList.remove("show");
-      el.removeAttribute("data-type");
-    }else{
-      type = type || "info";
-      el.textContent = msg;
-      el.setAttribute("data-type", type);
-      el.classList.add("show");
-      if(type === "success" || type === "info"){
-        _statusTimer = setTimeout(function(){
-          if(el.textContent === msg){ el.classList.remove("show"); el.removeAttribute("data-type"); }
-        }, (opts && opts.duration) || 3200);
-      }
-    }
+  const onEditor = (document.body.dataset.view === 'editor');
+
+  if(_statusTimer){ clearTimeout(_statusTimer); _statusTimer = null; }
+
+  if(!msg){
+    if(el){ el.textContent = ""; el.classList.remove("show"); el.removeAttribute("data-type"); }
+    setGlobalStatus("", "");
+    return;
   }
-  setGlobalStatus(msg, type, opts);
+
+  type = type || "info";
+
+  if(onEditor && el){
+    el.textContent = msg;
+    el.setAttribute("data-type", type);
+    el.classList.add("show");
+    if(type === "success" || type === "info"){
+      _statusTimer = setTimeout(function(){
+        if(el.textContent === msg){ el.classList.remove("show"); el.removeAttribute("data-type"); }
+      }, (opts && opts.duration) || 3200);
+    }
+    setGlobalStatus("", "");
+  } else {
+    if(el){ el.textContent = ""; el.classList.remove("show"); el.removeAttribute("data-type"); }
+    setGlobalStatus(msg, type, opts);
+  }
 }
 
 function confirmDialog(msg){
@@ -1826,7 +1848,7 @@ let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
 
 /* ============================================================
-   10. PREVIEW (desktop)
+   10. PREVIEW DESKTOP
    ============================================================ */
 function fitPreviewCard(){
   const scaler = document.getElementById('previewScaler');
@@ -1853,22 +1875,13 @@ window.addEventListener('resize', fitPreviewCard);
 window.addEventListener('orientationchange', function(){ setTimeout(fitPreviewCard, 200); });
 
 /* ============================================================
-   12. PREVIEW MODAL — VERSÃO CORRIGIDA
-   - Corrige dupla escala (clone herdava transform do fitPreviewCard)
-   - Usa offsetWidth/offsetHeight reais (não PX_PER_MM errado)
-   - Mantém pan/zoom a funcionar
+   11. PREVIEW MODAL CORRIGIDO
    ============================================================ */
-let _previewScalerEl = null;
-let _previewStageEl  = null;
-let _previewBaseW    = 0;
-let _previewBaseH    = 0;
-let _previewZoom     = 0;
-let _previewPanX     = 0;
-let _previewPanY     = 0;
-let _previewScale    = 1;
+let _previewScalerEl = null, _previewStageEl  = null;
+let _previewBaseW = 0, _previewBaseH = 0;
+let _previewZoom = 0, _previewPanX = 0, _previewPanY = 0, _previewScale = 1;
 const _previewPointers = new Map();
-let _previewPinchStart = null;
-let _previewDragStart  = null;
+let _previewPinchStart = null, _previewDragStart = null;
 
 function getStageAvail(){
   const stage = _previewStageEl;
@@ -1876,7 +1889,6 @@ function getStageAvail(){
   const r = stage.getBoundingClientRect();
   return {w: Math.max(40, r.width - 40), h: Math.max(40, r.height - 40)};
 }
-
 function applyPreviewZoom(noAnim){
   if(!_previewScalerEl || !_previewStageEl) return;
   const avail = getStageAvail();
@@ -1887,9 +1899,7 @@ function applyPreviewZoom(noAnim){
     scale = _previewZoom;
   }
   if(!isFinite(scale) || scale <= 0) scale = 1;
-
-  const dispW = _previewBaseW * scale;
-  const dispH = _previewBaseH * scale;
+  const dispW = _previewBaseW * scale, dispH = _previewBaseH * scale;
   const maxPanX = Math.max(0, (dispW - avail.w) / 2);
   const maxPanY = Math.max(0, (dispH - avail.h) / 2);
   if(_previewPanX >  maxPanX) _previewPanX =  maxPanX;
@@ -1897,67 +1907,45 @@ function applyPreviewZoom(noAnim){
   if(_previewPanY >  maxPanY) _previewPanY =  maxPanY;
   if(_previewPanY < -maxPanY) _previewPanY = -maxPanY;
   _previewScale = scale;
-
   if(noAnim) _previewScalerEl.classList.add('no-anim');
   else       _previewScalerEl.classList.remove('no-anim');
-
-  _previewScalerEl.style.transform =
-    'translate(' + _previewPanX + 'px,' + _previewPanY + 'px) scale(' + scale + ')';
-
+  _previewScalerEl.style.transform = 'translate(' + _previewPanX + 'px,' + _previewPanY + 'px) scale(' + scale + ')';
   if(maxPanX > 0 || maxPanY > 0) _previewStageEl.classList.add('pannable');
   else                            _previewStageEl.classList.remove('pannable');
-
   const lbl = document.getElementById('zoomLabel');
   if(lbl) lbl.textContent = Math.round(scale * 100) + '%';
 }
-
 function setPreviewZoom(newScale){
   _previewZoom = Math.max(0.15, Math.min(5, newScale));
   applyPreviewZoom();
 }
 function resetPreviewPan(){ _previewPanX = 0; _previewPanY = 0; }
-
 function abrirPreviewModal(){
   const modal = document.getElementById('previewModal');
   const stage = document.getElementById('previewModalStage');
-  const badge = document.getElementById('previewModalBadge');
-  const bo    = document.getElementById('badgeSheet');
   if(!modal || !stage) return;
-
-  if(bo && badge) badge.textContent = bo.textContent;
-
   stage.innerHTML = '';
-
   const orig = document.getElementById('mainLabelCard');
   if(!orig) return;
-
   const clone = orig.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
-
-  // ✅ CRÍTICO: limpar transform herdado do fitPreviewCard
-  clone.style.transform    = 'none';
+  clone.style.transform = 'none';
   clone.style.marginBottom = '';
-  clone.style.margin       = '0';
-  clone.style.flexShrink   = '0';
-  clone.style.position     = 'relative';
-  clone.style.boxSizing    = 'border-box';
-
-  // ✅ Usar dimensões REAIS do cartão (não inventar)
+  clone.style.margin = '0';
+  clone.style.flexShrink = '0';
+  clone.style.position = 'relative';
+  clone.style.boxSizing = 'border-box';
   const realW = orig.offsetWidth  || 380;
   const realH = orig.offsetHeight || 214;
-
   const scaler = document.createElement('div');
   scaler.className = 'preview-modal-scaler';
   scaler.style.width  = realW + 'px';
   scaler.style.height = realH + 'px';
-
   clone.style.width  = realW + 'px';
   clone.style.height = realH + 'px';
-
   scaler.appendChild(clone);
   stage.appendChild(scaler);
-
   _previewScalerEl = scaler;
   _previewStageEl  = stage;
   _previewBaseW    = realW;
@@ -1967,15 +1955,12 @@ function abrirPreviewModal(){
   _previewPointers.clear();
   _previewPinchStart = null;
   _previewDragStart  = null;
-
   document.body.classList.add('preview-open');
   modal.classList.add('show');
-
   requestAnimationFrame(function(){ applyPreviewZoom(true); });
   setTimeout(function(){ applyPreviewZoom(true); },  80);
   setTimeout(function(){ applyPreviewZoom(true); }, 250);
 }
-
 function fecharPreviewModal(){
   const modal = document.getElementById('previewModal');
   if(modal) modal.classList.remove('show');
@@ -1988,13 +1973,11 @@ function fecharPreviewModal(){
   _previewPinchStart = null;
   _previewDragStart  = null;
 }
-
 document.getElementById('floatingPreviewBtn').addEventListener('click', abrirPreviewModal);
 document.getElementById('previewModalClose').addEventListener('click', fecharPreviewModal);
 document.getElementById('previewModal').addEventListener('click', function(e){
   if(e.target === document.getElementById('previewModal')) fecharPreviewModal();
 });
-
 document.getElementById('zoomInBtn').addEventListener('click', function(){
   const base = (_previewZoom === 0) ? _previewScale : _previewZoom;
   setPreviewZoom(base * 1.25);
@@ -2009,16 +1992,13 @@ document.getElementById('zoomFitBtn').addEventListener('click', function(){
 document.getElementById('zoomResetBtn').addEventListener('click', function(){
   resetPreviewPan(); setPreviewZoom(1);
 });
-
 (function(){
   const stage = document.getElementById('previewModalStage');
   if(!stage) return;
-
   stage.addEventListener('pointerdown', function(e){
     if(!_previewScalerEl) return;
     try{ stage.setPointerCapture(e.pointerId); }catch(err){}
     _previewPointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
-
     if(_previewPointers.size === 2){
       const pts = [..._previewPointers.values()];
       const dx = pts[0].x - pts[1].x, dy = pts[0].y - pts[1].y;
@@ -2030,11 +2010,9 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){
       _previewDragStart = {x:e.clientX, y:e.clientY, panX:_previewPanX, panY:_previewPanY};
     }
   });
-
   stage.addEventListener('pointermove', function(e){
     if(!_previewPointers.has(e.pointerId)) return;
     _previewPointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
-
     if(_previewPointers.size === 2 && _previewPinchStart){
       const pts = [..._previewPointers.values()];
       const dx = pts[0].x - pts[1].x, dy = pts[0].y - pts[1].y;
@@ -2050,7 +2028,6 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){
       applyPreviewZoom(true);
     }
   });
-
   function releasePointer(e){
     _previewPointers.delete(e.pointerId);
     try{ stage.releasePointerCapture(e.pointerId); }catch(err){}
@@ -2066,7 +2043,6 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){
   stage.addEventListener('pointerup', releasePointer);
   stage.addEventListener('pointercancel', releasePointer);
   stage.addEventListener('pointerleave', releasePointer);
-
   stage.addEventListener('wheel', function(e){
     if(!_previewScalerEl) return;
     e.preventDefault();
@@ -2074,12 +2050,10 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){
     const delta = e.deltaY < 0 ? 1.1 : 0.9;
     setPreviewZoom(base * delta);
   }, {passive:false});
-
   stage.addEventListener('dblclick', function(){
     _previewZoom = 0; resetPreviewPan(); applyPreviewZoom();
   });
 })();
-
 window.addEventListener('resize', function(){
   if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true);
 });
@@ -2090,7 +2064,7 @@ window.addEventListener('orientationchange', function(){
 });
 
 /* ============================================================
-   13. DATAS
+   12. DATAS
    ============================================================ */
 function updateDateClearButtons(){
   document.querySelectorAll('.date-clear-btn').forEach(function(btn){
@@ -2116,7 +2090,7 @@ document.addEventListener('input', function(e){ if(e.target && e.target.type ===
 document.addEventListener('change', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 
 /* ============================================================
-   14. CARREGAR TUDO
+   13. CARREGAR TUDO
    ============================================================ */
 async function carregarTudo(){
   try{
@@ -2141,17 +2115,13 @@ async function carregarTudo(){
       produtos: savedProducts, banco: bancoFruta, t: Date.now()
     });
   }catch(e){}
-  if(!rProd.ok && !rBanco.ok){
-    setStatus("Sem ligação ao Drive", "error");
-  }else if(!rProd.ok || !rBanco.ok){
-    setStatus("Sincronização parcial", "warning");
-  }else{
-    setStatus("Drive sincronizado", "success");
-  }
+  if(!rProd.ok && !rBanco.ok) setStatus("Sem ligação ao Drive", "error");
+  else if(!rProd.ok || !rBanco.ok) setStatus("Sincronização parcial", "warning");
+  else setStatus("Drive sincronizado", "success");
 }
 
 /* ============================================================
-   15. FORM
+   14. FORM
    ============================================================ */
 function getFormData(){
   return {
@@ -2161,10 +2131,14 @@ function getFormData(){
     price: $("price").value, isPromoActive: $("isPromoActive").checked, oldPrice: $("oldPrice").value,
     capacity: $("capacity").value, capacityUnit: $("capacityUnit").value,
     depositFeeSelect: $("depositFeeSelect").value, customDepositInput: $("customDepositInput").value,
-    unit: $("unit").value.trim().toUpperCase(), promoStart: $("promoStart").value, promoEnd: $("promoEnd").value,
+    unit: getInfoExtraText(),
+    infoExtraTipo: $("infoExtraTipo").value,
+    infoExtraData: $("infoExtraData").value,
+    promoStart: $("promoStart").value, promoEnd: $("promoEnd").value,
     ean: $("ean").value.trim().toUpperCase(), autoRemoveBg: $("autoRemoveBg").checked, useAI: $("useAI").checked,
     originalPhoto: globalOriginalPhoto, processedPhoto: globalProcessedPhoto,
     promoMinQty: $("promoMinQty").value, promoUnit: $("promoUnit").value, promoPrice: $("promoPrice").value,
+    syncCodeToEan: $("syncCodeToEan").checked,
     fotoId: '', fotoUrl: ''
   };
 }
@@ -2201,7 +2175,13 @@ function setFormData(d){
     $("customDepositInput").value = "";
     $("customDepositField").style.display = "none";
   }
-  $("unit").value = d.unit || "";
+  // Info extra
+  const ti = d.infoExtraTipo || "";
+  const selTi = $("infoExtraTipo");
+  const hasOpt = Array.prototype.some.call(selTi.options, function(o){ return o.value === ti; });
+  selTi.value = hasOpt ? ti : "";
+  $("infoExtraData").value = d.infoExtraData || "";
+  updateInfoExtraVisibility();
   $("promoStart").value = String(d.promoStart || "").slice(0, 10);
   $("promoEnd").value = String(d.promoEnd || "").slice(0, 10);
   $("ean").value = (d.ean || "").toUpperCase();
@@ -2210,6 +2190,10 @@ function setFormData(d){
   $("promoMinQty").value = d.promoMinQty || "2";
   $("promoUnit").value = d.promoUnit || "KG";
   $("promoPrice").value = d.promoPrice || "";
+  const syn = (d.syncCodeToEan === true || d.syncCodeToEan === 'true' || d.syncCodeToEan === 'TRUE');
+  $("syncCodeToEan").checked = syn;
+  const sw = $("syncToggleWrap");
+  if(sw) sw.classList.toggle("active", syn);
   globalOriginalPhoto = d.originalPhoto || d.fotoUrl || "";
   globalProcessedPhoto = d.processedPhoto || d.fotoUrl || "";
   $("photo").value = "";
@@ -2220,7 +2204,7 @@ function setFormData(d){
 }
 
 /* ============================================================
-   16. VALIDAÇÃO
+   15. VALIDAÇÃO
    ============================================================ */
 function markFieldError(id, has){
   const el = $(id); if(!el) return;
@@ -2286,7 +2270,7 @@ function setValidationState(){
 }
 
 /* ============================================================
-   17. FORMATO / DIMENSÕES
+   16. FORMATO / DIMENSÕES
    ============================================================ */
 function isLargeFormat(v){
   return ["125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v) > -1 ||
@@ -2388,7 +2372,7 @@ function setProductText(el, text){
 }
 
 /* ============================================================
-   18. CÓDIGO DE BARRAS
+   17. CÓDIGO DE BARRAS
    ============================================================ */
 const CODE128_PATTERNS = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232"];
 const CODE128_STOP = "2331112", CODE128_START_B = 104;
@@ -2493,7 +2477,7 @@ function drawBarcode(svg, value){
 }
 
 /* ============================================================
-   19. FILA
+   18. FILA
    ============================================================ */
 function renderQueue(){
   const c = $("queueListContainer");
@@ -2520,9 +2504,9 @@ function renderQueue(){
       '<div class="list-item-info"><strong>' + escapeHTML(item.data.product || "Sem Nome") + '</strong>' +
       '<span>' + ref + pr + ' <span class="chip-mini">' + fmt + '</span></span></div>' +
       '<div class="list-item-actions">' +
-      '<input type="number" class="copies-input" value="' + item.copies + '" min="1" max="500" data-action="copies" data-index="' + i + '" title="Número de cópias">' +
-      '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '" title="Guardar no Drive">' + ic + '</button>' +
-      '<button class="btn-remove" data-action="remove-queue" data-index="' + i + '" title="Remover da fila">✕</button>' +
+      '<input type="number" class="copies-input" value="' + item.copies + '" min="1" max="500" data-action="copies" data-index="' + i + '">' +
+      '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '">' + ic + '</button>' +
+      '<button class="btn-remove" data-action="remove-queue" data-index="' + i + '">✕</button>' +
       '</div>';
     c.appendChild(div);
   });
@@ -2551,6 +2535,9 @@ function buildProdutoPayload(d){
     ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity,
     deposito: d.depositFeeSelect === 'custom' ? d.customDepositInput : d.depositFeeSelect,
     formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight,
+    syncCodeToEan: !!d.syncCodeToEan,
+    infoExtraTipo: d.infoExtraTipo || '',
+    infoExtraData: d.infoExtraData || '',
     fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || ''
   };
 }
@@ -2631,7 +2618,7 @@ window.saveQueueItem = async function(i){
 };
 
 /* ============================================================
-   20. DRIVE — LISTA
+   19. DRIVE — LISTA
    ============================================================ */
 function renderDb(){
   const c = $("dbListContainer");
@@ -2655,9 +2642,9 @@ function renderDb(){
         (isEditing ? ' <span class="chip-mini">A editar</span>' : "") +
         '</strong><span>' + ref + pr + '</span></div>' +
         '<div class="list-item-actions">' +
-        '<button class="btn-load" data-action="load-db" data-index="' + i + '" title="Carregar para edição">📥</button>' +
-        '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" title="Adicionar à fila de impressão">➕</button>' +
-        '<button class="btn-remove" data-action="remove-db" data-index="' + i + '" title="Apagar do Drive">✕</button>' +
+        '<button class="btn-load" data-action="load-db" data-index="' + i + '">📥</button>' +
+        '<button class="btn-dup" data-action="queue-db" data-index="' + i + '">➕</button>' +
+        '<button class="btn-remove" data-action="remove-db" data-index="' + i + '">✕</button>' +
         '</div>';
       c.appendChild(div);
     });
@@ -2801,7 +2788,7 @@ window.queueFromDb = function(i){
 };
 
 /* ============================================================
-   21. BANCO
+   20. BANCO
    ============================================================ */
 function updateBancoCounts(){
   let f = 0, l = 0;
@@ -2882,7 +2869,7 @@ async function guardarFotoBanco(nome, dataUrl, tipo){
 }
 async function otimizarImagensDrive(){
   if(!bancoFruta.length){ toast("Sem imagens no banco para otimizar.", "warning"); return; }
-  const ok = await confirmDialog("Otimizar as " + bancoFruta.length + " imagens do Drive?\n\nVão ser recomprimidas para ~1000px de largura e qualidade 82% — visualmente idênticas, mas muito mais leves e rápidas a carregar.");
+  const ok = await confirmDialog("Otimizar as " + bancoFruta.length + " imagens do Drive?\n\nVão ser recomprimidas para ~1000px de largura e qualidade 82%.");
   if(!ok) return;
   const btn = $("optimizarImagensBtn");
   const orig = btn ? btn.textContent : '';
@@ -2927,7 +2914,7 @@ async function otimizarImagensDrive(){
 }
 
 /* ============================================================
-   22. CARD PREVIEW
+   21. CARD PREVIEW
    ============================================================ */
 let _updateCardTimer = null;
 function updateCard(){
@@ -2941,7 +2928,6 @@ function updateCard(){
       updateDateClearButtons();
       requestAnimationFrame(fitPreviewCard);
       if(document.getElementById('previewModal').classList.contains('show')){
-        // Re-clonar mantendo o zoom atual
         const z = _previewZoom, sx = _previewPanX, sy = _previewPanY;
         abrirPreviewModal();
         _previewZoom = z; _previewPanX = sx; _previewPanY = sy;
@@ -2966,11 +2952,17 @@ function updateOrientationVisibility(){
   const fv = $("presetSizes").value;
   const show = isLargeFormat(fv);
   const isFP = isFruitPromoFormat(fv);
+
+  // Marcar o body — o CSS esconde automaticamente a Oportunidade/Desconto
+  document.body.dataset.format = isFP ? 'fruit-promo' : 'normal';
+
   const fruitEl = $("fruitCard");
   if(fruitEl) fruitEl.style.display = (show || fv === "A6" || fv === "125x80" || fv === "frutaPromo125x80" || fv === "frutaPromoA6") ? "flex" : "none";
+
   $("fruitPromoPanel").style.display = isFP ? "block" : "none";
   const pc = $("promoCard");
   if(pc) pc.style.display = isFP ? "none" : "flex";
+
   if(isFP){
     const cb = $("isPromoActive");
     if(cb && cb.checked){
@@ -2985,24 +2977,19 @@ function updateOrientationVisibility(){
     }
   }
 }
+
 /* ============================================================
-   APPLY PRINT SIZES — impõe tamanhos físicos em mm
-   Garante que a etiqueta impressa é IGUAL à do editor
+   APPLY PRINT SIZES — mm reais
    ============================================================ */
 function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
-
-  // Marca o cartão como "bloqueado" — o autoLayout não corre
   card.classList.add('print-locked');
-
   const escala = Math.min(dims.width / 70, dims.height / 38)
                * (card.classList.contains('layout-fruit-promo') ? 0.8 : 1);
-
   const set = function(sel, mm){
     const el = card.querySelector(sel);
     if(el) el.style.setProperty('font-size', (mm * escala).toFixed(3) + 'mm', 'important');
   };
-
   set('.store-text',      2.8);
   set('.item-code',       1.9);
   set('.product',         3.2);
@@ -3017,14 +3004,10 @@ function applyPrintSizes(card, dims){
   set('.ean-text',        1.8);
   set('.promo-text',      1.8);
   set('.print-date',      1.6);
-
-  // Fruit promo (caixas PREÇO NORMAL / LEVE 2+)
   set('.fp-label',        2.4);
   set('.fp-price',        6.0);
   set('.fp-box.fp-promo .fp-price', 7.5);
   set('.fp-unit',         1.9);
-
-  // Centrar a caixa "Acresce Volta"
   const dep = card.querySelector('.card-deposit') || card.querySelector('#cardDeposit');
   if(dep){
     dep.style.setProperty('display', 'block', 'important');
@@ -3270,21 +3253,14 @@ function autoAdaptImage(card){
   if(!_overflow(desc)) return;
   card.classList.replace("img-mini", "img-hidden");
 }
-/* ============================================================
-   AUTO-LAYOUT UNIVERSAL — respeita print-locked
-   ============================================================ */
 function autoLayoutCard(card){
   if(!card) return;
-
-  // ✅ Se o cartão está em modo impressão, NÃO mexer
   if(card.classList.contains('print-locked')) return;
-
   card.querySelectorAll("[data-autohide]").forEach(function(el){
     el.style.removeProperty("display");
     el.removeAttribute("data-autohide");
   });
   card.style.removeProperty("padding");
-
   const cardOverflow = function(){
     const cr = card.getBoundingClientRect();
     if(cr.height <= 0) return false;
@@ -3304,9 +3280,7 @@ function autoLayoutCard(card){
     if(desc && _vis(desc) && _overflow(desc)) return true;
     return false;
   };
-
   if(!cardOverflow()) return;
-
   const hide = function(sel){
     const el = card.querySelector(sel);
     if(!el || !_vis(el)) return false;
@@ -3314,7 +3288,6 @@ function autoLayoutCard(card){
     el.style.setProperty("display","none","important");
     return !cardOverflow();
   };
-
   if(hide(".item-code")) return;
   if(hide("#cardDeposit")) return;
   if(hide(".card-deposit")) return;
@@ -3322,7 +3295,6 @@ function autoLayoutCard(card){
   if(hide(".fruit-full-bar")) return;
   if(hide(".unit-price-text")) return;
   if(hide(".barcode-container")) return;
-
   const footer = card.querySelector(".footer-container");
   if(footer && _vis(footer)){
     const pt = footer.querySelector(".promo-text");
@@ -3338,7 +3310,6 @@ function autoLayoutCard(card){
       }
     }
   }
-
   card.style.setProperty("padding","1px 3px","important");
 }
 function updateCardUnsafe(){
@@ -3365,7 +3336,6 @@ function updateCardUnsafe(){
     if(isAmanhecer){
       card.style.width = "380px"; card.style.height = "214px";
       applySizeClass(card, 70, 38);
-      $("badgeSheet").textContent = "⭐ Amanhecer · 70×38";
     }else{
       let pw = dims.width * 3.2, ph = dims.height * 3.2;
       const ratio = pw / ph;
@@ -3374,7 +3344,6 @@ function updateCardUnsafe(){
       card.style.width = pw + "px";
       card.style.height = ph + "px";
       applySizeClass(card, dims.width, dims.height);
-      $("badgeSheet").textContent = (isFP ? "💡 Fruta Oportunidade" : "📐 ") + dims.width + " × " + dims.height + " mm";
     }
     $("cardStore").textContent = storeVal;
     setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
@@ -3431,7 +3400,7 @@ function updateCardUnsafe(){
     const depVal = dep === "custom" ? $("customDepositInput").value.trim() : dep;
     if(depVal){ $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depVal; }
     else { $("cardDeposit").style.display = "none"; }
-    const eu = ($("unit").value || "").trim();
+    const eu = getInfoExtraText();
     if(eu){ $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = eu; }
     else { $("cardExtraUnit").style.display = "none"; }
     const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
@@ -3465,47 +3434,33 @@ function updateCardUnsafe(){
 }
 
 /* ============================================================
-   23. CLONE / IMPRESSÃO
+   22. CLONE / IMPRESSÃO
    ============================================================ */
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
-
   try{
     setFormData(data);
     updateCardUnsafe();
-
     const card  = $("mainLabelCard");
     const clone = card.cloneNode(true);
-
     clone.removeAttribute("id");
     clone.querySelectorAll("[id]").forEach(function(el){ el.removeAttribute("id"); });
-
     applySizeClass(clone, dims.width, dims.height);
     clone.classList.remove("img-tight", "img-mini", "img-hidden");
-
     const eanVal = normalizeBarcode(data.ean);
     const svg = clone.querySelector("svg");
     if(svg){
       svg.innerHTML = "";
       if(eanVal) drawBarcode(svg, eanVal);
     }
-
     if(forPrint) applyPrintSizes(clone, dims);
-
-    // Auto-fits normais
     autoFitExtraUnit(clone);
     autoFitDeposit(clone);
     autoFitDescription(clone);
     autoFitPromoArea(clone);
     autoFitFooterText(clone);
-
-    // autoLayout SÓ em modo ecrã (não imprime)
-    if(!forPrint){
-      autoLayoutCard(clone);
-    }
-
+    if(!forPrint) autoLayoutCard(clone);
     return clone;
-
   } finally {
     setFormData(backup);
     updateCardUnsafe();
@@ -3637,7 +3592,6 @@ function triggerPrint(){
   requestAnimationFrame(function(){
     try{
       pz.querySelectorAll(".label-card").forEach(function(card){
-        // print-locked já foi aplicado em applyPrintSizes → não corre autoLayout
         autoFitExtraUnit(card);
         autoFitDeposit(card);
         autoFitDescription(card);
@@ -3664,7 +3618,7 @@ window.addEventListener("afterprint", function(){
 });
 
 /* ============================================================
-   24. PDF / EMAIL
+   23. PDF / EMAIL
    ============================================================ */
 let _h2cLoading = null;
 function loadHtml2CanvasPro(){
@@ -3878,7 +3832,7 @@ async function enviarEtiquetasPorEmail(){
 }
 
 /* ============================================================
-   25. CÂMARA
+   24. CÂMARA
    ============================================================ */
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
@@ -3991,6 +3945,48 @@ async function closeScanner(){
   scanTrack = null; scanTorchOn = false;
   $("scannerModal").classList.remove("show");
 }
+
+/* ============================================================
+   25. TOGGLE: código interno → EAN
+   ============================================================ */
+(function setupSyncCodeToEan(){
+  const code = document.getElementById("internalCode");
+  const sync = document.getElementById("syncCodeToEan");
+  const wrap = document.getElementById("syncToggleWrap");
+  if(!code || !sync || !wrap) return;
+  try{
+    const saved = localStorage.getItem(SYNC_EAN_KEY);
+    if(saved === '1'){ sync.checked = true; wrap.classList.add('active'); }
+  }catch(e){}
+  function aplicar(){
+    if(!sync.checked) return;
+    const v = String(code.value || '').trim().toUpperCase();
+    if(v){
+      const eanEl = document.getElementById("ean");
+      if(eanEl && eanEl.value !== v){
+        eanEl.value = v;
+        if(typeof updateEanBadge === 'function') updateEanBadge();
+      }
+    }
+  }
+  code.addEventListener("input", function(){
+    aplicar();
+    if(typeof updateCard === 'function') updateCard();
+  });
+  sync.addEventListener("change", function(){
+    wrap.classList.toggle("active", sync.checked);
+    try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked ? '1' : '0'); }catch(e){}
+    if(sync.checked){
+      aplicar();
+      if(code.value.trim()){
+        toast("Código interno será copiado para o código de barras", "info", 2400);
+        if(typeof updateCard === 'function') updateCard();
+      }
+    } else {
+      toast("Sincronização desativada", "info", 1800);
+    }
+  });
+})();
 
 /* ============================================================
    26. EVENTOS
@@ -4135,13 +4131,17 @@ document.addEventListener("keydown", function(ev){
     if(ev.key === "0"){ ev.preventDefault(); document.getElementById('zoomResetBtn').click(); }
   }
 });
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","unit","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight"].forEach(function(id){
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight","infoExtraData"].forEach(function(id){
   const el = document.getElementById(id);
   if(el) el.addEventListener("input", updateCard);
 });
-["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg"].forEach(function(id){
+["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo"].forEach(function(id){
   const el = document.getElementById(id);
   if(el) el.addEventListener("change", updateCard);
+});
+document.getElementById('infoExtraTipo').addEventListener("change", function(){
+  updateInfoExtraVisibility();
+  updateCard();
 });
 (function(){
   const ean = $("ean");
@@ -4202,7 +4202,7 @@ document.getElementById('photo').addEventListener("change", async function(e){
 });
 document.getElementById('clearBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos?"))) return;
-  ["internalCode","product","price","oldPrice","ean","unit","customDepositInput","promoStart","promoEnd","origem","categoria","calibre"].forEach(function(id){
+  ["internalCode","product","price","oldPrice","ean","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","infoExtraData"].forEach(function(id){
     if($(id)) $(id).value = "";
   });
   $("depositFeeSelect").value = "";
@@ -4212,6 +4212,8 @@ document.getElementById('clearBtn').addEventListener("click", async function(){
   const lbl = $("isPromoActive").closest("label");
   if(lbl) lbl.classList.remove("checked");
   $("promoMinQty").value = "2"; $("promoUnit").value = "KG"; $("promoPrice").value = "";
+  $("infoExtraTipo").value = "";
+  updateInfoExtraVisibility();
   globalOriginalPhoto = ""; globalProcessedPhoto = "";
   $("photo").value = ""; $("autoRemoveBg").checked = true; $("useAI").checked = true;
   $("store").value = "PATAIAS";
@@ -4268,6 +4270,8 @@ document.addEventListener("change", function(e){
       if(s) _currentUser = JSON.parse(s);
     }catch(e){}
     atualizarUICredenciais();
+    updateOrientationVisibility();
+    updateInfoExtraVisibility();
 
     try{
       const b = localStorage.getItem(FILA_BACKUP_KEY);
@@ -4293,7 +4297,6 @@ document.addEventListener("change", function(e){
       }else if(t > 40){ clearInterval(ag); }
     }, 200);
 
-    updateOrientationVisibility();
     updateDateClearButtons();
     updateCard();
     renderQueue();
