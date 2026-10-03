@@ -269,7 +269,46 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;max-width:100%}
 .price .unit-inline{font-size:.42em;font-weight:800;color:#333}
 .deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block;overflow-wrap:anywhere;max-width:100%}
-.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left;display:block}
+
+/* Extra-unit inteligente: prefixo + data em linhas separadas */
+.extra-unit{
+  display:flex!important;
+  flex-direction:column;
+  gap:0.05em;
+  align-items:flex-start;
+  width:100%;
+  line-height:1.05;
+  margin-top:2px;
+  text-align:left;
+  overflow:visible;
+}
+.extra-unit .eu-prefix{
+  font-size:0.72em;
+  font-weight:800;
+  text-transform:uppercase;
+  line-height:1.05;
+  color:#333;
+  letter-spacing:.01em;
+  overflow-wrap:break-word;
+  word-break:normal;
+  width:100%;
+  display:block;
+}
+.extra-unit .eu-date{
+  font-size:1.15em;
+  font-weight:900;
+  letter-spacing:.02em;
+  line-height:1;
+  color:#000;
+  white-space:nowrap;
+  display:block;
+}
+.extra-unit.is-plain .eu-prefix{
+  font-size:1em;
+  font-weight:800;
+  color:#111;
+}
+
 .fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
 .barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
 .barcode-container.show{display:flex!important}
@@ -306,16 +345,7 @@ body[data-format="fruit-promo"] #promoBox{display:none!important}
 .bnav button .n-badge:empty{display:none}
 
 /* ============ FLOATING PREVIEW ============ */
-.floating-preview{
-  position:fixed;right:calc(14px + var(--safe-r));bottom:calc(84px + var(--safe-b));
-  z-index:8600;width:56px;height:56px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--brand-grad);color:#fff;
-  box-shadow:0 10px 28px rgba(200,16,46,.38),0 3px 10px rgba(200,16,46,.24);
-  border:none;cursor:pointer;
-  transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s,opacity .2s;
-  opacity:0;transform:scale(.5);pointer-events:none;
-}
+.floating-preview{position:fixed;right:calc(14px + var(--safe-r));bottom:calc(84px + var(--safe-b));z-index:8600;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--brand-grad);color:#fff;box-shadow:0 10px 28px rgba(200,16,46,.38),0 3px 10px rgba(200,16,46,.24);border:none;cursor:pointer;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s,opacity .2s;opacity:0;transform:scale(.5);pointer-events:none}
 .floating-preview.ready{opacity:1;transform:scale(1);pointer-events:auto}
 .floating-preview:hover{box-shadow:0 14px 36px rgba(200,16,46,.5)}
 .floating-preview:active{transform:scale(.9)}
@@ -323,10 +353,7 @@ body[data-format="fruit-promo"] #promoBox{display:none!important}
 .floating-preview::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(200,16,46,.28);opacity:0;animation:none}
 .floating-preview.pulse::after{animation:fp-pulse 2.4s ease-out 2}
 @keyframes fp-pulse{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.35)}}
-@media (min-width:600px){
-  .floating-preview{right:calc(22px + var(--safe-r));bottom:calc(94px + var(--safe-b));width:60px;height:60px}
-  .floating-preview svg{width:28px;height:28px}
-}
+@media (min-width:600px){.floating-preview{right:calc(22px + var(--safe-r));bottom:calc(94px + var(--safe-b));width:60px;height:60px}.floating-preview svg{width:28px;height:28px}}
 body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scale(.85)}
 
 /* ============ GLOBAL STATUS ============ */
@@ -877,7 +904,10 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
                     <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
                     <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
                     <div id="cardDeposit" class="card-deposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
-                    <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
+                    <div id="cardExtraUnit" class="extra-unit" style="display:none">
+                      <span class="eu-prefix"></span>
+                      <span class="eu-date"></span>
+                    </div>
                   </div>
                   <div class="col-price">
                     <div class="price-wrapper">
@@ -1453,19 +1483,41 @@ function formatDatePT(iso){
   if(!m) return "";
   return m[3] + "/" + m[2] + "/" + m[1];
 }
-function getInfoExtraText(){
-  const tipo = document.getElementById("infoExtraTipo").value;
-  if(!tipo) return "";
+function getInfoExtraStructure(){
+  const el = document.getElementById("infoExtraTipo");
+  if(!el) return null;
+  const tipo = el.value;
+  if(!tipo) return null;
+
   if(tipo === "consumir"){
     const d = document.getElementById("infoExtraData").value;
-    return "CONSUMIR DE PREFERÊNCIA ANTES DE " + (d ? formatDatePT(d) : "__/__/____");
+    return {
+      prefix: "Consumir de preferência antes de",
+      date: d ? formatDatePT(d) : "__/__/____",
+      isDate: true
+    };
   }
-  if(tipo === "danificado") return "ARTIGO COM EMBALAGEM DANIFICADA";
+  if(tipo === "danificado"){
+    return {
+      prefix: "Artigo com embalagem danificada",
+      date: "",
+      isDate: false
+    };
+  }
   if(tipo === "validade"){
     const d = document.getElementById("infoExtraData").value;
-    return "APROXIMAÇÃO PRAZO DE VALIDADE " + (d ? formatDatePT(d) : "__/__/____");
+    return {
+      prefix: "Aproximação do prazo de validade",
+      date: d ? formatDatePT(d) : "__/__/____",
+      isDate: true
+    };
   }
-  return "";
+  return null;
+}
+function getInfoExtraText(){
+  const s = getInfoExtraStructure();
+  if(!s) return "";
+  return s.isDate ? (s.prefix + " " + s.date) : s.prefix;
 }
 function updateInfoExtraVisibility(){
   const el = document.getElementById("infoExtraTipo");
@@ -2991,7 +3043,6 @@ function applyPrintSizes(card, dims){
   set('.promo-tag',       2.8);
   set('.old-price',       2.6);
   set('.deposit-box',     1.7);
-  set('.extra-unit',      2.2);
   set('.fruit-full-bar',  2.2);
   set('.ean-text',        1.8);
   set('.promo-text',      1.8);
@@ -3000,6 +3051,14 @@ function applyPrintSizes(card, dims){
   set('.fp-price',        6.0);
   set('.fp-box.fp-promo .fp-price', 7.5);
   set('.fp-unit',         1.9);
+  const extraEl = card.querySelector('.extra-unit');
+  if(extraEl){
+    extraEl.style.setProperty('font-size', (2.2 * escala).toFixed(3) + 'mm', 'important');
+    const sp = extraEl.querySelector('.eu-prefix');
+    const sd = extraEl.querySelector('.eu-date');
+    if(sp) sp.style.removeProperty('font-size');
+    if(sd) sd.style.removeProperty('font-size');
+  }
   const dep = card.querySelector('.card-deposit') || card.querySelector('#cardDeposit');
   if(dep){
     dep.style.setProperty('display', 'block', 'important');
@@ -3127,37 +3186,59 @@ function autoFitExtraUnit(card){
   const desc = card.querySelector(".col-desc");
   const el = card.querySelector(".extra-unit");
   if(!desc || !el) return;
-  const txt = (el.textContent || "").trim();
-  el.style.removeProperty("font-size");
-  el.style.removeProperty("line-height");
+
+  const prefix = el.querySelector(".eu-prefix");
+  const dateEl = el.querySelector(".eu-date");
+
+  [el, prefix, dateEl].forEach(function(x){
+    if(x){
+      x.style.removeProperty("font-size");
+      x.style.removeProperty("line-height");
+      x.style.removeProperty("letter-spacing");
+    }
+  });
   el.style.removeProperty("transform");
   el.style.removeProperty("transform-origin");
   el.style.removeProperty("margin-top");
-  el.style.removeProperty("letter-spacing");
   el.style.setProperty("hyphens", "none", "important");
   el.style.setProperty("-webkit-hyphens", "none", "important");
   el.style.setProperty("word-break", "normal", "important");
   el.style.setProperty("overflow-wrap", "break-word", "important");
-  el.style.setProperty("white-space", "normal", "important");
-  if(!txt || !_vis(el)) return;
+
+  if(!_vis(el)) return;
   void el.offsetHeight;
+
   const overflow2D = function(){ return _overflow(desc) || _overflowX(desc); };
   if(!overflow2D()) return;
-  let g1 = 0;
-  while(g1 < 120){
-    const cur = parseFloat(getComputedStyle(el).fontSize);
-    if(!cur || cur <= 2.5) break;
-    el.style.setProperty("font-size", Math.max(2.5, cur * 0.94) + "px", "important");
-    g1++; void el.offsetHeight;
+
+  /* PASSO 1: encolher só o prefixo — a data fica grande */
+  if(prefix){
+    let i = 0;
+    while(i < 60){
+      const cur = parseFloat(getComputedStyle(prefix).fontSize);
+      if(!cur || cur <= 2) break;
+      prefix.style.setProperty("font-size", Math.max(2, cur * 0.92) + "px", "important");
+      i++; void el.offsetHeight;
+      if(!overflow2D()) return;
+    }
+    prefix.style.setProperty("line-height", "1", "important");
+    void el.offsetHeight;
     if(!overflow2D()) return;
   }
-  el.style.setProperty("line-height", "1", "important");
-  el.style.setProperty("margin-top", "0", "important");
-  el.style.setProperty("letter-spacing", "-0.02em", "important");
-  void el.offsetHeight;
-  if(!overflow2D()) return;
+
+  /* PASSO 2: encolher o bloco inteiro */
+  let g = 0;
+  while(g < 40){
+    const cur = parseFloat(getComputedStyle(el).fontSize);
+    if(!cur || cur <= 3) break;
+    el.style.setProperty("font-size", Math.max(3, cur * 0.94) + "px", "important");
+    g++; void el.offsetHeight;
+    if(!overflow2D()) return;
+  }
+
+  /* PASSO 3: scale transform em último recurso */
   let s = 1, g2 = 0;
-  while(s > 0.5 && g2 < 20){
+  while(s > 0.55 && g2 < 25){
     s -= 0.05;
     el.style.setProperty("transform", "scale(" + s + ")", "important");
     el.style.setProperty("transform-origin", "left top", "important");
@@ -3392,9 +3473,35 @@ function updateCardUnsafe(){
     const depVal = dep === "custom" ? $("customDepositInput").value.trim() : dep;
     if(depVal){ $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depVal; }
     else { $("cardDeposit").style.display = "none"; }
-    const eu = getInfoExtraText();
-    if(eu){ $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = eu; }
-    else { $("cardExtraUnit").style.display = "none"; }
+
+    /* INFO EXTRA inteligente — prefixo + data em spans separados */
+    const eu = getInfoExtraStructure();
+    const euEl = $("cardExtraUnit");
+    if(eu && euEl){
+      euEl.innerHTML = "";
+      if(eu.isDate){
+        euEl.classList.remove("is-plain");
+        const sp = document.createElement("span");
+        sp.className = "eu-prefix";
+        sp.textContent = eu.prefix;
+        euEl.appendChild(sp);
+        const sd = document.createElement("span");
+        sd.className = "eu-date";
+        sd.textContent = eu.date;
+        euEl.appendChild(sd);
+      } else {
+        euEl.classList.add("is-plain");
+        const sp = document.createElement("span");
+        sp.className = "eu-prefix";
+        sp.textContent = eu.prefix;
+        euEl.appendChild(sp);
+      }
+      euEl.style.display = "flex";
+    } else if(euEl){
+      euEl.style.display = "none";
+      euEl.innerHTML = '<span class="eu-prefix"></span><span class="eu-date"></span>';
+    }
+
     const activePhoto = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
     const photoBox = $("cardPhotoBox");
     if(activePhoto && !card.classList.contains("size-tiny")){
