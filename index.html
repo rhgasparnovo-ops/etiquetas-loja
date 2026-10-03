@@ -2271,7 +2271,6 @@ function _overflowX(p){
   }
   return false;
 }
-/* autoFitTextSync: apenas aperta a fonte para caber — usado em "product" pós-clone e outros */
 function autoFitTextSync(el){
   if(!el) return;
   el.style.removeProperty("font-size");
@@ -2419,7 +2418,6 @@ function autoFitPromoArea(card){
     return true;
   };
   if(fits()) return;
-  // 1) badge desconto %
   if(badge&&badgeRow&&badgeRow.classList.contains("show")){
     let i=0;
     while(i<30){
@@ -2430,7 +2428,6 @@ function autoFitPromoArea(card){
       if(fits()) return;
     }
   }
-  // 2) preço anterior
   if(oldPrice&&oldPrice.classList.contains("show")){
     let i=0;
     while(i<26){
@@ -2441,7 +2438,7 @@ function autoFitPromoArea(card){
       if(fits()) return;
     }
   }
-  // 3) Preço principal — NUNCA reduzir aqui. autoLayoutCard trata do resto.
+  /* Preço principal — NUNCA reduzir aqui. autoLayoutCard esconde outros elementos. */
 }
 /* ============================================================
    AUTO-FIT — Descrição (só código interno e preço unitário)
@@ -2497,14 +2494,12 @@ function autoAdaptImage(card){
 function autoLayoutCard(card){
   if(!card) return;
 
-  // 1) RESET — restaura tudo o que foi escondido por esta função
   card.querySelectorAll("[data-autohide]").forEach(function(el){
     el.style.removeProperty("display");
     el.removeAttribute("data-autohide");
   });
   card.style.removeProperty("padding");
 
-  // 2) Verificação rigorosa de overflow (tolerância 4px para evitar falsos positivos)
   const cardOverflow = function(){
     const cr = card.getBoundingClientRect();
     if(cr.height <= 0) return false;
@@ -2525,10 +2520,8 @@ function autoLayoutCard(card){
     return false;
   };
 
-  // 3) Se já cabe, não faz nada
   if(!cardOverflow()) return;
 
-  // 4) Esconde por prioridade — rodapé NÃO está na lista
   const hide = function(sel){
     const el = card.querySelector(sel);
     if(!el || !_vis(el)) return false;
@@ -2546,7 +2539,7 @@ function autoLayoutCard(card){
   if(hide(".unit-price-text")) return;
   if(hide(".barcode-container")) return;
 
-  // 5) Rodapé — só reduz a fonte, NUNCA esconde
+  // Rodapé — só reduz a fonte, NUNCA esconde
   const footer = card.querySelector(".footer-container");
   if(footer && _vis(footer)){
     const pt = footer.querySelector(".promo-text");
@@ -2563,8 +2556,131 @@ function autoLayoutCard(card){
     }
   }
 
-  // 6) Último recurso: reduz ligeiramente o padding do cartão
+  // Último recurso: reduz ligeiramente o padding do cartão
   card.style.setProperty("padding","1px 3px","important");
+}
+function updateCardUnsafe(){
+  try{
+    const storeVal=$("store").value||"PATAIAS";
+    const productVal=($("product").value||"").trim().toUpperCase();
+    const codeVal=($("internalCode").value||"").trim().toUpperCase();
+    const barcodeToDraw=($("ean").value||"").trim().toUpperCase();
+    const priceNum=parsePrice($("price").value);
+    const oldPriceNum=parsePrice($("oldPrice").value);
+    const promoPriceNum=parsePrice($("promoPrice").value);
+    const isPromo=$("isPromoActive").checked;
+    const fv=$("presetSizes").value;
+    const isAmanhecer=fv==="amanhecer";
+    const isFP=isFruitPromoFormat(fv);
+    const dims=getDimensions();
+    const capUnit=$("capacityUnit").value;
+    const capNum=parseFloat($("capacity").value)||0;
+    const card=$("mainLabelCard");
+    if(isFP) card.classList.add("layout-fruit-promo");
+    else card.classList.remove("layout-fruit-promo");
+    const PREV_MAX_W=480, PREV_MAX_H=340;
+    if(isAmanhecer){
+      card.style.width="380px"; card.style.height="214px";
+      applySizeClass(card,70,38);
+      $("badgeSheet").textContent="Amanhecer · 70×38";
+    } else {
+      let pw=dims.width*3.2, ph=dims.height*3.2;
+      const ratio=pw/ph;
+      if(pw>PREV_MAX_W){ pw=PREV_MAX_W; ph=pw/ratio; }
+      if(ph>PREV_MAX_H){ ph=PREV_MAX_H; pw=ph*ratio; }
+      card.style.width=pw+"px"; card.style.height=ph+"px";
+      applySizeClass(card,dims.width,dims.height);
+      $("badgeSheet").textContent=(isFP?"Fruta Oportunidade · ":"")+dims.width+" × "+dims.height+" mm";
+    }
+    $("cardStore").textContent=storeVal;
+    setProductText($("cardProduct"),productVal||"NOME DO PRODUTO");
+    if(codeVal){ $("cardCode").style.display="block"; $("cardCode").textContent=codeVal; }
+    else { $("cardCode").style.display="none"; }
+    const info=calcUnitInfo(capUnit);
+    const row=$("cardPromoTopRow");
+    const badgeVal=$("cardPromoBadgeValue");
+    const oldPriceEl=$("cardOldPrice");
+    let hasDiscount=false;
+    if(isPromo&&oldPriceNum!==null&&!isFP){
+      row.classList.add("show");
+      oldPriceEl.classList.add("show");
+      oldPriceEl.textContent=oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.mainSuffix;
+      if(priceNum!==null&&oldPriceNum>priceNum){
+        const d=Math.max(1,Math.round(((oldPriceNum-priceNum)/oldPriceNum)*100));
+        badgeVal.textContent=d+"%";
+        hasDiscount=true;
+      } else { badgeVal.textContent="0%"; }
+    } else {
+      row.classList.remove("show");
+      oldPriceEl.classList.remove("show");
+      oldPriceEl.textContent="";
+    }
+    card.classList.toggle("has-discount",hasDiscount);
+    if(priceNum!==null){
+      const f=priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
+      if(capNum>0){
+        $("cardPrice").innerHTML=f+'<span class="unit-inline">'+info.mainSuffix+'</span>';
+        const pu=priceNum/(capNum*info.normalizar);
+        $("cardUnitPrice").innerHTML=pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+info.refSuffix;
+        $("cardUnitPrice").style.display="block";
+      } else {
+        $("cardPrice").innerHTML=f+'<span class="unit-inline">'+info.mainSuffix+'</span>';
+        $("cardUnitPrice").style.display="none";
+      }
+    } else {
+      $("cardPrice").innerHTML='0,00<span class="unit-inline">'+info.mainSuffix+'</span>';
+      $("cardUnitPrice").style.display="none";
+    }
+    if(isFP){
+      const pu=$("promoUnit").value||"KG";
+      const pm=$("promoMinQty").value||"2";
+      $("cardFpNormalPrice").textContent=(priceNum!==null)?priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €":"0,00 €";
+      $("cardFpNormalUnit").textContent="/ "+pu;
+      $("cardFpPromoPrice").textContent=(promoPriceNum!==null)?promoPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €":"0,00 €";
+      $("cardFpPromoUnit").textContent="/ "+pu;
+      $("cardFpPromoLabel").textContent=(pu==="KG")?"LEVE "+pm+" KG OU MAIS":"LEVE "+pm+" UN OU MAIS";
+    }
+    const org=($("origem").value||"").trim().toUpperCase();
+    const cat=($("categoria").value||"").trim().toUpperCase();
+    const cal=($("calibre").value||"").trim().toUpperCase();
+    const parts=[];
+    if(org) parts.push("Origem: "+org);
+    if(cat) parts.push("Cat. "+cat);
+    if(cal) parts.push("Cal. "+cal);
+    if(parts.length>0){ $("cardFruit").style.display="block"; $("cardFruit").textContent=parts.join(" • "); }
+    else { $("cardFruit").style.display="none"; }
+    const dep=$("depositFeeSelect").value;
+    const depVal=dep==="custom"?$("customDepositInput").value.trim():dep;
+    if(depVal){ $("cardDeposit").style.display="block"; $("cardDepositText").textContent=depVal; }
+    else { $("cardDeposit").style.display="none"; }
+    const eu=getInfoExtraText();
+    if(eu){ $("cardExtraUnit").style.display="block"; $("cardExtraUnit").textContent=eu; }
+    else { $("cardExtraUnit").style.display="none"; }
+    const activePhoto=($("autoRemoveBg").checked&&globalProcessedPhoto)?globalProcessedPhoto:globalOriginalPhoto;
+    const photoBox=$("cardPhotoBox");
+    if(activePhoto&&!card.classList.contains("size-tiny")){
+      card.classList.add("has-image"); photoBox.classList.add("show"); $("cardPhotoImg").src=activePhoto;
+    } else {
+      card.classList.remove("has-image","img-tight","img-mini","img-hidden"); photoBox.classList.remove("show");
+    }
+    const bcBox=$("cardBarcodeBox");
+    if(barcodeToDraw&&!card.classList.contains("size-tiny")){
+      bcBox.classList.add("show");
+      $("cardBarcodeText").textContent=barcodeToDraw.toUpperCase();
+      drawBarcode($("cardBarcodeSvg"),barcodeToDraw);
+    } else {
+      bcBox.classList.remove("show");
+    }
+    $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
+    $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
+    autoAdaptImage(card);
+    autoFitExtraUnit(card);
+    autoFitDeposit(card);
+    autoFitDescription(card);
+    autoFitPromoArea(card);
+    autoFitFooterText(card);
+    autoLayoutCard(card);
+  }catch(err){}
 }
 
 /* ============================================================
