@@ -214,8 +214,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-xl.has-discount .price{font-size:clamp(28px,10cqw,76px)!important}
 .label-card.size-xl .extra-unit{font-size:clamp(11px,3cqw,19px)!important}
 
-/* ===== Acresce Volta — centrado, sem flex (à prova de impressão) ===== */
-#cardDeposit{display:block;text-align:center;width:100%;padding:1px 0;flex-shrink:0;overflow:hidden;box-sizing:border-box;margin:0 auto}
+/* ===== Acresce Volta — centrado, sem flex (à prova de impressão e clone) ===== */
+#cardDeposit,.card-deposit{display:block;text-align:center;width:100%;padding:1px 0;flex-shrink:0;overflow:hidden;box-sizing:border-box;margin:0 auto}
 .deposit-box{font-size:clamp(5.5px,1.9cqw,9.5px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;border-radius:3px;padding:1px 6px;font-weight:900;line-height:1.15;display:inline-block;overflow-wrap:anywhere;max-width:100%;text-transform:uppercase;text-align:center;letter-spacing:.01em}
 
 .extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:break-word;word-break:normal;hyphens:none;-webkit-hyphens:none;-ms-hyphens:none;max-width:100%;width:100%;text-align:left;display:block;flex-shrink:0;transform-origin:left top}
@@ -238,7 +238,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
-.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny #cardDeposit{display:none!important}
+.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny #cardDeposit,.label-card.size-tiny .card-deposit{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 .label-card.size-tiny .promo-badge-row{display:none!important}
@@ -753,7 +753,7 @@ html.is-apk body{overscroll-behavior-y:none}
                   <div class="fp-box fp-promo"><div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div><div class="fp-price" id="cardFpPromoPrice">0,00 €</div><div class="fp-unit" id="cardFpPromoUnit">/ KG</div></div>
                 </div>
                 <div class="fruit-full-bar" id="cardFruit"></div>
-                <div id="cardDeposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
+                <div id="cardDeposit" class="card-deposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
                 <div class="barcode-container" id="cardBarcodeBox">
                   <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
                   <div class="ean-text" id="cardBarcodeText"></div>
@@ -2243,6 +2243,14 @@ function applyPrintSizes(card,dims){
   set(".extra-unit",2.2); set(".fruit-full-bar",2.2); set(".ean-text",1.8);
   set(".promo-text",1.7); set(".print-date",1.5);
   set(".promo-badge",2.6);
+  const dep=card.querySelector(".card-deposit")||card.querySelector("#cardDeposit");
+  if(dep){
+    dep.style.setProperty("display","block","important");
+    dep.style.setProperty("text-align","center","important");
+    dep.style.setProperty("width","100%","important");
+    dep.style.setProperty("margin","0 auto","important");
+    dep.style.setProperty("padding","1px 0","important");
+  }
 }
 function _vis(el){ if(!el) return false; if(el.offsetParent===null&&el!==document.body) return false; const cs=window.getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden") return false; return true; }
 function _overflowY(p){
@@ -2320,11 +2328,11 @@ function autoFitFooterText(card){
   }
 }
 /* ============================================================
-   AUTO-FIT — Acresce Volta (nunca corta, centrado)
+   AUTO-FIT — Acresce Volta (com .card-deposit)
    ============================================================ */
 function autoFitDeposit(card){
   if(!card) return;
-  const wrap = card.querySelector("#cardDeposit");
+  const wrap = card.querySelector(".card-deposit") || card.querySelector("#cardDeposit");
   const el = wrap ? wrap.querySelector(".deposit-box") : null;
   if(!wrap || !el) return;
   const txt = (el.textContent || "").trim();
@@ -2338,6 +2346,9 @@ function autoFitDeposit(card){
   el.style.setProperty("word-break","normal","important");
   el.style.setProperty("overflow-wrap","break-word","important");
   el.style.setProperty("white-space","normal","important");
+  wrap.style.setProperty("display","block","important");
+  wrap.style.setProperty("text-align","center","important");
+  wrap.style.setProperty("width","100%","important");
   if(!txt || !_vis(wrap)) return;
   void el.offsetHeight;
   const overflow = function(){ return _overflowX(wrap) || _overflowY(wrap); };
@@ -2438,7 +2449,6 @@ function autoFitPromoArea(card){
     return true;
   };
   if(fits()) return;
-  // 1) reduzir badge de desconto
   if(badge&&badgeRow&&badgeRow.classList.contains("show")){
     let i=0;
     while(i<30){
@@ -2449,7 +2459,6 @@ function autoFitPromoArea(card){
       if(fits()) return;
     }
   }
-  // 2) reduzir preço anterior
   if(oldPrice&&oldPrice.classList.contains("show")){
     let i=0;
     while(i<26){
@@ -2460,7 +2469,6 @@ function autoFitPromoArea(card){
       if(fits()) return;
     }
   }
-  // 3) reduzir preço principal
   autoFitPrice(card);
 }
 function autoFitDescription(card){
@@ -2618,7 +2626,6 @@ function updateCardUnsafe(){
     }
     $("cardPromoText").textContent=formatPromoDate($("promoStart").value,$("promoEnd").value);
     $("cardPrintDate").textContent="Impresso a: "+new Date().toLocaleDateString("pt-PT");
-    /* ===== AUTO-FIT — ordem importa ===== */
     autoAdaptImage(card);
     autoFitExtraUnit(card);
     autoFitDeposit(card);
