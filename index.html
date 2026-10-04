@@ -191,21 +191,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden}
 .preview-scaler > .label-card{flex-shrink:0;transform-origin:top center;max-width:100%}
 
-/* ============ LABEL — alta qualidade ============ */
-.label-card{
-  background:#fff!important;border:1px solid #cbd5e1;box-shadow:0 10px 25px rgba(15,23,42,.14);
-  display:flex!important;flex-direction:column!important;justify-content:space-between!important;
-  box-sizing:border-box!important;overflow:hidden!important;position:relative!important;
-  border-radius:3px;padding:2px 5px!important;container-type:inline-size;
-  --header-h:13%;--img-pad:1px;--gap-main:4px;--img-scale:100%;--accent:#c8102e;--ink-soft:#475569;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  text-rendering:geometricPrecision;
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
+.label-card{background:#fff!important;border:1px solid #cbd5e1;box-shadow:0 10px 25px rgba(15,23,42,.14);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:3px;padding:2px 5px!important;container-type:inline-size;--header-h:13%;--img-pad:1px;--gap-main:4px;--img-scale:100%;--accent:#c8102e;--ink-soft:#475569;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;-webkit-text-size-adjust:100%;text-size-adjust:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%;border-bottom:1px solid #e2e8f0}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
@@ -213,7 +199,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:high-quality;-ms-interpolation-mode:bicubic}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:800;text-transform:uppercase;color:#0f172a;line-height:1;letter-spacing:.03em}
 
-/* ★ Quando SEM IMAGEM → texto usa espaço total (2 colunas) */
+/* Sem imagem → texto ocupa mais espaço */
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
 .label-card:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
@@ -232,45 +218,14 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:var(--accent);font-weight:900;line-height:1.05;margin-top:1px;text-transform:uppercase;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 .extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#334155;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left;display:block}
 
-/* PREÇO + PROMO */
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%;max-width:100%;min-width:0;overflow:visible;transform-origin:center center}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;width:100%;max-width:100%;min-width:0;line-height:1;margin:0 0 2px 0;padding:0;transform-origin:center center}
 .promo-top-row.stacked{flex-direction:column;gap:1px}
 
-/* ★ Preço antigo com RISCO INCLINADO via SVG (impressão fiel) */
-.old-price{
-  display:inline-block;
-  position:relative;
-  flex:0 0 auto;
-  font-family:var(--ff);
-  font-size:clamp(9px,2.8cqw,15px);
-  font-weight:900;
-  color:#1f2937;
-  line-height:1.05;
-  letter-spacing:-.02em;
-  white-space:nowrap;
-  padding:2px 6px;
-  text-decoration:none!important;
-  font-variant-numeric:tabular-nums;
-  -webkit-font-feature-settings:"tnum","lnum";
-  font-feature-settings:"tnum","lnum";
-}
-.old-price .op-text{
-  display:inline-block;
-  position:relative;
-  z-index:1;
-}
-.old-price .op-line{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  display:block;
-  pointer-events:none;
-  z-index:2;
-  overflow:visible;
-}
+/* ★ Preço antigo com RISCO INCLINADO via SVG (impressão fiel) ★ */
+.old-price{display:inline-block;position:relative;flex:0 0 auto;font-family:var(--ff);font-size:clamp(9px,2.8cqw,15px);font-weight:900;color:#1f2937;line-height:1.05;letter-spacing:-.02em;white-space:nowrap;padding:2px 6px;text-decoration:none!important;font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
+.old-price .op-text{display:inline-block;position:relative;z-index:1}
+.old-price .op-line{position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;overflow:visible}
 
 .promo-tag{display:inline-block;flex:0 0 auto;font-family:var(--ff);font-size:clamp(11px,3.6cqw,20px);font-weight:900;color:#fff;background:linear-gradient(135deg,#e6193b 0%,#c8102e 100%);border-radius:6px;line-height:1;padding:3px 9px;box-shadow:0 2px 8px rgba(200,16,46,.42),0 0 0 1px rgba(255,255,255,.18) inset;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 1.5px rgba(0,0,0,.18);font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
 .price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;max-width:100%;font-variant-numeric:tabular-nums}
@@ -524,7 +479,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 #previewZoomBar button:hover{background:var(--brand-soft);color:var(--brand)}
 #previewZoomBar .zoom-label{font-size:12px;font-weight:800;color:var(--ink-3);padding:0 6px;min-width:44px;text-align:center;letter-spacing:.03em}
 
-/* ============ PRINT ============ */
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}#printZone.measure .print-page-wrapper{width:210mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important}#printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}#printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}#printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}#printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
 
 @media print{
@@ -532,7 +486,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}
   .app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
   #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
-  /* ⚠ NÃO remover transform globalmente — o risco inclinado depende de manter as transformações */
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;animation:none!important;transition:none!important}
   #printZone .label-card{transform:none!important}
   .print-page-wrapper{width:198mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
@@ -749,13 +702,13 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
-          <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:#9a3412;font-weight:700;line-height:1.4">✏️ A editar etiqueta guardada no Drive</div>
+          <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:#9a3412;font-weight:700;line-height:1.4"></div>
           <div class="row">
             <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar produto à fila de impressão">➕ Adicionar à Fila</button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar esta etiqueta no Drive (pergunta se já existir)">💾 Guardar</button>
+            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar (cria novo ou atualiza se estiver em edição)">💾 Guardar</button>
           </div>
           <div class="row">
-            <button class="btn btn-ghost btn-block" id="saveAsNewBtn" type="button" data-tip="Guardar como nova etiqueta (cria código único)">🆕 Guardar como novo</button>
+            <button class="btn btn-ghost btn-block" id="saveAsNewBtn" type="button" data-tip="Guardar como novo (mesmo com código igual)">🆕 Guardar como novo</button>
             <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos do editor">🗑️ Limpar</button>
           </div>
         </div>
@@ -789,7 +742,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         </div>
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
-          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">Toque em 📥 para editar, ➕ para adicionar à fila ou ✕ para apagar.</p>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · ✕ apaga. Vários registos com o mesmo código são permitidos.</p>
           <div class="row">
             <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" data-tip="Recarregar lista do Drive">🔄 Recarregar</button>
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
@@ -915,11 +868,11 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 
 <div class="choice-modal" id="choiceModal">
   <div class="choice-box">
-    <h3 id="choiceTitle">Etiqueta já existe no Drive</h3>
-    <p id="choiceMsg">O que pretende fazer?</p>
+    <h3 id="choiceTitle">O que pretende fazer?</h3>
+    <p id="choiceMsg">Escolha uma opção:</p>
     <div class="choice-actions">
-      <button type="button" class="choice-update" id="choiceUpdate">♻️ Atualizar etiqueta existente</button>
-      <button type="button" class="choice-new" id="choiceNew">➕ Guardar nova etiqueta</button>
+      <button type="button" class="choice-update" id="choiceUpdate">♻️ Atualizar registo existente</button>
+      <button type="button" class="choice-new" id="choiceNew">➕ Criar novo registo</button>
       <button type="button" class="choice-cancel" id="choiceCancel">Cancelar</button>
     </div>
   </div>
@@ -1019,6 +972,9 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 <script>
 "use strict";
 
+/* ============================================================
+   0. VIEWPORT FIX
+   ============================================================ */
 (function fixViewport(){
   function setVh(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} }
   setVh();
@@ -1035,6 +991,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   window.addEventListener('resize', function(){ setTimeout(function(){ try{ fitPreviewCard(); }catch(e){} }, 120); }, {passive:true});
 })();
 
+/* 1. TOOLTIPS */
 (function initTooltips(){
   let currentTip = null; let hideTimer = null;
   function hideAll(){ document.querySelectorAll('[data-tip].tip-show').forEach(function(el){ el.classList.remove('tip-show'); }); currentTip = null; }
@@ -1051,14 +1008,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   window.addEventListener('orientationchange', hideAll, {passive:true});
 })();
 
+/* 2. CONSTANTES */
 const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT  = 'balcao_jwt';
 const AUTH_KEY_EXP  = 'balcao_jwt_exp';
 const AUTH_KEY_USER = 'balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365 * 24 * 3600;
-const CACHE_KEY = 'balcao_cache_v234';
-const CACHE_SCHEMA_VERSION = 2;
+const CACHE_KEY = 'balcao_cache_v235';
+const CACHE_SCHEMA_VERSION = 3;
 const IMG_MAX_SIZE = 2400;
 const IMG_QUALITY  = 0.98;
 const THUMB_SIZE   = 200;
@@ -1069,6 +1027,7 @@ const FETCH_TIMEOUT_MS = 25000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
 
+/* 3. AUTENTICAÇÃO */
 let _reauthPromise = null;
 let _currentUser = null;
 function parseJwt(token){
@@ -1141,6 +1100,7 @@ function inicializarBotaoGoogle(){
   }catch(e){}
 }
 
+/* 4. NAVEGAÇÃO */
 const _navButtons = [];
 (function setupNav(){
   document.querySelectorAll('button[data-view]').forEach(function(btn){
@@ -1159,6 +1119,7 @@ const _navButtons = [];
   });
 })();
 
+/* 5. PWA */
 (function setupPWA(){
   const isAndroid = /Android/i.test(navigator.userAgent);
   const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -1215,11 +1176,17 @@ const _navButtons = [];
   if('serviceWorker' in navigator && isSecure){ navigator.serviceWorker.register('sw.js', {scope:'./'}).then(function(){ swOk = true; }).catch(function(){}); }
 })();
 
+/* 6. UTILITÁRIOS */
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
+function gerarUUID(){
+  if(self.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,6);
+}
 function normalizarProdutoParaFila(p){
   if(!p) return p;
   const o = Object.assign({}, p);
+  o._id           = o._id           || "";
   o.presetSizes   = o.presetSizes   || o.formato     || "amanhecer";
   o.product       = o.product       || o.nome        || "";
   o.internalCode  = o.internalCode  || o.codigo      || "";
@@ -1260,6 +1227,7 @@ function updateInfoExtraVisibility(){
   updateDateClearButtons();
 }
 
+/* 7. TOAST + STATUS */
 const TOAST_ICONS = {success:"✓", error:"✕", warning:"!", info:"i"};
 let _lastToastMsg = "", _lastToastTime = 0;
 function toast(msg, type, duration){
@@ -1376,6 +1344,7 @@ function pedirEmail(){
   });
 }
 
+/* 8. IMAGENS */
 function compressSmart(dataUrl, maxSize, quality){
   maxSize = maxSize || IMG_MAX_SIZE;
   quality = quality || IMG_QUALITY;
@@ -1440,6 +1409,7 @@ async function removeBackgroundSmart(dataUrl){
   }catch(e){ return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); }); }
 }
 
+/* 9. API */
 async function api(fn, payload, retries, jaReaut){
   payload = payload || {};
   if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 3;
@@ -1458,6 +1428,7 @@ async function api(fn, payload, retries, jaReaut){
   }
 }
 
+/* 10. ESTADO */
 const $ = function(id){ return document.getElementById(id); };
 let globalOriginalPhoto = '', globalProcessedPhoto = '';
 let printInProgress = false, fotoBancoModo = false;
@@ -1466,10 +1437,13 @@ let bancoTipoFiltro = 'fruta';
 let camStream = null, camTrack = null, torchOn = false;
 let scanner = null, scanTrack = null, scanTorchOn = false;
 let offsetX = 0, offsetY = 0, marginLeft = 4, marginRight = 4;
-let editingCode = null;
+let editingId = null;      /* UUID do registo em edição */
+let editingCode = null;    /* código para mostrar no banner */
+let currentFormId = null;  /* _id em uso no editor */
 let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
 
+/* 11. PREVIEW DESKTOP */
 function fitPreviewCard(){
   const scaler = document.getElementById('previewScaler'); const card = document.getElementById('mainLabelCard');
   if(!scaler || !card) return;
@@ -1487,6 +1461,7 @@ function fitPreviewCard(){
 window.addEventListener('resize', fitPreviewCard);
 window.addEventListener('orientationchange', function(){ setTimeout(fitPreviewCard, 200); });
 
+/* 12. PREVIEW MODAL */
 let _previewScalerEl = null, _previewStageEl  = null;
 let _previewBaseW = 0, _previewBaseH = 0;
 let _previewZoom = 0, _previewPanX = 0, _previewPanY = 0, _previewScale = 1;
@@ -1584,6 +1559,7 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){ re
 window.addEventListener('resize', function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true); });
 window.addEventListener('orientationchange', function(){ setTimeout(function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true); }, 200); });
 
+/* 13. DATAS */
 function updateDateClearButtons(){
   document.querySelectorAll('.date-clear-btn').forEach(function(btn){
     const t = document.getElementById(btn.dataset.target); if(!t) return;
@@ -1600,6 +1576,7 @@ document.addEventListener('click', function(e){
 document.addEventListener('input', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 document.addEventListener('change', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 
+/* 14. CARREGAR TUDO */
 async function carregarTudo(){
   try{
     const c = await localforage.getItem(CACHE_KEY);
@@ -1623,8 +1600,10 @@ async function carregarTudo(){
   else setStatus("Drive sincronizado", "success");
 }
 
+/* 15. FORM */
 function getFormData(){
   return {
+    _id: currentFormId || '',
     presetSizes: $("presetSizes").value, customWidth: $("customWidth").value, customHeight: $("customHeight").value,
     store: $("store").value, internalCode: $("internalCode").value.trim(), product: $("product").value.trim().toUpperCase(),
     origem: $("origem").value.trim().toUpperCase(), categoria: $("categoria").value.trim().toUpperCase(), calibre: $("calibre").value.trim().toUpperCase(),
@@ -1641,6 +1620,7 @@ function getFormData(){
 }
 function setFormData(d){
   if(!d) return;
+  currentFormId = d._id || null;
   const fv = d.presetSizes || d.formato || "amanhecer";
   const opt = $("presetSizes").querySelector('option[value="' + fv + '"]');
   $("presetSizes").value = opt ? fv : "amanhecer";
@@ -1684,6 +1664,7 @@ function setFormData(d){
   updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
 }
 
+/* 16. VALIDAÇÃO */
 function markFieldError(id, has){ const el = $(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
 function onlyDigits(v){ return String(v || "").replace(/\D/g, ""); }
@@ -1718,6 +1699,7 @@ function setValidationState(){
   if(errors.length) setStatus(errors[0], "error"); else setStatus("");
 }
 
+/* 17. FORMATO / DIMENSÕES */
 function isLargeFormat(v){ return ["80x60","125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v) > -1 || (v === "custom" && (parseFloat($("customWidth").value) >= 80 || parseFloat($("customHeight").value) >= 60)); }
 function isFruitPromoFormat(v){ return v === "frutaPromo125x80" || v === "frutaPromoA6"; }
 function getDimensionsFor(fv, cw, ch){
@@ -1809,6 +1791,7 @@ function setOldPriceText(el, text){
   el.appendChild(svg);
 }
 
+/* 18. CÓDIGO DE BARRAS */
 const CODE128_PATTERNS = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232"];
 const CODE128_STOP = "2331112", CODE128_START_B = 104;
 function drawCode128(svg, text){
@@ -1877,6 +1860,7 @@ function drawBarcode(svg, value){
   if(/^[\x20-\x7E]+$/.test(clean)){ drawCode128(svg, clean); }
 }
 
+/* 19. FILA */
 function renderQueue(){
   const c = $("queueListContainer");
   const qb = $("queueBadge"); if(qb) qb.textContent = printQueue.length;
@@ -1917,6 +1901,7 @@ function addToQueue(){
 }
 function buildProdutoPayload(d){
   return {
+    _id: d._id || "",
     codigo: d.internalCode, nome: d.product, preco: d.price,
     oldPrice: d.oldPrice, isPromoActive: d.isPromoActive,
     promoPrice: d.promoPrice, promoMinQty: d.promoMinQty, promoUnit: d.promoUnit,
@@ -1931,13 +1916,17 @@ function buildProdutoPayload(d){
 }
 function atualizarProdutoLocal(payload){
   const idx = savedProducts.findIndex(function(p){
-    if(payload.codigo && String(p.codigo || '').trim().toUpperCase() === String(payload.codigo).trim().toUpperCase()) return true;
-    if(!payload.codigo && payload.nome && String(p.nome || '').trim().toUpperCase() === String(payload.nome).trim().toUpperCase()) return true;
+    if(payload._id && p._id && String(p._id) === String(payload._id)) return true;
+    if(!payload._id && payload.codigo && String(p.codigo || '').trim().toUpperCase() === String(payload.codigo).trim().toUpperCase()) return true;
+    if(!payload._id && !payload.codigo && payload.nome && String(p.nome || '').trim().toUpperCase() === String(payload.nome).trim().toUpperCase()) return true;
     return false;
   });
   const novo = Object.assign({}, payload, {atualizadoEm: new Date().toISOString()});
   if(idx >= 0) savedProducts[idx] = Object.assign({}, savedProducts[idx], novo);
-  else savedProducts.push(novo);
+  else {
+    if(!novo._id) novo._id = gerarUUID();
+    savedProducts.push(novo);
+  }
 }
 async function verificarProdutoEmBackground(){
   try{
@@ -1966,7 +1955,10 @@ window.saveQueueItem = async function(i){
     const {fotoId, fotoUrl} = await resolverFotoParaPayload(d);
     d.fotoId = fotoId; d.fotoUrl = fotoUrl;
     if(fotoUrl){ d.processedPhoto = fotoUrl; d.originalPhoto = fotoUrl; }
+    if(!d._id) d._id = gerarUUID();
     const payload = buildProdutoPayload(d);
+    payload._id = d._id;
+    payload.__criarNovo = true;
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
@@ -1976,6 +1968,7 @@ window.saveQueueItem = async function(i){
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar: " + e.message, "error"); }
 };
 
+/* 20. DRIVE — LISTA */
 function renderDb(){
   const c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -1988,7 +1981,7 @@ function renderDb(){
       const div = document.createElement("div"); div.className = "list-item";
       const pr = (d.preco !== undefined && d.preco !== "" && d.preco !== null) ? (escapeHTML(d.preco) + "€") : "S/ preço";
       const ref = d.codigo ? ("Ref: " + escapeHTML(d.codigo) + " · ") : "";
-      const isEditing = editingCode && String(editingCode).toUpperCase() === String(d.codigo || "").toUpperCase();
+      const isEditing = editingId && d._id && String(editingId) === String(d._id);
       div.innerHTML =
         '<div class="list-item-info"><strong>' + escapeHTML(d.nome || "Sem Nome") +
         (isEditing ? ' <span class="chip-mini">A editar</span>' : "") +
@@ -2001,33 +1994,14 @@ function renderDb(){
       c.appendChild(div);
     });
 }
-
-/* ★★ GUARDAR — com opção "Guardar como novo" ★★ */
 async function saveToDb(options){
   options = options || {};
   const forceNew = !!options.forceNew;
   const data = getFormData();
   if(!data.product && !data.internalCode){ toast("Preencha um nome ou código.", "warning"); return; }
 
-  let modo = 'auto';
-  const codigoOriginal = editingCode ? String(editingCode).trim() : null;
-
-  if(forceNew){
-    modo = 'new';
-  } else if(editingCode){
-    const r = await choiceDialog('A etiqueta "' + (data.product || data.internalCode) + '" já existe no Drive (Ref: ' + editingCode + ').\n\nO que pretende fazer?', 'Etiqueta guardada encontrada');
-    if(r === 'cancel'){ return; }
-    modo = r;
-  } else {
-    if(data.internalCode){
-      const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim().toUpperCase() === String(data.internalCode).trim().toUpperCase(); });
-      if(existe){
-        const r = await choiceDialog('Já existe uma etiqueta com o código "' + data.internalCode + '" no Drive.\n\nO que pretende fazer?', 'Etiqueta já existe');
-        if(r === 'cancel'){ return; }
-        modo = r;
-      }
-    }
-  }
+  let modo = 'new';
+  if(!forceNew && editingId){ modo = 'update'; }
 
   const t0 = Date.now();
   setStatus("A preparar imagem…", "loading");
@@ -2037,61 +2011,58 @@ async function saveToDb(options){
     const payload = buildProdutoPayload(data);
     payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
 
-    if(modo === 'new'){
-      /* Gerar um código único para não colidir com existente */
-      const base = String(payload.codigo || payload.nome || 'NOVO').trim();
-      let tentativa = base;
-      let n = 1;
-      while(savedProducts.some(function(p){ return String(p.codigo || '').trim().toUpperCase() === tentativa.toUpperCase(); }) && n < 500){
-        n++;
-        tentativa = base + '-' + n;
-      }
-      if(tentativa !== base){
-        payload.codigo = tentativa;
-        data.internalCode = tentativa;
-        toast('Novo código gerado: ' + tentativa, 'info', 4000);
-      }
-    } else if(modo === 'update' && codigoOriginal){
-      const codigoAtual = String(payload.codigo || '').trim();
-      const mudouCodigo = codigoAtual && codigoAtual.toUpperCase() !== codigoOriginal.toUpperCase();
-      if(mudouCodigo){
-        setStatus("A substituir etiqueta no Drive…", "loading");
-        try{ await api('apagarProduto', {codigo: codigoOriginal, nome: ''}); }catch(e){}
-        savedProducts = savedProducts.filter(function(p){ return String(p.codigo || '').trim().toUpperCase() !== codigoOriginal.toUpperCase(); });
-      } else if(!codigoAtual){
-        payload.codigo = codigoOriginal;
-      }
+    if(modo === 'update'){
+      payload._id = editingId;
+      setStatus("A atualizar no Drive…", "loading");
+    } else {
+      payload._id = gerarUUID();
+      payload.__criarNovo = true;
+      setStatus("A guardar como novo no Drive…", "loading");
     }
 
-    setStatus("A guardar no Drive…", "loading");
-    await api('guardarProduto', payload);
+    const resp = await api('guardarProduto', payload);
+    if(resp && resp._id) payload._id = resp._id;
+
     atualizarProdutoLocal(payload); renderDb();
-
-    /* Se guardamos como novo, atualizamos o form com o novo código */
-    if(modo === 'new' && payload.codigo){
-      $("internalCode").value = payload.codigo;
-      editingCode = payload.codigo;
-      updateEditingBanner();
-    }
-
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
+
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
-    setStatus((modo === 'new' ? "Guardado como novo" : "Guardado no Drive") + " (" + dt + "s)", "success");
-    if(modo !== 'new'){
-      editingCode = payload.codigo || null;
-      updateEditingBanner();
-    }
+    setStatus((modo === 'update' ? "Atualizado" : "Guardado como novo") + " (" + dt + "s)", "success");
+
+    editingId = payload._id || null;
+    editingCode = payload.codigo || null;
+    currentFormId = editingId;
+    updateEditingBanner();
+
     setTimeout(verificarProdutoEmBackground, 2500);
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
 function updateEditingBanner(){
   const b = $("editingBanner"); if(!b) return;
-  if(editingCode){ b.style.display = "block"; b.innerHTML = '✏️ A editar etiqueta guardada no Drive (Ref: ' + escapeHTML(editingCode) + ')'; }
+  if(editingId){
+    const ref = editingCode || '(sem código)';
+    b.style.display = "block";
+    b.innerHTML = '✏️ A editar etiqueta guardada · Ref: ' + escapeHTML(ref) +
+      ' <button type="button" id="sairEdicaoBtn" style="margin-left:8px;padding:2px 8px;border-radius:6px;border:1px solid #fdba74;background:#fff;color:#9a3412;font-weight:800;font-size:11px;cursor:pointer">Sair da edição</button>';
+    const sb = document.getElementById('sairEdicaoBtn');
+    if(sb){
+      sb.onclick = function(){
+        editingId = null; editingCode = null; currentFormId = null;
+        updateEditingBanner();
+        toast('Modo edição terminado — o próximo Guardar cria um registo novo', 'info', 3200);
+      };
+    }
+  }
   else { b.style.display = "none"; }
 }
 window.loadFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
-  setFormData(d); editingCode = d.codigo || null; updateEditingBanner();
+  const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
+  setFormData(data);
+  editingId = d._id || null;
+  editingCode = d.codigo || null;
+  currentFormId = editingId;
+  updateEditingBanner();
   document.body.dataset.view = 'editor'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'editor'); });
   window.scrollTo({top:0, behavior:'smooth'});
   setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 30);
@@ -2107,8 +2078,13 @@ window.removeFromDb = async function(i){
   setStatus("A eliminar do Drive…", "loading");
   savedProducts.splice(i, 1); renderDb();
   try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
-  try{ await api('apagarProduto', {codigo: d.codigo, nome: d.nome}); setStatus("Eliminado do Drive", "success"); }
-  catch(e){
+  try{
+    await api('apagarProduto', {_id: d._id, codigo: d.codigo, nome: d.nome});
+    if(editingId && d._id && String(editingId) === String(d._id)){
+      editingId = null; editingCode = null; currentFormId = null; updateEditingBanner();
+    }
+    setStatus("Eliminado do Drive", "success");
+  }catch(e){
     savedProducts.splice(i, 0, d); renderDb();
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e2){}
     setStatus("Erro ao eliminar", "error"); toast("Erro ao eliminar: " + e.message, "error");
@@ -2122,6 +2098,7 @@ window.queueFromDb = function(i){
   setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0, behavior:'smooth'}); }, 300);
 };
 
+/* 21. BANCO */
 function updateBancoCounts(){
   let f = 0, l = 0;
   bancoFruta.forEach(function(x){ if(x.tipo === 'legume') l++; else if(x.tipo === 'fruta') f++; });
@@ -2206,6 +2183,7 @@ async function otimizarImagensDrive(){
   toast("✅ Otimizadas: " + done + (errs ? " · Erros: " + errs : ""), errs ? "warning" : "success", 6500);
 }
 
+/* 22. CARD PREVIEW */
 let _updateCardTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
@@ -2264,7 +2242,6 @@ function applyPrintSizes(card, dims){
       dep.style.setProperty('padding', (0.3 * escala).toFixed(2) + 'mm ' + (1.4 * escala).toFixed(2) + 'mm', 'important');
     }
   }
-  /* Ajustar espessura da linha SVG ao tamanho real */
   const opLine = card.querySelector('.old-price .op-line line');
   if(opLine){
     opLine.setAttribute("stroke-width", String(Math.max(1.4, 2 * escala * 0.9)));
@@ -2399,7 +2376,6 @@ function autoFitExtraUnit(card){
     if(!overflow2D()) return;
   }
 }
-
 function autoFitPromoArea(card){
   if(!card) return;
   const pc = card.querySelector(".col-price"); if(!pc) return;
@@ -2667,6 +2643,7 @@ function updateCardUnsafe(){
   }catch(err){}
 }
 
+/* 23. CLONE / IMPRESSÃO */
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
   try{
@@ -2808,6 +2785,7 @@ window.triggerPrint = triggerPrint;
 window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", function(){ if(_printCleanupTimer){ clearTimeout(_printCleanupTimer); _printCleanupTimer = null; } cleanupAfterPrint(); });
 
+/* 24. PDF / EMAIL */
 let _h2cLoading = null;
 function loadHtml2CanvasPro(){
   if(window.html2canvas && window.html2canvas.version) return Promise.resolve();
@@ -2974,6 +2952,7 @@ async function enviarEtiquetasPorEmail(){
   }
 }
 
+/* 25. CÂMARA */
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
   const modal = $("cameraModal"); modal.classList.add("show"); torchOn = false;
@@ -3060,6 +3039,7 @@ async function closeScanner(){
   $("scannerModal").classList.remove("show");
 }
 
+/* 26. TOGGLE código → EAN */
 (function setupSyncCodeToEan(){
   const code = document.getElementById("internalCode");
   const sync = document.getElementById("syncCodeToEan");
@@ -3083,6 +3063,7 @@ async function closeScanner(){
   });
 })();
 
+/* 27. EVENTOS */
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
 document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
 document.getElementById('saveAsNewBtn').addEventListener("click", function(){ saveToDb({forceNew:true}); });
@@ -3219,7 +3200,8 @@ document.getElementById('clearBtn').addEventListener("click", async function(){
   $("customWidth").value = "70"; $("customHeight").value = "38";
   $("presetSizes").value = "amanhecer";
   $("customDimensionsRow").style.display = "none";
-  editingCode = null; updateEditingBanner();
+  editingId = null; editingCode = null; currentFormId = null;
+  updateEditingBanner();
   updateOrientationVisibility(); updateDateClearButtons(); updateCard();
   toast("Editor limpo", "info");
 });
@@ -3249,6 +3231,7 @@ document.addEventListener("change", function(e){
   });
 })();
 
+/* 28. BOOT */
 (async function boot(){
   try{
     try{ const s = localStorage.getItem(AUTH_KEY_USER); if(s) _currentUser = JSON.parse(s); }catch(e){}
