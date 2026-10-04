@@ -114,7 +114,6 @@ a{color:inherit;text-decoration:none}
 .auth-logout{display:none;align-items:center;justify-content:center;padding:6px 14px;background:#fff;color:#b91c1c;border:1px solid #fecaca;border-radius:var(--r-pill);font-size:11.5px;font-weight:800;white-space:nowrap}
 .auth-card.logged .auth-logout{display:inline-flex}
 .auth-card.logged .auth-btn{display:none}
-
 @media (max-width:600px){
   .app-header{padding:10px 12px;padding-top:calc(10px + var(--safe-t))}
   .hdr-inner{gap:8px}
@@ -139,7 +138,6 @@ a{color:inherit;text-decoration:none}
 .col-preview{min-width:0}
 .view{display:none;flex-direction:column;gap:16px}
 body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,body[data-view="fila"] .view-fila,body[data-view="drive"] .view-drive,body[data-view="mais"] .view-mais{display:flex}
-
 @media (min-width:1000px){
   .main{padding:28px 32px 100px;padding-bottom:calc(110px + var(--safe-b))}
   .grid-main{grid-template-columns:1fr;gap:20px}
@@ -194,8 +192,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .date-clear-btn{flex:0 0 auto;width:44px;min-height:44px;padding:0;background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r-md);color:var(--ink-2);font-size:14px;font-weight:900;display:none;align-items:center;justify-content:center}
 .date-clear-btn.show{display:inline-flex}
 .date-clear-btn:active{background:var(--brand);color:#fff;border-color:var(--brand)}
-
-/* Toggle código interno → EAN */
 .code-with-sync{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
 .code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
 .sync-toggle{display:flex;align-items:center;justify-content:center;gap:5px;padding:0 12px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-md);cursor:pointer;user-select:none;font-size:11px;font-weight:800;color:var(--ink-3);transition:all .16s;white-space:nowrap;flex-shrink:0;min-width:56px;letter-spacing:.03em}
@@ -241,59 +237,217 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden}
 .preview-scaler > .label-card{flex-shrink:0;transform-origin:top center;max-width:100%}
 
-/* ============ LABEL ============ */
-.label-card{background:#fff!important;border:1px solid #333;box-shadow:0 10px 25px rgba(0,0,0,.18);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:2px;padding:2px 4px!important;container-type:inline-size;--header-h:12%;--img-pad:1px;--gap-main:4px;--img-scale:100%}
-.header{display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #c8102e;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%}
-.logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
+/* ============ LABEL (v2 — IA Smart) ============ */
+.label-card{
+  background:#fff!important;
+  border:1px solid #cbd5e1;
+  box-shadow:0 10px 25px rgba(15,23,42,.14);
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  position:relative!important;
+  border-radius:3px;
+  padding:2px 5px!important;
+  container-type:inline-size;
+  --header-h:13%;
+  --img-pad:1px;
+  --gap-main:4px;
+  --img-scale:100%;
+  --accent:#c8102e;
+  --ink-soft:#475569;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-bottom:1px;
+  height:var(--header-h);
+  flex-shrink:0;
+  overflow:hidden;
+  width:100%;
+  border-bottom:1px solid #e2e8f0;
+}
+.logo-wrapper-1,.logo-wrapper-2{
+  width:28%;height:100%;
+  display:flex;align-items:center;justify-content:flex-start;overflow:hidden;
+}
 .logo-wrapper-2{justify-content:center}
-.header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0}
+.header-store-container{
+  flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0;
+}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain}
-.main-content{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
-.label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
-.label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
-.col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px;overflow-wrap:anywhere;word-break:break-word}
+.store-text{
+  font-size:clamp(7px,2.2cqw,12px);
+  font-weight:800;
+  text-transform:uppercase;
+  color:#0f172a;
+  line-height:1;
+  letter-spacing:.03em;
+}
+.main-content{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);
+  align-items:center!important;
+  width:100%;
+  flex:1 1 auto;
+  gap:var(--gap-main);
+  overflow:hidden;
+  margin:1px 0;
+  min-height:0;
+}
+.label-card.layout-fruit-promo .main-content{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+}
+.label-card.layout-fruit-promo:not(.has-image) .main-content{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+.col-desc{
+  min-width:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px;
+  overflow-wrap:anywhere;word-break:break-word;
+}
 .col-desc > *{max-width:100%;min-width:0}
-.col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 1px}
-.col-image{display:none;justify-content:center;align-items:center;height:100%;min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent}
+.col-price{
+  min-width:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;height:100%;overflow:hidden;white-space:nowrap;padding:0 1px;
+}
+.col-image{
+  display:none;justify-content:center;align-items:center;height:100%;
+  min-width:0;overflow:hidden;padding:var(--img-pad);background:transparent;
+}
 .col-image.show{display:flex!important}
-.col-image img{width:100%;height:100%;max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);object-fit:contain;object-position:center;display:block;margin:auto}
-.store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:bold;text-transform:uppercase;color:#000;line-height:1}
-.item-code{font-size:clamp(6px,1.9cqw,10px);font-weight:900;color:#111;line-height:1.05;margin-bottom:5px;letter-spacing:.3px;opacity:.92;white-space:normal;word-break:break-word;max-width:100%;width:100%;text-align:left}
-.product{font-weight:900;color:#000;line-height:1.05;text-align:left;display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;font-size:clamp(9px,3.2cqw,20px);overflow-wrap:anywhere}
+.col-image img{
+  width:100%;height:100%;
+  max-width:var(--img-scale,100%);max-height:var(--img-scale,100%);
+  object-fit:contain;object-position:center;display:block;margin:auto;
+}
+.item-code{
+  font-size:clamp(6px,1.9cqw,10px);
+  font-weight:900;color:#0f172a;line-height:1.05;
+  margin-bottom:5px;letter-spacing:.3px;opacity:.9;
+  white-space:normal;word-break:break-word;max-width:100%;width:100%;text-align:left;
+}
+.product{
+  font-weight:900;color:#0f172a;line-height:1.05;text-align:left;
+  display:flex;flex-wrap:wrap;align-content:center;align-items:center;
+  justify-content:flex-start;column-gap:.28em;row-gap:.04em;min-width:0;width:100%;
+  font-size:clamp(9px,3.2cqw,20px);overflow-wrap:anywhere;
+}
 .product .w{display:inline-block;white-space:nowrap;max-width:100%}
-.unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:#c8102e;font-weight:900;line-height:1.05;margin-top:1px;text-transform:uppercase;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.unit-price-text{
+  font-size:clamp(7px,2.2cqw,12px);color:var(--accent);font-weight:900;
+  line-height:1.05;margin-top:1px;text-transform:uppercase;
+  white-space:normal;overflow-wrap:anywhere;max-width:100%;
+}
+.extra-unit{
+  font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;
+  color:#334155;overflow-wrap:anywhere;max-width:100%;width:100%;
+  text-align:left;display:block;
+}
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;line-height:1;margin-bottom:2px;flex-wrap:nowrap}
-.old-price{font-size:clamp(6px,2cqw,11px);color:#666;text-decoration:line-through;font-weight:700;line-height:1}
-.promo-tag{font-size:clamp(9px,3cqw,17px);color:#fff;background:linear-gradient(135deg,#e6193b 0%,#c8102e 100%);border-radius:4px;font-weight:900;line-height:1;padding:2px 7px;box-shadow:0 1px 3px rgba(200,16,46,.35);letter-spacing:.02em;white-space:nowrap}
-.price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;max-width:100%}
-.price .unit-inline{font-size:.42em;font-weight:800;color:#333}
-.deposit-box{font-size:clamp(5.5px,1.8cqw,9px);color:#c8102e;background:#fff5f5;border:1px solid #fed7d7;padding:0 3px;font-weight:900;line-height:1.15;margin-top:1px;display:inline-block;overflow-wrap:anywhere;max-width:100%}
-.extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#333;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left;display:block}
-.fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0}
-.barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;flex-shrink:0;height:18%;overflow:hidden}
+.old-price{font-size:clamp(6px,2cqw,11px);color:#64748b;text-decoration:line-through;font-weight:700;line-height:1}
+.promo-tag{
+  font-size:clamp(9px,3cqw,17px);color:#fff;
+  background:linear-gradient(135deg,#e6193b 0%,#c8102e 100%);
+  border-radius:4px;font-weight:900;line-height:1;padding:2px 7px;
+  box-shadow:0 1px 3px rgba(200,16,46,.35);letter-spacing:.02em;white-space:nowrap;
+}
+.price{
+  font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;
+  white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;
+  justify-content:center;gap:.08em;max-width:100%;
+}
+.price .unit-inline{font-size:.42em;font-weight:800;color:#334155}
+
+/* TAXA VOLTA — linha própria, centrada, acima do barcode */
+.deposit-row{
+  display:none;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  flex-shrink:0;
+  padding:1px 0 0;
+  margin:0;
+  line-height:1;
+}
+.deposit-row.show{display:flex}
+.deposit-box{
+  display:inline-block;
+  font-size:clamp(5.5px,1.8cqw,9px);
+  color:#b91c1c;
+  background:linear-gradient(180deg,#fff5f5,#fee2e2);
+  border:1px solid #fca5a5;
+  padding:1px 7px;
+  border-radius:4px;
+  font-weight:900;
+  line-height:1.2;
+  text-align:center;
+  letter-spacing:.02em;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  white-space:normal;
+  box-shadow:0 1px 2px rgba(185,28,28,.08);
+}
+
+.fruit-full-bar{
+  width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;
+  line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;
+  font-size:clamp(6px,2cqw,11px);flex-shrink:0;margin:1px 0;
+}
+.barcode-container{
+  display:none;flex-direction:column;justify-content:center;align-items:center;
+  width:100%;flex-shrink:0;height:18%;overflow:hidden;
+}
 .barcode-container.show{display:flex!important}
 .svg-container{width:100%;height:72%;display:flex;justify-content:center;overflow:hidden}
 .svg-container svg{width:80%;height:100%}
-.ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
-.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #bbb;padding-top:1px;flex-shrink:0;height:9%;overflow:hidden}
-.promo-text{font-size:clamp(5px,1.5cqw,8px);color:#444;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:3px}
-.print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#666;white-space:nowrap;line-height:1;flex-shrink:0}
-.fruit-promo-prices{display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:4px;padding:2px 0;align-items:stretch;flex-shrink:0}
+.ean-text{
+  font-family:monospace;
+  font-size:clamp(5px,1.5cqw,8px);
+  font-weight:bold;line-height:1;text-transform:uppercase;letter-spacing:.04em;
+}
+.footer-container{
+  display:flex;justify-content:space-between;align-items:center;width:100%;
+  border-top:1px dashed #cbd5e1;padding-top:1px;flex-shrink:0;height:9%;overflow:hidden;
+}
+.promo-text{
+  font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;
+  white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:3px;
+}
+.print-date{
+  font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;
+  white-space:nowrap;line-height:1;flex-shrink:0;
+}
+.fruit-promo-prices{
+  display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:4px;
+  padding:2px 0;align-items:stretch;flex-shrink:0;
+}
 .label-card.layout-fruit-promo .col-price{display:none!important}
 .label-card.layout-fruit-promo .fruit-promo-prices{display:flex!important}
-.fp-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 6px;border-radius:6px;text-align:center;line-height:1;min-width:0;overflow:hidden}
-.fp-box.fp-normal{flex:1;background:#fff;border:2px solid #222;color:#222}
+.fp-box{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4px 6px;border-radius:6px;text-align:center;line-height:1;
+  min-width:0;overflow:hidden;
+}
+.fp-box.fp-normal{flex:1;background:#fff;border:2px solid #0f172a;color:#0f172a}
 .fp-box.fp-promo{flex:1.4;background:#c8102e;border:2px solid #c8102e;color:#fff;position:relative}
 .fp-label{font-size:clamp(7px,2cqw,13px);font-weight:800;text-transform:uppercase;margin-bottom:3px;line-height:1.05}
 .fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
 .fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
-.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar{display:none!important}
+.label-card.size-tiny .col-image,
+.label-card.size-tiny .barcode-container,
+.label-card.size-tiny .footer-container,
+.label-card.size-tiny .fruit-full-bar,
+.label-card.size-tiny .deposit-row{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
-
-/* Oportunidade/Desconto escondido em formatos "Leve 2+ ou mais" */
 body[data-format="fruit-promo"] #promoCard{display:none!important}
 body[data-format="fruit-promo"] #promoBox{display:none!important}
 
@@ -659,7 +813,11 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             </div>
             <div class="fld">
               <label for="store">Loja</label>
-              <select id="store"><option value="PATAIAS" selected>PATAIAS</option><option value="GARCIA">GARCIA</option></select>
+              <select id="store">
+                <option value="PATAIAS" selected>PATAIAS</option>
+                <option value="GARCIA">GARCIA</option>
+                <option value="GARCIA/PATAIAS">GARCIA/PATAIAS</option>
+              </select>
             </div>
           </div>
           <div class="fld">
@@ -873,12 +1031,14 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
                     <div class="item-code" id="cardCode" style="display:none"></div>
                     <div class="product" id="cardProduct"><span class="w">NOME</span><span class="w">DO</span><span class="w">PRODUTO</span></div>
                     <div class="unit-price-text" id="cardUnitPrice" style="display:none"></div>
-                    <div id="cardDeposit" class="card-deposit" style="display:none"><span class="deposit-box" id="cardDepositText"></span></div>
                     <div id="cardExtraUnit" class="extra-unit" style="display:none"></div>
                   </div>
                   <div class="col-price">
                     <div class="price-wrapper">
-                      <div class="promo-top-row" id="cardPromoTopRow" style="display:none"><span class="old-price" id="cardOldPrice"></span><span class="promo-tag" id="cardPromoTag"></span></div>
+                      <div class="promo-top-row" id="cardPromoTopRow" style="display:none">
+                        <span class="old-price" id="cardOldPrice"></span>
+                        <span class="promo-tag" id="cardPromoTag"></span>
+                      </div>
                       <div class="price" id="cardPrice">0,00<span class="unit-inline">€/KG</span></div>
                     </div>
                   </div>
@@ -889,6 +1049,9 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
                   <div class="fp-box fp-promo"><div class="fp-label" id="cardFpPromoLabel">LEVE 2 KG OU MAIS</div><div class="fp-price" id="cardFpPromoPrice">0,00 €</div><div class="fp-unit" id="cardFpPromoUnit">/ KG</div></div>
                 </div>
                 <div class="fruit-full-bar" id="cardFruit"></div>
+                <div class="deposit-row" id="cardDeposit">
+                  <span class="deposit-box" id="cardDepositText"></span>
+                </div>
                 <div class="barcode-container" id="cardBarcodeBox">
                   <div class="svg-container"><svg id="cardBarcodeSvg" preserveAspectRatio="none"></svg></div>
                   <div class="ean-text" id="cardBarcodeText"></div>
@@ -1528,7 +1691,6 @@ function setGlobalStatus(msg, type, opts){
   }, dur);
 }
 
-/* STATUS unificado — mostra SÓ num sítio (local OU global, nunca os dois) */
 let _statusTimer = null;
 let _statusLast = {key: '', t: 0};
 function setStatus(msg, type, opts){
@@ -1875,7 +2037,7 @@ window.addEventListener('resize', fitPreviewCard);
 window.addEventListener('orientationchange', function(){ setTimeout(fitPreviewCard, 200); });
 
 /* ============================================================
-   11. PREVIEW MODAL CORRIGIDO
+   11. PREVIEW MODAL
    ============================================================ */
 let _previewScalerEl = null, _previewStageEl  = null;
 let _previewBaseW = 0, _previewBaseH = 0;
@@ -2175,7 +2337,6 @@ function setFormData(d){
     $("customDepositInput").value = "";
     $("customDepositField").style.display = "none";
   }
-  // Info extra
   const ti = d.infoExtraTipo || "";
   const selTi = $("infoExtraTipo");
   const hasOpt = Array.prototype.some.call(selTi.options, function(o){ return o.value === ti; });
@@ -2952,17 +3113,12 @@ function updateOrientationVisibility(){
   const fv = $("presetSizes").value;
   const show = isLargeFormat(fv);
   const isFP = isFruitPromoFormat(fv);
-
-  // Marcar o body — o CSS esconde automaticamente a Oportunidade/Desconto
   document.body.dataset.format = isFP ? 'fruit-promo' : 'normal';
-
   const fruitEl = $("fruitCard");
   if(fruitEl) fruitEl.style.display = (show || fv === "A6" || fv === "125x80" || fv === "frutaPromo125x80" || fv === "frutaPromoA6") ? "flex" : "none";
-
   $("fruitPromoPanel").style.display = isFP ? "block" : "none";
   const pc = $("promoCard");
   if(pc) pc.style.display = isFP ? "none" : "flex";
-
   if(isFP){
     const cb = $("isPromoActive");
     if(cb && cb.checked){
@@ -2998,7 +3154,6 @@ function applyPrintSizes(card, dims){
   set('.price .unit-inline', 2.7);
   set('.promo-tag',       2.8);
   set('.old-price',       2.6);
-  set('.deposit-box',     1.7);
   set('.extra-unit',      2.2);
   set('.fruit-full-bar',  2.2);
   set('.ean-text',        1.8);
@@ -3008,13 +3163,16 @@ function applyPrintSizes(card, dims){
   set('.fp-price',        6.0);
   set('.fp-box.fp-promo .fp-price', 7.5);
   set('.fp-unit',         1.9);
-  const dep = card.querySelector('.card-deposit') || card.querySelector('#cardDeposit');
-  if(dep){
-    dep.style.setProperty('display', 'block', 'important');
-    dep.style.setProperty('text-align', 'center', 'important');
-    dep.style.setProperty('width', '100%', 'important');
-    dep.style.setProperty('margin', '0 auto', 'important');
-    dep.style.setProperty('padding', '1px 0', 'important');
+
+  /* Taxa volta — NÃO força display. Só dimensiona se estiver visível. */
+  const depRow = card.querySelector('.deposit-row');
+  if(depRow && !depRow.classList.contains('size-hidden')){
+    const dep = depRow.querySelector('.deposit-box');
+    if(dep){
+      dep.style.setProperty('font-size', (1.8 * escala).toFixed(3) + 'mm', 'important');
+      dep.style.setProperty('line-height', '1.15', 'important');
+      dep.style.setProperty('padding', (0.3 * escala).toFixed(2) + 'mm ' + (1.4 * escala).toFixed(2) + 'mm', 'important');
+    }
   }
 }
 function _vis(el){
@@ -3088,10 +3246,15 @@ function autoFitFooterText(card){
 }
 function autoFitDeposit(card){
   if(!card) return;
-  const wrap = card.querySelector(".card-deposit") || card.querySelector("#cardDeposit");
-  const el = wrap ? wrap.querySelector(".deposit-box") : null;
+  const wrap = card.querySelector(".deposit-row");
+  const el   = wrap ? wrap.querySelector(".deposit-box") : null;
   if(!wrap || !el) return;
-  const txt = (el.textContent || "").trim();
+
+  // Se está escondido (display:none) NÃO mexe
+  const cs = window.getComputedStyle(wrap);
+  if(cs.display === "none") return;
+  if(!el.textContent || !el.textContent.trim()) return;
+
   el.style.removeProperty("font-size");
   el.style.removeProperty("line-height");
   el.style.removeProperty("transform");
@@ -3102,13 +3265,18 @@ function autoFitDeposit(card){
   el.style.setProperty("word-break", "normal", "important");
   el.style.setProperty("overflow-wrap", "break-word", "important");
   el.style.setProperty("white-space", "normal", "important");
-  wrap.style.setProperty("display", "block", "important");
-  wrap.style.setProperty("text-align", "center", "important");
-  wrap.style.setProperty("width", "100%", "important");
-  if(!txt || !_vis(wrap)) return;
+
   void el.offsetHeight;
-  const overflow = function(){ return _overflowX(wrap) || _overflow(wrap); };
+
+  const overflow = function(){
+    const wr = wrap.getBoundingClientRect();
+    if(!wr.width) return false;
+    const er = el.getBoundingClientRect();
+    return (er.right > wr.right + 0.5) || (er.left < wr.left - 0.5);
+  };
+
   if(!overflow()) return;
+
   let g = 0;
   while(g < 40){
     const cur = parseFloat(getComputedStyle(el).fontSize);
@@ -3117,12 +3285,8 @@ function autoFitDeposit(card){
     g++; void el.offsetHeight;
     if(!overflow()) return;
   }
-  el.style.setProperty("line-height", "1", "important");
-  el.style.setProperty("letter-spacing", "-0.02em", "important");
-  void el.offsetHeight;
-  if(!overflow()) return;
   let s = 1, g2 = 0;
-  while(s > 0.6 && g2 < 20){
+  while(s > 0.65 && g2 < 15){
     s -= 0.05;
     el.style.setProperty("transform", "scale(" + s + ")", "important");
     el.style.setProperty("transform-origin", "center center", "important");
@@ -3256,11 +3420,13 @@ function autoAdaptImage(card){
 function autoLayoutCard(card){
   if(!card) return;
   if(card.classList.contains('print-locked')) return;
+
   card.querySelectorAll("[data-autohide]").forEach(function(el){
     el.style.removeProperty("display");
     el.removeAttribute("data-autohide");
   });
   card.style.removeProperty("padding");
+
   const cardOverflow = function(){
     const cr = card.getBoundingClientRect();
     if(cr.height <= 0) return false;
@@ -3280,21 +3446,29 @@ function autoLayoutCard(card){
     if(desc && _vis(desc) && _overflow(desc)) return true;
     return false;
   };
+
   if(!cardOverflow()) return;
+
   const hide = function(sel){
     const el = card.querySelector(sel);
     if(!el || !_vis(el)) return false;
+    // Nunca esconder se já é gestão de estado (ex: #cardDeposit pode estar oculto por JS)
+    if(el.id === 'cardDeposit' && !el.classList.contains('show')) return false;
     el.setAttribute("data-autohide","1");
     el.style.setProperty("display","none","important");
     return !cardOverflow();
   };
+
   if(hide(".item-code")) return;
-  if(hide("#cardDeposit")) return;
-  if(hide(".card-deposit")) return;
+  const depRow = card.querySelector('#cardDeposit');
+  if(depRow && depRow.classList.contains('show')){
+    if(hide("#cardDeposit")) return;
+  }
   if(hide(".extra-unit")) return;
   if(hide(".fruit-full-bar")) return;
   if(hide(".unit-price-text")) return;
   if(hide(".barcode-container")) return;
+
   const footer = card.querySelector(".footer-container");
   if(footer && _vis(footer)){
     const pt = footer.querySelector(".promo-text");
@@ -3304,8 +3478,7 @@ function autoLayoutCard(card){
         const cur = parseFloat(getComputedStyle(pt).fontSize);
         if(!cur || cur < 3.5) break;
         pt.style.setProperty("font-size", (cur * 0.88) + "px", "important");
-        i++;
-        void footer.offsetHeight;
+        i++; void footer.offsetHeight;
         if(!cardOverflow()) return;
       }
     }
@@ -3396,10 +3569,26 @@ function updateCardUnsafe(){
     if(cal) parts.push("Cal. " + cal);
     if(parts.length > 0){ $("cardFruit").style.display = "block"; $("cardFruit").textContent = parts.join(" • "); }
     else { $("cardFruit").style.display = "none"; }
-    const dep = $("depositFeeSelect").value;
-    const depVal = dep === "custom" ? $("customDepositInput").value.trim() : dep;
-    if(depVal){ $("cardDeposit").style.display = "block"; $("cardDepositText").textContent = depVal; }
-    else { $("cardDeposit").style.display = "none"; }
+
+    /* ---------- TAXA VOLTA (nova lógica) ---------- */
+    const depSelect = $("depositFeeSelect").value;
+    const depVal = (depSelect === "custom")
+      ? ($("customDepositInput").value || "").trim()
+      : depSelect;
+
+    const depRow = $("cardDeposit");
+    const depTxt = $("cardDepositText");
+
+    if(depVal && depTxt && depRow){
+      depTxt.textContent = depVal;
+      depRow.classList.add("show");
+      depRow.style.removeProperty("display");
+    }else if(depRow){
+      if(depTxt) depTxt.textContent = "";
+      depRow.classList.remove("show");
+      depRow.style.setProperty("display", "none", "important");
+    }
+
     const eu = getInfoExtraText();
     if(eu){ $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = eu; }
     else { $("cardExtraUnit").style.display = "none"; }
@@ -4166,7 +4355,14 @@ document.getElementById('isPromoActive').addEventListener("change", function(){
   updateCard();
 });
 document.getElementById('depositFeeSelect').addEventListener("change", function(){
-  $("customDepositField").style.display = (this.value === "custom") ? "flex" : "none";
+  const cf = $("customDepositField");
+  if(cf){
+    cf.style.display = (this.value === "custom") ? "flex" : "none";
+  }
+  if(this.value !== "custom"){
+    const cdi = $("customDepositInput");
+    if(cdi){ cdi.value = ""; }
+  }
   updateCard();
 });
 document.getElementById('capacityUnit').addEventListener("change", function(){
