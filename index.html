@@ -203,7 +203,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   text-rendering:geometricPrecision;
   -webkit-text-size-adjust:100%;
   text-size-adjust:100%;
-  shape-rendering:geometricPrecision;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
 }
@@ -213,9 +212,14 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:high-quality;-ms-interpolation-mode:bicubic}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:800;text-transform:uppercase;color:#0f172a;line-height:1;letter-spacing:.03em}
+
+/* ★ Quando SEM IMAGEM → texto usa espaço total (2 colunas) */
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
+.label-card:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
-.label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1fr)!important}
+.label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
+.label-card:not(.has-image) .col-image{display:none!important}
+
 .col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px;overflow-wrap:anywhere;word-break:break-word}
 .col-desc > *{max-width:100%;min-width:0}
 .col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;padding:0 1px;overflow:visible}
@@ -233,7 +237,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;width:100%;max-width:100%;min-width:0;line-height:1;margin:0 0 2px 0;padding:0;transform-origin:center center}
 .promo-top-row.stacked{flex-direction:column;gap:1px}
 
-/* ★ Preço antigo com RISCO INCLINADO (como a imagem) */
+/* ★ Preço antigo com RISCO INCLINADO via SVG (impressão fiel) */
 .old-price{
   display:inline-block;
   position:relative;
@@ -245,7 +249,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   line-height:1.05;
   letter-spacing:-.02em;
   white-space:nowrap;
-  padding:1px 4px;
+  padding:2px 6px;
   text-decoration:none!important;
   font-variant-numeric:tabular-nums;
   -webkit-font-feature-settings:"tnum","lnum";
@@ -256,21 +260,16 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   position:relative;
   z-index:1;
 }
-/* A linha diagonal (realça por cima do texto) */
 .old-price .op-line{
   position:absolute;
-  left:-4%;
-  right:-4%;
-  top:50%;
-  height:max(1.6px, 0.13em);
-  min-height:1.6px;
-  background:linear-gradient(90deg,#b91c1c 0%,#dc2626 35%,#ef4444 50%,#dc2626 65%,#b91c1c 100%);
-  border-radius:999px;
-  transform:translateY(-50%) rotate(-9deg);
-  transform-origin:center center;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  display:block;
   pointer-events:none;
-  box-shadow:0 0 1.5px rgba(220,38,38,.35);
   z-index:2;
+  overflow:visible;
 }
 
 .promo-tag{display:inline-block;flex:0 0 auto;font-family:var(--ff);font-size:clamp(11px,3.6cqw,20px);font-weight:900;color:#fff;background:linear-gradient(135deg,#e6193b 0%,#c8102e 100%);border-radius:6px;line-height:1;padding:3px 9px;box-shadow:0 2px 8px rgba(200,16,46,.42),0 0 0 1px rgba(255,255,255,.18) inset;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 1.5px rgba(0,0,0,.18);font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
@@ -524,8 +523,27 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 #previewZoomBar button:active{transform:scale(.94)}
 #previewZoomBar button:hover{background:var(--brand-soft);color:var(--brand)}
 #previewZoomBar .zoom-label{font-size:12px;font-weight:800;color:var(--ink-3);padding:0 6px;min-width:44px;text-align:center;letter-spacing:.03em}
+
+/* ============ PRINT ============ */
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}#printZone.measure .print-page-wrapper{width:210mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important}#printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}#printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}#printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}#printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
-@media print{@page{size:A4 portrait;margin:6mm!important}html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}.app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}#printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}#printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;transform:none!important;zoom:1!important;animation:none!important;transition:none!important}.print-page-wrapper{width:198mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}.print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}.print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important}.print-page-generic-grid{display:grid!important;margin:0 auto!important}#printZone .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}#printZone .print-sheet-amanhecer .label-card{width:66mm!important}#printZone .print-sheet-amanhecer .label-card:nth-child(1),#printZone .print-sheet-amanhecer .label-card:nth-child(2),#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
+
+@media print{
+  @page{size:A4 portrait;margin:6mm!important}
+  html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}
+  .app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.install-banner,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
+  #printZone{display:block!important;position:static!important;left:auto!important;top:auto!important;width:auto!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;background:#fff!important;z-index:auto!important}
+  /* ⚠ NÃO remover transform globalmente — o risco inclinado depende de manter as transformações */
+  #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;animation:none!important;transition:none!important}
+  #printZone .label-card{transform:none!important}
+  .print-page-wrapper{width:198mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important;page-break-after:always!important;break-after:page!important}
+  .print-page-wrapper:last-child{page-break-after:auto!important;break-after:auto!important}
+  .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:0 auto!important;gap:0!important}
+  .print-page-generic-grid{display:grid!important;margin:0 auto!important}
+  #printZone .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important;break-inside:avoid!important;padding:2px 4px!important}
+  #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(1),#printZone .print-sheet-amanhecer .label-card:nth-child(2),#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
+  #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+}
 </style>
 </head>
 
@@ -734,9 +752,12 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:#9a3412;font-weight:700;line-height:1.4">✏️ A editar etiqueta guardada no Drive</div>
           <div class="row">
             <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar produto à fila de impressão">➕ Adicionar à Fila</button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar esta etiqueta no Drive">💾 Guardar</button>
+            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar esta etiqueta no Drive (pergunta se já existir)">💾 Guardar</button>
           </div>
-          <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos do editor">🗑️ Limpar formulário</button>
+          <div class="row">
+            <button class="btn btn-ghost btn-block" id="saveAsNewBtn" type="button" data-tip="Guardar como nova etiqueta (cria código único)">🆕 Guardar como novo</button>
+            <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos do editor">🗑️ Limpar</button>
+          </div>
         </div>
 
       </section>
@@ -753,7 +774,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
       <section class="view view-drive">
         <div class="card accent-green">
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
-          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">Tira ou escolhe uma imagem para a etiqueta atual.</p>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">Sem imagem, o texto e preço usam todo o espaço da etiqueta.</p>
           <div class="fld">
             <label for="photo">Ficheiro de imagem</label>
             <input id="photo" type="file" accept="image/*">
@@ -1761,18 +1782,31 @@ function setProductText(el, text){
   w.forEach(function(x){ const s = document.createElement("span"); s.className = "w"; s.textContent = x; el.appendChild(s); });
 }
 
-/* ★ Preço antigo com risco inclinado (como a imagem) */
+/* ★★ PREÇO ANTIGO — SVG inline com risco inclinado (impressão fiel) ★★ */
 function setOldPriceText(el, text){
   if(!el) return;
   el.textContent = "";
-  const t = document.createElement("span");
-  t.className = "op-text";
-  t.textContent = String(text || "");
-  const line = document.createElement("span");
-  line.className = "op-line";
-  line.setAttribute("aria-hidden", "true");
-  el.appendChild(t);
-  el.appendChild(line);
+  const span = document.createElement("span");
+  span.className = "op-text";
+  span.textContent = String(text || "");
+  el.appendChild(span);
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("class", "op-line");
+  svg.setAttribute("viewBox", "0 0 100 20");
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("xmlns", ns);
+  svg.setAttribute("aria-hidden", "true");
+  const line = document.createElementNS(ns, "line");
+  line.setAttribute("x1", "1");
+  line.setAttribute("y1", "16");
+  line.setAttribute("x2", "99");
+  line.setAttribute("y2", "4");
+  line.setAttribute("stroke", "#dc2626");
+  line.setAttribute("stroke-width", "2");
+  line.setAttribute("stroke-linecap", "round");
+  svg.appendChild(line);
+  el.appendChild(svg);
 }
 
 const CODE128_PATTERNS = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232"];
@@ -1967,16 +2001,24 @@ function renderDb(){
       c.appendChild(div);
     });
 }
-async function saveToDb(){
+
+/* ★★ GUARDAR — com opção "Guardar como novo" ★★ */
+async function saveToDb(options){
+  options = options || {};
+  const forceNew = !!options.forceNew;
   const data = getFormData();
   if(!data.product && !data.internalCode){ toast("Preencha um nome ou código.", "warning"); return; }
+
   let modo = 'auto';
   const codigoOriginal = editingCode ? String(editingCode).trim() : null;
-  if(editingCode){
+
+  if(forceNew){
+    modo = 'new';
+  } else if(editingCode){
     const r = await choiceDialog('A etiqueta "' + (data.product || data.internalCode) + '" já existe no Drive (Ref: ' + editingCode + ').\n\nO que pretende fazer?', 'Etiqueta guardada encontrada');
     if(r === 'cancel'){ return; }
     modo = r;
-  }else{
+  } else {
     if(data.internalCode){
       const existe = savedProducts.find(function(p){ return p.codigo && String(p.codigo).trim().toUpperCase() === String(data.internalCode).trim().toUpperCase(); });
       if(existe){
@@ -1986,6 +2028,7 @@ async function saveToDb(){
       }
     }
   }
+
   const t0 = Date.now();
   setStatus("A preparar imagem…", "loading");
   try{
@@ -1993,22 +2036,51 @@ async function saveToDb(){
     if(fotoUrl){ globalOriginalPhoto = fotoUrl; globalProcessedPhoto = fotoUrl; }
     const payload = buildProdutoPayload(data);
     payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
-    if(modo === 'update' && codigoOriginal){
+
+    if(modo === 'new'){
+      /* Gerar um código único para não colidir com existente */
+      const base = String(payload.codigo || payload.nome || 'NOVO').trim();
+      let tentativa = base;
+      let n = 1;
+      while(savedProducts.some(function(p){ return String(p.codigo || '').trim().toUpperCase() === tentativa.toUpperCase(); }) && n < 500){
+        n++;
+        tentativa = base + '-' + n;
+      }
+      if(tentativa !== base){
+        payload.codigo = tentativa;
+        data.internalCode = tentativa;
+        toast('Novo código gerado: ' + tentativa, 'info', 4000);
+      }
+    } else if(modo === 'update' && codigoOriginal){
       const codigoAtual = String(payload.codigo || '').trim();
       const mudouCodigo = codigoAtual && codigoAtual.toUpperCase() !== codigoOriginal.toUpperCase();
       if(mudouCodigo){
         setStatus("A substituir etiqueta no Drive…", "loading");
         try{ await api('apagarProduto', {codigo: codigoOriginal, nome: ''}); }catch(e){}
         savedProducts = savedProducts.filter(function(p){ return String(p.codigo || '').trim().toUpperCase() !== codigoOriginal.toUpperCase(); });
-      }else if(!codigoAtual){ payload.codigo = codigoOriginal; }
+      } else if(!codigoAtual){
+        payload.codigo = codigoOriginal;
+      }
     }
+
     setStatus("A guardar no Drive…", "loading");
     await api('guardarProduto', payload);
     atualizarProdutoLocal(payload); renderDb();
+
+    /* Se guardamos como novo, atualizamos o form com o novo código */
+    if(modo === 'new' && payload.codigo){
+      $("internalCode").value = payload.codigo;
+      editingCode = payload.codigo;
+      updateEditingBanner();
+    }
+
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
-    setStatus("Guardado no Drive (" + dt + "s)", "success");
-    editingCode = payload.codigo || null; updateEditingBanner();
+    setStatus((modo === 'new' ? "Guardado como novo" : "Guardado no Drive") + " (" + dt + "s)", "success");
+    if(modo !== 'new'){
+      editingCode = payload.codigo || null;
+      updateEditingBanner();
+    }
     setTimeout(verificarProdutoEmBackground, 2500);
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
@@ -2163,7 +2235,6 @@ function updateOrientationVisibility(){
   const show = isLargeFormat(fv);
   const isFP = isFruitPromoFormat(fv);
   document.body.dataset.format = isFP ? 'fruit-promo' : 'normal';
-  /* Origem · Categoria · Calibre — oculta na etiqueta 6×8 */
   const fruitEl = $("fruitCard");
   const showFruitForm = !is6x8 && (show || fv === "A6" || fv === "125x80" || fv === "frutaPromo125x80" || fv === "frutaPromoA6");
   if(fruitEl) fruitEl.style.display = showFruitForm ? "flex" : "none";
@@ -2181,7 +2252,7 @@ function applyPrintSizes(card, dims){
   const escala = Math.min(dims.width / 70, dims.height / 38) * (card.classList.contains('layout-fruit-promo') ? 0.8 : 1);
   const set = function(sel, mm){ const el = card.querySelector(sel); if(el) el.style.setProperty('font-size', (mm * escala).toFixed(3) + 'mm', 'important'); };
   set('.store-text', 2.8); set('.item-code', 1.9); set('.product', 3.2); set('.unit-price-text', 2.2);
-  set('.price', 6.5); set('.price .unit-inline', 2.7); set('.promo-tag', 3.2); set('.old-price', 3.0);
+  set('.price', 6.5); set('.price .unit-inline', 2.7); set('.promo-tag', 3.2); set('.old-price', 3.2);
   set('.extra-unit', 2.2); set('.fruit-full-bar', 2.2); set('.ean-text', 1.8); set('.promo-text', 1.8);
   set('.print-date', 1.6); set('.fp-label', 2.4); set('.fp-price', 6.0); set('.fp-box.fp-promo .fp-price', 7.5); set('.fp-unit', 1.9);
   const depRow = card.querySelector('.deposit-row');
@@ -2192,6 +2263,11 @@ function applyPrintSizes(card, dims){
       dep.style.setProperty('line-height', '1.15', 'important');
       dep.style.setProperty('padding', (0.3 * escala).toFixed(2) + 'mm ' + (1.4 * escala).toFixed(2) + 'mm', 'important');
     }
+  }
+  /* Ajustar espessura da linha SVG ao tamanho real */
+  const opLine = card.querySelector('.old-price .op-line line');
+  if(opLine){
+    opLine.setAttribute("stroke-width", String(Math.max(1.4, 2 * escala * 0.9)));
   }
 }
 function _vis(el){
@@ -2332,7 +2408,6 @@ function autoFitPromoArea(card){
   const badge = wrap.querySelector(".promo-tag");
   const oldPrice = wrap.querySelector(".old-price");
   const oldText = oldPrice ? oldPrice.querySelector(".op-text") : null;
-  const oldLine = oldPrice ? oldPrice.querySelector(".op-line") : null;
   const priceEl = wrap.querySelector(".price");
   [badge, oldPrice, oldText].forEach(function(el){
     if(!el) return;
@@ -2340,10 +2415,6 @@ function autoFitPromoArea(card){
     el.style.removeProperty("letter-spacing"); el.style.removeProperty("transform"); el.style.removeProperty("transform-origin");
     el.style.removeProperty("display"); el.style.removeProperty("visibility");
   });
-  if(oldLine){
-    oldLine.style.removeProperty("height");
-    oldLine.style.removeProperty("transform");
-  }
   if(badgeRow){ badgeRow.style.removeProperty("gap"); badgeRow.style.removeProperty("margin-top"); badgeRow.style.removeProperty("margin-bottom"); badgeRow.style.removeProperty("transform"); badgeRow.style.removeProperty("transform-origin"); badgeRow.classList.remove("stacked"); }
   wrap.style.removeProperty("transform"); wrap.style.removeProperty("transform-origin"); wrap.style.removeProperty("margin-top"); wrap.style.removeProperty("margin-bottom");
   void wrap.offsetHeight;
@@ -2607,7 +2678,7 @@ function buildLabelClone(data, dims, forPrint){
     applySizeClass(clone, dims.width, dims.height);
     clone.classList.remove("img-tight", "img-mini", "img-hidden");
     const eanVal = normalizeBarcode(data.ean);
-    const svg = clone.querySelector("svg");
+    const svg = clone.querySelector(".barcode-container svg");
     if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg, eanVal); }
     if(forPrint) applyPrintSizes(clone, dims);
     autoFitExtraUnit(clone); autoFitDeposit(clone); autoFitDescription(clone); autoFitPromoArea(clone); autoFitFooterText(clone);
@@ -3013,7 +3084,8 @@ async function closeScanner(){
 })();
 
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
-document.getElementById('saveDbBtn').addEventListener("click", saveToDb);
+document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
+document.getElementById('saveAsNewBtn').addEventListener("click", function(){ saveToDb({forceNew:true}); });
 document.getElementById('printBtn').addEventListener("click", function(){ window.triggerPrint(); });
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
