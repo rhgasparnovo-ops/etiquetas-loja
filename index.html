@@ -65,13 +65,11 @@ input,select,textarea{font-family:inherit}
 a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important;}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation;}
-
 [data-tip]{position:relative}
 [data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) scale(.88);background:rgba(15,23,42,.96);color:#fff;padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;z-index:10000;box-shadow:0 8px 22px rgba(15,23,42,.32)}
 [data-tip]::before{content:"";position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%) scale(.88);border:6px solid transparent;border-top-color:rgba(15,23,42,.96);opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;z-index:10000}
 [data-tip]:hover::after,[data-tip]:hover::before,[data-tip].tip-show::after,[data-tip].tip-show::before{opacity:1;transform:translateX(-50%) scale(1)}
 @media (hover:none){[data-tip]:hover::after,[data-tip]:hover::before{opacity:0;transform:translateX(-50%) scale(.88)}}
-
 .app-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding:12px 18px;padding-top:calc(12px + var(--safe-t));padding-left:calc(18px + var(--safe-l));padding-right:calc(18px + var(--safe-r));box-shadow:0 1px 20px rgba(15,23,42,.04)}
 .app-header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad)}
 .hdr-inner{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0}
@@ -99,7 +97,6 @@ button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,in
 .auth-card.logged .auth-btn{display:none}
 @media (max-width:600px){.app-header{padding:10px 12px;padding-top:calc(10px + var(--safe-t))}.hdr-inner{gap:8px}.hdr-left{gap:5px}.hdr-logos{padding:4px 8px;gap:6px;border-radius:10px}.hdr-logos img{height:22px;max-width:50px}.hdr-logos .divider{height:16px}.hdr-txt strong{font-size:16px}.auth-card{height:36px;padding:0 4px 0 3px}.auth-icon{width:28px;height:28px}.auth-icon svg{width:12px;height:12px}}
 @media (max-width:380px){.hdr-logos img{height:20px;max-width:44px}.hdr-txt strong{font-size:15px}}
-
 .main{max-width:1500px;margin:0 auto;padding:18px 16px;padding-left:calc(16px + var(--safe-l));padding-right:calc(16px + var(--safe-r));padding-bottom:calc(150px + var(--safe-b))}
 .grid-main{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 .col-form{display:flex;flex-direction:column;gap:16px;min-width:0}
@@ -107,7 +104,6 @@ button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,in
 .view{display:none;flex-direction:column;gap:16px}
 body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,body[data-view="fila"] .view-fila,body[data-view="drive"] .view-drive,body[data-view="mais"] .view-mais{display:flex}
 @media (min-width:1000px){.main{padding:28px 32px 100px;padding-bottom:calc(110px + var(--safe-b))}.grid-main{grid-template-columns:1fr;gap:20px}.col-preview{display:none;position:static}body[data-view="editor"] .grid-main{grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:26px;align-items:start}body[data-view="editor"] .col-preview{display:block !important;position:sticky;top:100px}body[data-view="editor"] .col-preview .view-preview{display:flex !important;flex-direction:column;gap:16px}}
-
 .card{position:relative;background:var(--surface);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-2);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad);opacity:.85;border-radius:var(--r-lg) var(--r-lg) 0 0}
 .card.accent-blue::before{background:linear-gradient(90deg,#3b82f6,#6366f1)}
@@ -122,7 +118,6 @@ body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,bo
 .card.accent-violet .card-h .ic{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 4px 12px rgba(139,92,246,.22)}
 .card-h h3{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin:0;flex:1}
 .card-h .badge{background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:800;padding:3px 10px;border-radius:var(--r-pill);min-width:26px;text-align:center}
-
 .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
 .fld > label{font-size:11px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
 .fld > label .hint{font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0;font-size:11px}
@@ -159,7 +154,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .sync-toggle.active{background:var(--brand-tint);border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.09)}
 .sync-toggle svg{flex-shrink:0}
 @media (max-width:480px){.sync-toggle{padding:0 8px;gap:3px;min-width:44px}.sync-toggle .sync-label-full{display:none}}
-
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:var(--r-pill);font-size:15px;font-weight:700;letter-spacing:.01em;transition:all .16s;min-height:48px;line-height:1.1;white-space:nowrap;text-decoration:none;border:1.5px solid transparent}
 .btn:active:not(:disabled){transform:scale(.97)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -184,13 +178,11 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .chip-btn[data-field=categoria]{background:#fef3c7;border-color:#fde68a;color:#92400e}
 .chip-btn[data-field=calibre]{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
 .chip-btn.chip-nc{background:var(--surface-3);color:var(--ink-2);font-weight:800}
-
 .preview-shell{background:radial-gradient(circle at 20% 20%,rgba(200,16,46,.06),transparent 50%),radial-gradient(circle at 80% 80%,rgba(99,102,241,.05),transparent 50%),linear-gradient(135deg,#f5f7fa,#eef1f6);border:1px solid var(--line);border-radius:var(--r-xl);padding:26px 18px;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden;box-shadow:var(--sh-2)}
 .sheet-badge{display:none!important}
 .preview-wrap{width:100%;display:flex;justify-content:center;min-width:0}
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;max-width:100%;min-width:0;position:relative;overflow:hidden}
 .preview-scaler > .label-card{flex-shrink:0;transform-origin:top center;max-width:100%}
-
 .label-card{background:#fff!important;border:1px solid #cbd5e1;box-shadow:0 10px 25px rgba(15,23,42,.14);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:3px;padding:2px 5px!important;container-type:inline-size;--header-h:13%;--img-pad:1px;--gap-main:4px;--img-scale:100%;--accent:#c8102e;--ink-soft:#475569;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;-webkit-text-size-adjust:100%;text-size-adjust:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%;border-bottom:1px solid #e2e8f0}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
@@ -198,13 +190,11 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0}
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:high-quality;-ms-interpolation-mode:bicubic}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:800;text-transform:uppercase;color:#0f172a;line-height:1;letter-spacing:.03em}
-
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
 .label-card:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
 .label-card:not(.has-image) .col-image{display:none!important}
-
 .col-desc{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;height:100%;overflow:hidden;gap:1px;padding-left:1px;overflow-wrap:anywhere;word-break:break-word}
 .col-desc > *{max-width:100%;min-width:0}
 .col-price{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;padding:0 1px;overflow:visible}
@@ -216,19 +206,15 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .product .w{display:inline-block;white-space:nowrap;max-width:100%}
 .unit-price-text{font-size:clamp(7px,2.2cqw,12px);color:var(--accent);font-weight:900;line-height:1.05;margin-top:1px;text-transform:uppercase;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 .extra-unit{font-size:clamp(7px,2.1cqw,12px);font-weight:700;line-height:1.15;margin-top:2px;color:#334155;overflow-wrap:anywhere;max-width:100%;width:100%;text-align:left;display:block}
-
 .price-wrapper{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;width:100%;max-width:100%;min-width:0;overflow:visible;transform-origin:center center}
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;width:100%;max-width:100%;min-width:0;line-height:1;margin:0 0 2px 0;padding:0;transform-origin:center center}
 .promo-top-row.stacked{flex-direction:column;gap:1px}
-
 .old-price{display:inline-block;position:relative;flex:0 0 auto;font-family:var(--ff);font-size:clamp(9px,2.8cqw,15px);font-weight:900;color:#1f2937;line-height:1.05;letter-spacing:-.02em;white-space:nowrap;padding:2px 6px;text-decoration:none!important;font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
 .old-price .op-text{display:inline-block;position:relative;z-index:1}
 .old-price .op-line{position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;overflow:visible}
-
 .promo-tag{display:inline-block;flex:0 0 auto;font-family:var(--ff);font-size:clamp(11px,3.6cqw,20px);font-weight:900;color:#fff;background:linear-gradient(135deg,#e6193b 0%,#c8102e 100%);border-radius:6px;line-height:1;padding:3px 9px;box-shadow:0 2px 8px rgba(200,16,46,.42),0 0 0 1px rgba(255,255,255,.18) inset;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 1.5px rgba(0,0,0,.18);font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
 .price{font-size:clamp(15px,7cqw,42px);font-weight:900;color:#000;line-height:1;white-space:nowrap;letter-spacing:-.02em;display:inline-flex;align-items:baseline;justify-content:center;gap:.08em;max-width:100%;font-variant-numeric:tabular-nums}
 .price .unit-inline{font-size:.42em;font-weight:800;color:#334155}
-
 .deposit-row{display:none;justify-content:center;align-items:center;width:100%;flex-shrink:0;padding:1px 0 0;margin:0;line-height:1}
 .deposit-row.show{display:flex}
 .deposit-box{display:inline-block;font-size:clamp(5.5px,1.8cqw,9px);color:#b91c1c;background:linear-gradient(180deg,#fff5f5,#fee2e2);border:1px solid #fca5a5;padding:1px 7px;border-radius:4px;font-weight:900;line-height:1.2;text-align:center;letter-spacing:.02em;max-width:100%;overflow-wrap:anywhere;word-break:break-word;white-space:normal;box-shadow:0 1px 2px rgba(185,28,28,.08)}
@@ -256,7 +242,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
 body[data-format="fruit-promo"] #promoCard{display:none!important}
 body[data-format="fruit-promo"] #promoBox{display:none!important}
-
 .bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);max-width:500px;margin:0 auto}
 .bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:var(--ink-3);font-size:11px;font-weight:700;border-radius:18px;transition:all .18s;position:relative;min-height:auto;letter-spacing:.02em}
 .bnav button.active{color:#fff;background:var(--brand-grad);box-shadow:0 4px 12px rgba(200,16,46,.28)}
@@ -264,7 +249,6 @@ body[data-format="fruit-promo"] #promoBox{display:none!important}
 .bnav button .n-badge{position:absolute;top:3px;right:calc(50% - 22px);background:var(--brand);color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:var(--r-pill);min-width:15px;text-align:center}
 .bnav button.active .n-badge{background:#fff;color:var(--brand)}
 .bnav button .n-badge:empty{display:none}
-
 .floating-preview{position:fixed;right:calc(14px + var(--safe-r));bottom:calc(84px + var(--safe-b));z-index:8600;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--brand-grad);color:#fff;box-shadow:0 10px 28px rgba(200,16,46,.38),0 3px 10px rgba(200,16,46,.24);border:none;cursor:pointer;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s,opacity .2s;opacity:0;transform:scale(.5);pointer-events:none}
 .floating-preview.ready{opacity:1;transform:scale(1);pointer-events:auto}
 .floating-preview:hover{box-shadow:0 14px 36px rgba(200,16,46,.5)}
@@ -275,7 +259,6 @@ body[data-format="fruit-promo"] #promoBox{display:none!important}
 @keyframes fp-pulse{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.35)}}
 @media (min-width:600px){.floating-preview{right:calc(22px + var(--safe-r));bottom:calc(94px + var(--safe-b));width:60px;height:60px}.floating-preview svg{width:28px;height:28px}}
 body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scale(.85)}
-
 .global-status{position:fixed;top:calc(76px + var(--safe-t));left:50%;transform:translateX(-50%) translateY(-14px) scale(.96);z-index:9000;display:none;align-items:center;gap:10px;padding:10px 16px 10px 14px;max-width:calc(100vw - 28px);background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-pill);box-shadow:0 12px 32px rgba(15,23,42,.14),0 3px 10px rgba(15,23,42,.06);font-size:12.5px;font-weight:700;color:var(--ink-2);opacity:0;pointer-events:none;transition:opacity .26s cubic-bezier(.34,1.56,.64,1),transform .26s cubic-bezier(.34,1.56,.64,1),border-color .2s,background .2s,color .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .global-status.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0) scale(1);pointer-events:auto}
 .global-status .gs-dot{width:10px;height:10px;border-radius:50%;background:var(--ink-3);flex-shrink:0;display:block;box-shadow:0 0 0 3px rgba(15,23,42,.06);transition:background .2s,box-shadow .2s}
@@ -292,7 +275,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .global-status[data-type="loading"]{border-color:#bfdbfe;background:rgba(239,246,255,.97);color:#1e3a8a}
 .global-status .gs-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:420px){.global-status{font-size:12px;padding:9px 14px 9px 12px;gap:8px}}
-
 #appStatus{display:none;align-items:center;gap:10px;padding:11px 14px;font-size:12.5px;font-weight:600;line-height:1.4;border-radius:var(--r-md);border:1px solid transparent}
 #appStatus.show{display:flex}
 #appStatus::before{content:"";flex-shrink:0;width:8px;height:8px;border-radius:50%}
@@ -306,7 +288,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 #appStatus[data-type=info]::before{background:#2563eb}
 #appStatus[data-type=loading]::before{background:transparent;border:2px solid #bfdbfe;border-top-color:#2563eb;animation:spin .7s linear infinite;box-shadow:none;width:12px;height:12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .list-item{display:flex;align-items:flex-start;gap:10px;padding:12px;margin-bottom:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);transition:all .16s}
 .list-item:hover{background:#fff;border-color:#fbd0d8;box-shadow:var(--sh-1)}
 .list-item:last-child{margin-bottom:0}
@@ -336,7 +317,6 @@ body.preview-open .floating-preview{opacity:0;pointer-events:none;transform:scal
 .queue-item .copies-input{width:84px;height:44px;font-size:16px}
 .queue-item .list-item-actions button{width:44px;height:44px;font-size:17px}
 @media (max-width:520px){.queue-item .list-item-actions{gap:5px}.queue-item .copies-input{flex:1 1 auto;min-width:64px;width:auto;max-width:none}}
-
 .confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.modal,.pro-print-overlay,.choice-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:99990}
 .confirm-overlay.show,.name-modal.show,.email-modal.show,.install-modal.show,.preview-modal.show,.modal.show,.pro-print-overlay.show,.choice-modal.show{display:flex}
 .confirm-overlay{background:rgba(15,23,42,.55);z-index:100001;backdrop-filter:blur(8px)}
@@ -476,9 +456,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 #previewZoomBar button:active{transform:scale(.94)}
 #previewZoomBar button:hover{background:var(--brand-soft);color:var(--brand)}
 #previewZoomBar .zoom-label{font-size:12px;font-weight:800;color:var(--ink-3);padding:0 6px;min-width:44px;text-align:center;letter-spacing:.03em}
-
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;pointer-events:none!important;visibility:visible!important;opacity:1!important;z-index:-1!important;background:#fff!important}#printZone.measure .print-page-wrapper{width:210mm!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important;background:#fff!important;display:block!important;padding:0!important}#printZone.measure .print-sheet-amanhecer{display:grid!important;grid-template-columns:66mm 66mm 66mm!important;grid-template-rows:38mm 40mm 40mm 40mm 40mm 40mm 40mm!important;width:198mm!important;height:278mm!important;margin:6mm auto 0!important;gap:0!important}#printZone.measure .print-page-generic-grid{display:grid!important;margin:6mm auto 0!important}#printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;padding:2px 4px!important}#printZone.measure .print-sheet-amanhecer .label-card{width:66mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(1),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(2),#printZone.measure .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}#printZone.measure .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}}
-
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
   html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;background-image:none!important}
@@ -497,9 +475,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 }
 </style>
 </head>
-
 <body data-view="editor" data-format="normal">
-
 <header class="app-header">
   <div class="hdr-inner">
     <div class="hdr-left">
@@ -523,19 +499,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </header>
-
 <div class="global-status" id="globalStatus" role="status" aria-live="polite">
   <span class="gs-dot"></span>
   <span class="gs-spinner"></span>
   <span class="gs-text"></span>
 </div>
-
 <main class="main">
   <div class="grid-main">
     <div class="col-form">
-
       <section class="view view-editor">
-
         <div class="card">
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
           <div class="fld">
@@ -589,7 +561,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" inputmode="decimal" min="10" max="300" value="38"></div>
           </div>
         </div>
-
         <div class="card accent-blue">
           <div class="card-h"><div class="ic">📊</div><h3>Código de Barras</h3><span class="badge" id="eanBadge" style="display:none">—</span></div>
           <div class="fld">
@@ -598,7 +569,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           </div>
           <button type="button" class="btn btn-soft btn-block" id="scanEanBtn">📷 Ler código com a câmara</button>
         </div>
-
         <div class="card accent-green" id="fruitCard" style="display:none">
           <div class="card-h"><div class="ic">🍎</div><h3>Origem · Categoria · Calibre</h3></div>
           <div class="row-3">
@@ -645,7 +615,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           </div>
         </div>
         <div id="fruitPanel" style="display:none"></div>
-
         <div class="card accent-amber" id="promoCard">
           <div class="card-h"><div class="ic">💡</div><h3>Oportunidade / Desconto</h3></div>
           <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">Preenche o preço anterior para mostrar o desconto. Deixa vazio se não houver promoção.</p>
@@ -658,7 +627,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <input id="oldPrice" type="text" inputmode="decimal" autocomplete="off">
           </div>
         </div>
-
         <div class="card accent-violet">
           <div class="card-h"><div class="ic">⚙️</div><h3>Quantidade & Extras</h3></div>
           <div class="fld">
@@ -696,13 +664,12 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <div class="fld"><label for="promoEnd">Fim Oportunidade</label><div class="date-input-wrap"><input id="promoEnd" type="date"><button type="button" class="date-clear-btn" data-target="promoEnd" data-tip="Limpar data de fim">✕</button></div></div>
           </div>
         </div>
-
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
           <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:#9a3412;font-weight:700;line-height:1.4"></div>
           <div class="row">
-            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar produto à fila de impressão">➕ Adicionar à Fila</button>
+            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar produto à fila de impressão">➕ Adicionar à Fila de Impressão</button>
             <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar (cria novo ou atualiza se estiver em edição)">💾 Guardar</button>
           </div>
           <div class="row">
@@ -710,18 +677,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos do editor">🗑️ Limpar</button>
           </div>
         </div>
-
       </section>
-
       <section class="view view-fila">
         <div class="card">
-          <div class="card-h"><div class="ic">🛒</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
-          <div id="queueListContainer"><div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div></div>
+          <div class="card-h"><div class="ic">🖨️</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
+          <div id="queueListContainer"><div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila de Impressão</b>.</div></div>
           <button class="btn btn-primary btn-block btn-lg" id="printBtn" type="button" style="margin-top:12px" data-tip="Imprimir todas as etiquetas da fila">🖨️ Imprimir Fila</button>
           <button class="btn btn-soft btn-block btn-sm" style="margin-top:8px;color:#b91c1c;display:none" id="clearQueueBtn" type="button" data-tip="Apagar todas as etiquetas da fila">🗑️ Limpar Fila</button>
         </div>
       </section>
-
       <section class="view view-drive">
         <div class="card accent-green">
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
@@ -751,7 +715,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
       </section>
-
       <section class="view view-mais">
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
@@ -766,7 +729,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         </div>
       </section>
     </div>
-
     <div class="col-preview">
       <section class="view view-preview">
         <div class="preview-shell">
@@ -819,18 +781,15 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </main>
-
 <nav class="bnav">
   <button type="button" data-view="editor" class="active" data-tip="Editor de etiquetas"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
-  <button type="button" data-view="fila" data-tip="Fila de impressão"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
+  <button type="button" data-view="fila" data-tip="Fila de impressão"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
   <button type="button" data-view="drive" data-tip="Drive e fotografias"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
   <button type="button" data-view="mais" data-tip="Diagnóstico e email"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
 </nav>
-
 <button type="button" class="floating-preview" id="floatingPreviewBtn" data-tip="Pré-visualizar etiqueta">
   <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 </button>
-
 <div class="install-banner" id="installBanner">
   <div class="install-banner-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
   <div class="install-banner-text"><strong>📲 Instalar aplicação</strong><span>Acesso rápido no ecrã inicial</span></div>
@@ -839,7 +798,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <button type="button" class="install-banner-close" id="installBannerClose">✕</button>
   </div>
 </div>
-
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
   <div class="preview-modal-badge" id="previewModalBadge"></div>
@@ -852,10 +810,8 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <button type="button" id="zoomResetBtn" data-tip="Tamanho real 1:1">1:1</button>
   </div>
 </div>
-
 <div id="printZone"></div>
 <div class="toast-container" id="toastContainer"></div>
-
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg"></p>
@@ -865,7 +821,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </div>
-
 <div class="choice-modal" id="choiceModal">
   <div class="choice-box">
     <h3 id="choiceTitle">O que pretende fazer?</h3>
@@ -877,7 +832,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </div>
-
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3>📷 Guardar foto no banco</h3>
@@ -896,7 +850,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </div>
-
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
@@ -913,7 +866,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </div>
-
 <div class="install-modal" id="installModal">
   <div class="install-modal-box">
     <h3 id="installTitle">📲 Instalar aplicação</h3>
@@ -926,7 +878,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     </div>
   </div>
 </div>
-
 <div class="modal" id="cameraModal">
   <div class="cam-wrap">
     <video id="camVideo" autoplay playsinline muted></video>
@@ -938,7 +889,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <button id="camClose" class="btn btn-ghost" data-tip="Fechar a câmara">✕ Fechar</button>
   </div>
 </div>
-
 <div class="modal" id="scannerModal">
   <div class="cam-wrap">
     <div id="reader"></div>
@@ -946,7 +896,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   </div>
   <button id="scanClose" class="btn btn-ghost" style="width:auto;padding:10px 22px" data-tip="Fechar leitor">✕ Fechar</button>
 </div>
-
 <div class="modal" id="bancoFrutaModal">
   <div class="modal-panel">
     <div class="bf-modal-header">
@@ -961,17 +910,14 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
-
 <div class="pro-print-overlay" id="proPrintOverlay">
   <div class="pro-print-box">
     <div class="pro-spinner"></div>
     <strong>A preparar impressão…</strong>
   </div>
 </div>
-
 <script>
 "use strict";
-
 /* ============================================================
    0. VIEWPORT FIX
    ============================================================ */
@@ -990,7 +936,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   }catch(e){}
   window.addEventListener('resize', function(){ setTimeout(function(){ try{ fitPreviewCard(); }catch(e){} }, 120); }, {passive:true});
 })();
-
 /* 1. TOOLTIPS */
 (function initTooltips(){
   let currentTip = null; let hideTimer = null;
@@ -1007,7 +952,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   document.addEventListener('scroll', hideAll, {passive:true, capture:true});
   window.addEventListener('orientationchange', hideAll, {passive:true});
 })();
-
 /* 2. CONSTANTES */
 const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
@@ -1015,18 +959,17 @@ const AUTH_KEY_JWT  = 'balcao_jwt';
 const AUTH_KEY_EXP  = 'balcao_jwt_exp';
 const AUTH_KEY_USER = 'balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365 * 24 * 3600;
-const CACHE_KEY = 'balcao_cache_v236';          /* ⬅️ bump */
-const CACHE_SCHEMA_VERSION = 4;                 /* ⬅️ bump */
+const CACHE_KEY = 'balcao_cache_v236';
+const CACHE_SCHEMA_VERSION = 4;
 const IMG_MAX_SIZE = 2400;
 const IMG_QUALITY  = 0.98;
 const THUMB_SIZE   = 200;
 const PRINT_SCALE  = 4;
 const PDF_QUALITY  = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
-const FETCH_TIMEOUT_MS = 18000;                 /* ⬅️ 25s → 18s */
+const FETCH_TIMEOUT_MS = 25000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
-
 /* 3. AUTENTICAÇÃO */
 let _reauthPromise = null;
 let _currentUser = null;
@@ -1099,7 +1042,6 @@ function inicializarBotaoGoogle(){
     if(h) google.accounts.id.renderButton(h, {type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'pill',logo_alignment:'left',locale:'pt-PT'});
   }catch(e){}
 }
-
 /* 4. NAVEGAÇÃO */
 const _navButtons = [];
 (function setupNav(){
@@ -1118,7 +1060,6 @@ const _navButtons = [];
     });
   });
 })();
-
 /* 5. PWA */
 (function setupPWA(){
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -1175,7 +1116,6 @@ const _navButtons = [];
   });
   if('serviceWorker' in navigator && isSecure){ navigator.serviceWorker.register('sw.js', {scope:'./'}).then(function(){ swOk = true; }).catch(function(){}); }
 })();
-
 /* 6. UTILITÁRIOS */
 function isMobile(){ return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900; }
 function ensureArray(v){ return Array.isArray(v) ? v : (v ? [v] : []); }
@@ -1226,7 +1166,6 @@ function updateInfoExtraVisibility(){
   if(dataField) dataField.style.display = needsDate ? "flex" : "none";
   updateDateClearButtons();
 }
-
 /* 7. TOAST + STATUS */
 const TOAST_ICONS = {success:"✓", error:"✕", warning:"!", info:"i"};
 let _lastToastMsg = "", _lastToastTime = 0;
@@ -1343,7 +1282,6 @@ function pedirEmail(){
     modal.onclick = function(e){ if(e.target === modal) fechar(null); };
   });
 }
-
 /* 8. IMAGENS */
 function compressSmart(dataUrl, maxSize, quality){
   maxSize = maxSize || IMG_MAX_SIZE;
@@ -1408,8 +1346,8 @@ async function removeBackgroundSmart(dataUrl){
     return new Promise(function(resolve){ const r = new FileReader(); r.onloadend = function(){ resolve(r.result); }; r.readAsDataURL(blob); });
   }catch(e){ return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); }); }
 }
-
-/* 9. API — versão rápida com retry curto */
+/* 9. API — timeout adaptativo (aguenta cold start) */
+let _apiWarm = false;
 async function api(fn, payload, retries, jaReaut){
   payload = payload || {};
   if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
@@ -1422,12 +1360,23 @@ async function api(fn, payload, retries, jaReaut){
     toast("Inicie sessão primeiro.", "error");
     throw new Error("Não autenticado.");
   }
+  // Timeout: 60s na 1ª chamada (cold start), 25s quando já está quente
+  const timeout = _apiWarm ? 25000 : 60000;
+  const controller = new AbortController();
+  let timedOut = false;
+  const tid = setTimeout(function(){
+    timedOut = true;
+    try{ controller.abort(); }catch(e){}
+  }, timeout);
   try{
-    const resp = await fetchComTimeout(API_URL, {
+    const resp = await fetch(API_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({fn:fn, payload:payload, sessionToken:token})
-    }, FETCH_TIMEOUT_MS);
+      body:JSON.stringify({fn:fn, payload:payload, sessionToken:token}),
+      signal: controller.signal
+    });
+    clearTimeout(tid);
+    _apiWarm = true;
     if(resp.status === 401){
       clearStoredToken(); atualizarUICredenciais();
       if(!jaReaut){
@@ -1442,15 +1391,27 @@ async function api(fn, payload, retries, jaReaut){
     if(!j.ok) throw new Error(j.error || 'Erro no servidor');
     return j.data;
   }catch(e){
+    clearTimeout(tid);
+    const msg = String((e && e.message) || e || '');
+    const isAbort = timedOut || (e && (e.name === 'AbortError')) || msg.indexOf('aborted') !== -1;
+    if(isAbort){
+      _apiWarm = false;
+      if(retries > 0){
+        const delay = 700 * Math.pow(2, (2 - retries));
+        setGlobalStatus("Servidor a acordar… nova tentativa", "loading");
+        await new Promise(function(r){ setTimeout(r, delay); });
+        return api(fn, payload, retries - 1, jaReaut);
+      }
+      throw new Error('O servidor demorou demasiado a responder. Tente novamente.');
+    }
     if(retries > 0){
-      const delay = 600 * Math.pow(2, (2 - retries));
+      const delay = 700 * Math.pow(2, (2 - retries));
       await new Promise(function(r){ setTimeout(r, delay); });
       return api(fn, payload, retries - 1, jaReaut);
     }
     throw e;
   }
 }
-
 /* 10. ESTADO */
 const $ = function(id){ return document.getElementById(id); };
 let globalOriginalPhoto = '', globalProcessedPhoto = '';
@@ -1465,7 +1426,6 @@ let editingCode = null;
 let currentFormId = null;
 let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
-
 /* 11. PREVIEW DESKTOP */
 function fitPreviewCard(){
   const scaler = document.getElementById('previewScaler'); const card = document.getElementById('mainLabelCard');
@@ -1483,7 +1443,6 @@ function fitPreviewCard(){
 }
 window.addEventListener('resize', fitPreviewCard);
 window.addEventListener('orientationchange', function(){ setTimeout(fitPreviewCard, 200); });
-
 /* 12. PREVIEW MODAL */
 let _previewScalerEl = null, _previewStageEl  = null;
 let _previewBaseW = 0, _previewBaseH = 0;
@@ -1581,7 +1540,6 @@ document.getElementById('zoomResetBtn').addEventListener('click', function(){ re
 })();
 window.addEventListener('resize', function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true); });
 window.addEventListener('orientationchange', function(){ setTimeout(function(){ if(document.getElementById('previewModal').classList.contains('show')) applyPreviewZoom(true); }, 200); });
-
 /* 13. DATAS */
 function updateDateClearButtons(){
   document.querySelectorAll('.date-clear-btn').forEach(function(btn){
@@ -1598,10 +1556,8 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('input', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 document.addEventListener('change', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
-
 /* 14. CARREGAR TUDO — Sync forçado, sem cache mentiroso */
 async function carregarTudo(){
-  // 1) UI instantânea a partir do cache local
   try{
     const c = await localforage.getItem(CACHE_KEY);
     if(c && c.schemaVersion === CACHE_SCHEMA_VERSION){
@@ -1609,26 +1565,18 @@ async function carregarTudo(){
       if(Array.isArray(c.banco)){    bancoFruta = c.banco;      renderBancoFruta($("buscaBancoFruta").value); }
     }
   }catch(e){}
-
   if(!getStoredToken()) return;
-
-  // 2) Buscar do servidor FORÇANDO refresh
   setStatus("A sincronizar…", "loading");
   try{
     const r = await api('listarTudo', { forceRefresh: true });
     savedProducts = ensureArray(r.produtos);
     bancoFruta    = ensureArray(r.banco);
-
-    // Preservar modo edição se ainda existir
     if(editingId){
       const ainda = savedProducts.find(p => String(p._id) === String(editingId));
       if(!ainda){ editingId = null; editingCode = null; currentFormId = null; updateEditingBanner(); }
     }
-
     renderDb();
     renderBancoFruta($("buscaBancoFruta").value);
-
-    // 3) Atualizar cache local APENAS com dados frescos
     try{
       await localforage.setItem(CACHE_KEY, {
         schemaVersion: CACHE_SCHEMA_VERSION,
@@ -1637,14 +1585,12 @@ async function carregarTudo(){
         t: Date.now()
       });
     }catch(e){}
-
     setStatus("Sincronizado", "success");
   }catch(e){
     setStatus("Sem ligação ao Drive", "error");
     toast("Erro ao sincronizar: " + e.message, "error");
   }
 }
-
 /* 15. FORM */
 function getFormData(){
   return {
@@ -1708,7 +1654,6 @@ function setFormData(d){
   updateOrientationVisibility(); updateDateClearButtons();
   updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
 }
-
 /* 16. VALIDAÇÃO */
 function markFieldError(id, has){ const el = $(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
@@ -1743,7 +1688,6 @@ function setValidationState(){
   if(ean){ const valid = (/^\d{13}$/.test(ean) && isValidEAN13(ean)) || (/^\d{14}$/.test(ean) && isValidEAN14(ean)) || /^[\x20-\x7E]+$/.test(ean); if(!valid){ errors.push("Código de barras inválido."); markFieldError("ean", true); } }
   if(errors.length) setStatus(errors[0], "error"); else setStatus("");
 }
-
 /* 17. FORMATO / DIMENSÕES */
 function isLargeFormat(v){ return ["80x60","125x80","A6","A5","100x70","frutaPromo125x80","frutaPromoA6"].indexOf(v) > -1 || (v === "custom" && (parseFloat($("customWidth").value) >= 80 || parseFloat($("customHeight").value) >= 60)); }
 function isFruitPromoFormat(v){ return v === "frutaPromo125x80" || v === "frutaPromoA6"; }
@@ -1833,7 +1777,6 @@ function setOldPriceText(el, text){
   svg.appendChild(line);
   el.appendChild(svg);
 }
-
 /* 18. CÓDIGO DE BARRAS */
 const CODE128_PATTERNS = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232"];
 const CODE128_STOP = "2331112", CODE128_START_B = 104;
@@ -1902,7 +1845,6 @@ function drawBarcode(svg, value){
   if(/^\d{14}$/.test(clean)){ drawITF14(svg, clean); return; }
   if(/^[\x20-\x7E]+$/.test(clean)){ drawCode128(svg, clean); }
 }
-
 /* 19. FILA */
 function renderQueue(){
   const c = $("queueListContainer");
@@ -1911,7 +1853,7 @@ function renderQueue(){
   const cq = $("clearQueueBtn"); if(cq) cq.style.display = printQueue.length === 0 ? "none" : "block";
   try{ localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(printQueue)); }catch(e){}
   if(!c) return;
-  if(printQueue.length === 0){ c.innerHTML = '<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div>'; return; }
+  if(printQueue.length === 0){ c.innerHTML = '<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila de Impressão</b>.</div>'; return; }
   c.innerHTML = "";
   printQueue.forEach(function(item, i){
     const div = document.createElement("div"); div.className = "list-item queue-item";
@@ -1939,7 +1881,7 @@ function addToQueue(){
   const data = getFormData();
   if(!data.product && !data.price && !data.internalCode){ toast("Preencha os dados.", "warning"); return; }
   printQueue.push({data: data, copies: 1}); renderQueue();
-  toast("Adicionado à fila", "success");
+  toast("Adicionado à Fila de Impressão", "success");
   setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0, behavior:'smooth'}); }, 300);
 }
 function buildProdutoPayload(d){
@@ -1972,13 +1914,7 @@ function atualizarProdutoLocal(payload){
   }
 }
 async function verificarProdutoEmBackground(){
-  try{
-    const r = await api('listarTudo', { forceRefresh: true });
-    savedProducts = ensureArray(r.produtos);
-    bancoFruta    = ensureArray(r.banco);
-    renderDb();
-    try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
-  }catch(e){}
+  /* Desativado — a sincronização é feita pelo botão Recarregar */
 }
 window.removeFromQueue = function(i){ printQueue.splice(i, 1); renderQueue(); };
 async function resolverFotoParaPayload(d){
@@ -2010,10 +1946,8 @@ window.saveQueueItem = async function(i){
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus("Guardado no Drive (" + dt + "s)", "success");
-    setTimeout(verificarProdutoEmBackground, 2500);
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar: " + e.message, "error"); }
 };
-
 /* 20. DRIVE — LISTA */
 function renderDb(){
   const c = $("dbListContainer");
@@ -2045,10 +1979,8 @@ async function saveToDb(options){
   const forceNew = !!options.forceNew;
   const data = getFormData();
   if(!data.product && !data.internalCode){ toast("Preencha um nome ou código.", "warning"); return; }
-
   let modo = 'new';
   if(!forceNew && editingId){ modo = 'update'; }
-
   const t0 = Date.now();
   setStatus("A preparar imagem…", "loading");
   try{
@@ -2056,7 +1988,6 @@ async function saveToDb(options){
     if(fotoUrl){ globalOriginalPhoto = fotoUrl; globalProcessedPhoto = fotoUrl; }
     const payload = buildProdutoPayload(data);
     payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
-
     if(modo === 'update'){
       payload._id = editingId;
       setStatus("A atualizar no Drive…", "loading");
@@ -2065,22 +1996,16 @@ async function saveToDb(options){
       payload.__criarNovo = true;
       setStatus("A guardar como novo no Drive…", "loading");
     }
-
     const resp = await api('guardarProduto', payload);
     if(resp && resp._id) payload._id = resp._id;
-
     atualizarProdutoLocal(payload); renderDb();
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
-
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
     setStatus((modo === 'update' ? "Atualizado" : "Guardado como novo") + " (" + dt + "s)", "success");
-
     editingId = payload._id || null;
     editingCode = payload.codigo || null;
     currentFormId = editingId;
     updateEditingBanner();
-
-    setTimeout(verificarProdutoEmBackground, 2500);
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
 function updateEditingBanner(){
@@ -2117,43 +2042,34 @@ window.loadFromDb = function(i){
   setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 700);
   toast('Etiqueta carregada para edição', 'success');
 };
-/* ✅ VERSÃO CORRIGIDA — verifica resposta do servidor */
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const n = d.nome || d.codigo || "produto sem nome";
   if(!(await confirmDialog("Eliminar \"" + n + "\" do Drive?"))) return;
-
   setStatus("A eliminar do Drive…", "loading");
   try{
-    // 1) Chamar o servidor PRIMEIRO
     const r = await api('apagarProduto', {
       _id:    d._id    || '',
       codigo: d.codigo || '',
       nome:   d.nome   || ''
     });
-
-    // 2) ⚠️ O servidor TEM de confirmar apagadas > 0
     if(!r || (r.apagadas === 0 && r.jaNaoExistia)){
       toast("Item já não existe no servidor — a ressincronizar…", "warning");
       await carregarTudo();
       return;
     }
-
-    // 3) Só agora mexer no array local
     const idxLocal = savedProducts.findIndex(p =>
       (d._id && String(p._id) === String(d._id)) ||
       (!d._id && d.codigo && String(p.codigo || '').toUpperCase() === String(d.codigo).toUpperCase())
     );
     if(idxLocal >= 0) savedProducts.splice(idxLocal, 1);
     renderDb();
-
     try{
       await localforage.setItem(CACHE_KEY, {
         schemaVersion: CACHE_SCHEMA_VERSION,
         produtos: savedProducts, banco: bancoFruta, t: Date.now()
       });
     }catch(e){}
-
     if(editingId && d._id && String(editingId) === String(d._id)){
       editingId = null; editingCode = null; currentFormId = null; updateEditingBanner();
     }
@@ -2169,10 +2085,9 @@ window.queueFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
   const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
   printQueue.push({data: data, copies: 1}); renderQueue();
-  toast("Adicionado à fila", "success");
+  toast("Adicionado à Fila de Impressão", "success");
   setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0, behavior:'smooth'}); }, 300);
 };
-
 /* 21. BANCO */
 function updateBancoCounts(){
   let f = 0, l = 0;
@@ -2257,7 +2172,6 @@ async function otimizarImagensDrive(){
   setStatus("Otimizadas: " + done + (errs ? " · Erros: " + errs : ""), errs ? "warning" : "success");
   toast("✅ Otimizadas: " + done + (errs ? " · Erros: " + errs : ""), errs ? "warning" : "success", 6500);
 }
-
 /* 22. CARD PREVIEW */
 let _updateCardTimer = null;
 function updateCard(){
@@ -2298,7 +2212,6 @@ function updateOrientationVisibility(){
     const op = $("oldPrice"); if(op && op.value.trim()){ op.value = ""; op.classList.remove("input-error"); }
   }
 }
-
 function applyPrintSizes(card, dims){
   if(!card || !dims || !dims.width) return;
   card.classList.add('print-locked');
@@ -2717,7 +2630,6 @@ function updateCardUnsafe(){
     autoAdaptImage(card); autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); autoLayoutCard(card);
   }catch(err){}
 }
-
 /* 23. CLONE / IMPRESSÃO */
 function buildLabelClone(data, dims, forPrint){
   const backup = getFormData();
@@ -2859,7 +2771,6 @@ function triggerPrint(){
 window.triggerPrint = triggerPrint;
 window.cleanupAfterPrint = cleanupAfterPrint;
 window.addEventListener("afterprint", function(){ if(_printCleanupTimer){ clearTimeout(_printCleanupTimer); _printCleanupTimer = null; } cleanupAfterPrint(); });
-
 /* 24. PDF / EMAIL */
 let _h2cLoading = null;
 function loadHtml2CanvasPro(){
@@ -3026,7 +2937,6 @@ async function enviarEtiquetasPorEmail(){
     if(btn){ btn.disabled = false; btn.textContent = bt || "📧 Enviar por Email"; }
   }
 }
-
 /* 25. CÂMARA */
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r, 200); }); }
@@ -3113,7 +3023,6 @@ async function closeScanner(){
   scanTrack = null; scanTorchOn = false;
   $("scannerModal").classList.remove("show");
 }
-
 /* 26. TOGGLE código → EAN */
 (function setupSyncCodeToEan(){
   const code = document.getElementById("internalCode");
@@ -3137,7 +3046,6 @@ async function closeScanner(){
     else { toast("Sincronização desativada", "info", 1800); }
   });
 })();
-
 /* 27. EVENTOS */
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
 document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
@@ -3155,7 +3063,6 @@ document.getElementById('syncBancoBtn').addEventListener("click", async function
   try{ await api('sincronizarBancoFruta'); await carregarTudo(); toast("Banco sincronizado", "success"); }
   catch(e){ setStatus("Erro ao sincronizar banco", "error"); toast("Erro ao sincronizar: " + e.message, "error"); }
 });
-/* 🔥 NOVO — limpar duplicados no Drive */
 document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada código."))) return;
   setStatus("A remover duplicados…", "loading");
@@ -3169,29 +3076,22 @@ document.getElementById('apagarDuplicadosBtn').addEventListener("click", async f
     await carregarTudo();
   }catch(e){ setStatus("Erro ao remover duplicados", "error"); toast("Erro: " + e.message, "error"); }
 });
-/* 🔥 NOVO — Reset total do cache local */
 document.getElementById('hardResetBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Isto apaga TODO o cache local do browser (etiquetas, banco de imagens, fila, credenciais) e volta a buscar tudo do Drive.\n\nSó a fila de impressão será mantida.\n\nContinuar?"))) return;
   try{
-    // Preservar fila de impressão
     let filaBackup = [];
     try{ const f = localStorage.getItem(FILA_BACKUP_KEY); if(f) filaBackup = JSON.parse(f); }catch(e){}
     const jwt = localStorage.getItem(AUTH_KEY_JWT);
     const exp = localStorage.getItem(AUTH_KEY_EXP);
     const usr = localStorage.getItem(AUTH_KEY_USER);
-
-    // Limpar tudo
     try{ await localforage.clear(); }catch(e){}
     try{
       Object.keys(localStorage).filter(function(k){ return k.indexOf('balcao_') === 0; }).forEach(function(k){ localStorage.removeItem(k); });
     }catch(e){}
-
-    // Restaurar credenciais + fila
     if(jwt) localStorage.setItem(AUTH_KEY_JWT, jwt);
     if(exp) localStorage.setItem(AUTH_KEY_EXP, exp);
     if(usr) localStorage.setItem(AUTH_KEY_USER, usr);
     if(filaBackup.length) localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(filaBackup));
-
     toast("Cache local limpo. A ressincronizar…", "info");
     setTimeout(function(){ location.reload(); }, 700);
   }catch(e){ toast("Erro: " + e.message, "error"); }
@@ -3356,7 +3256,6 @@ document.addEventListener("change", function(e){
     if(lbl) lbl.classList.toggle("checked", temValor);
   });
 })();
-
 /* 28. BOOT */
 (async function boot(){
   try{
