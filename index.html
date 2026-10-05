@@ -199,7 +199,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .brand-logo{max-width:100%;max-height:85%;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:high-quality;-ms-interpolation-mode:bicubic}
 .store-text{font-size:clamp(7px,2.2cqw,12px);font-weight:800;text-transform:uppercase;color:#0f172a;line-height:1;letter-spacing:.03em}
 
-/* Sem imagem → texto ocupa mais espaço */
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
 .label-card:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
 .label-card.layout-fruit-promo .main-content{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
@@ -222,7 +221,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .promo-top-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;width:100%;max-width:100%;min-width:0;line-height:1;margin:0 0 2px 0;padding:0;transform-origin:center center}
 .promo-top-row.stacked{flex-direction:column;gap:1px}
 
-/* ★ Preço antigo com RISCO INCLINADO via SVG (impressão fiel) ★ */
 .old-price{display:inline-block;position:relative;flex:0 0 auto;font-family:var(--ff);font-size:clamp(9px,2.8cqw,15px);font-weight:900;color:#1f2937;line-height:1.05;letter-spacing:-.02em;white-space:nowrap;padding:2px 6px;text-decoration:none!important;font-variant-numeric:tabular-nums;-webkit-font-feature-settings:"tnum","lnum";font-feature-settings:"tnum","lnum"}
 .old-price .op-text{display:inline-block;position:relative;z-index:1}
 .old-price .op-line{position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;overflow:visible}
@@ -748,6 +746,8 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
           </div>
           <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" data-tip="Recomprimir imagens para poupar espaço">📉 Otimizar imagens do Drive</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706" data-tip="Remover etiquetas duplicadas (mantém a mais recente)">🧹 Remover duplicados</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="hardResetBtn" type="button" style="border-color:#dc2626;color:#dc2626" data-tip="Limpar cache local e ressincronizar do zero">🔥 Limpar cache local e ressincronizar</button>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
       </section>
@@ -1015,15 +1015,15 @@ const AUTH_KEY_JWT  = 'balcao_jwt';
 const AUTH_KEY_EXP  = 'balcao_jwt_exp';
 const AUTH_KEY_USER = 'balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365 * 24 * 3600;
-const CACHE_KEY = 'balcao_cache_v235';
-const CACHE_SCHEMA_VERSION = 3;
+const CACHE_KEY = 'balcao_cache_v236';          /* ⬅️ bump */
+const CACHE_SCHEMA_VERSION = 4;                 /* ⬅️ bump */
 const IMG_MAX_SIZE = 2400;
 const IMG_QUALITY  = 0.98;
 const THUMB_SIZE   = 200;
 const PRINT_SCALE  = 4;
 const PDF_QUALITY  = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
-const FETCH_TIMEOUT_MS = 25000;
+const FETCH_TIMEOUT_MS = 18000;                 /* ⬅️ 25s → 18s */
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
 
@@ -1409,21 +1409,44 @@ async function removeBackgroundSmart(dataUrl){
   }catch(e){ return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); }); }
 }
 
-/* 9. API */
+/* 9. API — versão rápida com retry curto */
 async function api(fn, payload, retries, jaReaut){
   payload = payload || {};
-  if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 3;
+  if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
   const token = getStoredToken();
-  if(!token){ if(!jaReaut){ const ok = await tentarReauthSilenciosa(); if(ok) return api(fn, payload, retries, true); } toast("Inicie sessão primeiro.", "error"); throw new Error("Não autenticado."); }
+  if(!token){
+    if(!jaReaut){
+      const ok = await tentarReauthSilenciosa();
+      if(ok) return api(fn, payload, retries, true);
+    }
+    toast("Inicie sessão primeiro.", "error");
+    throw new Error("Não autenticado.");
+  }
   try{
-    const resp = await fetchComTimeout(API_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn:fn,payload:payload,sessionToken:token})}, FETCH_TIMEOUT_MS);
-    if(resp.status === 401){ clearStoredToken(); atualizarUICredenciais(); if(!jaReaut){ const ok = await tentarReauthSilenciosa(); if(ok) return api(fn, payload, retries, true); } throw new Error("Sessão expirada."); }
-    const texto = await resp.text(); if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const resp = await fetchComTimeout(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({fn:fn, payload:payload, sessionToken:token})
+    }, FETCH_TIMEOUT_MS);
+    if(resp.status === 401){
+      clearStoredToken(); atualizarUICredenciais();
+      if(!jaReaut){
+        const ok = await tentarReauthSilenciosa();
+        if(ok) return api(fn, payload, retries, true);
+      }
+      throw new Error("Sessão expirada.");
+    }
+    const texto = await resp.text();
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
     let j; try{ j = JSON.parse(texto); }catch(e){ throw new Error('Resposta inválida.'); }
     if(!j.ok) throw new Error(j.error || 'Erro no servidor');
     return j.data;
   }catch(e){
-    if(retries > 0){ const delay = 900 * Math.pow(2, (3 - retries)); await new Promise(function(r){ setTimeout(r, delay); }); return api(fn, payload, retries - 1, jaReaut); }
+    if(retries > 0){
+      const delay = 600 * Math.pow(2, (2 - retries));
+      await new Promise(function(r){ setTimeout(r, delay); });
+      return api(fn, payload, retries - 1, jaReaut);
+    }
     throw e;
   }
 }
@@ -1437,9 +1460,9 @@ let bancoTipoFiltro = 'fruta';
 let camStream = null, camTrack = null, torchOn = false;
 let scanner = null, scanTrack = null, scanTorchOn = false;
 let offsetX = 0, offsetY = 0, marginLeft = 4, marginRight = 4;
-let editingId = null;      /* UUID do registo em edição */
-let editingCode = null;    /* código para mostrar no banner */
-let currentFormId = null;  /* _id em uso no editor */
+let editingId = null;
+let editingCode = null;
+let currentFormId = null;
 let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
 
@@ -1576,28 +1599,50 @@ document.addEventListener('click', function(e){
 document.addEventListener('input', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 document.addEventListener('change', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 
-/* 14. CARREGAR TUDO */
+/* 14. CARREGAR TUDO — Sync forçado, sem cache mentiroso */
 async function carregarTudo(){
+  // 1) UI instantânea a partir do cache local
   try{
     const c = await localforage.getItem(CACHE_KEY);
     if(c && c.schemaVersion === CACHE_SCHEMA_VERSION){
       if(Array.isArray(c.produtos)){ savedProducts = c.produtos; renderDb(); }
-      if(Array.isArray(c.banco)){ bancoFruta = c.banco; renderBancoFruta($("buscaBancoFruta").value); }
+      if(Array.isArray(c.banco)){    bancoFruta = c.banco;      renderBancoFruta($("buscaBancoFruta").value); }
     }
   }catch(e){}
+
   if(!getStoredToken()) return;
-  setStatus("A sincronizar com o Drive…", "loading");
-  const [rProd, rBanco] = await Promise.all([
-    api('listarProdutos').then(function(v){ return {ok:true, v:v}; }).catch(function(e){ return {ok:false, e:e.message}; }),
-    api('listarBancoFruta').then(function(v){ return {ok:true, v:v}; }).catch(function(e){ return {ok:false, e:e.message}; })
-  ]);
-  if(rProd.ok) savedProducts = ensureArray(rProd.v);
-  if(rBanco.ok) bancoFruta = ensureArray(rBanco.v);
-  renderDb(); renderBancoFruta($("buscaBancoFruta").value);
-  try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
-  if(!rProd.ok && !rBanco.ok) setStatus("Sem ligação ao Drive", "error");
-  else if(!rProd.ok || !rBanco.ok) setStatus("Sincronização parcial", "warning");
-  else setStatus("Drive sincronizado", "success");
+
+  // 2) Buscar do servidor FORÇANDO refresh
+  setStatus("A sincronizar…", "loading");
+  try{
+    const r = await api('listarTudo', { forceRefresh: true });
+    savedProducts = ensureArray(r.produtos);
+    bancoFruta    = ensureArray(r.banco);
+
+    // Preservar modo edição se ainda existir
+    if(editingId){
+      const ainda = savedProducts.find(p => String(p._id) === String(editingId));
+      if(!ainda){ editingId = null; editingCode = null; currentFormId = null; updateEditingBanner(); }
+    }
+
+    renderDb();
+    renderBancoFruta($("buscaBancoFruta").value);
+
+    // 3) Atualizar cache local APENAS com dados frescos
+    try{
+      await localforage.setItem(CACHE_KEY, {
+        schemaVersion: CACHE_SCHEMA_VERSION,
+        produtos: savedProducts,
+        banco: bancoFruta,
+        t: Date.now()
+      });
+    }catch(e){}
+
+    setStatus("Sincronizado", "success");
+  }catch(e){
+    setStatus("Sem ligação ao Drive", "error");
+    toast("Erro ao sincronizar: " + e.message, "error");
+  }
 }
 
 /* 15. FORM */
@@ -1763,8 +1808,6 @@ function setProductText(el, text){
   const w = raw.split(/\s+/).filter(Boolean);
   w.forEach(function(x){ const s = document.createElement("span"); s.className = "w"; s.textContent = x; el.appendChild(s); });
 }
-
-/* ★★ PREÇO ANTIGO — SVG inline com risco inclinado (impressão fiel) ★★ */
 function setOldPriceText(el, text){
   if(!el) return;
   el.textContent = "";
@@ -1930,7 +1973,10 @@ function atualizarProdutoLocal(payload){
 }
 async function verificarProdutoEmBackground(){
   try{
-    const lista = await api('listarProdutos'); savedProducts = ensureArray(lista); renderDb();
+    const r = await api('listarTudo', { forceRefresh: true });
+    savedProducts = ensureArray(r.produtos);
+    bancoFruta    = ensureArray(r.banco);
+    renderDb();
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
   }catch(e){}
 }
@@ -2071,23 +2117,52 @@ window.loadFromDb = function(i){
   setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 700);
   toast('Etiqueta carregada para edição', 'success');
 };
+/* ✅ VERSÃO CORRIGIDA — verifica resposta do servidor */
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const n = d.nome || d.codigo || "produto sem nome";
   if(!(await confirmDialog("Eliminar \"" + n + "\" do Drive?"))) return;
+
   setStatus("A eliminar do Drive…", "loading");
-  savedProducts.splice(i, 1); renderDb();
-  try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
   try{
-    await api('apagarProduto', {_id: d._id, codigo: d.codigo, nome: d.nome});
+    // 1) Chamar o servidor PRIMEIRO
+    const r = await api('apagarProduto', {
+      _id:    d._id    || '',
+      codigo: d.codigo || '',
+      nome:   d.nome   || ''
+    });
+
+    // 2) ⚠️ O servidor TEM de confirmar apagadas > 0
+    if(!r || (r.apagadas === 0 && r.jaNaoExistia)){
+      toast("Item já não existe no servidor — a ressincronizar…", "warning");
+      await carregarTudo();
+      return;
+    }
+
+    // 3) Só agora mexer no array local
+    const idxLocal = savedProducts.findIndex(p =>
+      (d._id && String(p._id) === String(d._id)) ||
+      (!d._id && d.codigo && String(p.codigo || '').toUpperCase() === String(d.codigo).toUpperCase())
+    );
+    if(idxLocal >= 0) savedProducts.splice(idxLocal, 1);
+    renderDb();
+
+    try{
+      await localforage.setItem(CACHE_KEY, {
+        schemaVersion: CACHE_SCHEMA_VERSION,
+        produtos: savedProducts, banco: bancoFruta, t: Date.now()
+      });
+    }catch(e){}
+
     if(editingId && d._id && String(editingId) === String(d._id)){
       editingId = null; editingCode = null; currentFormId = null; updateEditingBanner();
     }
-    setStatus("Eliminado do Drive", "success");
+    setStatus("Eliminado do Drive (" + r.apagadas + ")", "success");
+    toast("Eliminado: " + n, "success", 2600);
   }catch(e){
-    savedProducts.splice(i, 0, d); renderDb();
-    try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e2){}
-    setStatus("Erro ao eliminar", "error"); toast("Erro ao eliminar: " + e.message, "error");
+    setStatus("Erro ao eliminar", "error");
+    toast("Erro ao eliminar: " + e.message, "error", 6000);
+    setTimeout(function(){ carregarTudo(); }, 800);
   }
 };
 window.queueFromDb = function(i){
@@ -3070,12 +3145,56 @@ document.getElementById('saveAsNewBtn').addEventListener("click", function(){ sa
 document.getElementById('printBtn').addEventListener("click", function(){ window.triggerPrint(); });
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
-document.getElementById('recarregarDbBtn').addEventListener("click", carregarTudo);
+document.getElementById('recarregarDbBtn').addEventListener("click", function(){
+  setStatus("A recarregar do Drive…", "loading");
+  carregarTudo().then(function(){ toast("Lista atualizada", "success", 2400); });
+});
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
   setStatus("A sincronizar banco de imagens…", "loading");
   try{ await api('sincronizarBancoFruta'); await carregarTudo(); toast("Banco sincronizado", "success"); }
   catch(e){ setStatus("Erro ao sincronizar banco", "error"); toast("Erro ao sincronizar: " + e.message, "error"); }
+});
+/* 🔥 NOVO — limpar duplicados no Drive */
+document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
+  if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada código."))) return;
+  setStatus("A remover duplicados…", "loading");
+  try{
+    const r = await api('apagarDuplicados');
+    if(r && r.apagadas > 0){
+      toast("Removidas " + r.apagadas + " etiquetas duplicadas", "success", 5000);
+    } else {
+      toast("Sem duplicados a remover", "info", 3000);
+    }
+    await carregarTudo();
+  }catch(e){ setStatus("Erro ao remover duplicados", "error"); toast("Erro: " + e.message, "error"); }
+});
+/* 🔥 NOVO — Reset total do cache local */
+document.getElementById('hardResetBtn').addEventListener("click", async function(){
+  if(!(await confirmDialog("Isto apaga TODO o cache local do browser (etiquetas, banco de imagens, fila, credenciais) e volta a buscar tudo do Drive.\n\nSó a fila de impressão será mantida.\n\nContinuar?"))) return;
+  try{
+    // Preservar fila de impressão
+    let filaBackup = [];
+    try{ const f = localStorage.getItem(FILA_BACKUP_KEY); if(f) filaBackup = JSON.parse(f); }catch(e){}
+    const jwt = localStorage.getItem(AUTH_KEY_JWT);
+    const exp = localStorage.getItem(AUTH_KEY_EXP);
+    const usr = localStorage.getItem(AUTH_KEY_USER);
+
+    // Limpar tudo
+    try{ await localforage.clear(); }catch(e){}
+    try{
+      Object.keys(localStorage).filter(function(k){ return k.indexOf('balcao_') === 0; }).forEach(function(k){ localStorage.removeItem(k); });
+    }catch(e){}
+
+    // Restaurar credenciais + fila
+    if(jwt) localStorage.setItem(AUTH_KEY_JWT, jwt);
+    if(exp) localStorage.setItem(AUTH_KEY_EXP, exp);
+    if(usr) localStorage.setItem(AUTH_KEY_USER, usr);
+    if(filaBackup.length) localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(filaBackup));
+
+    toast("Cache local limpo. A ressincronizar…", "info");
+    setTimeout(function(){ location.reload(); }, 700);
+  }catch(e){ toast("Erro: " + e.message, "error"); }
 });
 document.getElementById('clearQueueBtn').addEventListener("click", async function(){
   if(await confirmDialog("Limpar toda a fila?")){ printQueue = []; renderQueue(); toast("Fila limpa", "info"); }
@@ -3138,10 +3257,17 @@ document.getElementById('diagnosticoBtn').addEventListener("click", async functi
   else { linhas.push("Token: ausente ou expirado"); }
   try{ const p = await api('ping'); linhas.push('<span class="ok">✔ ping</span> → ' + p); }
   catch(e){ linhas.push('<span class="err">✘ ping</span> → ' + e.message); box.innerHTML = linhas.join("\n"); setStatus("Falha na API", "error"); toast("Falha na API", "error"); return; }
-  await new Promise(function(r){ setTimeout(r, 600); });
-  try{ const p = await api('listarProdutos'); linhas.push('<span class="ok">✔ listarProdutos</span> → ' + (p ? p.length : 0) + " produtos"); }catch(e){ linhas.push('<span class="err">✘ listarProdutos</span> → ' + e.message); }
-  await new Promise(function(r){ setTimeout(r, 600); });
-  try{ const b = await api('listarBancoFruta'); linhas.push('<span class="ok">✔ listarBancoFruta</span> → ' + (b ? b.length : 0) + " imagens"); }catch(e){ linhas.push('<span class="err">✘ listarBancoFruta</span> → ' + e.message); }
+  await new Promise(function(r){ setTimeout(r, 400); });
+  try{
+    const r = await api('listarTudo', { forceRefresh: true });
+    linhas.push('<span class="ok">✔ listarTudo</span> → ' + (r.produtos ? r.produtos.length : 0) + " produtos, " + (r.banco ? r.banco.length : 0) + " imagens");
+  }catch(e){ linhas.push('<span class="err">✘ listarTudo</span> → ' + e.message); }
+  await new Promise(function(r){ setTimeout(r, 400); });
+  try{
+    const d = await api('diagnosticoProdutos');
+    linhas.push('<span class="ok">✔ diagnosticoProdutos</span> →');
+    linhas.push('   linhas: ' + d.linhas + ', sem _id: ' + d.sem_id + ', ids duplicados: ' + d.ids_duplicados);
+  }catch(e){ linhas.push('<span class="err">✘ diagnosticoProdutos</span> → ' + e.message); }
   box.innerHTML = linhas.join("\n"); setStatus("Diagnóstico concluído", "success");
 });
 document.addEventListener("keydown", function(ev){
