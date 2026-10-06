@@ -474,6 +474,37 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
 }
 </style>
+<style>
+/* ================= FIX ALINHAMENTO BOTÕES DE AÇÃO (mobile/PWA Android) ================= */
+/* Colunas grid passam a poder encolher abaixo do conteúdo (minmax(0,1fr)) */
+.row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important}
+.dates-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+.tipo-selector{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+
+@media (max-width:600px){
+  .row, .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
+  .dates-row{grid-template-columns:minmax(0,1fr)!important}
+
+  .row > .btn{
+    white-space:normal!important;
+    line-height:1.15!important;
+    text-align:center!important;
+    padding:12px 8px!important;
+    font-size:14px!important;
+    min-height:54px!important;
+    word-break:break-word!important;
+    overflow-wrap:anywhere!important;
+    hyphens:auto!important;
+  }
+  .row > .btn svg{flex-shrink:0}
+}
+
+@media (max-width:480px){
+  .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  .row > .btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}
+}
+</style>
 </head>
 <body data-view="editor" data-format="normal">
 <header class="app-header">
@@ -1360,7 +1391,6 @@ async function api(fn, payload, retries, jaReaut){
     toast("Inicie sessão primeiro.", "error");
     throw new Error("Não autenticado.");
   }
-  // Timeout: 60s na 1ª chamada (cold start), 25s quando já está quente
   const timeout = _apiWarm ? 25000 : 60000;
   const controller = new AbortController();
   let timedOut = false;
