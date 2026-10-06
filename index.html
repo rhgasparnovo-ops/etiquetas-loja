@@ -476,16 +476,13 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
 </style>
 <style>
 /* ================= FIX ALINHAMENTO BOTÕES DE AÇÃO (mobile/PWA Android) ================= */
-/* Colunas grid passam a poder encolher abaixo do conteúdo (minmax(0,1fr)) */
 .row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important}
 .dates-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
 .tipo-selector{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
-
 @media (max-width:600px){
   .row, .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
   .dates-row{grid-template-columns:minmax(0,1fr)!important}
-
   .row > .btn{
     white-space:normal!important;
     line-height:1.15!important;
@@ -499,11 +496,12 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   }
   .row > .btn svg{flex-shrink:0}
 }
-
 @media (max-width:480px){
   .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   .row > .btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}
 }
+/* Botão "Limpar" ocupa a linha toda quando está sozinho (sem edição) */
+#clearBtn[data-fullwidth="1"]{grid-column:1 / -1}
 </style>
 </head>
 <body data-view="editor" data-format="normal">
@@ -701,10 +699,10 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
           <div id="editingBanner" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:#9a3412;font-weight:700;line-height:1.4"></div>
           <div class="row">
             <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar produto à fila de impressão">➕ Adicionar à Fila de Impressão</button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar (cria novo ou atualiza se estiver em edição)">💾 Guardar</button>
+            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar como novo registo no Drive">💾 Guardar</button>
           </div>
           <div class="row">
-            <button class="btn btn-ghost btn-block" id="saveAsNewBtn" type="button" data-tip="Guardar como novo (mesmo com código igual)">🆕 Guardar como novo</button>
+            <button class="btn btn-ghost btn-block" id="saveAsNewBtn" type="button" style="display:none" data-tip="Criar novo registo (mesmo com código igual)">🆕 Guardar como novo</button>
             <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos do editor">🗑️ Limpar</button>
           </div>
         </div>
@@ -2038,6 +2036,26 @@ async function saveToDb(options){
     updateEditingBanner();
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
+/* Atualiza rótulos/visibilidade dos botões Guardar / Guardar como novo / Limpar */
+function updateSaveButtonsState(){
+  const saveBtn    = document.getElementById('saveDbBtn');
+  const saveNewBtn = document.getElementById('saveAsNewBtn');
+  const clearBtn   = document.getElementById('clearBtn');
+  if(!saveBtn || !saveNewBtn || !clearBtn) return;
+  if(editingId){
+    /* Em modo edição: Guardar = Atualizar; Guardar como novo = visível; Limpar ocupa 1 célula */
+    saveBtn.innerHTML = '💾 Atualizar';
+    saveBtn.setAttribute('data-tip', 'Atualizar o registo que está a ser editado');
+    saveNewBtn.style.display = '';
+    clearBtn.removeAttribute('data-fullwidth');
+  } else {
+    /* Sem edição: Guardar = novo registo; Guardar como novo = escondido; Limpar ocupa a linha toda */
+    saveBtn.innerHTML = '💾 Guardar';
+    saveBtn.setAttribute('data-tip', 'Guardar novo registo no Drive');
+    saveNewBtn.style.display = 'none';
+    clearBtn.setAttribute('data-fullwidth', '1');
+  }
+}
 function updateEditingBanner(){
   const b = $("editingBanner"); if(!b) return;
   if(editingId){
@@ -2055,6 +2073,8 @@ function updateEditingBanner(){
     }
   }
   else { b.style.display = "none"; }
+  /* Atualiza sempre o aspeto dos botões de ação */
+  try{ updateSaveButtonsState(); }catch(e){}
 }
 window.loadFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
@@ -3293,6 +3313,8 @@ document.addEventListener("change", function(e){
     atualizarUICredenciais();
     updateOrientationVisibility();
     updateInfoExtraVisibility();
+    /* Estado inicial dos botões de ação (sem edição) */
+    try{ updateSaveButtonsState(); }catch(e){}
     try{
       const b = localStorage.getItem(FILA_BACKUP_KEY);
       if(b){
