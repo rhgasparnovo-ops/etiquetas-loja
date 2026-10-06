@@ -500,7 +500,6 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   .row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   .row > .btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}
 }
-/* Botão "Limpar" ocupa a linha toda quando está sozinho (sem edição) */
 #clearBtn[data-fullwidth="1"]{grid-column:1 / -1}
 </style>
 </head>
@@ -1482,6 +1481,9 @@ let editingCode = null;
 let currentFormId = null;
 let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
+/* 10b. IMPRESSÃO — estado de otimização */
+let _printBackupData = null;
+let _skipAutofitInCard = false;
 /* 11. PREVIEW DESKTOP */
 function fitPreviewCard(){
   const scaler = document.getElementById('previewScaler'); const card = document.getElementById('mainLabelCard');
@@ -2061,7 +2063,6 @@ async function saveToDb(options){
     updateEditingBanner();
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
-/* Atualiza rótulos/visibilidade dos botões Guardar / Guardar como novo / Limpar */
 function updateSaveButtonsState(){
   const saveBtn    = document.getElementById('saveDbBtn');
   const saveNewBtn = document.getElementById('saveAsNewBtn');
@@ -2699,14 +2700,17 @@ function updateCardUnsafe(){
     else { bcBox.classList.remove("show"); }
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value, $("promoEnd").value);
     $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
-    autoAdaptImage(card); autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); autoLayoutCard(card);
+    if(!_skipAutofitInCard){
+      autoAdaptImage(card); autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); autoLayoutCard(card);
+    }
   }catch(err){}
 }
 /* 23. CLONE / IMPRESSÃO */
 function buildLabelClone(data, dims, forPrint){
-  const backup = getFormData();
+  if(!_printBackupData) _printBackupData = getFormData();
+  _skipAutofitInCard = true;
   try{
-    setFormData(data); updateCardUnsafe();
+    setFormData(data);
     const card  = $("mainLabelCard");
     const clone = card.cloneNode(true);
     clone.removeAttribute('id');
@@ -2717,11 +2721,16 @@ function buildLabelClone(data, dims, forPrint){
     const svg = clone.querySelector(".barcode-container svg");
     if(svg){ svg.innerHTML = ""; if(eanVal) drawBarcode(svg, eanVal); }
     if(forPrint) applyPrintSizes(clone, dims);
-    autoFitExtraUnit(clone); autoFitDeposit(clone); autoFitDescription(clone); autoFitPromoArea(clone); autoFitFooterText(clone);
-    if(!forPrint) autoLayoutCard(clone);
     return clone;
   } finally {
-    setFormData(backup); updateCardUnsafe();
+    _skipAutofitInCard = false;
+  }
+}
+function restorePrintBuildState(){
+  if(_printBackupData){
+    _skipAutofitInCard = false;
+    setFormData(_printBackupData);
+    _printBackupData = null;
   }
 }
 function validateBeforePrint(){
@@ -2732,6 +2741,7 @@ function validateBeforePrint(){
 }
 function cleanupAfterPrint(){
   printInProgress = false;
+  if(_printBackupData){ try{ restorePrintBuildState(); }catch(e){} }
   const pz = $("printZone"); if(pz){ pz.classList.remove("measure"); pz.innerHTML = ""; }
   const ov = $("proPrintOverlay"); if(ov){ ov.classList.remove("show"); ov.style.display = ""; }
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
@@ -2813,32 +2823,69 @@ function _agruparItensPorFormato(items){
   items.forEach(function(it){ const k = it.format || "amanhecer"; if(v[k]) return; v[k] = true; o.push(gr[k]); });
   return o;
 }
-function triggerPrint(){
+async function _waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  if(!imgs.length) return;
+  await Promise.all(imgs.map(function(img){
+    const src = img.getAttribute("src") || "";
+    if(!src) return Promise.resolve();
+    if(src.indexOf("data:") === 0) return Promise.resolve();
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(function(res){
+      img.addEventListener("load", res, {once:true});
+      img.addEventListener("error", res, {once:true});
+      setTimeout(res, 2500);
+    });
+  }));
+}
+async function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
   printInProgress = true;
   $("proPrintOverlay").classList.add("show");
+
   const pz = $("printZone"); pz.innerHTML = ""; pz.classList.add("measure");
   const ef = $("presetSizes").value;
+
   const items = [];
-  printQueue.forEach(function(q){ const f = _fmtDoItem(q, ef); for(let i = 0; i < q.copies; i++) items.push({data:q.data, format:f}); });
+  printQueue.forEach(function(q){
+    const f = _fmtDoItem(q, ef);
+    for(let i = 0; i < q.copies; i++) items.push({data:q.data, format:f});
+  });
   const groups = _agruparItensPorFormato(items);
   const aq = [];
   groups.forEach(function(g){ if(g.format === "amanhecer") g.items.forEach(function(d){ aq.push(d); }); });
-  construirPaginasA4(pz, groups, aq);
-  requestAnimationFrame(function(){
-    try{
-      pz.querySelectorAll(".label-card").forEach(function(card){
-        autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card);
-        if(card.classList.contains("has-image")) autoAdaptImage(card);
-      });
-    }catch(e){}
-    if(_printCleanupTimer){ clearTimeout(_printCleanupTimer); _printCleanupTimer = null; }
-    setTimeout(function(){
-      try{ window.print(); }catch(e){}
-      _printCleanupTimer = setTimeout(function(){ cleanupAfterPrint(); _printCleanupTimer = null; }, isMobile() ? 2500 : 2000);
-    }, 120);
-  });
+
+  const frag = document.createDocumentFragment();
+  try{
+    construirPaginasA4(frag, groups, aq);
+  } finally {
+    restorePrintBuildState();
+  }
+  pz.appendChild(frag);
+
+  try{
+    pz.querySelectorAll(".label-card").forEach(function(card){
+      autoFitExtraUnit(card);
+      autoFitDeposit(card);
+      autoFitDescription(card);
+      autoFitPromoArea(card);
+      autoFitFooterText(card);
+      if(card.classList.contains("has-image")) autoAdaptImage(card);
+    });
+  }catch(e){}
+
+  try{ await _waitForImages(pz); }catch(e){}
+
+  await new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
+
+  try{ window.print(); }catch(e){}
+
+  if(_printCleanupTimer){ clearTimeout(_printCleanupTimer); }
+  _printCleanupTimer = setTimeout(function(){
+    cleanupAfterPrint();
+    _printCleanupTimer = null;
+  }, isMobile() ? 2500 : 2000);
 }
 window.triggerPrint = triggerPrint;
 window.cleanupAfterPrint = cleanupAfterPrint;
@@ -2975,6 +3022,7 @@ async function gerarPDFBlob(){
     }
   }
   document.body.removeChild(rz);
+  if(_printBackupData){ try{ restorePrintBuildState(); }catch(e){} }
   return doc.output('blob');
 }
 function blobToBase64(blob){
