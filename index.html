@@ -1370,75 +1370,103 @@ async function removeBackgroundSmart(dataUrl){
   const useAI = document.getElementById("useAI") && document.getElementById("useAI").checked;
   if(!useAI) return new Promise(function(res){ removeBackgroundSimple(dataUrl, res); });
   try{
+    setGlobalStatus("A carregar modelo de IA…", "loading");
     const mod = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');
+    setGlobalStatus("A remover fundo com IA…", "loading");
     const blob = await mod.removeBackground(dataUrl, {output:{format:'image/png'}});
+    setGlobalStatus("", "");
     return new Promise(function(resolve){ const r = new FileReader(); r.onloadend = function(){ resolve(r.result); }; r.readAsDataURL(blob); });
-  }catch(e){ return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); }); }
+  }catch(e){
+    setGlobalStatus("IA indisponível — a usar método simples", "warning");
+    return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); });
+  }
 }
-/* 9. API — timeout adaptativo (aguenta cold start) */
+/* 9. API — deduplicação + timeout adaptativo + 1 retentativa */
 let _apiWarm = false;
+const _apiInFlight = new Map();
+
 async function api(fn, payload, retries, jaReaut){
   payload = payload || {};
-  if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 2;
-  const token = getStoredToken();
-  if(!token){
-    if(!jaReaut){
-      const ok = await tentarReauthSilenciosa();
-      if(ok) return api(fn, payload, retries, true);
-    }
-    toast("Inicie sessão primeiro.", "error");
-    throw new Error("Não autenticado.");
+  if(retries === undefined) retries = (NO_RETRY_FNS.indexOf(fn) !== -1) ? 0 : 1;
+
+  const dedupKey = jaReaut ? null : (fn + '::' + JSON.stringify(payload));
+  if(dedupKey && _apiInFlight.has(dedupKey)){
+    return _apiInFlight.get(dedupKey);
   }
-  const timeout = _apiWarm ? 25000 : 60000;
-  const controller = new AbortController();
-  let timedOut = false;
-  const tid = setTimeout(function(){
-    timedOut = true;
-    try{ controller.abort(); }catch(e){}
-  }, timeout);
-  try{
-    const resp = await fetch(API_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({fn:fn, payload:payload, sessionToken:token}),
-      signal: controller.signal
-    });
-    clearTimeout(tid);
-    _apiWarm = true;
-    if(resp.status === 401){
-      clearStoredToken(); atualizarUICredenciais();
+
+  const promessa = (async function(){
+    const token = getStoredToken();
+    if(!token){
       if(!jaReaut){
         const ok = await tentarReauthSilenciosa();
         if(ok) return api(fn, payload, retries, true);
       }
-      throw new Error("Sessão expirada.");
+      toast("Inicie sessão primeiro.", "error");
+      throw new Error("Não autenticado.");
     }
-    const texto = await resp.text();
-    if(!resp.ok) throw new Error('HTTP ' + resp.status);
-    let j; try{ j = JSON.parse(texto); }catch(e){ throw new Error('Resposta inválida.'); }
-    if(!j.ok) throw new Error(j.error || 'Erro no servidor');
-    return j.data;
-  }catch(e){
-    clearTimeout(tid);
-    const msg = String((e && e.message) || e || '');
-    const isAbort = timedOut || (e && (e.name === 'AbortError')) || msg.indexOf('aborted') !== -1;
-    if(isAbort){
-      _apiWarm = false;
-      if(retries > 0){
-        const delay = 700 * Math.pow(2, (2 - retries));
-        setGlobalStatus("Servidor a acordar… nova tentativa", "loading");
-        await new Promise(function(r){ setTimeout(r, delay); });
-        return api(fn, payload, retries - 1, jaReaut);
+
+    const timeout = _apiWarm ? 15000 : 35000;
+    const controller = new AbortController();
+    let timedOut = false;
+    const tid = setTimeout(function(){
+      timedOut = true;
+      try{ controller.abort(); }catch(e){}
+    }, timeout);
+
+    try{
+      const resp = await fetch(API_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({fn:fn, payload:payload, sessionToken:token}),
+        signal: controller.signal
+      });
+      clearTimeout(tid);
+      _apiWarm = true;
+
+      if(resp.status === 401){
+        clearStoredToken(); atualizarUICredenciais();
+        if(!jaReaut){
+          const ok = await tentarReauthSilenciosa();
+          if(ok) return api(fn, payload, retries, true);
+        }
+        throw new Error("Sessão expirada.");
       }
-      throw new Error('O servidor demorou demasiado a responder. Tente novamente.');
+      const texto = await resp.text();
+      if(!resp.ok) throw new Error('HTTP ' + resp.status);
+      let j; try{ j = JSON.parse(texto); }catch(e){ throw new Error('Resposta inválida.'); }
+      if(!j.ok) throw new Error(j.error || 'Erro no servidor');
+      return j.data;
+    }catch(e){
+      clearTimeout(tid);
+      const msg = String((e && e.message) || e || '');
+      const isAbort = timedOut || (e && (e.name === 'AbortError')) || msg.indexOf('aborted') !== -1;
+
+      if(isAbort){
+        if(retries > 0){
+          const delay = 600 * Math.pow(1.5, (1 - retries));
+          setGlobalStatus("Servidor a acordar…", "loading");
+          await new Promise(function(r){ setTimeout(r, delay); });
+          return api(fn, payload, retries - 1, true);
+        }
+        throw new Error('O servidor demorou demasiado a responder. Tente novamente.');
+      }
+      if(retries > 0){
+        const delay = 600 * Math.pow(1.5, (1 - retries));
+        await new Promise(function(r){ setTimeout(r, delay); });
+        return api(fn, payload, retries - 1, true);
+      }
+      throw e;
     }
-    if(retries > 0){
-      const delay = 700 * Math.pow(2, (2 - retries));
-      await new Promise(function(r){ setTimeout(r, delay); });
-      return api(fn, payload, retries - 1, jaReaut);
-    }
-    throw e;
+  })();
+
+  if(dedupKey){
+    _apiInFlight.set(dedupKey, promessa);
+    promessa.then(
+      function(){ _apiInFlight.delete(dedupKey); },
+      function(){ _apiInFlight.delete(dedupKey); }
+    );
   }
+  return promessa;
 }
 /* 10. ESTADO */
 const $ = function(id){ return document.getElementById(id); };
@@ -1584,7 +1612,7 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('input', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
 document.addEventListener('change', function(e){ if(e.target && e.target.type === 'date') updateDateClearButtons(); });
-/* 14. CARREGAR TUDO — Sync forçado, sem cache mentiroso */
+/* 14. CARREGAR TUDO */
 async function carregarTudo(){
   try{
     const c = await localforage.getItem(CACHE_KEY);
@@ -1941,9 +1969,6 @@ function atualizarProdutoLocal(payload){
     savedProducts.push(novo);
   }
 }
-async function verificarProdutoEmBackground(){
-  /* Desativado — a sincronização é feita pelo botão Recarregar */
-}
 window.removeFromQueue = function(i){ printQueue.splice(i, 1); renderQueue(); };
 async function resolverFotoParaPayload(d){
   let fid = d.fotoId || "", furl = d.fotoUrl || "";
@@ -2043,13 +2068,11 @@ function updateSaveButtonsState(){
   const clearBtn   = document.getElementById('clearBtn');
   if(!saveBtn || !saveNewBtn || !clearBtn) return;
   if(editingId){
-    /* Em modo edição: Guardar = Atualizar; Guardar como novo = visível; Limpar ocupa 1 célula */
     saveBtn.innerHTML = '💾 Atualizar';
     saveBtn.setAttribute('data-tip', 'Atualizar o registo que está a ser editado');
     saveNewBtn.style.display = '';
     clearBtn.removeAttribute('data-fullwidth');
   } else {
-    /* Sem edição: Guardar = novo registo; Guardar como novo = escondido; Limpar ocupa a linha toda */
     saveBtn.innerHTML = '💾 Guardar';
     saveBtn.setAttribute('data-tip', 'Guardar novo registo no Drive');
     saveNewBtn.style.display = 'none';
@@ -2073,7 +2096,6 @@ function updateEditingBanner(){
     }
   }
   else { b.style.display = "none"; }
-  /* Atualiza sempre o aspeto dos botões de ação */
   try{ updateSaveButtonsState(); }catch(e){}
 }
 window.loadFromDb = function(i){
@@ -3313,7 +3335,6 @@ document.addEventListener("change", function(e){
     atualizarUICredenciais();
     updateOrientationVisibility();
     updateInfoExtraVisibility();
-    /* Estado inicial dos botões de ação (sem edição) */
     try{ updateSaveButtonsState(); }catch(e){}
     try{
       const b = localStorage.getItem(FILA_BACKUP_KEY);
@@ -3331,7 +3352,7 @@ document.addEventListener("change", function(e){
       if(window.google && google.accounts && google.accounts.id){
         clearInterval(ag); inicializarBotaoGoogle();
         const tk = getStoredToken();
-        if(tk){ atualizarUICredenciais(); carregarTudo(); }
+        if(tk){ atualizarUICredenciais(); /* carregarTudo() é chamado logo abaixo */ }
         else { setTimeout(function(){ tentarReauthSilenciosa().then(function(){}); }, 800); }
       } else if(t > 40){ clearInterval(ag); }
     }, 200);
