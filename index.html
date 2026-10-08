@@ -356,6 +356,16 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;visibility:visible!important;background:#fff!important}#printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important}}
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.btn{font-size:15px;min-height:48px}}
 @media (max-width:480px){.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row>.btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}}
+/* ===== PREÇO + IVA INLINE ===== */
+.price-iva-wrap{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
+.price-iva-wrap > input[type=text]{flex:1 1 auto;min-width:0}
+.price-iva-wrap > select{flex:0 0 auto;min-width:112px;max-width:130px;padding:12px 26px 12px 10px;background-position:calc(100% - 8px) 50%;font-weight:800;font-size:14px!important;color:#065f46;background-color:#ecfdf5;border-color:#a7f3d0;text-transform:none}
+.price-iva-wrap > select.iva-vazio{color:var(--ink-3);background-color:var(--surface-2);border-color:var(--line);font-weight:700}
+.price-iva-wrap > select:focus{background-color:#fff;border-color:var(--brand);box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand)}
+.price-iva-hint{display:block;font-size:10.5px;font-weight:700;color:var(--ink-3);margin-top:4px;text-transform:none;letter-spacing:0}
+.price-iva-hint.iva-ok{color:#065f46}
+.price-iva-hint.iva-empty{color:#b45309}
+@media (max-width:380px){.price-iva-wrap > select{min-width:96px;max-width:110px;padding:12px 22px 12px 8px;font-size:13px!important}}
 /* ===== VARIANTES / FORMATO ===== */
 .fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;border:1px solid #c7d2fe;line-height:1.3}
 .fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
@@ -374,7 +384,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .drive-group-hdr .cnt{background:var(--brand);color:#fff;padding:1px 8px;border-radius:999px;font-size:10px}
 .queue-summary{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-3);font-weight:700;margin-bottom:8px;flex-wrap:wrap}
 .queue-summary b{color:var(--ink)}
-/* ===== IVA ===== */
+/* ===== IVA badge ===== */
 .iva-badge{display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#065f46;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid #a7f3d0;line-height:1.3}
 /* ===== EDIÇÃO / ESTADO ===== */
 .list-item.editing{border-left:3px solid #dc2626;background:#fef2f2;box-shadow:0 0 0 1px rgba(220,38,38,.14)}
@@ -432,6 +442,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
         <div class="card">
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
           <div class="fld"><label for="product">Nome do produto</label><input id="product" type="text" class="input-hero" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+
           <div class="row">
             <div class="fld"><label for="internalCode">Código interno</label>
               <div class="code-with-sync" style="display:flex;gap:6px">
@@ -442,8 +453,27 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
                 </label>
               </div>
             </div>
-            <div class="fld"><label for="price">Preço de venda (€)</label><input id="price" type="text" inputmode="decimal" autocomplete="off"></div>
+            <div class="fld">
+              <label for="price">Preço de venda (€) + IVA</label>
+              <div class="price-iva-wrap">
+                <input id="price" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+                <select id="ivaSelect" aria-label="Taxa de IVA" class="iva-vazio">
+                  <option value="" selected>— IVA —</option>
+                  <option value="6">IVA 6%</option>
+                  <option value="13">IVA 13%</option>
+                  <option value="23">IVA 23%</option>
+                  <option value="custom">Outro…</option>
+                </select>
+              </div>
+              <span class="price-iva-hint iva-empty" id="ivaHint">⚠️ Selecione a taxa de IVA</span>
+            </div>
           </div>
+
+          <div class="fld" id="customIvaField" style="display:none">
+            <label for="customIvaInput">Valor de IVA personalizado (%)</label>
+            <input id="customIvaInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex: 6">
+          </div>
+
           <div class="row">
             <div class="fld"><label for="capacityUnit">Unidade</label>
               <select id="capacityUnit">
@@ -509,18 +539,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
             </select>
           </div>
           <div class="fld" id="infoExtraDataField" style="display:none"><label for="infoExtraData">Data a incluir</label><input id="infoExtraData" type="date"></div>
-          <div class="row">
-            <div class="fld"><label for="ivaSelect">Taxa de IVA</label>
-              <select id="ivaSelect">
-                <option value="" selected>Nenhuma</option>
-                <option value="6">IVA 6% · Reduzida</option>
-                <option value="13">IVA 13% · Intermédia</option>
-                <option value="23">IVA 23% · Normal</option>
-                <option value="custom">Outro valor…</option>
-              </select>
-            </div>
-            <div class="fld" id="customIvaField" style="display:none"><label for="customIvaInput">Valor (%)</label><input id="customIvaInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex: 6"></div>
-          </div>
           <div class="fld"><label for="depositFeeSelect">Taxa Volta</label>
             <select id="depositFeeSelect">
               <option value="" selected>Nenhuma</option>
@@ -775,8 +793,8 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v238';
-const CACHE_SCHEMA_VERSION = 7;
+const CACHE_KEY = 'balcao_cache_v239';
+const CACHE_SCHEMA_VERSION = 8;
 const IMG_MAX_SIZE = 2400, IMG_QUALITY = 0.98, THUMB_SIZE = 200;
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
@@ -794,6 +812,26 @@ function gerarQid(){ return 'q_'+Date.now().toString(36)+'_'+Math.random().toStr
 function normIvaClient(v){ if(v===null||v===undefined) return ""; var s=String(v).trim().replace(/[%\s]/g,""); if(!s) return ""; var n=Number(s); if(isFinite(n)&&n>=0&&n<=100) return String(n); return s; }
 function getIvaValue(){ var sel=document.getElementById("ivaSelect"); if(!sel) return ""; var v=sel.value; if(v==="custom"){ var inp=document.getElementById("customIvaInput"); return inp?normIvaClient(inp.value):""; } return normIvaClient(v); }
 function getIvaDisplay(){ var v=getIvaValue(); if(!v) return ""; return "IVA INCL. "+v+"%"; }
+function updateIvaVisual(){
+  var sel=document.getElementById("ivaSelect"), hint=document.getElementById("ivaHint");
+  if(sel) sel.classList.toggle('iva-vazio', !sel.value);
+  var v=getIvaValue();
+  if(hint){
+    if(sel.value === ''){
+      hint.textContent = "⚠️ Selecione a taxa de IVA";
+      hint.className = "price-iva-hint iva-empty";
+    } else if(sel.value === 'custom' && !v){
+      hint.textContent = "⚠️ Introduza o valor de IVA";
+      hint.className = "price-iva-hint iva-empty";
+    } else if(v){
+      hint.textContent = "✓ IVA " + v + "% aplicado";
+      hint.className = "price-iva-hint iva-ok";
+    } else {
+      hint.textContent = "";
+      hint.className = "price-iva-hint";
+    }
+  }
+}
 
 /* ===== SANITIZAÇÃO (fix bug ISO date) ===== */
 function sanitizePrice(v){
@@ -1083,7 +1121,7 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — TIMEOUT ADAPTATIVO OTIMIZADO */
+/* 9. API */
 var _apiWarm = false;
 const _apiInFlight = new Map();
 async function api(fn,payload,retries,jaReaut){
@@ -1312,6 +1350,7 @@ function setFormData(d){
     else if(ivaVal){ selIva.value="custom"; if(cstIva) cstIva.value=ivaVal; if(fldIva) fldIva.style.display="flex"; }
     else { selIva.value=""; if(cstIva) cstIva.value=""; if(fldIva) fldIva.style.display="none"; }
   }
+  updateIvaVisual();
   var ti = d.infoExtraTipo||"";
   var selTi = $("infoExtraTipo");
   var hasOpt = Array.prototype.some.call(selTi.options, function(o){ return o.value===ti; });
@@ -1498,7 +1537,7 @@ function drawBarcode(svg,value){
   if(/^[\x20-\x7E]+$/.test(clean)){ drawCode128(svg,clean); }
 }
 
-/* 18. FILA — RENDER COM ESTADO INTELIGENTE */
+/* 18. FILA */
 function getQueueItemState(item){
   if(item._queueState === 'saved-new') return 'saved-new';
   if(item._queueState === 'saved-update') return 'saved-update';
@@ -1543,7 +1582,6 @@ function renderQueue(){
     var d = item.data || {};
     var fr = d.presetSizes || d.formato || 'amanhecer';
     var div = document.createElement('div'); div.className = 'list-item queue-item';
-
     var state = getQueueItemState(item);
     var stateBadge = '';
     if(state === 'saved-new'){ stateBadge = '<span class="chip-red">🆕 NOVA · guardada</span>'; }
@@ -1551,20 +1589,16 @@ function renderQueue(){
     else if(state === 'format-changed'){ stateBadge = '<span class="chip-red pulse">⚠️ FORMATO ALTERADO · não guardado</span>'; }
     else if(state === 'in-drive'){ stateBadge = '<span class="chip-green">✅ NO DRIVE</span>'; }
     else if(state === 'new'){ stateBadge = '<span class="chip-mini">🆕 NÃO GUARDADA</span>'; }
-
     var jg = (state === 'in-drive' || state === 'saved-update');
     var ic = jg ? "✅" : "💾";
     var tipSave = jg ? "Já existe no Drive com este formato" : (state === 'format-changed' ? "Formato mudou — será criada NOVA etiqueta" : "Guardar este produto no Drive");
-
     var pr = (d.price!==undefined && d.price!=="" && d.price!==null) ? (escapeHTML(sanitizePrice(d.price)) + "€") : "S/ preço";
     var ref = d.internalCode ? ('Ref: ' + escapeHTML(d.internalCode) + ' · ') : "";
     var ivaShow = normIvaClient(d.iva||"");
     var ivaBadge = ivaShow ? ('<span class="iva-badge">IVA ' + escapeHTML(ivaShow) + '%</span>') : '';
     var fmtHtml = '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
-
     var opcoes = [['amanhecer','⭐ Amanhecer'],['80x60','6×8 · 80×60'],['125x80','Suporte · 125×80'],['frutaPromo125x80','Leve 2+ · 125×80'],['A6','A6 · 148×105'],['frutaPromoA6','Leve 2+ · A6'],['A5','A5 · 210×148'],['100x70','Cartaz · 100×70'],['custom','Personalizado']];
     var selOpts = opcoes.map(function(o){ var s=(o[0]===fr)?' selected':''; return '<option value="'+o[0]+'"'+s+'>'+o[1]+'</option>'; }).join('');
-
     div.innerHTML =
       '<div class="list-item-info">' +
         '<strong>' + escapeHTML(d.product || "Sem Nome") + '</strong>' +
@@ -1592,7 +1626,6 @@ function addToQueue(){
   toast("Adicionado à Fila · " + fmtShort(fmt), "success");
   setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 }
-
 function buildProdutoPayload(d){
   var fmt = d.presetSizes || 'amanhecer';
   var chave = String(d.internalCode || d.product || '').trim().toUpperCase();
@@ -1639,22 +1672,17 @@ window.duplicateQueueItem = function(i){
   renderQueue();
   toast("🧬 Linha duplicada — altere o formato para criar variante","info",3000);
 };
-
-/* ⭐ SAVE QUEUE ITEM — FIX CRÍTICO: NÃO SUBSTITUI AO MUDAR FORMATO */
 window.saveQueueItem = async function(i){
   var item = printQueue[i];
   if(!item){ toast("Item não encontrado.","error"); return; }
   var d = item.data;
   if(!d.product && !d.internalCode){ toast("Preencha o nome ou código.","warning"); return; }
-
   sanitizePriceAll();
   var fr = d.presetSizes || 'amanhecer';
   var cod = String(d.internalCode||'').trim().toUpperCase();
   var nom = String(d.product||'').trim().toUpperCase();
-
   var originalById = d._id ? savedProducts.find(function(p){ return String(p._id) === String(d._id); }) : null;
   var originalFormato = originalById ? (originalById.formato || 'amanhecer') : null;
-
   var exactMatch = savedProducts.find(function(p){
     var pFmt = p.formato || 'amanhecer';
     if(pFmt !== fr) return false;
@@ -1662,77 +1690,36 @@ window.saveQueueItem = async function(i){
     if(!cod && nom && String(p.nome||'').toUpperCase() === nom) return true;
     return false;
   });
-
-  var modo = 'new';
-  var targetId = null;
-  var variantReason = '';
-
-  if(originalById && originalFormato === fr){
-    modo = 'update';
-    targetId = d._id;
-  } else if(originalById && originalFormato !== fr){
-    modo = 'variant';
-    variantReason = 'Formato mudou de ' + fmtShort(originalFormato) + ' para ' + fmtShort(fr);
-  } else if(exactMatch){
-    var sub = await confirmDialog(
-      "Já existe no Drive \"" + (d.product || d.internalCode) + "\" no formato " + fmtShort(fr) + ".\n\nSubstituir a existente?",
-      "Já existe com este formato"
-    );
-    if(sub){ modo = 'update'; targetId = exactMatch._id; }
-    else { modo = 'variant'; variantReason = 'Criada nova versão'; }
+  var modo = 'new'; var targetId = null; var variantReason = '';
+  if(originalById && originalFormato === fr){ modo = 'update'; targetId = d._id; }
+  else if(originalById && originalFormato !== fr){ modo = 'variant'; variantReason = 'Formato mudou de ' + fmtShort(originalFormato) + ' para ' + fmtShort(fr); }
+  else if(exactMatch){
+    var sub = await confirmDialog("Já existe no Drive \"" + (d.product || d.internalCode) + "\" no formato " + fmtShort(fr) + ".\n\nSubstituir a existente?", "Já existe com este formato");
+    if(sub){ modo = 'update'; targetId = exactMatch._id; } else { modo = 'variant'; variantReason = 'Criada nova versão'; }
   }
-
   if(modo === 'variant' || modo === 'new'){ d._id = ''; }
-
   var t0 = Date.now();
-  setStatus(
-    modo === 'update'  ? "A atualizar no Drive…" :
-    modo === 'variant' ? "A criar etiqueta NOVA (" + fmtShort(fr) + ")…" :
-                         "A guardar no Drive…",
-    "loading"
-  );
-
+  setStatus(modo === 'update'  ? "A atualizar no Drive…" : modo === 'variant' ? "A criar etiqueta NOVA (" + fmtShort(fr) + ")…" : "A guardar no Drive…","loading");
   try{
     var fotoResult = await resolverFotoParaPayload(d);
     d.fotoId = fotoResult.fotoId; d.fotoUrl = fotoResult.fotoUrl;
     if(fotoResult.fotoUrl){ d.processedPhoto = fotoResult.fotoUrl; d.originalPhoto = fotoResult.fotoUrl; }
-
     var novoId = (modo === 'update' && targetId) ? targetId : gerarUUID();
     var payload = buildProdutoPayload(d);
-    payload._id = novoId;
-    payload.formato = fr;
-    if(modo !== 'update'){ payload.__criarNovo = true; payload.novaEtiqueta = true; }
-    else { payload.novaEtiqueta = false; }
-
+    payload._id = novoId; payload.formato = fr;
+    if(modo !== 'update'){ payload.__criarNovo = true; payload.novaEtiqueta = true; } else { payload.novaEtiqueta = false; }
     var resp = await api('guardarProduto', payload);
     if(resp && resp._id) payload._id = resp._id;
-
-    item.data._id = payload._id;
-    item.data.presetSizes = fr;
-    item.data.novaEtiqueta = (modo !== 'update');
+    item.data._id = payload._id; item.data.presetSizes = fr; item.data.novaEtiqueta = (modo !== 'update');
     item._queueState = (modo === 'update') ? 'saved-update' : 'saved-new';
-    item._savedAt = Date.now();
-    item._variantReason = variantReason || '';
-
-    atualizarProdutoLocal(payload);
-    renderDb();
-    renderQueue();
+    item._savedAt = Date.now(); item._variantReason = variantReason || '';
+    atualizarProdutoLocal(payload); renderDb(); renderQueue();
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-
     var dt = ((Date.now()-t0)/1000).toFixed(1);
-    if(modo === 'update'){
-      setStatus("Atualizado (" + dt + "s)","success");
-      toast("✏️ Etiqueta atualizada · " + fmtShort(fr),"success",3000);
-    } else {
-      setStatus("Nova etiqueta criada (" + dt + "s)","success");
-      toast("🆕 NOVA ETIQUETA criada · " + fmtShort(fr) + (variantReason ? " — " + variantReason : ""),"success",4500);
-    }
-  }catch(e){
-    setStatus("Erro ao guardar","error");
-    toast("Erro ao guardar: " + e.message,"error");
-  }
+    if(modo === 'update'){ setStatus("Atualizado (" + dt + "s)","success"); toast("✏️ Etiqueta atualizada · " + fmtShort(fr),"success",3000); }
+    else { setStatus("Nova etiqueta criada (" + dt + "s)","success"); toast("🆕 NOVA ETIQUETA criada · " + fmtShort(fr) + (variantReason ? " — " + variantReason : ""),"success",4500); }
+  }catch(e){ setStatus("Erro ao guardar","error"); toast("Erro ao guardar: " + e.message,"error"); }
 };
-
 async function resolverFotoParaPayload(d){
   var fid = d.fotoId || "", furl = d.fotoUrl || "";
   var foto = d.processedPhoto || d.originalPhoto;
@@ -1742,11 +1729,10 @@ async function resolverFotoParaPayload(d){
   return {fotoId: up.id, fotoUrl: up.url};
 }
 
-/* 19. DRIVE — LISTA */
+/* 19. DRIVE */
 function renderDb(){
   var c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
-
   var filtroEl = $("dbFiltroFormato");
   if(filtroEl){
     var fmts = [...new Set(savedProducts.map(function(p){ return p.formato||'amanhecer'; }))].sort();
@@ -1754,21 +1740,16 @@ function renderDb(){
     filtroEl.innerHTML = '<option value="">Todos os formatos</option>' + fmts.map(function(f){ return '<option value="'+escapeAttr(f)+'">'+escapeHTML(fmtLabel(f))+'</option>'; }).join('');
     if(fmts.indexOf(atual)>-1) filtroEl.value = atual;
   }
-
   var busca = ($("dbBusca") && $("dbBusca").value || '').trim().toUpperCase();
   var filtro = filtroEl ? filtroEl.value : '';
-
   if(savedProducts.length === 0){ c.innerHTML = '<div class="empty-msg">Nenhum produto guardado no Drive.</div>'; return; }
-
   var lista = savedProducts.map(function(p,i){ return {p:p,i:i}; });
   if(filtro) lista = lista.filter(function(o){ return (o.p.formato||'amanhecer') === filtro; });
   if(busca) lista = lista.filter(function(o){
     var n = String(o.p.nome||'').toUpperCase(), cd = String(o.p.codigo||'').toUpperCase();
     return n.indexOf(busca)>-1 || cd.indexOf(busca)>-1;
   });
-
   if(lista.length === 0){ c.innerHTML = '<div class="empty-msg">Sem resultados com os filtros atuais.</div>'; return; }
-
   var grupos = {};
   lista.forEach(function(o){
     var p = o.p;
@@ -1776,26 +1757,21 @@ function renderDb(){
     if(!grupos[k]) grupos[k] = { titulo: p.nome||p.codigo||'Sem nome', codigo: p.codigo||'', items: [] };
     grupos[k].items.push(o);
   });
-
   c.innerHTML = '';
   Object.keys(grupos).sort(function(a,b){ return grupos[a].titulo.localeCompare(grupos[b].titulo,'pt'); }).forEach(function(k){
     var g = grupos[k];
     var hdr = document.createElement('div'); hdr.className = 'drive-group-hdr';
     hdr.innerHTML = '<span>' + escapeHTML(g.titulo) + (g.codigo ? ' · Ref ' + escapeHTML(g.codigo) : '') + '</span><span class="cnt">' + g.items.length + '</span>';
     c.appendChild(hdr);
-
     g.items.sort(function(a,b){ var fa=a.p.formato||'amanhecer', fb=b.p.formato||'amanhecer'; return fa.localeCompare(fb); }).forEach(function(o){
       var d = o.p, i = o.i;
       var fr = d.formato || 'amanhecer';
       var div = document.createElement('div'); div.className = 'list-item';
-
       var isEditingThis = editingId && d._id && String(editingId) === String(d._id);
       if(isEditingThis){ div.classList.add('editing'); }
-
       var pr = (d.preco!==undefined && d.preco!=="" && d.preco!==null) ? (escapeHTML(sanitizePrice(d.preco)) + "€") : "S/ preço";
       var ivaShow = normIvaClient(d.iva||"");
       var ivaBadge = ivaShow ? ('<span class="iva-badge">IVA '+escapeHTML(ivaShow)+'%</span>') : '';
-
       var novaFlag = (d.novaEtiqueta === true || d.novaEtiqueta === 'true' || d.novaEtiqueta === 'TRUE');
       var stateBadges = '';
       if(novaFlag){ stateBadges += ' <span class="chip-red pulse">🆕 NOVA ETIQUETA</span>'; }
@@ -1803,7 +1779,6 @@ function renderDb(){
         if(editingDirty){ stateBadges += ' <span class="chip-red pulse">✏️ EDITADA · não guardada</span>'; }
         else { stateBadges += ' <span class="chip-red">✏️ EM EDIÇÃO</span>'; }
       }
-
       div.innerHTML =
         '<div class="list-item-info"><strong>' + escapeHTML(d.nome||"Sem Nome") + '</strong>' +
         '<div class="q-meta">' +
@@ -1820,30 +1795,24 @@ function renderDb(){
     });
   });
 }
-
 async function saveToDb(options){
   options = options || {};
   var forceNew = !!options.forceNew;
   var forcePrompt = !!options.forcePrompt;
-
   sanitizePriceAll();
   var data = getFormData();
   if(!data.product && !data.internalCode){ toast("Preencha um nome ou código.","warning"); return {ok:false}; }
-
   var fmt = data.presetSizes || 'amanhecer';
   var cod = String(data.internalCode||'').trim().toUpperCase();
   var nom = String(data.product||'').trim().toUpperCase();
-
   var modo = 'new', targetId = null;
-
   if(editingId && !forceNew){
     var editRec = savedProducts.find(function(p){ return String(p._id) === String(editingId); });
     var editFmt = editRec ? (editRec.formato || 'amanhecer') : null;
     if(editRec && editFmt === fmt){
       var ch = await choiceDialog('Está a editar uma etiqueta já existente no Drive.\n\nO que pretende fazer?','Guardar etiqueta');
       if(ch === 'cancel') return {ok:false};
-      if(ch === 'update'){ modo = 'update'; targetId = editingId; }
-      else { modo = 'variant'; }
+      if(ch === 'update'){ modo = 'update'; targetId = editingId; } else { modo = 'variant'; }
     } else if(editRec && editFmt !== fmt){
       modo = 'variant';
       toast('Formato alterado — será criada NOVA etiqueta (o original mantém-se)', 'info', 4200);
@@ -1862,59 +1831,32 @@ async function saveToDb(options){
         'Guardar'
       );
       if(choice === 'cancel') return {ok:false};
-      if(choice === 'update' && dupExato){ modo = 'update'; targetId = dupExato._id; }
-      else { modo = 'variant'; }
+      if(choice === 'update' && dupExato){ modo = 'update'; targetId = dupExato._id; } else { modo = 'variant'; }
     }
   }
-
   if(modo === 'variant' || modo === 'new'){ data._id = ''; }
-
   var t0 = Date.now();
   setStatus("A preparar imagem…","loading");
   try{
     var fot = await resolverFotoParaPayload(data);
     if(fot.fotoUrl){ globalOriginalPhoto = fot.fotoUrl; globalProcessedPhoto = fot.fotoUrl; }
-
     var payload = buildProdutoPayload(data);
     payload.fotoId = fot.fotoId; payload.fotoUrl = fot.fotoUrl;
     payload.formato = fmt;
-
-    if(modo === 'update' && targetId){
-      payload._id = targetId;
-      payload.novaEtiqueta = false;
-      setStatus("A atualizar no Drive…","loading");
-    } else {
-      payload._id = gerarUUID();
-      payload.__criarNovo = true;
-      payload.novaEtiqueta = true;
-      setStatus("A guardar NOVA etiqueta (" + fmtShort(fmt) + ")…","loading");
-    }
-
+    if(modo === 'update' && targetId){ payload._id = targetId; payload.novaEtiqueta = false; setStatus("A atualizar no Drive…","loading"); }
+    else { payload._id = gerarUUID(); payload.__criarNovo = true; payload.novaEtiqueta = true; setStatus("A guardar NOVA etiqueta (" + fmtShort(fmt) + ")…","loading"); }
     var resp = await api('guardarProduto', payload);
     if(resp && resp._id) payload._id = resp._id;
-
     atualizarProdutoLocal(payload); renderDb();
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-
-    if(modo === 'update'){
-      editingId = payload._id; editingFromDrive = true; editingDirty = false; editingFormato = fmt;
-      editingOriginal = JSON.parse(JSON.stringify(payload));
-    } else {
-      editingId = payload._id; editingCode = payload.codigo||null; editingFormato = fmt;
-      editingFromDrive = false; editingDirty = false; editingOriginal = null;
-      currentFormId = payload._id;
-    }
+    if(modo === 'update'){ editingId = payload._id; editingFromDrive = true; editingDirty = false; editingFormato = fmt; editingOriginal = JSON.parse(JSON.stringify(payload)); }
+    else { editingId = payload._id; editingCode = payload.codigo||null; editingFormato = fmt; editingFromDrive = false; editingDirty = false; editingOriginal = null; currentFormId = payload._id; }
     updateEditingBanner(); renderDb();
-
     var dt = ((Date.now()-t0)/1000).toFixed(1);
     setStatus((modo === 'update' ? "Atualizado" : "NOVA etiqueta criada") + " (" + dt + "s)","success");
     toast((modo === 'update' ? "✏️ Original atualizado" : "🆕 NOVA ETIQUETA") + " · " + fmtShort(fmt), "success", 3400);
     return {ok:true, modo:modo, _id:payload._id};
-  }catch(e){
-    setStatus("Erro ao guardar","error");
-    toast("Erro ao guardar: " + e.message,"error");
-    return {ok:false, error:e.message};
-  }
+  }catch(e){ setStatus("Erro ao guardar","error"); toast("Erro ao guardar: " + e.message,"error"); return {ok:false, error:e.message}; }
 }
 async function saveDbAndQueue(){
   sanitizePriceAll();
@@ -1936,10 +1878,7 @@ function renderBancoFruta(filtro){
   var q = filtro.toUpperCase();
   var lista = bancoFruta.filter(function(f){ if((f.tipo||'') !== bancoTipoFiltro) return false; if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false; return true; });
   updateBancoCounts();
-  if(lista.length === 0){
-    c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>';
-    return;
-  }
+  if(lista.length === 0){ c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>'; return; }
   c.innerHTML = lista.map(function(f){
     var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
     var tag = '<span class="bf-tag ' + tipo + '">' + (tipo==='legume'?'🥬 Legume':'🍎 Fruta') + '</span>';
@@ -2001,7 +1940,7 @@ async function otimizarImagensDrive(){
   toast("✅ Otimizadas: "+done+(errs?" · Erros: "+errs:""),"success",6500);
 }
 
-/* 21. CARD PREVIEW (editor) */
+/* 21. CARD PREVIEW */
 var _updateCardTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
@@ -2009,6 +1948,7 @@ function updateCard(){
   _updateCardTimer = setTimeout(function(){
     try{
       sanitizePriceAll();
+      updateIvaVisual();
       updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
       if(editingFromDrive && editingId){
         updateEditingBanner();
@@ -2210,20 +2150,14 @@ function updateCardUnsafe(){
   }catch(err){}
 }
 
-/* 22. CLONE DIRETO (SEM TOCAR NO EDITOR) — ⚡ MUITO MAIS RÁPIDO */
+/* 22. CLONE DIRETO */
 function populateClone(clone, d){
   var st = clone.querySelector('.store-text');
   if(st) st.textContent = d.store || "GARCIA/PATAIAS";
-
   var prod = clone.querySelector('.product');
   if(prod) setProductText(prod, String(d.product||'').toUpperCase() || 'NOME DO PRODUTO');
-
   var codeEl = clone.querySelector('.item-code');
-  if(codeEl){
-    if(d.internalCode){ codeEl.style.display = 'block'; codeEl.textContent = String(d.internalCode).toUpperCase(); }
-    else { codeEl.style.display = 'none'; codeEl.textContent = ''; }
-  }
-
+  if(codeEl){ if(d.internalCode){ codeEl.style.display = 'block'; codeEl.textContent = String(d.internalCode).toUpperCase(); } else { codeEl.style.display = 'none'; codeEl.textContent = ''; } }
   var capUnit = d.capacityUnit || 'peso';
   var info = calcUnitInfo(capUnit);
   var capNum = parseFloat(d.capacity) || 0;
@@ -2236,33 +2170,18 @@ function populateClone(clone, d){
   var promoRow = clone.querySelector('.promo-top-row');
   var oldPriceEl = clone.querySelector('.old-price');
   var promoTag = clone.querySelector('.promo-tag');
-
   if(priceNum !== null){
     var f = priceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2});
     if(priceEl) priceEl.innerHTML = f + '<span class="unit-inline">' + info.mainSuffix + '</span>';
-    if(capNum > 0 && unitPriceEl){
-      var pu = priceNum / (capNum * info.normalizar);
-      unitPriceEl.innerHTML = pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.refSuffix;
-      unitPriceEl.style.display = 'block';
-    } else if(unitPriceEl){ unitPriceEl.style.display = 'none'; }
-  } else if(priceEl){
-    priceEl.innerHTML = '0,00<span class="unit-inline">' + info.mainSuffix + '</span>';
-    if(unitPriceEl) unitPriceEl.style.display = 'none';
-  }
-
+    if(capNum > 0 && unitPriceEl){ var pu = priceNum / (capNum * info.normalizar); unitPriceEl.innerHTML = pu.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + info.refSuffix; unitPriceEl.style.display = 'block'; }
+    else if(unitPriceEl){ unitPriceEl.style.display = 'none'; }
+  } else if(priceEl){ priceEl.innerHTML = '0,00<span class="unit-inline">' + info.mainSuffix + '</span>'; if(unitPriceEl) unitPriceEl.style.display = 'none'; }
   if(d.isPromoActive && oldPriceNum !== null && !isFP && promoRow && oldPriceEl && promoTag){
     promoRow.style.display = 'flex';
     setOldPriceText(oldPriceEl, oldPriceNum.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2})+" €");
-    if(priceNum !== null && oldPriceNum > priceNum){
-      var dd = Math.ceil(((oldPriceNum - priceNum)/oldPriceNum)*100);
-      promoTag.textContent = "-"+dd+"%";
-    } else { promoTag.textContent = "-0%"; }
+    if(priceNum !== null && oldPriceNum > priceNum){ var dd = Math.ceil(((oldPriceNum - priceNum)/oldPriceNum)*100); promoTag.textContent = "-"+dd+"%"; } else { promoTag.textContent = "-0%"; }
     promoTag.style.display = 'inline-block';
-  } else if(promoRow){
-    promoRow.style.display = 'none';
-    if(oldPriceEl) oldPriceEl.textContent = '';
-  }
-
+  } else if(promoRow){ promoRow.style.display = 'none'; if(oldPriceEl) oldPriceEl.textContent = ''; }
   if(isFP){
     var puEl = clone.querySelector('.fp-box.fp-normal .fp-price');
     var puUEl = clone.querySelector('.fp-box.fp-normal .fp-unit');
@@ -2276,72 +2195,43 @@ function populateClone(clone, d){
     if(ppUEl) ppUEl.textContent = "/ " + pu3;
     if(ppLbl) ppLbl.textContent = (pu3 === "KG") ? "LEVE " + pm + " KG OU MAIS" : "LEVE " + pm + " UN OU MAIS";
   }
-
   var fruitEl = clone.querySelector('.fruit-full-bar');
   if(fruitEl){
     var org = String(d.origem||'').toUpperCase(), cat = String(d.categoria||'').toUpperCase(), cal = String(d.calibre||'').toUpperCase();
     var parts = [];
-    if(org) parts.push("Origem: " + org);
-    if(cat) parts.push("Cat. " + cat);
-    if(cal) parts.push("Cal. " + cal);
-    if(parts.length){ fruitEl.style.display = 'block'; fruitEl.textContent = parts.join(" • "); }
-    else fruitEl.style.display = 'none';
+    if(org) parts.push("Origem: " + org); if(cat) parts.push("Cat. " + cat); if(cal) parts.push("Cal. " + cal);
+    if(parts.length){ fruitEl.style.display = 'block'; fruitEl.textContent = parts.join(" • "); } else fruitEl.style.display = 'none';
   }
-
   var depRow = clone.querySelector('.deposit-row');
   var depTxt = clone.querySelector('.deposit-box');
   var depSelect = d.depositFeeSelect, depVal = (depSelect === 'custom') ? String(d.customDepositInput||'').trim() : depSelect;
-  if(depVal && depRow && depTxt){ depTxt.textContent = depVal; depRow.classList.add('show'); }
-  else if(depRow){ depRow.classList.remove('show'); }
-
+  if(depVal && depRow && depTxt){ depTxt.textContent = depVal; depRow.classList.add('show'); } else if(depRow){ depRow.classList.remove('show'); }
   var ivaEl = clone.querySelector('.iva-text');
-  if(ivaEl){
-    var iv = normIvaClient(d.iva || '');
-    if(iv){ ivaEl.textContent = "IVA INCL. " + iv + "%"; ivaEl.style.display = ''; }
-    else { ivaEl.textContent = ''; ivaEl.style.display = 'none'; }
-  }
-
+  if(ivaEl){ var iv = normIvaClient(d.iva || ''); if(iv){ ivaEl.textContent = "IVA INCL. " + iv + "%"; ivaEl.style.display = ''; } else { ivaEl.textContent = ''; ivaEl.style.display = 'none'; } }
   var eu = clone.querySelector('.extra-unit');
   if(eu){
     var txt = '';
     if(d.infoExtraTipo === 'consumir' && d.infoExtraData) txt = "CONSUMIR DE PREFERÊNCIA ANTES DE " + formatDatePT(d.infoExtraData);
     else if(d.infoExtraTipo === 'validade' && d.infoExtraData) txt = "APROXIMAÇÃO PRAZO DE VALIDADE " + formatDatePT(d.infoExtraData);
     else if(d.infoExtraTipo === 'danificado') txt = "ARTIGO COM EMBALAGEM DANIFICADA";
-    if(txt){ eu.style.display = 'block'; eu.textContent = txt; }
-    else { eu.style.display = 'none'; eu.textContent = ''; }
+    if(txt){ eu.style.display = 'block'; eu.textContent = txt; } else { eu.style.display = 'none'; eu.textContent = ''; }
   }
-
   var imgBox = clone.querySelector('.col-image');
   var img = imgBox ? imgBox.querySelector('img') : null;
   var photo = d.processedPhoto || d.originalPhoto || d.fotoUrl;
-  if(photo && !clone.classList.contains('size-tiny') && imgBox && img){
-    clone.classList.add('has-image');
-    imgBox.classList.add('show');
-    img.src = photo;
-  } else {
-    clone.classList.remove('has-image');
-    if(imgBox) imgBox.classList.remove('show');
-  }
-
+  if(photo && !clone.classList.contains('size-tiny') && imgBox && img){ clone.classList.add('has-image'); imgBox.classList.add('show'); img.src = photo; }
+  else { clone.classList.remove('has-image'); if(imgBox) imgBox.classList.remove('show'); }
   var bcBox = clone.querySelector('.barcode-container');
   var svg = bcBox ? bcBox.querySelector('svg') : null;
   var bcTxt = bcBox ? bcBox.querySelector('.ean-text') : null;
   var eanVal = normalizeBarcode(d.ean);
-  if(eanVal && bcBox && svg && bcTxt && !clone.classList.contains('size-tiny')){
-    bcBox.classList.add('show');
-    bcTxt.textContent = eanVal.toUpperCase();
-    svg.innerHTML = '';
-    drawBarcode(svg, eanVal);
-  } else if(bcBox){
-    bcBox.classList.remove('show');
-  }
-
+  if(eanVal && bcBox && svg && bcTxt && !clone.classList.contains('size-tiny')){ bcBox.classList.add('show'); bcTxt.textContent = eanVal.toUpperCase(); svg.innerHTML = ''; drawBarcode(svg, eanVal); }
+  else if(bcBox){ bcBox.classList.remove('show'); }
   var promoTextEl = clone.querySelector('.promo-text');
   if(promoTextEl) promoTextEl.textContent = formatPromoDate(d.promoStart, d.promoEnd);
   var printDateEl = clone.querySelector('.print-date');
   if(printDateEl) printDateEl.textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
 }
-
 function buildLabelClone(data, dims, forPrint){
   _skipAutofitInCard = true;
   try{
@@ -2354,13 +2244,11 @@ function buildLabelClone(data, dims, forPrint){
     populateClone(clone, data);
     if(forPrint) applyPrintSizes(clone, dims);
     return clone;
-  } finally {
-    _skipAutofitInCard = false;
-  }
+  } finally { _skipAutofitInCard = false; }
 }
-function restorePrintBuildState(){ /* nop — mantido por compat */ }
+function restorePrintBuildState(){ /* nop */ }
 
-/* 23. VALIDAÇÃO PRÉ-IMPRESSÃO */
+/* 23. IMPRESSÃO */
 function validateBeforePrint(){
   setValidationState();
   if($("appStatus").dataset.type === "error"){ toast("Corrija os erros antes de imprimir.","error"); return false; }
@@ -2456,99 +2344,52 @@ async function _waitForImages(container){
     return new Promise(function(res){ img.addEventListener("load",res,{once:true}); img.addEventListener("error",res,{once:true}); setTimeout(res,2500); });
   }));
 }
-
-/* 24. TRIGGER PRINT — OTIMIZADO COM PROGRESSO */
 async function triggerPrint(){
   if(printInProgress) return;
   if(!validateBeforePrint()) return;
   printInProgress = true;
-
   var ov = $("proPrintOverlay");
-  ov.classList.add("show");
-  ov.style.display = "flex";
-
-  var safetyTimer = setTimeout(function(){
-    if(printInProgress){
-      cleanupAfterPrint();
-      toast("Impressão cancelada (timeout)", "warning");
-    }
-  }, 15000);
-
+  ov.classList.add("show"); ov.style.display = "flex";
+  var safetyTimer = setTimeout(function(){ if(printInProgress){ cleanupAfterPrint(); toast("Impressão cancelada (timeout)", "warning"); } }, 15000);
   var pz = $("printZone"); pz.innerHTML = ""; pz.classList.add("measure");
   var ef = $("presetSizes").value;
-
   var items = [];
-  printQueue.forEach(function(q){
-    var f = _fmtDoItem(q, ef);
-    for(var i = 0; i < q.copies; i++) items.push({data: q.data, format: f});
-  });
-
+  printQueue.forEach(function(q){ var f = _fmtDoItem(q, ef); for(var i = 0; i < q.copies; i++) items.push({data: q.data, format: f}); });
   var groups = _agruparItensPorFormato(items);
   var aq = [];
   groups.forEach(function(g){ if(g.format === "amanhecer") g.items.forEach(function(d){ aq.push(d); }); });
   var totalCards = items.length;
-
   var stepEl = document.getElementById('printStep');
   var pctEl  = document.getElementById('printPct');
-  function setProgress(step, pct){
-    if(stepEl) stepEl.textContent = step;
-    if(pctEl)  pctEl.textContent = Math.round(pct) + "%";
-  }
-
+  function setProgress(step, pct){ if(stepEl) stepEl.textContent = step; if(pctEl) pctEl.textContent = Math.round(pct) + "%"; }
   try{
     setProgress("A gerar " + totalCards + " etiquetas…", 10);
     await new Promise(function(r){ requestAnimationFrame(r); });
-
     var frag = document.createDocumentFragment();
     construirPaginasA4(frag, groups, aq);
     pz.appendChild(frag);
-
     setProgress("A ajustar layout…", 55);
     await new Promise(function(r){ requestAnimationFrame(r); });
-
     var cards = pz.querySelectorAll(".label-card");
     var totalC = cards.length;
     for(var i = 0; i < totalC; i++){
       var card = cards[i];
-      try{
-        autoFitExtraUnit(card);
-        autoFitDeposit(card);
-        autoFitDescription(card);
-        autoFitPromoArea(card);
-        autoFitFooterText(card);
-        if(card.classList.contains("has-image")) autoAdaptImage(card);
-      }catch(e){}
-      if(i % 10 === 0){
-        var pct = 55 + (i / Math.max(1,totalC)) * 30;
-        setProgress("A ajustar " + i + "/" + totalC + "…", pct);
-        await new Promise(function(r){ requestAnimationFrame(r); });
-      }
+      try{ autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); if(card.classList.contains("has-image")) autoAdaptImage(card); }catch(e){}
+      if(i % 10 === 0){ var pct = 55 + (i / Math.max(1,totalC)) * 30; setProgress("A ajustar " + i + "/" + totalC + "…", pct); await new Promise(function(r){ requestAnimationFrame(r); }); }
     }
-
     setProgress("A carregar imagens…", 88);
     try{ await Promise.race([ _waitForImages(pz), new Promise(function(r){ setTimeout(r, 3000); }) ]); }catch(e){}
-
     setProgress("A abrir impressão…", 98);
     await new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
-
     clearTimeout(safetyTimer);
     try{ window.print(); }catch(e){}
-
-    setTimeout(function(){
-      clearTimeout(safetyTimer);
-      cleanupAfterPrint();
-    }, isMobile() ? 1500 : 1000);
-
-  }catch(err){
-    clearTimeout(safetyTimer);
-    cleanupAfterPrint();
-    toast("Erro ao preparar impressão: " + err.message, "error", 6000);
-  }
+    setTimeout(function(){ clearTimeout(safetyTimer); cleanupAfterPrint(); }, isMobile() ? 1500 : 1000);
+  }catch(err){ clearTimeout(safetyTimer); cleanupAfterPrint(); toast("Erro ao preparar impressão: " + err.message, "error", 6000); }
 }
 window.triggerPrint = triggerPrint;
 window.addEventListener("afterprint", function(){ if(_printCleanupTimer){ clearTimeout(_printCleanupTimer); _printCleanupTimer = null; } cleanupAfterPrint(); });
 
-/* 25. PDF / EMAIL */
+/* 24. PDF / EMAIL */
 var _h2cLoading = null;
 function loadHtml2CanvasPro(){ if(window.html2canvas && window.html2canvas.version) return Promise.resolve(); if(_h2cLoading) return _h2cLoading; _h2cLoading = new Promise(function(resolve,reject){ var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/dist/html2canvas-pro.min.js'; s.onload=function(){ _h2cLoading=null; resolve(); }; s.onerror=function(){ _h2cLoading=null; reject(new Error('Falha html2canvas')); }; document.head.appendChild(s); }); return _h2cLoading; }
 var _jsPDFLoading = null;
@@ -2668,7 +2509,7 @@ async function enviarEtiquetasPorEmail(){
   } finally { _emailSending = false; if(btn){ btn.disabled = false; btn.textContent = bt||"📧 Enviar por Email"; } }
 }
 
-/* 26. CÂMARA */
+/* 25. CÂMARA */
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r,200); }); }
   var modal = $("cameraModal"); modal.classList.add("show"); torchOn = false;
@@ -2687,7 +2528,7 @@ async function openScanner(){
 }
 async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; } scanTrack = null; scanTorchOn = false; $("scannerModal").classList.remove("show"); }
 
-/* 27. TOGGLE código → EAN */
+/* 26. TOGGLE código → EAN */
 (function(){
   var code = document.getElementById("internalCode"), sync = document.getElementById("syncCodeToEan"), wrap = document.getElementById("syncToggleWrap");
   if(!code||!sync||!wrap) return;
@@ -2697,10 +2538,10 @@ async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await sca
   sync.addEventListener("change", function(){ wrap.classList.toggle("active", sync.checked); try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked?'1':'0'); }catch(e){} if(sync.checked){ ap(); if(code.value.trim()){ toast("Código interno será copiado para o código de barras","info",2400); updateCard(); } } });
 })();
 
-/* 28. FILTROS DRIVE */
+/* 27. FILTROS DRIVE */
 (function(){ var s = document.getElementById('dbFiltroFormato'), b = document.getElementById('dbBusca'); if(s) s.addEventListener('change', renderDb); if(b){ var t = null; b.addEventListener('input', function(){ if(t) clearTimeout(t); t = setTimeout(renderDb, 180); }); } })();
 
-/* 29. LOADFROMDB / VARIANT / REMOVE / QUEUE */
+/* 28. LOADFROMDB / VARIANT / REMOVE / QUEUE */
 window.loadFromDb = function(i){
   var d = savedProducts[i]; if(!d) return;
   var data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
@@ -2739,7 +2580,6 @@ window.removeFromDb = async function(i){
   var n = d.nome || d.codigo || "produto sem nome";
   var fr = d.formato || 'amanhecer';
   if(!(await confirmDialog("Eliminar \""+n+"\" ("+fmtShort(fr)+") do Drive?"))) return;
-
   var backup = savedProducts.splice(i, 1)[0];
   renderDb();
   if(editingId && d._id && String(editingId) === String(d._id)){
@@ -2748,46 +2588,30 @@ window.removeFromDb = async function(i){
     updateEditingBanner();
   }
   setGlobalStatus("A eliminar…","loading",{duration:8000});
-
   try{
     var r = await api('apagarProduto', {_id:d._id||'',codigo:d.codigo||'',nome:d.nome||'',formato:fr}, 0);
-    if(!r || (r.apagadas === 0 && r.jaNaoExistia)){
-      setGlobalStatus("Já não existia — a sincronizar","info");
-      carregarTudo();
-      return;
-    }
+    if(!r || (r.apagadas === 0 && r.jaNaoExistia)){ setGlobalStatus("Já não existia — a sincronizar","info"); carregarTudo(); return; }
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
     setGlobalStatus("Eliminado ✓","success",{duration:1800});
     toast("Eliminado: "+n,"success",1800);
-  }catch(e){
-    savedProducts.splice(i, 0, backup);
-    renderDb();
-    setGlobalStatus("Erro ao eliminar","error");
-    toast("Erro: " + e.message, "error", 5000);
-  }
+  }catch(e){ savedProducts.splice(i, 0, backup); renderDb(); setGlobalStatus("Erro ao eliminar","error"); toast("Erro: " + e.message, "error", 5000); }
 };
 window.apagarTudo = async function(){
   if(!savedProducts.length){ toast("Sem etiquetas para apagar.","info"); return; }
   var ok = await confirmDialog("⚠️ APAGAR TODAS as " + savedProducts.length + " etiquetas do Drive?\n\nEsta ação NÃO pode ser desfeita.", "Apagar tudo");
   if(!ok) return;
-
   var backup = savedProducts.slice();
   savedProducts = []; renderDb();
   editingId=null; editingCode=null; editingFormato=null;
   editingOriginal=null; editingFromDrive=false; editingDirty=false;
   updateEditingBanner();
-
   setGlobalStatus("A apagar todas…","loading",{duration:30000});
   try{
     var r = await api('apagarTodosProdutos',{}, 1);
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:[],banco:bancoFruta,t:Date.now()}); }catch(e){}
     setGlobalStatus("Drive limpo: " + (r.apagadas||backup.length) + " etiquetas", "success", {duration:3500});
     toast("🧹 Drive limpo", "success", 3000);
-  }catch(e){
-    savedProducts = backup; renderDb();
-    setGlobalStatus("Erro ao apagar tudo","error");
-    toast("Erro: " + e.message, "error", 5000);
-  }
+  }catch(e){ savedProducts = backup; renderDb(); setGlobalStatus("Erro ao apagar tudo","error"); toast("Erro: " + e.message, "error", 5000); }
 };
 window.queueFromDb = function(i){
   var d = savedProducts[i]; if(!d) return;
@@ -2823,7 +2647,7 @@ function updateEditingBanner(){
 }
 function updateSaveButtonsState(){ var b = document.getElementById('saveDbBtn'); if(b){ if(editingFromDrive && editingId){ b.innerHTML = '💾 Guardar (perguntar)'; } else { b.innerHTML = '💾 Guardar'; } } }
 
-/* 30. EVENTOS */
+/* 29. EVENTOS */
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
 document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
 document.getElementById('saveDbAndQueueBtn').addEventListener("click", saveDbAndQueue);
@@ -2878,12 +2702,18 @@ document.addEventListener("keydown", function(ev){
   if(ev.key === "Escape"){ closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); $("emailModal").classList.remove("show"); fecharPreviewModal(); $("choiceModal").classList.remove("show"); }
 });
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight","infoExtraData","customIvaInput"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("input", updateCard); });
-["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo","ivaSelect"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
+["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
+document.getElementById('ivaSelect').addEventListener("change", function(){
+  var cf = $("customIvaField");
+  if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; }
+  if(this.value !== "custom"){ var ci = $("customIvaInput"); if(ci) ci.value = ""; }
+  updateIvaVisual();
+  updateCard();
+});
 document.getElementById('infoExtraTipo').addEventListener("change", function(){ updateInfoExtraVisibility(); updateCard(); });
 document.getElementById('presetSizes').addEventListener("change", function(){ var v = this.value; $("customDimensionsRow").style.display = (v === "custom") ? "grid" : "none"; updateOrientationVisibility(); updateCard(); });
 document.getElementById('isPromoActive').addEventListener("change", function(){ var l = this.closest("label"); if(l) l.classList.toggle("checked", this.checked); updateCard(); });
 document.getElementById('depositFeeSelect').addEventListener("change", function(){ var cf = $("customDepositField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } updateCard(); });
-document.getElementById('ivaSelect').addEventListener("change", function(){ var cf = $("customIvaField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } if(this.value !== "custom"){ var ci = $("customIvaInput"); if(ci) ci.value = ""; } updateCard(); });
 document.getElementById('capacityUnit').addEventListener("change", function(){ var c = $("capacity"); var d = DEFAULTS_UNIDADE[this.value]; c.value = (d !== undefined) ? d : ""; updateCard(); });
 document.getElementById('photo').addEventListener("change", async function(e){
   var f = e.target.files[0]; globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -2900,6 +2730,7 @@ document.getElementById('clearBtn').addEventListener("click", async function(){
   ["internalCode","product","price","oldPrice","ean","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","infoExtraData","customIvaInput"].forEach(function(id){ if($(id)) $(id).value = ""; });
   $("depositFeeSelect").value = ""; $("customDepositField").style.display = "none";
   $("ivaSelect").value = ""; $("customIvaField").style.display = "none";
+  updateIvaVisual();
   $("capacityUnit").value = "peso"; $("capacity").value = "";
   $("isPromoActive").checked = false;
   var l = $("isPromoActive").closest("label"); if(l) l.classList.remove("checked");
@@ -2955,12 +2786,12 @@ document.addEventListener("change", function(e){
 });
 (function(){ var el = $("oldPrice"); if(!el) return; el.addEventListener("input", function(){ var tv = !!String(this.value||"").trim(); $("isPromoActive").checked = tv; var l = $("isPromoActive").closest("label"); if(l) l.classList.toggle("checked", tv); }); })();
 
-/* 31. BOOT */
+/* 30. BOOT */
 (async function boot(){
   try{
     try{ var s = localStorage.getItem(AUTH_KEY_USER); if(s) _currentUser = JSON.parse(s); }catch(e){}
     atualizarUICredenciais();
-    updateOrientationVisibility(); updateInfoExtraVisibility();
+    updateOrientationVisibility(); updateInfoExtraVisibility(); updateIvaVisual();
     try{ updateSaveButtonsState(); }catch(e){}
     try{
       var b = localStorage.getItem(FILA_BACKUP_KEY);
@@ -2979,7 +2810,6 @@ document.addEventListener("change", function(e){
     if(getStoredToken()) carregarTudo();
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
-    // ⚡ Aquecer servidor
     setTimeout(function(){ try{ api('ping', {}, 0); }catch(e){} }, 500);
   }catch(err){}
 })();
