@@ -224,9 +224,12 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container{width:100%;height:72%;display:flex;justify-content:center;overflow:hidden}
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase;letter-spacing:.04em}
-.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;flex-shrink:0;height:9%;overflow:hidden}
-.promo-text{font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;margin-right:3px}
+.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;flex-shrink:0;height:9%;overflow:hidden;gap:2px}
+.promo-text{font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
+.iva-text{font-size:clamp(5px,1.5cqw,8px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;letter-spacing:.02em;text-transform:uppercase;display:inline-block}
+.iva-text:empty{display:none!important}
+.iva-badge{display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#065f46;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid #a7f3d0;line-height:1.3}
 .fruit-promo-prices{display:none;flex-direction:row;width:100%;flex:0 0 auto;gap:4px;padding:2px 0;align-items:stretch;flex-shrink:0}
 .label-card.layout-fruit-promo .col-price{display:none!important}
 .label-card.layout-fruit-promo .fruit-promo-prices{display:flex!important}
@@ -472,6 +475,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   #printZone .print-sheet-amanhecer .label-card{width:66mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(1),#printZone .print-sheet-amanhecer .label-card:nth-child(2),#printZone .print-sheet-amanhecer .label-card:nth-child(3){height:38mm!important}
   #printZone .print-sheet-amanhecer .label-card:nth-child(n+4){height:40mm!important}
+  .iva-text{color:#000!important}
 }
 </style>
 <style>
@@ -501,7 +505,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   .row > .btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}
 }
 #clearBtn[data-fullwidth="1"]{grid-column:1 / -1}
-/* ===== VARIANTES / FORMATO (Gestão Profissional) ===== */
+/* ===== VARIANTES / FORMATO ===== */
 .fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em;border:1px solid #c7d2fe;line-height:1.3}
 .fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
 .fmt-badge.large{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
@@ -703,6 +707,22 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
               <button type="button" class="date-clear-btn" data-target="infoExtraData" data-tip="Limpar data">✕</button>
             </div>
           </div>
+          <div class="row">
+            <div class="fld">
+              <label for="ivaSelect">Taxa de IVA</label>
+              <select id="ivaSelect">
+                <option value="" selected>Nenhuma</option>
+                <option value="6">IVA 6% · Reduzida</option>
+                <option value="13">IVA 13% · Intermédia</option>
+                <option value="23">IVA 23% · Normal</option>
+                <option value="custom">Outro valor…</option>
+              </select>
+            </div>
+            <div class="fld" id="customIvaField" style="display:none">
+              <label for="customIvaInput">Valor (%)</label>
+              <input id="customIvaInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex: 6">
+            </div>
+          </div>
           <div class="fld">
             <label for="depositFeeSelect">Taxa Volta</label>
             <select id="depositFeeSelect">
@@ -830,6 +850,7 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
                 </div>
                 <div class="footer-container">
                   <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
+                  <div class="iva-text" id="cardIvaText" style="display:none"></div>
                   <div class="print-date" id="cardPrintDate"></div>
                 </div>
               </div>
@@ -1018,8 +1039,8 @@ const AUTH_KEY_JWT  = 'balcao_jwt';
 const AUTH_KEY_EXP  = 'balcao_jwt_exp';
 const AUTH_KEY_USER = 'balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365 * 24 * 3600;
-const CACHE_KEY = 'balcao_cache_v236';
-const CACHE_SCHEMA_VERSION = 4;
+const CACHE_KEY = 'balcao_cache_v237';
+const CACHE_SCHEMA_VERSION = 5;
 const IMG_MAX_SIZE = 2400;
 const IMG_QUALITY  = 0.98;
 const THUMB_SIZE   = 200;
@@ -1051,6 +1072,30 @@ function fmtClass(v){
   return '';
 }
 function gerarQid(){ return 'q_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+/* ===== IVA ===== */
+function normIvaClient(v){
+  if(v === null || v === undefined) return "";
+  const s = String(v).trim().replace(/[%\s]/g, "");
+  if(!s) return "";
+  const n = Number(s);
+  if(isFinite(n) && n >= 0 && n <= 100) return String(n);
+  return s;
+}
+function getIvaValue(){
+  const sel = document.getElementById("ivaSelect");
+  if(!sel) return "";
+  const v = sel.value;
+  if(v === "custom"){
+    const inp = document.getElementById("customIvaInput");
+    return inp ? normIvaClient(inp.value) : "";
+  }
+  return normIvaClient(v);
+}
+function getIvaDisplay(){
+  const v = getIvaValue();
+  if(!v) return "";
+  return "IVA INCL. " + v + "%";
+}
 /* 3. AUTENTICAÇÃO */
 let _reauthPromise = null;
 let _currentUser = null;
@@ -1218,6 +1263,7 @@ function normalizarProdutoParaFila(p){
   o.customHeight  = o.customHeight  || "38";
   o.originalPhoto = o.originalPhoto || o.fotoUrl     || "";
   o.processedPhoto= o.processedPhoto|| o.fotoUrl     || "";
+  o.iva           = (o.iva !== undefined && o.iva !== null) ? String(o.iva).trim() : "";
   return o;
 }
 function escapeHTML(s){ return String(s || "").replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]; }); }
@@ -1433,7 +1479,7 @@ async function removeBackgroundSmart(dataUrl){
     return new Promise(function(resolve){ removeBackgroundSimple(dataUrl, resolve); });
   }
 }
-/* 9. API — deduplicação + timeout adaptativo + 1 retentativa */
+/* 9. API */
 let _apiWarm = false;
 const _apiInFlight = new Map();
 
@@ -1534,7 +1580,6 @@ let editingCode = null;
 let currentFormId = null;
 let _printCleanupTimer = null;
 let _restoreQueueAfterPrint = null;
-/* 10b. IMPRESSÃO — estado de otimização */
 let _printBackupData = null;
 let _skipAutofitInCard = false;
 /* 11. PREVIEW DESKTOP */
@@ -1712,6 +1757,7 @@ function getFormData(){
     price: $("price").value, isPromoActive: $("isPromoActive").checked, oldPrice: $("oldPrice").value,
     capacity: $("capacity").value, capacityUnit: $("capacityUnit").value,
     depositFeeSelect: $("depositFeeSelect").value, customDepositInput: $("customDepositInput").value,
+    iva: getIvaValue(),
     unit: getInfoExtraText(), infoExtraTipo: $("infoExtraTipo").value, infoExtraData: $("infoExtraData").value,
     promoStart: $("promoStart").value, promoEnd: $("promoEnd").value,
     ean: $("ean").value.trim().toUpperCase(), autoRemoveBg: $("autoRemoveBg").checked, useAI: $("useAI").checked,
@@ -1742,6 +1788,26 @@ function setFormData(d){
   if(['','Acresce 0,10 € Volta'].indexOf(dep) >= 0){ $("depositFeeSelect").value = dep; $("customDepositInput").value = ""; $("customDepositField").style.display = "none"; }
   else if(dep){ $("depositFeeSelect").value = "custom"; $("customDepositInput").value = dep; $("customDepositField").style.display = "flex"; }
   else { $("depositFeeSelect").value = ""; $("customDepositInput").value = ""; $("customDepositField").style.display = "none"; }
+  /* IVA */
+  const ivaVal = normIvaClient(d.iva || "");
+  const selIva = $("ivaSelect");
+  const cstIva = $("customIvaInput");
+  const fldIva = $("customIvaField");
+  if(selIva){
+    if(ivaVal === "6" || ivaVal === "13" || ivaVal === "23"){
+      selIva.value = ivaVal;
+      if(cstIva) cstIva.value = "";
+      if(fldIva) fldIva.style.display = "none";
+    } else if(ivaVal){
+      selIva.value = "custom";
+      if(cstIva) cstIva.value = ivaVal;
+      if(fldIva) fldIva.style.display = "flex";
+    } else {
+      selIva.value = "";
+      if(cstIva) cstIva.value = "";
+      if(fldIva) fldIva.style.display = "none";
+    }
+  }
   const ti = d.infoExtraTipo || ""; const selTi = $("infoExtraTipo");
   const hasOpt = Array.prototype.some.call(selTi.options, function(o){ return o.value === ti; });
   selTi.value = hasOpt ? ti : "";
@@ -1987,6 +2053,8 @@ function renderQueue(){
     const tipSave = jg ? "Já existe no Drive com este formato" : "Guardar este produto no Drive (formato atual)";
     const pr = (d.price !== undefined && d.price !== "" && d.price !== null) ? (escapeHTML(d.price) + "€") : "S/ preço";
     const ref = d.internalCode ? ('Ref: ' + escapeHTML(d.internalCode) + ' · ') : "";
+    const ivaShow = normIvaClient(d.iva || "");
+    const ivaBadge = ivaShow ? ('<span class="iva-badge">IVA ' + escapeHTML(ivaShow) + '%</span>') : '';
     const fmtHtml = '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
 
     const opcoes = [
@@ -2003,7 +2071,7 @@ function renderQueue(){
     div.innerHTML =
       '<div class="list-item-info">' +
         '<strong>' + escapeHTML(d.product || "Sem Nome") + '</strong>' +
-        '<div class="q-meta">' + ref + pr + ' ' + fmtHtml + '</div>' +
+        '<div class="q-meta">' + ref + pr + ' ' + fmtHtml + ' ' + ivaBadge + '</div>' +
       '</div>' +
       '<div class="queue-actions-row">' +
         '<select class="q-format-select" data-action="format-queue" data-index="' + i + '" data-tip="Alterar formato desta linha">' + selOpts + '</select>' +
@@ -2043,6 +2111,7 @@ function buildProdutoPayload(d){
     unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre,
     ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity,
     deposito: d.depositFeeSelect === 'custom' ? d.customDepositInput : d.depositFeeSelect,
+    iva: normIvaClient(d.iva || ""),
     formato: fmt, customWidth: d.customWidth, customHeight: d.customHeight,
     syncCodeToEan: !!d.syncCodeToEan, infoExtraTipo: d.infoExtraTipo || '', infoExtraData: d.infoExtraData || '',
     fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || '',
@@ -2167,11 +2236,13 @@ function renderDb(){
       const div = document.createElement('div'); div.className = 'list-item';
       const pr = (d.preco !== undefined && d.preco !== "" && d.preco !== null) ? (escapeHTML(d.preco) + "€") : "S/ preço";
       const isEditing = editingId && d._id && String(editingId) === String(d._id);
+      const ivaShow = normIvaClient(d.iva || "");
+      const ivaBadge = ivaShow ? ('<span class="iva-badge">IVA ' + escapeHTML(ivaShow) + '%</span>') : '';
       div.innerHTML =
         '<div class="list-item-info"><strong>' + escapeHTML(d.nome || "Sem Nome") +
         (isEditing ? ' <span class="chip-mini">A editar</span>' : "") +
         '</strong>' +
-        '<div class="q-meta"><span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' + pr + '</div></div>' +
+        '<div class="q-meta"><span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' + ivaBadge + ' ' + pr + '</div></div>' +
         '<div class="list-item-actions">' +
         '<button class="btn-load" data-action="load-db" data-index="' + i + '" data-tip="Carregar para o editor">📥</button>' +
         '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕</button>' +
@@ -2509,7 +2580,8 @@ function applyPrintSizes(card, dims){
   set('.store-text', 2.8); set('.item-code', 1.9); set('.product', 3.2); set('.unit-price-text', 2.2);
   set('.price', 6.5); set('.price .unit-inline', 2.7); set('.promo-tag', 3.2); set('.old-price', 3.2);
   set('.extra-unit', 2.2); set('.fruit-full-bar', 2.2); set('.ean-text', 1.8); set('.promo-text', 1.8);
-  set('.print-date', 1.6); set('.fp-label', 2.4); set('.fp-price', 6.0); set('.fp-box.fp-promo .fp-price', 7.5); set('.fp-unit', 1.9);
+  set('.print-date', 1.6); set('.iva-text', 1.7);
+  set('.fp-label', 2.4); set('.fp-price', 6.0); set('.fp-box.fp-promo .fp-price', 7.5); set('.fp-unit', 1.9);
   const depRow = card.querySelector('.deposit-row');
   if(depRow){
     const dep = depRow.querySelector('.deposit-box');
@@ -2571,14 +2643,19 @@ function autoFitTextSync(el){
 function autoFitFooterText(card){
   if(!card) return;
   const footer = card.querySelector(".footer-container");
-  const pt = footer && footer.querySelector(".promo-text");
-  const pd = footer && footer.querySelector(".print-date");
-  if(!footer || !pt || !pd) return;
-  pt.style.removeProperty("font-size"); void pt.offsetHeight;
+  if(!footer) return;
+  const pt = footer.querySelector(".promo-text");
+  const pd = footer.querySelector(".print-date");
+  const pi = footer.querySelector(".iva-text");
+  if(!pt || !pd) return;
+  pt.style.removeProperty("font-size");
+  if(pi) pi.style.removeProperty("font-size");
+  void pt.offsetHeight;
   const fw = footer.clientWidth;
   let i = 0;
-  while(i < 25){
-    const total = pt.offsetWidth + pd.offsetWidth + 3;
+  while(i < 30){
+    const ivaW = (pi && pi.offsetWidth) ? pi.offsetWidth : 0;
+    const total = pt.offsetWidth + pd.offsetWidth + ivaW + 8;
     if(total <= fw) break;
     const cur = parseFloat(getComputedStyle(pt).fontSize);
     if(!cur || cur < 3) break;
@@ -2904,6 +2981,13 @@ function updateCardUnsafe(){
     const depRow = $("cardDeposit"); const depTxt = $("cardDepositText");
     if(depVal && depTxt && depRow){ depTxt.textContent = depVal; depRow.classList.add("show"); depRow.style.removeProperty("display"); }
     else if(depRow){ if(depTxt) depTxt.textContent = ""; depRow.classList.remove("show"); depRow.style.setProperty("display", "none", "important"); }
+    /* IVA no footer */
+    const ivaEl = $("cardIvaText");
+    const ivaDisp = getIvaDisplay();
+    if(ivaEl){
+      if(ivaDisp){ ivaEl.textContent = ivaDisp; ivaEl.style.display = ""; }
+      else { ivaEl.textContent = ""; ivaEl.style.display = "none"; }
+    }
     const eu = getInfoExtraText();
     if(eu){ $("cardExtraUnit").style.display = "block"; $("cardExtraUnit").textContent = eu; }
     else { $("cardExtraUnit").style.display = "none"; }
@@ -3532,13 +3616,19 @@ document.addEventListener("keydown", function(ev){
     if(ev.key === "0"){ ev.preventDefault(); document.getElementById('zoomResetBtn').click(); }
   }
 });
-["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight","infoExtraData"].forEach(function(id){ const el = document.getElementById(id); if(el) el.addEventListener("input", updateCard); });
-["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo"].forEach(function(id){ const el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
+["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight","infoExtraData","customIvaInput"].forEach(function(id){ const el = document.getElementById(id); if(el) el.addEventListener("input", updateCard); });
+["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo","ivaSelect"].forEach(function(id){ const el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
 document.getElementById('infoExtraTipo').addEventListener("change", function(){ updateInfoExtraVisibility(); updateCard(); });
 (function(){ const ean = $("ean"); if(!ean) return; ean.addEventListener("input", function(){ const p = this.selectionStart; const u = this.value.toUpperCase(); if(this.value !== u){ this.value = u; try{ this.setSelectionRange(p, p); }catch(e){} } }); })();
 document.getElementById('presetSizes').addEventListener("change", function(){ const v = this.value; $("customDimensionsRow").style.display = (v === "custom") ? "grid" : "none"; updateOrientationVisibility(); updateCard(); });
 document.getElementById('isPromoActive').addEventListener("change", function(){ const lbl = this.closest("label"); if(lbl) lbl.classList.toggle("checked", this.checked); updateCard(); });
 document.getElementById('depositFeeSelect').addEventListener("change", function(){ const cf = $("customDepositField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } if(this.value !== "custom"){ const cdi = $("customDepositInput"); if(cdi){ cdi.value = ""; } } updateCard(); });
+document.getElementById('ivaSelect').addEventListener("change", function(){
+  const cf = $("customIvaField");
+  if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; }
+  if(this.value !== "custom"){ const ci = $("customIvaInput"); if(ci){ ci.value = ""; } }
+  updateCard();
+});
 document.getElementById('capacityUnit').addEventListener("change", function(){ const c = $("capacity"); const d = DEFAULTS_UNIDADE[this.value]; c.value = (d !== undefined) ? d : ""; updateCard(); });
 document.getElementById('photo').addEventListener("change", async function(e){
   const f = e.target.files[0]; globalOriginalPhoto = ""; globalProcessedPhoto = "";
@@ -3562,8 +3652,9 @@ document.getElementById('photo').addEventListener("change", async function(e){
 });
 document.getElementById('clearBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos?"))) return;
-  ["internalCode","product","price","oldPrice","ean","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","infoExtraData"].forEach(function(id){ if($(id)) $(id).value = ""; });
+  ["internalCode","product","price","oldPrice","ean","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","infoExtraData","customIvaInput"].forEach(function(id){ if($(id)) $(id).value = ""; });
   $("depositFeeSelect").value = ""; $("customDepositField").style.display = "none";
+  $("ivaSelect").value = ""; $("customIvaField").style.display = "none";
   $("capacityUnit").value = "peso"; $("capacity").value = "";
   $("isPromoActive").checked = false;
   const lbl = $("isPromoActive").closest("label"); if(lbl) lbl.classList.remove("checked");
