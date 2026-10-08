@@ -973,7 +973,7 @@ const TIMEOUT_READ_COLD = 60000;
 const TIMEOUT_READ_WARM = 30000;
 const TIMEOUT_WRITE_COLD = 60000;
 const TIMEOUT_WRITE_WARM = 30000;
-const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','apagarDuplicados','enviarEtiquetasEmail'];
+const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
@@ -3031,11 +3031,21 @@ document.getElementById('recarregarDbBtn').addEventListener("click", function(){
   });
 });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
+
+/* ⚡ Sincronização INCREMENTAL do banco (só o que mudou no Drive) */
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
-  setStatus("A sincronizar banco…","loading");
-  try{ await api('sincronizarBancoFruta'); await carregarTudo({manual:true}); toast("Banco sincronizado","success"); }
+  setStatus("A sincronizar banco (incremental)…","loading");
+  try{
+    var r = await api('sincronizarBancoIncremental');
+    await carregarTudo({manual:true});
+    var msg = r && r.modo === 'incremental'
+      ? 'Sync incremental: +' + (r.novos||0) + ' novos, ~' + (r.alterados||0) + ' alterados, -' + (r.removidos||0) + ' removidos'
+      : (r && r.modo === 'full-fallback' ? 'Sincronizado (recuperação completa)' : 'Sincronizado (completo)');
+    toast(msg,"success",4500);
+  }
   catch(e){ setStatus("Erro","error"); toast("Erro: "+e.message,"error"); }
 });
+
 document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada referência+formato."))) return;
   setStatus("A remover…","loading");
