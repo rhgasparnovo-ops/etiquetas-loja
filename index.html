@@ -178,7 +178,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;overflow:hidden;gap:2px}
-.promo-text{font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
+.promo-text{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
 .promo-dates{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
 .promo-dates:empty{display:none!important}
@@ -1308,7 +1308,7 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — timeouts adaptativos + warm-up + retry automático */
+/* 9. API */
 var _apiWarm = false;
 var _lastApiTime = 0;
 const _apiInFlight = new Map();
@@ -2332,8 +2332,8 @@ function applyPrintSizes(card,dims){
   var set = function(sel,mm){ var el=card.querySelector(sel); if(el) el.style.setProperty('font-size',(mm*escala).toFixed(3)+'mm','important'); };
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
-  set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8); set('.promo-text',1.8);
-  set('.print-date',1.6); set('.promo-dates',1.6); set('.iva-text',1.7);
+  set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8);
+  set('.promo-text',1.6); set('.promo-dates',1.6); set('.print-date',1.6); set('.iva-text',1.7);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
 function _vis(el){ if(!el) return false; if(el.offsetParent===null && el!==document.body) return false; var cs=window.getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden") return false; return true; }
@@ -2355,6 +2355,7 @@ function autoFitFooterText(card){
     var cur = parseFloat(getComputedStyle(pt).fontSize);
     if(!cur||cur<3) break;
     pt.style.setProperty("font-size",(cur*0.9)+"px","important");
+    if(pdt && pdt.offsetWidth>0) pdt.style.setProperty("font-size",(cur*0.9)+"px","important");
     i++; void pt.offsetHeight;
   }
 }
@@ -2862,11 +2863,7 @@ async function enviarEtiquetasPorEmail(){
   } finally { _emailSending = false; if(btn){ btn.disabled = false; btn.textContent = bt||"📧 Enviar por Email"; } }
 }
 
-/* ============================================================
-   25. CÂMARA — COM SUPORTE ROBUSTO DE TORCH / LANTERNA
-   ============================================================ */
-
-/* Detetar se a track suporta torch. Devolve true/false/null (desconhecido) */
+/* 25. CÂMARA — TORCH ROBUSTO */
 function getTorchCap(track){
   if(!track) return null;
   try{
@@ -2875,89 +2872,40 @@ function getTorchCap(track){
   }catch(e){}
   return null;
 }
-
-/* Mostrar/esconder botão conforme suporte */
 function updateTorchBtnVisibility(btn, track){
   if(!btn) return;
   var cap = getTorchCap(track);
-  if(cap === false){
-    btn.classList.add('torch-unsupported');
-  } else {
-    btn.classList.remove('torch-unsupported');
-  }
+  if(cap === false){ btn.classList.add('torch-unsupported'); }
+  else { btn.classList.remove('torch-unsupported'); }
 }
-
-/* Aplicar torch de forma robusta (múltiplos formatos de constraint) */
 async function applyTorch(track, on){
   if(!track) return false;
   on = !!on;
-
-  /* Tentativa 1: advanced */
   try{
     await track.applyConstraints({ advanced: [{ torch: on }] });
     var st = track.getSettings ? track.getSettings() : {};
     if(typeof st.torch === 'undefined' || st.torch === on) return true;
   }catch(e){}
-
-  /* Tentativa 2: direto */
-  try{
-    await track.applyConstraints({ torch: on });
-    return true;
-  }catch(e){}
-
-  /* Tentativa 3: imageCapture via MediaStreamTrack (Android recente) */
-  try{
-    if(track.getCapabilities){
-      var caps = track.getCapabilities();
-      if(caps && caps.torch){
-        var s = new MediaStreamTrack();
-      }
-    }
-  }catch(e){}
-
+  try{ await track.applyConstraints({ torch: on }); return true; }catch(e){}
   return false;
 }
-
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r,200); }); }
   var modal = $("cameraModal"); modal.classList.add("show"); torchOn = false;
   var tb = $("camTorch");
   if(tb){
-    tb.classList.remove('on');
-    tb.classList.add('off');
-    tb.classList.remove('torch-unsupported');
-    tb.textContent = '💡';
-    tb.disabled = false;
-    tb.style.opacity = '1';
+    tb.classList.remove('on'); tb.classList.add('off'); tb.classList.remove('torch-unsupported');
+    tb.textContent = '💡'; tb.disabled = false; tb.style.opacity = '1';
   }
   try{
-    /* Resolução moderada — 4K bloqueia torch em muitos dispositivos */
-    var constraints = {
-      video: {
-        facingMode: { ideal: "environment" },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      },
-      audio: false
-    };
-    try{
-      camStream = await navigator.mediaDevices.getUserMedia(constraints);
-    }catch(e1){
-      /* Fallback: constraints simples */
-      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-    }
+    var constraints = { video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false };
+    try{ camStream = await navigator.mediaDevices.getUserMedia(constraints); }
+    catch(e1){ camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); }
     $("camVideo").srcObject = camStream;
     camTrack = camStream.getVideoTracks()[0] || null;
-    /* Deixar o browser estabilizar antes de pedir capabilities */
-    if(camTrack){
-      setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300);
-    }
-  }catch(e){
-    toast("Não foi possível aceder à câmara","error");
-    closeCamera();
-  }
+    if(camTrack){ setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300); }
+  }catch(e){ toast("Não foi possível aceder à câmara","error"); closeCamera(); }
 }
-
 function closeCamera(){
   if(camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; }
   camTrack = null; torchOn = false;
@@ -2966,7 +2914,6 @@ function closeCamera(){
   $("cameraModal").classList.remove("show");
   setTimeout(function(){ fotoBancoModo = false; },300);
 }
-
 async function toggleTorchCam(){
   if(!camTrack){ toast("Câmara não pronta","warning"); return; }
   var tb = $("camTorch");
@@ -2975,25 +2922,15 @@ async function toggleTorchCam(){
     var ok = await applyTorch(camTrack, novoEstado);
     if(ok){
       torchOn = novoEstado;
-      if(tb){
-        tb.classList.toggle('on',torchOn);
-        tb.classList.toggle('off',!torchOn);
-        tb.textContent = torchOn ? '🔆' : '💡';
-      }
+      if(tb){ tb.classList.toggle('on',torchOn); tb.classList.toggle('off',!torchOn); tb.textContent = torchOn ? '🔆' : '💡'; }
     } else {
       toast('Este dispositivo não permite controlar a luz','warning');
       if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
     }
-  }catch(e){
-    toast('Flash não suportado','warning');
-    torchOn = false;
-    if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
-  }
+  }catch(e){ toast('Flash não suportado','warning'); torchOn = false; if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; } }
 }
-
 var _qrLoading = null;
 function loadQrCodeLib(){ if(typeof Html5Qrcode !== 'undefined') return Promise.resolve(); if(_qrLoading) return _qrLoading; _qrLoading = new Promise(function(resolve,reject){ var s=document.createElement('script'); s.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'; s.onload=function(){ _qrLoading=null; resolve(); }; s.onerror=function(){ _qrLoading=null; reject(new Error('Falha leitor')); }; document.head.appendChild(s); }); return _qrLoading; }
-
 async function openScanner(){
   $("scannerModal").classList.add("show"); scanTorchOn = false;
   var stb = $("scanTorch");
@@ -3004,15 +2941,9 @@ async function openScanner(){
     await scanner.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 280, height: 180 }, aspectRatio: 1.0 },
-      function(t){
-        $("ean").value = String(t).toUpperCase();
-        updateEanBadge(); updateCard();
-        toast("Código lido: " + t, "success");
-        closeScanner();
-      },
+      function(t){ $("ean").value = String(t).toUpperCase(); updateEanBadge(); updateCard(); toast("Código lido: " + t, "success"); closeScanner(); },
       function(){}
     );
-    /* Apanhar a track de vídeo criada pelo Html5Qrcode */
     setTimeout(function(){
       try{
         var videos = document.querySelectorAll('#reader video');
@@ -3022,18 +2953,13 @@ async function openScanner(){
         }
       }catch(e){}
     }, 500);
-  }catch(e){
-    closeScanner();
-    toast("Não foi possível iniciar a câmara","error");
-  }
+  }catch(e){ closeScanner(); toast("Não foi possível iniciar a câmara","error"); }
 }
-
 async function closeScanner(){
   if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; }
   scanTrack = null; scanTorchOn = false;
   $("scannerModal").classList.remove("show");
 }
-
 async function toggleTorchScan(){
   if(!scanTrack){ toast("Câmara não pronta","warning"); return; }
   var tb = $("scanTorch");
@@ -3042,20 +2968,12 @@ async function toggleTorchScan(){
     var ok = await applyTorch(scanTrack, novoEstado);
     if(ok){
       scanTorchOn = novoEstado;
-      if(tb){
-        tb.classList.toggle('on',scanTorchOn);
-        tb.classList.toggle('off',!scanTorchOn);
-        tb.textContent = scanTorchOn ? '🔆' : '💡';
-      }
+      if(tb){ tb.classList.toggle('on',scanTorchOn); tb.classList.toggle('off',!scanTorchOn); tb.textContent = scanTorchOn ? '🔆' : '💡'; }
     } else {
       toast('Este dispositivo não permite controlar a luz','warning');
       if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
     }
-  }catch(e){
-    toast('Flash não suportado','warning');
-    scanTorchOn = false;
-    if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
-  }
+  }catch(e){ toast('Flash não suportado','warning'); scanTorchOn = false; if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; } }
 }
 
 /* 26. TOGGLE EAN */
@@ -3073,29 +2991,18 @@ async function toggleTorchScan(){
     var v = String(code.value || '').trim().toUpperCase();
     if(!v) return;
     var eanEl = document.getElementById("ean");
-    if(eanEl && eanEl.value !== v){
-      eanEl.value = v;
-      updateEanBadge();
-      updateCardUnsafe();
-    }
+    if(eanEl && eanEl.value !== v){ eanEl.value = v; updateEanBadge(); updateCardUnsafe(); }
   }
 
   refreshVisual();
   if(sync.checked) aplicarCopia();
 
-  code.addEventListener("input", function(){
-    if(sync.checked){ aplicarCopia(); }
-    updateCard();
-  });
+  code.addEventListener("input", function(){ if(sync.checked){ aplicarCopia(); } updateCard(); });
 
   sync.addEventListener("change", function(){
     refreshVisual();
     try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked ? '1' : '0'); }catch(e){}
-    if(sync.checked){
-      aplicarCopia();
-      updateCardUnsafe();
-      if(code.value.trim()){ toast("EAN sincronizado com o código interno", "success", 2400); }
-    }
+    if(sync.checked){ aplicarCopia(); updateCardUnsafe(); if(code.value.trim()){ toast("EAN sincronizado com o código interno", "success", 2400); } }
   });
 })();
 
@@ -3220,13 +3127,9 @@ document.getElementById('recarregarDbBtn').addEventListener("click", function(){
   var original = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = "⏳ A sincronizar…";
-  carregarTudo({manual:true}).finally(function(){
-    btn.disabled = false;
-    btn.innerHTML = original;
-  });
+  carregarTudo({manual:true}).finally(function(){ btn.disabled = false; btn.innerHTML = original; });
 });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
-
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
   setStatus("A sincronizar banco (incremental)…","loading");
   try{
@@ -3239,7 +3142,6 @@ document.getElementById('syncBancoBtn').addEventListener("click", async function
   }
   catch(e){ setStatus("Erro","error"); toast("Erro: "+e.message,"error"); }
 });
-
 document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada referência+formato."))) return;
   setStatus("A remover…","loading");
@@ -3406,7 +3308,6 @@ document.addEventListener("change", function(e){
     if(getStoredToken()) carregarTudo({manual:false});
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
-
     setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
   }catch(err){}
 })();
