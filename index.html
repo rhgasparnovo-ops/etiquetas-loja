@@ -180,6 +180,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;overflow:hidden;gap:2px}
 .promo-text{font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
+.promo-dates{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
+.promo-dates:empty{display:none!important}
 .iva-text{font-size:clamp(5px,1.5cqw,8px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;text-transform:uppercase;display:inline-block}
 .iva-text:empty{display:none!important}
 .fruit-promo-prices{display:none;flex-direction:row;width:100%;gap:4px;padding:2px 0;align-items:stretch}
@@ -295,6 +297,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .torch-btn{position:absolute;top:16px;right:16px;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.95);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 20px rgba(0,0,0,.45);z-index:10;border:none}
 .torch-btn.on{background:#fbbf24;color:#000}
 .torch-btn.off{background:rgba(255,255,255,.42);color:#fff}
+.torch-btn.torch-unsupported{display:none!important}
 .pro-print-overlay{background:rgba(15,23,42,.72);z-index:99998;backdrop-filter:blur(6px);align-items:center;justify-content:center}
 .pro-print-box{min-width:300px;max-width:380px;padding:28px;border-radius:var(--r-xl);background:#fff;display:grid;gap:12px;text-align:center}
 .pro-spinner{width:32px;height:32px;margin:auto;border-radius:50%;border:3px solid var(--surface-3);border-top-color:var(--brand);animation:spin .7s linear infinite}
@@ -806,6 +809,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
                 </div>
                 <div class="footer-container">
                   <div class="promo-text" id="cardPromoText">Preço sujeito às condições comerciais em vigor.</div>
+                  <div class="promo-dates" id="cardPromoDates"></div>
                   <div class="iva-text" id="cardIvaText" style="display:none"></div>
                   <div class="print-date" id="cardPrintDate"></div>
                 </div>
@@ -958,7 +962,6 @@ const SESSION_TTL_SECONDS = 365*24*3600;
 const CACHE_KEY = 'balcao_cache_v245';
 const CACHE_SCHEMA_VERSION = 14;
 
-/* ⚡ Compressão default mais leve (payload menor → menos 502) */
 const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
 const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
@@ -968,7 +971,6 @@ const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
 
-/* ⚡ Timeouts robustos para lidar com cold start do Google Apps Script */
 const TIMEOUT_READ_COLD = 60000;
 const TIMEOUT_READ_WARM = 30000;
 const TIMEOUT_WRITE_COLD = 60000;
@@ -1022,6 +1024,20 @@ function sanitizePriceAll(){
     var clean = sanitizePrice(el.value);
     if(clean !== el.value) el.value = clean;
   });
+}
+
+/* ===== DATAS OPORTUNIDADE — formato compacto para o rodapé ===== */
+function formatPromoDatesCompact(s,e){
+  function ddmm(str){
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(str||''));
+    if(!m) return '';
+    return m[3] + '/' + m[2];
+  }
+  var ds = ddmm(s), de = ddmm(e);
+  if(ds && de) return ds + ' → ' + de;
+  if(ds) return 'De ' + ds;
+  if(de) return 'Até ' + de;
+  return '';
 }
 
 /* 3. AUTENTICAÇÃO */
@@ -1292,12 +1308,11 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — timeouts adaptativos + warm-up + retry automático em 502/503/504/timeout */
+/* 9. API — timeouts adaptativos + warm-up + retry automático */
 var _apiWarm = false;
 var _lastApiTime = 0;
 const _apiInFlight = new Map();
 
-/* ⚡ Warm-up explícito do Apps Script (evita cold start) */
 var _warmUpPromise = null;
 function warmUpServer(){
   if(_warmUpPromise) return _warmUpPromise;
@@ -1317,7 +1332,7 @@ function warmUpServer(){
       clearTimeout(tid);
       _apiWarm = true;
       _lastApiTime = Date.now();
-    }catch(e){ /* silencioso */ }
+    }catch(e){}
     _warmUpPromise = null;
     return true;
   })();
@@ -1404,7 +1419,6 @@ async function _apiCall(fn, payload, retryCount){
 
     var isRetryable = (e && e._retryable) || isAbort || is502;
 
-    /* ⚡ Retry automático (1×) com warm-up + espera 2,5s */
     if(isRetryable && retryCount < 1){
       setGlobalStatus("Servidor sobrecarregado. A tentar novamente…","warning",{duration:4000});
       try{ await warmUpServer(); }catch(_e){}
@@ -1525,7 +1539,7 @@ document.getElementById('zoomResetBtn').addEventListener('click',function(){ _pr
   stage.addEventListener('dblclick',function(){ _previewZoom=0; _previewPanX=0; _previewPanY=0; applyPreviewZoom(); });
 })();
 
-/* 13. CARREGAR TUDO — robusto com retries e chamadas paralelas */
+/* 13. CARREGAR TUDO */
 async function carregarTudo(opts){
   opts = opts || {};
   var manual = !!opts.manual;
@@ -1682,7 +1696,7 @@ function setFormData(d){
   updateOrientationVisibility(); updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
 }
 
-/* 15. VALIDAÇÃO — IVA OBRIGATÓRIO quando preço tem valor */
+/* 15. VALIDAÇÃO */
 function markFieldError(id,has){ var el=$(id); if(!el) return; if(has) el.classList.add("input-error"); else el.classList.remove("input-error"); }
 function clearFieldErrors(){ document.querySelectorAll(".input-error").forEach(function(el){ el.classList.remove("input-error"); }); }
 function onlyDigits(v){ return String(v||"").replace(/\D/g,""); }
@@ -1707,12 +1721,7 @@ function setValidationState(){
   var iva = getIvaValue();
 
   if($("price").value.trim()&&price===null){ errors.push("O preço não é válido."); markFieldError("price",true); }
-
-  /* ⚡ IVA OBRIGATÓRIO quando há preço preenchido */
-  if($("price").value.trim() && !iva){
-    errors.push("Selecione a taxa de IVA.");
-    markFieldError("ivaSelect", true);
-  }
+  if($("price").value.trim() && !iva){ errors.push("Selecione a taxa de IVA."); markFieldError("ivaSelect", true); }
 
   if(!isFP){
     if($("isPromoActive").checked && $("oldPrice").value.trim() && oldPrice===null){ errors.push("Preço anterior inválido."); markFieldError("oldPrice",true); }
@@ -2049,7 +2058,6 @@ async function resolverFotoParaPayload(d){
   if(!foto) return {fotoId:"",fotoUrl:""};
   if(foto.indexOf('http') === 0){ furl = foto; if(!fid){ var ex = extrairFotoIdDoUrl(foto); if(ex) fid = ex; } return {fotoId:fid,fotoUrl:furl}; }
 
-  /* ⚡ Compressão mais leve para não rebentar o payload (502) */
   var comp = await compressSmart(foto, IMG_MAX_SIZE, IMG_QUALITY);
   if(comp.length > IMG_B64_FALLBACK_LIMIT){
     comp = await compressSmart(foto, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
@@ -2325,7 +2333,7 @@ function applyPrintSizes(card,dims){
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
   set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8); set('.promo-text',1.8);
-  set('.print-date',1.6); set('.iva-text',1.7);
+  set('.print-date',1.6); set('.promo-dates',1.6); set('.iva-text',1.7);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
 function _vis(el){ if(!el) return false; if(el.offsetParent===null && el!==document.body) return false; var cs=window.getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden") return false; return true; }
@@ -2335,11 +2343,20 @@ function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container"); if(!footer) return;
-  var pt = footer.querySelector(".promo-text"), pd = footer.querySelector(".print-date"), pi = footer.querySelector(".iva-text");
+  var pt = footer.querySelector(".promo-text"), pd = footer.querySelector(".print-date"), pdt = footer.querySelector(".promo-dates"), pi = footer.querySelector(".iva-text");
   if(!pt||!pd) return;
-  pt.style.removeProperty("font-size"); if(pi) pi.style.removeProperty("font-size"); void pt.offsetHeight;
+  pt.style.removeProperty("font-size"); if(pi) pi.style.removeProperty("font-size"); if(pdt) pdt.style.removeProperty("font-size"); void pt.offsetHeight;
   var fw = footer.clientWidth, i = 0;
-  while(i<30){ var ivaW = (pi && pi.offsetWidth) ? pi.offsetWidth : 0; var total = pt.offsetWidth + pd.offsetWidth + ivaW + 8; if(total <= fw) break; var cur = parseFloat(getComputedStyle(pt).fontSize); if(!cur||cur<3) break; pt.style.setProperty("font-size",(cur*0.9)+"px","important"); i++; void pt.offsetHeight; }
+  while(i<30){
+    var ivaW = (pi && pi.offsetWidth) ? pi.offsetWidth : 0;
+    var pdW  = (pdt && pdt.offsetWidth) ? pdt.offsetWidth : 0;
+    var total = pt.offsetWidth + pd.offsetWidth + ivaW + pdW + 12;
+    if(total <= fw) break;
+    var cur = parseFloat(getComputedStyle(pt).fontSize);
+    if(!cur||cur<3) break;
+    pt.style.setProperty("font-size",(cur*0.9)+"px","important");
+    i++; void pt.offsetHeight;
+  }
 }
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
 function autoFitExtraUnit(card){
@@ -2478,6 +2495,8 @@ function updateCardUnsafe(){
     if(barcodeToDraw && !card.classList.contains("size-tiny")){ bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw); }
     else { bcBox.classList.remove("show"); }
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
+    var pdEl = $("cardPromoDates");
+    if(pdEl){ var pdTxt = formatPromoDatesCompact($("promoStart").value, $("promoEnd").value); pdEl.textContent = pdTxt; }
     $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
     if(!_skipAutofitInCard){ autoAdaptImage(card); autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); autoLayoutCard(card); }
   }catch(err){}
@@ -2562,6 +2581,8 @@ function populateClone(clone, d){
   else if(bcBox){ bcBox.classList.remove('show'); }
   var promoTextEl = clone.querySelector('.promo-text');
   if(promoTextEl) promoTextEl.textContent = formatPromoDate(d.promoStart, d.promoEnd);
+  var promoDatesEl = clone.querySelector('.promo-dates');
+  if(promoDatesEl) promoDatesEl.textContent = formatPromoDatesCompact(d.promoStart, d.promoEnd);
   var printDateEl = clone.querySelector('.print-date');
   if(printDateEl) printDateEl.textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
 }
@@ -2841,26 +2862,203 @@ async function enviarEtiquetasPorEmail(){
   } finally { _emailSending = false; if(btn){ btn.disabled = false; btn.textContent = bt||"📧 Enviar por Email"; } }
 }
 
-/* 25. CÂMARA */
+/* ============================================================
+   25. CÂMARA — COM SUPORTE ROBUSTO DE TORCH / LANTERNA
+   ============================================================ */
+
+/* Detetar se a track suporta torch. Devolve true/false/null (desconhecido) */
+function getTorchCap(track){
+  if(!track) return null;
+  try{
+    var caps = track.getCapabilities ? track.getCapabilities() : null;
+    if(caps && typeof caps.torch === 'boolean') return caps.torch;
+  }catch(e){}
+  return null;
+}
+
+/* Mostrar/esconder botão conforme suporte */
+function updateTorchBtnVisibility(btn, track){
+  if(!btn) return;
+  var cap = getTorchCap(track);
+  if(cap === false){
+    btn.classList.add('torch-unsupported');
+  } else {
+    btn.classList.remove('torch-unsupported');
+  }
+}
+
+/* Aplicar torch de forma robusta (múltiplos formatos de constraint) */
+async function applyTorch(track, on){
+  if(!track) return false;
+  on = !!on;
+
+  /* Tentativa 1: advanced */
+  try{
+    await track.applyConstraints({ advanced: [{ torch: on }] });
+    var st = track.getSettings ? track.getSettings() : {};
+    if(typeof st.torch === 'undefined' || st.torch === on) return true;
+  }catch(e){}
+
+  /* Tentativa 2: direto */
+  try{
+    await track.applyConstraints({ torch: on });
+    return true;
+  }catch(e){}
+
+  /* Tentativa 3: imageCapture via MediaStreamTrack (Android recente) */
+  try{
+    if(track.getCapabilities){
+      var caps = track.getCapabilities();
+      if(caps && caps.torch){
+        var s = new MediaStreamTrack();
+      }
+    }
+  }catch(e){}
+
+  return false;
+}
+
 async function openCamera(){
   if(camStream){ closeCamera(); await new Promise(function(r){ setTimeout(r,200); }); }
   var modal = $("cameraModal"); modal.classList.add("show"); torchOn = false;
-  var tb = $("camTorch"); if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; tb.disabled = false; tb.style.opacity = '1'; }
-  try{ camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:3840},height:{ideal:2160}},audio:false}); $("camVideo").srcObject = camStream; camTrack = camStream.getVideoTracks()[0] || null; }catch(e){ toast("Não foi possível aceder à câmara","error"); closeCamera(); }
+  var tb = $("camTorch");
+  if(tb){
+    tb.classList.remove('on');
+    tb.classList.add('off');
+    tb.classList.remove('torch-unsupported');
+    tb.textContent = '💡';
+    tb.disabled = false;
+    tb.style.opacity = '1';
+  }
+  try{
+    /* Resolução moderada — 4K bloqueia torch em muitos dispositivos */
+    var constraints = {
+      video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
+      },
+      audio: false
+    };
+    try{
+      camStream = await navigator.mediaDevices.getUserMedia(constraints);
+    }catch(e1){
+      /* Fallback: constraints simples */
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+    }
+    $("camVideo").srcObject = camStream;
+    camTrack = camStream.getVideoTracks()[0] || null;
+    /* Deixar o browser estabilizar antes de pedir capabilities */
+    if(camTrack){
+      setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300);
+    }
+  }catch(e){
+    toast("Não foi possível aceder à câmara","error");
+    closeCamera();
+  }
 }
-function closeCamera(){ if(camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; } camTrack = null; torchOn = false; var v = $("camVideo"); if(v){ v.pause(); v.removeAttribute('src'); v.srcObject = null; v.load(); } $("cameraModal").classList.remove("show"); setTimeout(function(){ fotoBancoModo = false; },300); }
-async function toggleTorchCam(){ if(!camTrack) return; try{ torchOn = !torchOn; await camTrack.applyConstraints({advanced:[{torch:torchOn}]}); var tb = $("camTorch"); if(tb){ tb.classList.toggle('on',torchOn); tb.classList.toggle('off',!torchOn); tb.textContent = torchOn?'🔆':'💡'; } }catch(e){ toast('Flash não suportado','warning'); torchOn = false; } }
+
+function closeCamera(){
+  if(camStream){ camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; }
+  camTrack = null; torchOn = false;
+  var v = $("camVideo");
+  if(v){ v.pause(); v.removeAttribute('src'); v.srcObject = null; v.load(); }
+  $("cameraModal").classList.remove("show");
+  setTimeout(function(){ fotoBancoModo = false; },300);
+}
+
+async function toggleTorchCam(){
+  if(!camTrack){ toast("Câmara não pronta","warning"); return; }
+  var tb = $("camTorch");
+  var novoEstado = !torchOn;
+  try{
+    var ok = await applyTorch(camTrack, novoEstado);
+    if(ok){
+      torchOn = novoEstado;
+      if(tb){
+        tb.classList.toggle('on',torchOn);
+        tb.classList.toggle('off',!torchOn);
+        tb.textContent = torchOn ? '🔆' : '💡';
+      }
+    } else {
+      toast('Este dispositivo não permite controlar a luz','warning');
+      if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
+    }
+  }catch(e){
+    toast('Flash não suportado','warning');
+    torchOn = false;
+    if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
+  }
+}
+
 var _qrLoading = null;
 function loadQrCodeLib(){ if(typeof Html5Qrcode !== 'undefined') return Promise.resolve(); if(_qrLoading) return _qrLoading; _qrLoading = new Promise(function(resolve,reject){ var s=document.createElement('script'); s.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js'; s.onload=function(){ _qrLoading=null; resolve(); }; s.onerror=function(){ _qrLoading=null; reject(new Error('Falha leitor')); }; document.head.appendChild(s); }); return _qrLoading; }
+
 async function openScanner(){
   $("scannerModal").classList.add("show"); scanTorchOn = false;
+  var stb = $("scanTorch");
+  if(stb){ stb.classList.remove('on'); stb.classList.add('off'); stb.classList.remove('torch-unsupported'); stb.textContent = '💡'; }
   try{ await loadQrCodeLib(); }catch(e){ toast("Erro leitor","error"); $("scannerModal").classList.remove("show"); return; }
   scanner = new Html5Qrcode("reader");
-  try{ await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:280,height:180},aspectRatio:1.0},function(t){ $("ean").value = String(t).toUpperCase(); updateEanBadge(); updateCard(); toast("Código lido: "+t,"success"); closeScanner(); },function(){}); }catch(e){ closeScanner(); toast("Não foi possível iniciar a câmara","error"); }
+  try{
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 280, height: 180 }, aspectRatio: 1.0 },
+      function(t){
+        $("ean").value = String(t).toUpperCase();
+        updateEanBadge(); updateCard();
+        toast("Código lido: " + t, "success");
+        closeScanner();
+      },
+      function(){}
+    );
+    /* Apanhar a track de vídeo criada pelo Html5Qrcode */
+    setTimeout(function(){
+      try{
+        var videos = document.querySelectorAll('#reader video');
+        if(videos.length > 0 && videos[0].srcObject){
+          scanTrack = videos[0].srcObject.getVideoTracks()[0] || null;
+          if(scanTrack) updateTorchBtnVisibility(stb, scanTrack);
+        }
+      }catch(e){}
+    }, 500);
+  }catch(e){
+    closeScanner();
+    toast("Não foi possível iniciar a câmara","error");
+  }
 }
-async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; } scanTrack = null; scanTorchOn = false; $("scannerModal").classList.remove("show"); }
 
-/* 26. TOGGLE EAN — sincroniza E redesenha o barcode */
+async function closeScanner(){
+  if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; }
+  scanTrack = null; scanTorchOn = false;
+  $("scannerModal").classList.remove("show");
+}
+
+async function toggleTorchScan(){
+  if(!scanTrack){ toast("Câmara não pronta","warning"); return; }
+  var tb = $("scanTorch");
+  var novoEstado = !scanTorchOn;
+  try{
+    var ok = await applyTorch(scanTrack, novoEstado);
+    if(ok){
+      scanTorchOn = novoEstado;
+      if(tb){
+        tb.classList.toggle('on',scanTorchOn);
+        tb.classList.toggle('off',!scanTorchOn);
+        tb.textContent = scanTorchOn ? '🔆' : '💡';
+      }
+    } else {
+      toast('Este dispositivo não permite controlar a luz','warning');
+      if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
+    }
+  }catch(e){
+    toast('Flash não suportado','warning');
+    scanTorchOn = false;
+    if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
+  }
+}
+
+/* 26. TOGGLE EAN */
 (function(){
   var code = document.getElementById("internalCode");
   var sync = document.getElementById("syncCodeToEan");
@@ -2878,7 +3076,6 @@ async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await sca
     if(eanEl && eanEl.value !== v){
       eanEl.value = v;
       updateEanBadge();
-      /* ⚡ FORÇA redesenho do código de barras no preview */
       updateCardUnsafe();
     }
   }
@@ -2891,13 +3088,11 @@ async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await sca
     updateCard();
   });
 
-  /* Como o <label> envolve o <input>, o browser faz o toggle automaticamente */
   sync.addEventListener("change", function(){
     refreshVisual();
     try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked ? '1' : '0'); }catch(e){}
     if(sync.checked){
       aplicarCopia();
-      /* Redesenha o card para garantir que o barcode aparece */
       updateCardUnsafe();
       if(code.value.trim()){ toast("EAN sincronizado com o código interno", "success", 2400); }
     }
@@ -3032,7 +3227,6 @@ document.getElementById('recarregarDbBtn').addEventListener("click", function(){
 });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* ⚡ Sincronização INCREMENTAL do banco (só o que mudou no Drive) */
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
   setStatus("A sincronizar banco (incremental)…","loading");
   try{
@@ -3071,7 +3265,7 @@ document.getElementById('hardResetBtn').addEventListener("click", async function
 document.getElementById('clearQueueBtn').addEventListener("click", async function(){ if(await confirmDialog("Limpar toda a fila?")){ printQueue = []; renderQueue(); toast("Fila limpa","info"); } });
 document.getElementById('scanEanBtn').addEventListener("click", openScanner);
 document.getElementById('scanClose').addEventListener("click", closeScanner);
-document.getElementById('scanTorch').addEventListener("click", async function(){ if(!scanTrack) return; try{ scanTorchOn=!scanTorchOn; await scanTrack.applyConstraints({advanced:[{torch:scanTorchOn}]}); var tb = $("scanTorch"); if(tb){ tb.classList.toggle('on',scanTorchOn); tb.classList.toggle('off',!scanTorchOn); } }catch(e){} });
+document.getElementById('scanTorch').addEventListener("click", toggleTorchScan);
 document.getElementById('openCameraBtn').addEventListener("click", function(){ fotoBancoModo = false; openCamera(); });
 document.getElementById('fotoBancoBtn').addEventListener("click", function(){ fotoBancoModo = true; openCamera(); });
 document.getElementById('camClose').addEventListener("click", closeCamera);
@@ -3213,7 +3407,6 @@ document.addEventListener("change", function(e){
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
 
-    /* ⚡ Warm-up do Apps Script em background */
     setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
   }catch(err){}
 })();
