@@ -501,6 +501,31 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
   .row > .btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}
 }
 #clearBtn[data-fullwidth="1"]{grid-column:1 / -1}
+/* ===== VARIANTES / FORMATO (Gestão Profissional) ===== */
+.fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em;border:1px solid #c7d2fe;line-height:1.3}
+.fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.fmt-badge.large{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.q-format-select{height:34px;min-height:34px;padding:0 8px;font-size:12px!important;font-weight:800;background:#fff;border:1.5px solid var(--line);border-radius:8px;color:var(--ink);appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:calc(100% - 8px) 50%;background-repeat:no-repeat;padding-right:26px;cursor:pointer;text-transform:none!important}
+.q-format-select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+.btn-dup-queue{background:#eff6ff!important;color:#1d4ed8!important}
+.queue-item .list-item-info .q-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:5px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
+.queue-item .list-item-info .q-meta .chip-mini{margin:0}
+.queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
+.queue-actions-row .copies-input{flex:0 0 auto}
+@media (max-width:520px){
+  .queue-actions-row{gap:5px}
+  .queue-actions-row .q-format-select{flex:1 1 100%;width:100%}
+}
+.drive-filter-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.drive-filter-row select,.drive-filter-row input{height:42px;min-height:42px;padding:0 12px;font-size:14px!important}
+.drive-filter-row select{flex:0 0 auto;min-width:150px}
+.drive-filter-row input{flex:1 1 180px;min-width:0}
+.drive-group-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;margin:14px 0 6px;background:linear-gradient(90deg,#fff5f7,#fff);border-left:3px solid var(--brand);border-radius:6px;font-size:11.5px;font-weight:900;color:var(--brand);text-transform:uppercase;letter-spacing:.05em}
+.drive-group-hdr:first-child{margin-top:6px}
+.drive-group-hdr .cnt{background:var(--brand);color:#fff;padding:1px 8px;border-radius:999px;font-size:10px}
+.queue-summary{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-3);font-weight:700;margin-bottom:8px;flex-wrap:wrap}
+.queue-summary b{color:var(--ink)}
+@media print{ .queue-actions-row,.q-format-select,.drive-filter-row,.drive-group-hdr,.queue-summary{display:none!important} }
 </style>
 </head>
 <body data-view="editor" data-format="normal">
@@ -732,13 +757,19 @@ html.is-apk .floating-preview{bottom:calc(88px + var(--safe-b))}
         </div>
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
-          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · ✕ apaga. Vários registos com o mesmo código são permitidos.</p>
+          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · 🧬 cria variante (novo formato) · ✕ apaga.</p>
           <div class="row">
             <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" data-tip="Recarregar lista do Drive">🔄 Recarregar</button>
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
           </div>
+          <div class="drive-filter-row">
+            <select id="dbFiltroFormato" data-tip="Filtrar por formato">
+              <option value="">Todos os formatos</option>
+            </select>
+            <input id="dbBusca" type="search" placeholder="🔍 Procurar nome/código…" autocapitalize="characters" spellcheck="false">
+          </div>
           <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" data-tip="Recomprimir imagens para poupar espaço">📉 Otimizar imagens do Drive</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706" data-tip="Remover etiquetas duplicadas (mantém a mais recente)">🧹 Remover duplicados</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706" data-tip="Remover etiquetas com mesma referência e formato">🧹 Remover duplicados</button>
           <button class="btn btn-ghost btn-block btn-sm" id="hardResetBtn" type="button" style="border-color:#dc2626;color:#dc2626" data-tip="Limpar cache local e ressincronizar do zero">🔥 Limpar cache local e ressincronizar</button>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
@@ -998,6 +1029,28 @@ const NO_RETRY_FNS = ['enviarEtiquetasEmail', 'otimizarBancoFruta'];
 const FETCH_TIMEOUT_MS = 25000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
+/* ===== RÓTULOS DE FORMATO (variantes) ===== */
+const FORMAT_LABELS = {
+  amanhecer:'⭐ Amanhecer', '80x60':'🆕 6×8', '125x80':'🍎 Suporte 125×80',
+  frutaPromo125x80:'💡 Leve 2+ 125×80', A6:'📄 A6', frutaPromoA6:'💡 A6 Leve 2+',
+  A5:'📄 A5', '100x70':'🏷️ Cartaz 100×70', custom:'⚙️ Personalizado'
+};
+function fmtLabel(v){ return FORMAT_LABELS[v] || v || '—'; }
+function fmtShort(v){
+  if(!v) return 'Amanhecer';
+  if(v === 'amanhecer') return 'Amanhecer';
+  if(v === '80x60') return '6×8';
+  if(v === '125x80') return 'Sup.125×80';
+  if(v === 'frutaPromo125x80') return 'Leve2+ 125×80';
+  if(v === 'frutaPromoA6') return 'Leve2+ A6';
+  return v;
+}
+function fmtClass(v){
+  if(v === 'frutaPromo125x80' || v === 'frutaPromoA6') return 'fruit';
+  if(['80x60','A6','A5','100x70','125x80'].indexOf(v) > -1) return 'large';
+  return '';
+}
+function gerarQid(){ return 'q_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
 /* 3. AUTENTICAÇÃO */
 let _reauthPromise = null;
 let _currentUser = null;
@@ -1911,38 +1964,76 @@ function renderQueue(){
   const cq = $("clearQueueBtn"); if(cq) cq.style.display = printQueue.length === 0 ? "none" : "block";
   try{ localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(printQueue)); }catch(e){}
   if(!c) return;
-  if(printQueue.length === 0){ c.innerHTML = '<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila de Impressão</b>.</div>'; return; }
-  c.innerHTML = "";
+  if(printQueue.length === 0){
+    c.innerHTML = '<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila de Impressão</b>.</div>';
+    return;
+  }
+  const totalCopies = printQueue.reduce(function(s, it){ return s + (parseInt(it.copies) || 1); }, 0);
+  const uniqueFmts = new Set(printQueue.map(function(it){ return (it.data && it.data.presetSizes) || 'amanhecer'; })).size;
+  c.innerHTML = '<div class="queue-summary"><span><b>' + printQueue.length + '</b> linha(s) · <b>' + totalCopies + '</b> etiqueta(s)</span><span><b>' + uniqueFmts + '</b> formato(s)</span></div>';
+  const list = document.createElement('div');
   printQueue.forEach(function(item, i){
-    const div = document.createElement("div"); div.className = "list-item queue-item";
-    const fr = item.data.presetSizes || item.data.formato || "amanhecer";
-    const fmt = (fr === "amanhecer") ? "Amanhecer" : (fr === "80x60" ? "6×8" : fr);
-    const jg = savedProducts.some(function(p){ return p.codigo && item.data.internalCode && String(p.codigo) === String(item.data.internalCode); });
+    const d = item.data || {};
+    const fr = d.presetSizes || d.formato || 'amanhecer';
+    const div = document.createElement('div'); div.className = 'list-item queue-item';
+    const jg = savedProducts.some(function(p){
+      const pFmt = p.formato || 'amanhecer';
+      if(pFmt !== fr) return false;
+      if(p.codigo && d.internalCode && String(p.codigo).toUpperCase() === String(d.internalCode).toUpperCase()) return true;
+      if(p.nome && d.product && String(p.nome).toUpperCase() === String(d.product).toUpperCase()) return true;
+      return false;
+    });
     const ic = jg ? "✅" : "💾";
-    const tipSave = jg ? "Produto já guardado no Drive" : "Guardar este produto no Drive";
-    const pr = (item.data.price !== undefined && item.data.price !== "" && item.data.price !== null) ? (escapeHTML(item.data.price) + "€") : "S/ preço";
-    const ref = item.data.internalCode ? ('Ref: ' + escapeHTML(item.data.internalCode) + ' · ') : "";
+    const tipSave = jg ? "Já existe no Drive com este formato" : "Guardar este produto no Drive (formato atual)";
+    const pr = (d.price !== undefined && d.price !== "" && d.price !== null) ? (escapeHTML(d.price) + "€") : "S/ preço";
+    const ref = d.internalCode ? ('Ref: ' + escapeHTML(d.internalCode) + ' · ') : "";
+    const fmtHtml = '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
+
+    const opcoes = [
+      ['amanhecer','⭐ Amanhecer'],['80x60','6×8 · 80×60'],
+      ['125x80','Suporte · 125×80'],['frutaPromo125x80','Leve 2+ · 125×80'],
+      ['A6','A6 · 148×105'],['frutaPromoA6','Leve 2+ · A6'],
+      ['A5','A5 · 210×148'],['100x70','Cartaz · 100×70'],['custom','Personalizado']
+    ];
+    const selOpts = opcoes.map(function(o){
+      const s = (o[0] === fr) ? ' selected' : '';
+      return '<option value="' + o[0] + '"' + s + '>' + o[1] + '</option>';
+    }).join('');
+
     div.innerHTML =
-      '<div class="list-item-info"><strong>' + escapeHTML(item.data.product || "Sem Nome") + '</strong>' +
-      '<span>' + ref + pr + ' <span class="chip-mini">' + fmt + '</span></span></div>' +
-      '<div class="list-item-actions">' +
-      '<input type="number" class="copies-input" value="' + item.copies + '" min="1" max="500" data-action="copies" data-index="' + i + '" data-tip="Número de cópias" title="Número de cópias">' +
-      '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '" data-tip="' + tipSave + '">' + ic + '</button>' +
-      '<button class="btn-remove" data-action="remove-queue" data-index="' + i + '" data-tip="Remover da fila">✕</button>' +
+      '<div class="list-item-info">' +
+        '<strong>' + escapeHTML(d.product || "Sem Nome") + '</strong>' +
+        '<div class="q-meta">' + ref + pr + ' ' + fmtHtml + '</div>' +
+      '</div>' +
+      '<div class="queue-actions-row">' +
+        '<select class="q-format-select" data-action="format-queue" data-index="' + i + '" data-tip="Alterar formato desta linha">' + selOpts + '</select>' +
+        '<input type="number" class="copies-input" value="' + (item.copies || 1) + '" min="1" max="500" data-action="copies" data-index="' + i + '" data-tip="Nº de cópias">' +
+        '<button class="btn-dup-queue" data-action="dup-queue" data-index="' + i + '" data-tip="Duplicar linha (variante)">🧬</button>' +
+        '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '" data-tip="' + tipSave + '">' + ic + '</button>' +
+        '<button class="btn-remove" data-action="remove-queue" data-index="' + i + '" data-tip="Remover da fila">✕</button>' +
       '</div>';
-    c.appendChild(div);
+    list.appendChild(div);
   });
+  c.appendChild(list);
 }
 function addToQueue(){
   setValidationState();
   if($("appStatus").dataset.type === "error"){ toast("Corrija os erros.", "error"); return; }
   const data = getFormData();
   if(!data.product && !data.price && !data.internalCode){ toast("Preencha os dados.", "warning"); return; }
-  printQueue.push({data: data, copies: 1}); renderQueue();
-  toast("Adicionado à Fila de Impressão", "success");
-  setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0, behavior:'smooth'}); }, 300);
+  const fmt = data.presetSizes || 'amanhecer';
+  printQueue.push({ qid: gerarQid(), data: data, copies: 1, addedAt: Date.now() });
+  renderQueue();
+  toast("Adicionado à Fila · " + fmtShort(fmt), "success");
+  setTimeout(function(){
+    document.body.dataset.view = 'fila';
+    _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 300);
 }
 function buildProdutoPayload(d){
+  const fmt = d.presetSizes || 'amanhecer';
+  const chave = String(d.internalCode || d.product || '').trim().toUpperCase();
   return {
     _id: d._id || "",
     codigo: d.internalCode, nome: d.product, preco: d.price,
@@ -1952,14 +2043,18 @@ function buildProdutoPayload(d){
     unit: d.unit, origem: d.origem, categoria: d.categoria, calibre: d.calibre,
     ean: d.ean, loja: d.store, unidade: d.capacityUnit, capacidade: d.capacity,
     deposito: d.depositFeeSelect === 'custom' ? d.customDepositInput : d.depositFeeSelect,
-    formato: d.presetSizes, customWidth: d.customWidth, customHeight: d.customHeight,
+    formato: fmt, customWidth: d.customWidth, customHeight: d.customHeight,
     syncCodeToEan: !!d.syncCodeToEan, infoExtraTipo: d.infoExtraTipo || '', infoExtraData: d.infoExtraData || '',
-    fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || ''
+    fotoId: d.fotoId || '', fotoUrl: d.fotoUrl || '',
+    varianteDe: chave
   };
 }
 function atualizarProdutoLocal(payload){
+  const fmt = payload.formato || 'amanhecer';
   const idx = savedProducts.findIndex(function(p){
     if(payload._id && p._id && String(p._id) === String(payload._id)) return true;
+    const pFmt = p.formato || 'amanhecer';
+    if(pFmt !== fmt) return false;
     if(!payload._id && payload.codigo && String(p.codigo || '').trim().toUpperCase() === String(payload.codigo).trim().toUpperCase()) return true;
     if(!payload._id && !payload.codigo && payload.nome && String(p.nome || '').trim().toUpperCase() === String(payload.nome).trim().toUpperCase()) return true;
     return false;
@@ -1972,6 +2067,15 @@ function atualizarProdutoLocal(payload){
   }
 }
 window.removeFromQueue = function(i){ printQueue.splice(i, 1); renderQueue(); };
+window.duplicateQueueItem = function(i){
+  const item = printQueue[i]; if(!item) return;
+  const clone = JSON.parse(JSON.stringify(item));
+  clone.qid = gerarQid();
+  clone.addedAt = Date.now();
+  printQueue.splice(i + 1, 0, clone);
+  renderQueue();
+  toast("🧬 Linha duplicada — altere o formato se quiser variante", "info", 3000);
+};
 async function resolverFotoParaPayload(d){
   let fid = d.fotoId || "", furl = d.fotoUrl || "";
   const foto = d.processedPhoto || d.originalPhoto;
@@ -1984,8 +2088,15 @@ window.saveQueueItem = async function(i){
   const item = printQueue[i]; if(!item){ toast("Item não encontrado.", "error"); return; }
   const d = item.data;
   if(!d.product && !d.internalCode){ toast("Preencha o nome ou código.", "warning"); return; }
-  const ex = savedProducts.find(function(p){ return p.codigo && d.internalCode && String(p.codigo).toUpperCase() === String(d.internalCode).toUpperCase(); });
-  if(ex){ const sub = await confirmDialog("Já existe um produto com o código \"" + d.internalCode + "\".\n\nSubstituir?"); if(!sub) return; }
+  const fr = d.presetSizes || 'amanhecer';
+  const ex = savedProducts.find(function(p){
+    const pFmt = p.formato || 'amanhecer';
+    if(pFmt !== fr) return false;
+    if(d.internalCode && p.codigo && String(p.codigo).toUpperCase() === String(d.internalCode).toUpperCase()) return true;
+    if(!d.internalCode && d.product && p.nome && String(p.nome).toUpperCase() === String(d.product).toUpperCase()) return true;
+    return false;
+  });
+  if(ex){ const sub = await confirmDialog("Já existe no Drive a referência com o formato \"" + fmtShort(fr) + "\".\n\nSubstituir?"); if(!sub) return; }
   const t0 = Date.now();
   setStatus("A guardar no Drive…", "loading");
   try{
@@ -2007,60 +2118,146 @@ window.saveQueueItem = async function(i){
 function renderDb(){
   const c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
+
+  const filtroEl = $("dbFiltroFormato");
+  if(filtroEl){
+    const fmts = [...new Set(savedProducts.map(function(p){ return p.formato || 'amanhecer'; }))].sort();
+    const atual = filtroEl.value;
+    filtroEl.innerHTML = '<option value="">Todos os formatos</option>' +
+      fmts.map(function(f){ return '<option value="' + escapeAttr(f) + '">' + escapeHTML(fmtLabel(f)) + '</option>'; }).join('');
+    if(fmts.indexOf(atual) > -1) filtroEl.value = atual;
+  }
+
+  const busca = ($("dbBusca") && $("dbBusca").value || '').trim().toUpperCase();
+  const filtro = filtroEl ? filtroEl.value : '';
+
   if(savedProducts.length === 0){ c.innerHTML = '<div class="empty-msg">Nenhum produto guardado no Drive.</div>'; return; }
-  c.innerHTML = "";
-  savedProducts.map(function(p, i){ return {p:p, i:i}; })
-    .sort(function(a, b){ return String(a.p.nome || "").localeCompare(String(b.p.nome || ""), "pt"); })
-    .forEach(function(o){
+
+  let lista = savedProducts.map(function(p, i){ return {p:p, i:i}; });
+  if(filtro) lista = lista.filter(function(o){ return (o.p.formato || 'amanhecer') === filtro; });
+  if(busca) lista = lista.filter(function(o){
+    const n = String(o.p.nome || '').toUpperCase();
+    const cd = String(o.p.codigo || '').toUpperCase();
+    return n.indexOf(busca) > -1 || cd.indexOf(busca) > -1;
+  });
+
+  if(lista.length === 0){ c.innerHTML = '<div class="empty-msg">Sem resultados com os filtros atuais.</div>'; return; }
+
+  const grupos = {};
+  lista.forEach(function(o){
+    const p = o.p;
+    const k = (String(p.codigo || '').trim() || ('~NOME:' + String(p.nome || '').trim())).toUpperCase();
+    if(!grupos[k]) grupos[k] = { titulo: p.nome || p.codigo || 'Sem nome', codigo: p.codigo || '', items: [] };
+    grupos[k].items.push(o);
+  });
+
+  c.innerHTML = '';
+  Object.keys(grupos).sort(function(a,b){ return grupos[a].titulo.localeCompare(grupos[b].titulo, 'pt'); }).forEach(function(k){
+    const g = grupos[k];
+    const hdr = document.createElement('div'); hdr.className = 'drive-group-hdr';
+    hdr.innerHTML = '<span>' + escapeHTML(g.titulo) + (g.codigo ? ' · Ref ' + escapeHTML(g.codigo) : '') + '</span><span class="cnt">' + g.items.length + '</span>';
+    c.appendChild(hdr);
+
+    g.items.sort(function(a,b){
+      const fa = a.p.formato || 'amanhecer', fb = b.p.formato || 'amanhecer';
+      return fa.localeCompare(fb);
+    }).forEach(function(o){
       const d = o.p, i = o.i;
-      const div = document.createElement("div"); div.className = "list-item";
+      const fr = d.formato || 'amanhecer';
+      const div = document.createElement('div'); div.className = 'list-item';
       const pr = (d.preco !== undefined && d.preco !== "" && d.preco !== null) ? (escapeHTML(d.preco) + "€") : "S/ preço";
-      const ref = d.codigo ? ("Ref: " + escapeHTML(d.codigo) + " · ") : "";
       const isEditing = editingId && d._id && String(editingId) === String(d._id);
       div.innerHTML =
         '<div class="list-item-info"><strong>' + escapeHTML(d.nome || "Sem Nome") +
         (isEditing ? ' <span class="chip-mini">A editar</span>' : "") +
-        '</strong><span>' + ref + pr + '</span></div>' +
+        '</strong>' +
+        '<div class="q-meta"><span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' + pr + '</div></div>' +
         '<div class="list-item-actions">' +
         '<button class="btn-load" data-action="load-db" data-index="' + i + '" data-tip="Carregar para o editor">📥</button>' +
-        '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila de impressão">➕</button>' +
+        '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕</button>' +
+        '<button class="btn-dup-queue" data-action="variant-db" data-index="' + i + '" data-tip="Criar variante (novo formato)">🧬</button>' +
         '<button class="btn-remove" data-action="remove-db" data-index="' + i + '" data-tip="Apagar do Drive">✕</button>' +
         '</div>';
       c.appendChild(div);
     });
+  });
 }
 async function saveToDb(options){
   options = options || {};
   const forceNew = !!options.forceNew;
   const data = getFormData();
   if(!data.product && !data.internalCode){ toast("Preencha um nome ou código.", "warning"); return; }
+
+  const fmt = data.presetSizes || 'amanhecer';
+  const cod = String(data.internalCode || '').trim().toUpperCase();
+  const nom = String(data.product || '').trim().toUpperCase();
+
+  const dupExato = savedProducts.find(function(p){
+    const pFmt = p.formato || 'amanhecer';
+    if(pFmt !== fmt) return false;
+    if(cod && String(p.codigo || '').toUpperCase() === cod) return true;
+    if(!cod && nom && String(p.nome || '').toUpperCase() === nom) return true;
+    return false;
+  });
+
+  const outrasVariantes = savedProducts.filter(function(p){
+    const pFmt = p.formato || 'amanhecer';
+    if(pFmt === fmt) return false;
+    if(cod && String(p.codigo || '').toUpperCase() === cod) return true;
+    if(!cod && nom && String(p.nome || '').toUpperCase() === nom) return true;
+    return false;
+  });
+
   let modo = 'new';
-  if(!forceNew && editingId){ modo = 'update'; }
+  if(!forceNew){
+    if(editingId){
+      modo = 'update';
+    } else if(dupExato){
+      const choice = await choiceDialog(
+        'Já existe uma etiqueta com a mesma referência e formato (' + fmtShort(fmt) + ').\n\nO que pretende fazer?',
+        'Já existe uma com este formato'
+      );
+      if(choice === 'cancel') return;
+      if(choice === 'update'){ editingId = dupExato._id; modo = 'update'; }
+      else { modo = 'new'; }
+    }
+  }
+
   const t0 = Date.now();
   setStatus("A preparar imagem…", "loading");
   try{
     const {fotoId, fotoUrl} = await resolverFotoParaPayload(data);
     if(fotoUrl){ globalOriginalPhoto = fotoUrl; globalProcessedPhoto = fotoUrl; }
+
     const payload = buildProdutoPayload(data);
     payload.fotoId = fotoId; payload.fotoUrl = fotoUrl;
+    payload.formato = fmt;
+
     if(modo === 'update'){
       payload._id = editingId;
       setStatus("A atualizar no Drive…", "loading");
     } else {
       payload._id = gerarUUID();
       payload.__criarNovo = true;
-      setStatus("A guardar como novo no Drive…", "loading");
+      setStatus(outrasVariantes.length > 0
+        ? "A criar variante " + fmtShort(fmt) + "…"
+        : "A guardar no Drive…", "loading");
     }
+
     const resp = await api('guardarProduto', payload);
     if(resp && resp._id) payload._id = resp._id;
     atualizarProdutoLocal(payload); renderDb();
     try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
     const dt = ((Date.now() - t0) / 1000).toFixed(1);
-    setStatus((modo === 'update' ? "Atualizado" : "Guardado como novo") + " (" + dt + "s)", "success");
-    editingId = payload._id || null;
-    editingCode = payload.codigo || null;
-    currentFormId = editingId;
-    updateEditingBanner();
+    const sufixo = (modo === 'new' && outrasVariantes.length > 0) ? (" (variante " + fmtShort(fmt) + ")") : "";
+    setStatus((modo === 'update' ? "Atualizado" : "Guardado") + sufixo + " (" + dt + "s)", "success");
+
+    if(modo === 'new'){
+      editingId = payload._id || null;
+      editingCode = payload.codigo || null;
+      currentFormId = editingId;
+      updateEditingBanner();
+    }
   }catch(e){ setStatus("Erro ao guardar", "error"); toast("Erro ao guardar produto: " + e.message, "error"); }
 }
 function updateSaveButtonsState(){
@@ -2115,34 +2312,48 @@ window.loadFromDb = function(i){
   setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 700);
   toast('Etiqueta carregada para edição', 'success');
 };
+window.variantFromDb = function(i){
+  const d = savedProducts[i]; if(!d) return;
+  const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
+  data._id = '';
+  setFormData(data);
+  editingId = null; editingCode = null; currentFormId = null;
+  updateEditingBanner();
+  document.body.dataset.view = 'editor';
+  _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'editor'); });
+  window.scrollTo({top:0, behavior:'smooth'});
+  toast("🧬 Variante pré-carregada — escolha o novo formato e clique Guardar", "info", 5000);
+  setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 120);
+  setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} }, 400);
+};
 window.removeFromDb = async function(i){
   const d = savedProducts[i]; if(!d) return;
   const n = d.nome || d.codigo || "produto sem nome";
-  if(!(await confirmDialog("Eliminar \"" + n + "\" do Drive?"))) return;
+  const fr = d.formato || 'amanhecer';
+  if(!(await confirmDialog("Eliminar \"" + n + "\" (" + fmtShort(fr) + ") do Drive?"))) return;
   setStatus("A eliminar do Drive…", "loading");
   try{
     const r = await api('apagarProduto', {
       _id:    d._id    || '',
       codigo: d.codigo || '',
-      nome:   d.nome   || ''
+      nome:   d.nome   || '',
+      formato: fr
     });
     if(!r || (r.apagadas === 0 && r.jaNaoExistia)){
       toast("Item já não existe no servidor — a ressincronizar…", "warning");
       await carregarTudo();
       return;
     }
-    const idxLocal = savedProducts.findIndex(p =>
-      (d._id && String(p._id) === String(d._id)) ||
-      (!d._id && d.codigo && String(p.codigo || '').toUpperCase() === String(d.codigo).toUpperCase())
-    );
+    const idxLocal = savedProducts.findIndex(function(p){
+      if(d._id && String(p._id) === String(d._id)) return true;
+      const pFmt = p.formato || 'amanhecer';
+      if(pFmt !== fr) return false;
+      if(d.codigo && String(p.codigo || '').toUpperCase() === String(d.codigo).toUpperCase()) return true;
+      return false;
+    });
     if(idxLocal >= 0) savedProducts.splice(idxLocal, 1);
     renderDb();
-    try{
-      await localforage.setItem(CACHE_KEY, {
-        schemaVersion: CACHE_SCHEMA_VERSION,
-        produtos: savedProducts, banco: bancoFruta, t: Date.now()
-      });
-    }catch(e){}
+    try{ await localforage.setItem(CACHE_KEY, {schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now()}); }catch(e){}
     if(editingId && d._id && String(editingId) === String(d._id)){
       editingId = null; editingCode = null; currentFormId = null; updateEditingBanner();
     }
@@ -2157,9 +2368,14 @@ window.removeFromDb = async function(i){
 window.queueFromDb = function(i){
   const d = savedProducts[i]; if(!d) return;
   const data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
-  printQueue.push({data: data, copies: 1}); renderQueue();
-  toast("Adicionado à Fila de Impressão", "success");
-  setTimeout(function(){ document.body.dataset.view = 'fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0, behavior:'smooth'}); }, 300);
+  printQueue.push({ qid: gerarQid(), data: data, copies: 1, addedAt: Date.now() });
+  renderQueue();
+  toast("Adicionado à Fila · " + fmtShort(data.presetSizes), "success");
+  setTimeout(function(){
+    document.body.dataset.view = 'fila';
+    _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 300);
 };
 /* 21. BANCO */
 function updateBancoCounts(){
@@ -3166,6 +3382,19 @@ async function closeScanner(){
     else { toast("Sincronização desativada", "info", 1800); }
   });
 })();
+/* 26b. FILTROS DO DRIVE */
+(function setupDriveFilters(){
+  const sel = document.getElementById('dbFiltroFormato');
+  const bus = document.getElementById('dbBusca');
+  if(sel) sel.addEventListener('change', renderDb);
+  if(bus){
+    let t = null;
+    bus.addEventListener('input', function(){
+      if(t) clearTimeout(t);
+      t = setTimeout(renderDb, 180);
+    });
+  }
+})();
 /* 27. EVENTOS */
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
 document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
@@ -3184,7 +3413,7 @@ document.getElementById('syncBancoBtn').addEventListener("click", async function
   catch(e){ setStatus("Erro ao sincronizar banco", "error"); toast("Erro ao sincronizar: " + e.message, "error"); }
 });
 document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
-  if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada código."))) return;
+  if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada referência+formato."))) return;
   setStatus("A remover duplicados…", "loading");
   try{
     const r = await api('apagarDuplicados');
@@ -3358,14 +3587,36 @@ document.addEventListener("click", function(e){
   const a = btn.dataset.action, i = parseInt(btn.dataset.index, 10);
   if(a === "remove-queue" && isFinite(i)) window.removeFromQueue(i);
   if(a === "save-queue" && isFinite(i)) window.saveQueueItem(i);
+  if(a === "dup-queue" && isFinite(i)) window.duplicateQueueItem(i);
   if(a === "load-db" && isFinite(i)) window.loadFromDb(i);
   if(a === "queue-db" && isFinite(i)) window.queueFromDb(i);
+  if(a === "variant-db" && isFinite(i)) window.variantFromDb(i);
   if(a === "remove-db" && isFinite(i)) window.removeFromDb(i);
 });
 document.addEventListener("change", function(e){
-  const inp = e.target.closest('input[data-action="copies"]'); if(!inp) return;
-  const i = parseInt(inp.dataset.index, 10); if(!isFinite(i)) return;
-  if(printQueue[i]){ printQueue[i].copies = Math.max(1, Math.min(500, parseInt(inp.value) || 1)); renderQueue(); }
+  const inp = e.target.closest('input[data-action="copies"]');
+  if(inp){
+    const i = parseInt(inp.dataset.index, 10); if(!isFinite(i)) return;
+    if(printQueue[i]){ printQueue[i].copies = Math.max(1, Math.min(500, parseInt(inp.value) || 1)); renderQueue(); }
+    return;
+  }
+  const sel = e.target.closest('select[data-action="format-queue"]');
+  if(sel){
+    const i = parseInt(sel.dataset.index, 10); if(!isFinite(i)) return;
+    if(printQueue[i]){
+      const novoFmt = sel.value;
+      if(novoFmt === 'custom'){
+        const w = prompt("Largura (mm):", printQueue[i].data.customWidth || "70");
+        const h = prompt("Altura (mm):", printQueue[i].data.customHeight || "38");
+        if(!w || !h){ renderQueue(); return; }
+        printQueue[i].data.customWidth = String(parseFloat(w) || 70);
+        printQueue[i].data.customHeight = String(parseFloat(h) || 38);
+      }
+      printQueue[i].data.presetSizes = novoFmt;
+      renderQueue();
+      toast("Formato alterado · " + fmtShort(novoFmt), "success", 2200);
+    }
+  }
 });
 (function(){
   const el = $("oldPrice"); if(!el) return;
@@ -3389,7 +3640,12 @@ document.addEventListener("change", function(e){
       if(b){
         const arr = JSON.parse(b);
         if(Array.isArray(arr) && arr.length > 0){
-          printQueue = arr; renderQueue();
+          printQueue = arr.map(function(it){
+            if(!it.qid) it.qid = gerarQid();
+            if(!it.copies) it.copies = 1;
+            return it;
+          });
+          renderQueue();
           setTimeout(function(){ toast("Fila restaurada (" + arr.length + " etiquetas)", "info"); }, 800);
         }
       }
@@ -3400,7 +3656,7 @@ document.addEventListener("change", function(e){
       if(window.google && google.accounts && google.accounts.id){
         clearInterval(ag); inicializarBotaoGoogle();
         const tk = getStoredToken();
-        if(tk){ atualizarUICredenciais(); /* carregarTudo() é chamado logo abaixo */ }
+        if(tk){ atualizarUICredenciais(); }
         else { setTimeout(function(){ tentarReauthSilenciosa().then(function(){}); }, 800); }
       } else if(t > 40){ clearInterval(ag); }
     }, 200);
