@@ -356,23 +356,87 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media screen{#printZone{display:none!important}#printZone.measure{display:block!important;position:fixed!important;left:-99999px!important;top:0!important;width:210mm!important;visibility:visible!important;background:#fff!important}#printZone.measure .label-card{background:#fff!important;border:1px dashed #999!important}}
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.btn{font-size:15px;min-height:48px}}
 @media (max-width:480px){.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row>.btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}}
-/* ===== PREÇO + IVA INLINE ===== */
-.price-iva-wrap{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
-.price-iva-wrap > input[type=text]{flex:1 1 auto;min-width:0}
-.price-iva-wrap > select{flex:0 0 auto;min-width:112px;max-width:130px;padding:12px 26px 12px 10px;background-position:calc(100% - 8px) 50%;font-weight:800;font-size:14px!important;color:#065f46;background-color:#ecfdf5;border-color:#a7f3d0;text-transform:none}
-.price-iva-wrap > select.iva-vazio{color:var(--ink-3);background-color:var(--surface-2);border-color:var(--line);font-weight:700}
-.price-iva-wrap > select:focus{background-color:#fff;border-color:var(--brand);box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand)}
-.price-iva-hint{display:block;font-size:10.5px;font-weight:700;color:var(--ink-3);margin-top:4px;text-transform:none;letter-spacing:0}
-.price-iva-hint.iva-ok{color:#065f46}
-.price-iva-hint.iva-empty{color:#b45309}
-@media (max-width:380px){.price-iva-wrap > select{min-width:96px;max-width:110px;padding:12px 22px 12px 8px;font-size:13px!important}}
-/* ===== VARIANTES / FORMATO ===== */
+
+/* ===== FIX: EAN TOGGLE (agora com cor quando ativo) ===== */
+.code-with-sync{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
+.code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
+.sync-toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:0 12px;min-height:48px;flex-shrink:0;min-width:66px;cursor:pointer;
+  background:var(--surface-2);border:1.5px solid var(--line);
+  border-radius:var(--r-md);font-size:11px;font-weight:900;color:var(--ink-3);
+  letter-spacing:.03em;transition:all .18s;user-select:none;white-space:nowrap;
+}
+.sync-toggle:hover{background:var(--surface-3)}
+.sync-toggle input[type=checkbox]{display:none}
+.sync-toggle svg{flex-shrink:0;transition:transform .18s}
+.sync-toggle.active{
+  background:linear-gradient(135deg,#10b981,#059669)!important;
+  border-color:#047857!important;
+  color:#fff!important;
+  box-shadow:0 4px 12px rgba(16,185,129,.35),0 0 0 3px rgba(16,185,129,.14);
+  font-weight:900;
+}
+.sync-toggle.active:hover{box-shadow:0 6px 16px rgba(16,185,129,.45),0 0 0 3px rgba(16,185,129,.18)}
+.sync-toggle.active svg{stroke:#fff}
+.sync-toggle.active .sync-label-full{color:#fff}
+.sync-toggle:active{transform:scale(.96)}
+@media (max-width:480px){
+  .sync-toggle{padding:0 8px;gap:3px;min-width:52px}
+  .sync-toggle .sync-label-full{display:none}
+}
+
+/* ===== FIX: FORMATO EM DESTAQUE NA FILA DE IMPRESSÃO ===== */
+.q-format-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:10px;font-size:12px;font-weight:900;
+  text-transform:uppercase;letter-spacing:.04em;line-height:1;
+  background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+  color:#3730a3;border:1.5px solid #c7d2fe;
+  box-shadow:0 2px 6px rgba(99,102,241,.12);
+}
+.q-format-pill::before{content:"📏";font-size:13px}
+.q-format-pill.pill-fruit{
+  background:linear-gradient(135deg,#fff7ed,#ffedd5);
+  color:#9a3412;border-color:#fed7aa;
+  box-shadow:0 2px 6px rgba(249,115,22,.14);
+}
+.q-format-pill.pill-fruit::before{content:"🍎"}
+.q-format-pill.pill-large{
+  background:linear-gradient(135deg,#ecfdf5,#d1fae5);
+  color:#166534;border-color:#a7f3d0;
+  box-shadow:0 2px 6px rgba(16,185,129,.14);
+}
+.q-format-pill.pill-large::before{content:"📄"}
+.q-format-pill.pill-amanhecer{
+  background:linear-gradient(135deg,#fff5f7,#ffe4e9);
+  color:#9e0b23;border-color:#fbcfe0;
+  box-shadow:0 2px 6px rgba(200,16,46,.14);
+}
+.q-format-pill.pill-amanhecer::before{content:"⭐"}
+
+/* Seletor de formato na fila — mais visível */
+.q-format-select{
+  height:38px;min-height:38px;padding:0 10px;
+  font-size:13px!important;font-weight:800;
+  background:#fff;border:1.5px solid var(--line);border-radius:9px;
+  color:var(--ink);
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-position:calc(100% - 10px) 50%;
+  background-repeat:no-repeat;
+  padding-right:30px;
+  text-transform:none!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.05);
+}
+.q-format-select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+
+/* ===== VARIANTES / FORMATO (badge pequeno, continua a existir para o Drive) ===== */
 .fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;border:1px solid #c7d2fe;line-height:1.3}
 .fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
 .fmt-badge.large{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
-.q-format-select{height:34px;min-height:34px;padding:0 8px;font-size:12px!important;font-weight:800;background:#fff;border:1.5px solid var(--line);border-radius:8px;color:var(--ink);-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:calc(100% - 8px) 50%;background-repeat:no-repeat;padding-right:26px;text-transform:none!important}
 .btn-dup-queue{background:#eff6ff!important;color:#1d4ed8!important}
-.queue-item .q-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:5px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
+.queue-item .q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
 .queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
 @media (max-width:520px){.queue-actions-row .q-format-select{flex:1 1 100%;width:100%}}
 .drive-filter-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
@@ -384,9 +448,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .drive-group-hdr .cnt{background:var(--brand);color:#fff;padding:1px 8px;border-radius:999px;font-size:10px}
 .queue-summary{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-3);font-weight:700;margin-bottom:8px;flex-wrap:wrap}
 .queue-summary b{color:var(--ink)}
-/* ===== IVA badge ===== */
 .iva-badge{display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#065f46;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid #a7f3d0;line-height:1.3}
-/* ===== EDIÇÃO / ESTADO ===== */
 .list-item.editing{border-left:3px solid #dc2626;background:#fef2f2;box-shadow:0 0 0 1px rgba(220,38,38,.14)}
 .list-item.editing:hover{background:#fee2e2;border-color:#fca5a5}
 .chip-red{display:inline-flex;align-items:center;gap:3px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:9.5px;font-weight:900;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
@@ -404,6 +466,16 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .quick-actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
+/* ===== PREÇO + IVA INLINE ===== */
+.price-iva-wrap{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
+.price-iva-wrap > input[type=text]{flex:1 1 auto;min-width:0}
+.price-iva-wrap > select{flex:0 0 auto;min-width:112px;max-width:130px;padding:12px 26px 12px 10px;background-position:calc(100% - 8px) 50%;font-weight:800;font-size:14px!important;color:#065f46;background-color:#ecfdf5;border-color:#a7f3d0;text-transform:none}
+.price-iva-wrap > select.iva-vazio{color:var(--ink-3);background-color:var(--surface-2);border-color:var(--line);font-weight:700}
+.price-iva-wrap > select:focus{background-color:#fff;border-color:var(--brand);box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand)}
+.price-iva-hint{display:block;font-size:10.5px;font-weight:700;color:var(--ink-3);margin-top:4px;text-transform:none;letter-spacing:0}
+.price-iva-hint.iva-ok{color:#065f46}
+.price-iva-hint.iva-empty{color:#b45309}
+@media (max-width:380px){.price-iva-wrap > select{min-width:96px;max-width:110px;padding:12px 22px 12px 8px;font-size:13px!important}}
 </style>
 </head>
 <body data-view="editor" data-format="normal">
@@ -445,11 +517,12 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 
           <div class="row">
             <div class="fld"><label for="internalCode">Código interno</label>
-              <div class="code-with-sync" style="display:flex;gap:6px">
+              <div class="code-with-sync">
                 <input id="internalCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
-                <label class="sync-toggle" id="syncToggleWrap" style="display:flex;align-items:center;padding:0 12px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-md);font-size:11px;font-weight:800;color:var(--ink-3);cursor:pointer;white-space:nowrap">
-                  <input type="checkbox" id="syncCodeToEan" style="display:none">
-                  <span>→ EAN</span>
+                <label class="sync-toggle" id="syncToggleWrap" data-tip="Sincronizar código interno para código de barras">
+                  <input type="checkbox" id="syncCodeToEan">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
+                  <span class="sync-label-full">→ EAN</span>
                 </label>
               </div>
             </div>
@@ -793,8 +866,8 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v239';
-const CACHE_SCHEMA_VERSION = 8;
+const CACHE_KEY = 'balcao_cache_v240';
+const CACHE_SCHEMA_VERSION = 9;
 const IMG_MAX_SIZE = 2400, IMG_QUALITY = 0.98, THUMB_SIZE = 200;
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
@@ -806,6 +879,12 @@ const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'�
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
 function fmtShort(v){ if(!v) return 'Amanhecer'; if(v==='amanhecer') return 'Amanhecer'; if(v==='80x60') return '6×8'; if(v==='125x80') return 'Sup.125×80'; if(v==='frutaPromo125x80') return 'Leve2+ 125×80'; if(v==='frutaPromoA6') return 'Leve2+ A6'; return v; }
 function fmtClass(v){ if(v==='frutaPromo125x80'||v==='frutaPromoA6') return 'fruit'; if(['80x60','A6','A5','100x70','125x80'].indexOf(v)>-1) return 'large'; return ''; }
+function fmtPillClass(v){
+  if(v==='frutaPromo125x80' || v==='frutaPromoA6') return 'pill-fruit';
+  if(v==='amanhecer') return 'pill-amanhecer';
+  if(['80x60','A6','A5','100x70','125x80'].indexOf(v)>-1) return 'pill-large';
+  return '';
+}
 function gerarQid(){ return 'q_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8); }
 
 /* ===== IVA ===== */
@@ -833,7 +912,7 @@ function updateIvaVisual(){
   }
 }
 
-/* ===== SANITIZAÇÃO (fix bug ISO date) ===== */
+/* ===== SANITIZAÇÃO ===== */
 function sanitizePrice(v){
   if(v===null||v===undefined) return "";
   var s = String(v).trim();
@@ -927,7 +1006,6 @@ function getInfoExtraText(){
   return "";
 }
 function updateInfoExtraVisibility(){ var el=document.getElementById("infoExtraTipo"); if(!el) return; var t=el.value; var df=document.getElementById("infoExtraDataField"); var nd=(t==="consumir"||t==="validade"); if(df) df.style.display=nd?"flex":"none"; }
-
 function normalizarProdutoParaFila(p){
   if(!p) return p;
   var o = Object.assign({},p);
@@ -1596,13 +1674,19 @@ function renderQueue(){
     var ref = d.internalCode ? ('Ref: ' + escapeHTML(d.internalCode) + ' · ') : "";
     var ivaShow = normIvaClient(d.iva||"");
     var ivaBadge = ivaShow ? ('<span class="iva-badge">IVA ' + escapeHTML(ivaShow) + '%</span>') : '';
-    var fmtHtml = '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
-    var opcoes = [['amanhecer','⭐ Amanhecer'],['80x60','6×8 · 80×60'],['125x80','Suporte · 125×80'],['frutaPromo125x80','Leve 2+ · 125×80'],['A6','A6 · 148×105'],['frutaPromoA6','Leve 2+ · A6'],['A5','A5 · 210×148'],['100x70','Cartaz · 100×70'],['custom','Personalizado']];
+
+    // ⭐ NOVO: pill de formato em destaque
+    var formatPill = '<span class="q-format-pill ' + fmtPillClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
+
+    var opcoes = [['amanhecer','⭐ Amanhecer · 70×38'],['80x60','🆕 6×8 · 80×60'],['125x80','🍎 Suporte · 125×80'],['frutaPromo125x80','💡 Leve 2+ · 125×80'],['A6','📄 A6 · 148×105'],['frutaPromoA6','💡 Leve 2+ · A6'],['A5','📄 A5 · 210×148'],['100x70','🏷️ Cartaz · 100×70'],['custom','⚙️ Personalizado']];
     var selOpts = opcoes.map(function(o){ var s=(o[0]===fr)?' selected':''; return '<option value="'+o[0]+'"'+s+'>'+o[1]+'</option>'; }).join('');
+
     div.innerHTML =
       '<div class="list-item-info">' +
         '<strong>' + escapeHTML(d.product || "Sem Nome") + '</strong>' +
-        '<div class="q-meta">' + ref + pr + ' ' + fmtHtml + ' ' + ivaBadge + ' ' + stateBadge + '</div>' +
+        '<div class="q-meta">' +
+          formatPill + ' ' + ref + pr + ' ' + ivaBadge + ' ' + stateBadge +
+        '</div>' +
       '</div>' +
       '<div class="queue-actions-row">' +
         '<select class="q-format-select" data-action="format-queue" data-index="' + i + '" data-tip="Alterar formato desta linha">' + selOpts + '</select>' +
@@ -2150,7 +2234,7 @@ function updateCardUnsafe(){
   }catch(err){}
 }
 
-/* 22. CLONE DIRETO */
+/* 22. CLONE */
 function populateClone(clone, d){
   var st = clone.querySelector('.store-text');
   if(st) st.textContent = d.store || "GARCIA/PATAIAS";
@@ -2246,7 +2330,6 @@ function buildLabelClone(data, dims, forPrint){
     return clone;
   } finally { _skipAutofitInCard = false; }
 }
-function restorePrintBuildState(){ /* nop */ }
 
 /* 23. IMPRESSÃO */
 function validateBeforePrint(){
@@ -2528,14 +2611,29 @@ async function openScanner(){
 }
 async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; } scanTrack = null; scanTorchOn = false; $("scannerModal").classList.remove("show"); }
 
-/* 26. TOGGLE código → EAN */
+/* 26. TOGGLE EAN — FIX VISUAL */
 (function(){
   var code = document.getElementById("internalCode"), sync = document.getElementById("syncCodeToEan"), wrap = document.getElementById("syncToggleWrap");
   if(!code||!sync||!wrap) return;
-  try{ var s = localStorage.getItem(SYNC_EAN_KEY); if(s === '1'){ sync.checked = true; wrap.classList.add('active'); } }catch(e){}
+  function refreshVisual(){ wrap.classList.toggle('active', !!sync.checked); }
+  try{ var s = localStorage.getItem(SYNC_EAN_KEY); if(s === '1'){ sync.checked = true; } }catch(e){}
+  refreshVisual();
   function ap(){ if(!sync.checked) return; var v = String(code.value||'').trim().toUpperCase(); if(v){ var e = document.getElementById("ean"); if(e && e.value !== v){ e.value = v; updateEanBadge(); } } }
   code.addEventListener("input", function(){ ap(); updateCard(); });
-  sync.addEventListener("change", function(){ wrap.classList.toggle("active", sync.checked); try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked?'1':'0'); }catch(e){} if(sync.checked){ ap(); if(code.value.trim()){ toast("Código interno será copiado para o código de barras","info",2400); updateCard(); } } });
+  sync.addEventListener("change", function(){
+    refreshVisual();
+    try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked?'1':'0'); }catch(e){}
+    if(sync.checked){ ap(); if(code.value.trim()){ toast("Código interno será copiado para o código de barras","info",2400); updateCard(); } }
+    else { toast("Sincronização desativada","info",1800); }
+  });
+  // Click no <label> — garantir que o input é alternado corretamente
+  wrap.addEventListener('click', function(e){
+    if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN' && e.target.tagName !== 'svg' && e.target.tagName !== 'path'){
+      // clique na área livre — toggle manual
+      sync.checked = !sync.checked;
+      sync.dispatchEvent(new Event('change'));
+    }
+  });
 })();
 
 /* 27. FILTROS DRIVE */
@@ -2707,8 +2805,7 @@ document.getElementById('ivaSelect').addEventListener("change", function(){
   var cf = $("customIvaField");
   if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; }
   if(this.value !== "custom"){ var ci = $("customIvaInput"); if(ci) ci.value = ""; }
-  updateIvaVisual();
-  updateCard();
+  updateIvaVisual(); updateCard();
 });
 document.getElementById('infoExtraTipo').addEventListener("change", function(){ updateInfoExtraVisibility(); updateCard(); });
 document.getElementById('presetSizes').addEventListener("change", function(){ var v = this.value; $("customDimensionsRow").style.display = (v === "custom") ? "grid" : "none"; updateOrientationVisibility(); updateCard(); });
