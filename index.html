@@ -957,7 +957,12 @@ const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='b
 const SESSION_TTL_SECONDS = 365*24*3600;
 const CACHE_KEY = 'balcao_cache_v245';
 const CACHE_SCHEMA_VERSION = 14;
-const IMG_MAX_SIZE = 2400, IMG_QUALITY = 0.98, THUMB_SIZE = 200;
+
+/* ⚡ Compressão default mais leve (payload menor → menos 502) */
+const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
+const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
+const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
+
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
@@ -1287,44 +1292,24 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — com timeouts adaptativos robustos */
+/* 9. API — timeouts adaptativos + warm-up + retry automático em 502/503/504/timeout */
 var _apiWarm = false;
 var _lastApiTime = 0;
 const _apiInFlight = new Map();
 
-async function api(fn,payload){
-  payload = payload || {};
-
-  var dedupKey = fn + '::' + JSON.stringify(payload);
-  if(_apiInFlight.has(dedupKey)) return _apiInFlight.get(dedupKey);
-
-  var promessa = (async function(){
-    var token = getStoredToken();
-    if(!token){
-      var ok = await tentarReauthSilenciosa();
-      if(ok){ return api(fn,payload); }
-      toast("Inicie sessão primeiro.","error");
-      throw new Error("Não autenticado.");
-    }
-
-    var isWrite = WRITE_FNS.indexOf(fn) !== -1;
-    var now = Date.now();
-    var gap = _lastApiTime ? (now - _lastApiTime) : 999999;
-    var isCold = !_apiWarm || gap > 90000;
-
-    var timeout;
-    if(isWrite){ timeout = isCold ? TIMEOUT_WRITE_COLD : TIMEOUT_WRITE_WARM; }
-    else { timeout = isCold ? TIMEOUT_READ_COLD : TIMEOUT_READ_WARM; }
-
-    var controller = new AbortController();
-    var timedOut = false;
-    var tid = setTimeout(function(){ timedOut = true; try{ controller.abort(); }catch(e){} }, timeout);
-
+/* ⚡ Warm-up explícito do Apps Script (evita cold start) */
+var _warmUpPromise = null;
+function warmUpServer(){
+  if(_warmUpPromise) return _warmUpPromise;
+  _warmUpPromise = (async function(){
     try{
-      var resp = await fetch(API_URL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({fn:fn, payload:payload, sessionToken:token}),
+      var token = getStoredToken() || '';
+      var controller = new AbortController();
+      var tid = setTimeout(function(){ try{ controller.abort(); }catch(e){} }, 9000);
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ fn:'ping', payload:{}, sessionToken: token }),
         signal: controller.signal,
         mode: 'cors',
         cache: 'no-store'
@@ -1332,43 +1317,106 @@ async function api(fn,payload){
       clearTimeout(tid);
       _apiWarm = true;
       _lastApiTime = Date.now();
-
-      if(resp.status === 401){
-        clearStoredToken();
-        atualizarUICredenciais();
-        var ok2 = await tentarReauthSilenciosa();
-        if(ok2) return api(fn,payload);
-        throw new Error("Sessão expirada. Faça login novamente.");
-      }
-
-      var texto = await resp.text();
-      if(!resp.ok) throw new Error('HTTP ' + resp.status);
-
-      var j;
-      try{ j = JSON.parse(texto); }
-      catch(e){ throw new Error('Resposta inválida do servidor.'); }
-
-      if(!j.ok) throw new Error(j.error || 'Erro no servidor');
-      return j.data;
-
-    }catch(e){
-      clearTimeout(tid);
-      var msg = String((e && e.message) || e || '');
-      var isAbort = timedOut || (e && e.name === 'AbortError') || msg.indexOf('aborted') !== -1;
-
-      if(isAbort){
-        throw new Error('O servidor demorou demasiado a responder.');
-      }
-      throw e;
-    }
+    }catch(e){ /* silencioso */ }
+    _warmUpPromise = null;
+    return true;
   })();
+  return _warmUpPromise;
+}
 
+async function api(fn, payload){
+  payload = payload || {};
+  var dedupKey = fn + '::' + JSON.stringify(payload);
+  if(_apiInFlight.has(dedupKey)) return _apiInFlight.get(dedupKey);
+
+  var promessa = _apiCall(fn, payload, 0);
   _apiInFlight.set(dedupKey, promessa);
   promessa.then(
     function(){ _apiInFlight.delete(dedupKey); },
     function(){ _apiInFlight.delete(dedupKey); }
   );
   return promessa;
+}
+
+async function _apiCall(fn, payload, retryCount){
+  var token = getStoredToken();
+  if(!token){
+    var ok = await tentarReauthSilenciosa();
+    if(ok){ return _apiCall(fn, payload, retryCount); }
+    toast("Inicie sessão primeiro.","error");
+    throw new Error("Não autenticado.");
+  }
+
+  var isWrite = WRITE_FNS.indexOf(fn) !== -1;
+  var now = Date.now();
+  var gap = _lastApiTime ? (now - _lastApiTime) : 999999;
+  var isCold = !_apiWarm || gap > 90000;
+
+  var timeout;
+  if(isWrite){ timeout = isCold ? TIMEOUT_WRITE_COLD : TIMEOUT_WRITE_WARM; }
+  else { timeout = isCold ? TIMEOUT_READ_COLD : TIMEOUT_READ_WARM; }
+
+  var controller = new AbortController();
+  var timedOut = false;
+  var tid = setTimeout(function(){ timedOut = true; try{ controller.abort(); }catch(e){} }, timeout);
+
+  try{
+    var resp = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({fn:fn, payload:payload, sessionToken:token}),
+      signal: controller.signal,
+      mode: 'cors',
+      cache: 'no-store'
+    });
+    clearTimeout(tid);
+    _apiWarm = true;
+    _lastApiTime = Date.now();
+
+    if(resp.status === 401){
+      clearStoredToken();
+      atualizarUICredenciais();
+      var ok2 = await tentarReauthSilenciosa();
+      if(ok2) return _apiCall(fn,payload,retryCount);
+      throw new Error("Sessão expirada. Faça login novamente.");
+    }
+
+    var texto = await resp.text();
+    if(!resp.ok){
+      var err = new Error('HTTP ' + resp.status);
+      err._status = resp.status;
+      err._retryable = (resp.status === 502 || resp.status === 503 || resp.status === 504);
+      throw err;
+    }
+
+    var j;
+    try{ j = JSON.parse(texto); }
+    catch(e){ throw new Error('Resposta inválida do servidor.'); }
+
+    if(!j.ok) throw new Error(j.error || 'Erro no servidor');
+    return j.data;
+
+  }catch(e){
+    clearTimeout(tid);
+    var msg = String((e && e.message) || e || '');
+    var isAbort = timedOut || (e && e.name === 'AbortError') || msg.indexOf('aborted') !== -1;
+    var is502   = (e && e._status === 502) || /HTTP 50[234]/.test(msg);
+
+    var isRetryable = (e && e._retryable) || isAbort || is502;
+
+    /* ⚡ Retry automático (1×) com warm-up + espera 2,5s */
+    if(isRetryable && retryCount < 1){
+      setGlobalStatus("Servidor sobrecarregado. A tentar novamente…","warning",{duration:4000});
+      try{ await warmUpServer(); }catch(_e){}
+      await new Promise(function(r){ setTimeout(r, 2500); });
+      return _apiCall(fn, payload, retryCount + 1);
+    }
+
+    if(isAbort || is502){
+      throw new Error('Servidor sobrecarregado. Aguarde 5 segundos.');
+    }
+    throw e;
+  }
 }
 
 /* 10. ESTADO */
@@ -2000,7 +2048,14 @@ async function resolverFotoParaPayload(d){
   var foto = d.processedPhoto || d.originalPhoto;
   if(!foto) return {fotoId:"",fotoUrl:""};
   if(foto.indexOf('http') === 0){ furl = foto; if(!fid){ var ex = extrairFotoIdDoUrl(foto); if(ex) fid = ex; } return {fotoId:fid,fotoUrl:furl}; }
-  var up = await api('uploadFoto', {base64: await compressSmart(foto), nomeFicheiro: (d.internalCode||'artigo')+'_'+Date.now()+'.jpg'});
+
+  /* ⚡ Compressão mais leve para não rebentar o payload (502) */
+  var comp = await compressSmart(foto, IMG_MAX_SIZE, IMG_QUALITY);
+  if(comp.length > IMG_B64_FALLBACK_LIMIT){
+    comp = await compressSmart(foto, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
+  }
+
+  var up = await api('uploadFoto', {base64: comp, nomeFicheiro: (d.internalCode||'artigo')+'_'+Date.now()+'.jpg'});
   return {fotoId: up.id, fotoUrl: up.url};
 }
 
@@ -2175,7 +2230,10 @@ function renderBancoFruta(filtro){
 async function guardarFotoBanco(nome,dataUrl,tipo){
   setStatus("A enviar foto para o Drive…","loading");
   try{
-    var comp = await compressSmart(dataUrl);
+    var comp = await compressSmart(dataUrl, IMG_MAX_SIZE, IMG_QUALITY);
+    if(comp.length > IMG_B64_FALLBACK_LIMIT){
+      comp = await compressSmart(dataUrl, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
+    }
     var r = await api('uploadBancoFruta',{base64:comp,nome:nome,tipo:tipo});
     bancoFruta = ensureArray(bancoFruta).filter(function(f){ return String(f.nome||"").toUpperCase() !== nome || (f.tipo||'') !== tipo; });
     bancoFruta.push({nome:r.nome,fotoId:r.id,fotoUrl:r.url,tipo:r.tipo||tipo});
@@ -3146,15 +3204,7 @@ document.addEventListener("change", function(e){
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
 
     /* ⚡ Warm-up do Apps Script em background */
-    setTimeout(function(){
-      try{
-        fetch(API_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({fn: 'ping', payload: {}, sessionToken: getStoredToken() || ''})
-        }).catch(function(){});
-      }catch(e){}
-    }, 200);
+    setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
   }catch(err){}
 })();
 </script>
