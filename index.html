@@ -357,7 +357,52 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.btn{font-size:15px;min-height:48px}}
 @media (max-width:480px){.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row>.btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}}
 
-/* ===== FIX: EAN TOGGLE (agora com cor quando ativo) ===== */
+/* ===== PREÇO + IVA (NOVO LAYOUT EXPANSÍVEL) ===== */
+.price-iva-wrap{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(120px,auto);
+  gap:8px;align-items:stretch;width:100%;min-width:0;
+}
+.price-iva-wrap > input[type=text]{min-width:0;width:100%}
+.price-iva-wrap > .iva-select-wrap{display:flex;align-items:stretch;min-width:0}
+.price-iva-wrap > .iva-select-wrap > select{
+  min-width:0;width:100%;
+  padding:12px 30px 12px 12px;
+  background-color:#ecfdf5;border-color:#a7f3d0;
+  color:#065f46;font-weight:800;font-size:14px!important;
+  text-transform:none;border-radius:var(--r-md);
+}
+.price-iva-wrap > .iva-select-wrap > select.iva-vazio{
+  background-color:var(--surface-2);border-color:var(--line);
+  color:var(--ink-3);font-weight:700;
+}
+.price-iva-wrap > .iva-select-wrap > select:focus{
+  background-color:#fff;border-color:var(--brand);
+  box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand);
+}
+.price-iva-hint{
+  display:block;font-size:11px;font-weight:700;color:var(--ink-3);
+  margin-top:6px;text-transform:none;letter-spacing:0;line-height:1.3;
+}
+.price-iva-hint.iva-ok{color:#065f46}
+.price-iva-hint.iva-empty{color:#b45309}
+
+/* Em smartphones empilha verticalmente */
+@media (max-width:560px){
+  .price-iva-wrap{
+    grid-template-columns:minmax(0,1fr);
+    gap:8px;
+  }
+  .price-iva-wrap > .iva-select-wrap > select{
+    padding:14px 34px 14px 14px;font-size:15px!important;
+  }
+}
+/* Em ecrãs médios (tablet) mantém lado-a-lado mas com select mais largo */
+@media (min-width:561px) and (max-width:900px){
+  .price-iva-wrap{grid-template-columns:minmax(0,1fr) 130px}
+}
+
+/* ===== EAN TOGGLE (mantido) ===== */
 .code-with-sync{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
 .code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
 .sync-toggle{
@@ -386,7 +431,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   .sync-toggle .sync-label-full{display:none}
 }
 
-/* ===== FIX: FORMATO EM DESTAQUE NA FILA DE IMPRESSÃO ===== */
+/* ===== FORMATO PILL NA FILA ===== */
 .q-format-pill{
   display:inline-flex;align-items:center;gap:6px;
   padding:6px 12px;border-radius:10px;font-size:12px;font-weight:900;
@@ -396,49 +441,56 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   box-shadow:0 2px 6px rgba(99,102,241,.12);
 }
 .q-format-pill::before{content:"📏";font-size:13px}
-.q-format-pill.pill-fruit{
-  background:linear-gradient(135deg,#fff7ed,#ffedd5);
-  color:#9a3412;border-color:#fed7aa;
-  box-shadow:0 2px 6px rgba(249,115,22,.14);
-}
+.q-format-pill.pill-fruit{background:linear-gradient(135deg,#fff7ed,#ffedd5);color:#9a3412;border-color:#fed7aa;box-shadow:0 2px 6px rgba(249,115,22,.14)}
 .q-format-pill.pill-fruit::before{content:"🍎"}
-.q-format-pill.pill-large{
-  background:linear-gradient(135deg,#ecfdf5,#d1fae5);
-  color:#166534;border-color:#a7f3d0;
-  box-shadow:0 2px 6px rgba(16,185,129,.14);
-}
+.q-format-pill.pill-large{background:linear-gradient(135deg,#ecfdf5,#d1fae5);color:#166534;border-color:#a7f3d0;box-shadow:0 2px 6px rgba(16,185,129,.14)}
 .q-format-pill.pill-large::before{content:"📄"}
-.q-format-pill.pill-amanhecer{
-  background:linear-gradient(135deg,#fff5f7,#ffe4e9);
-  color:#9e0b23;border-color:#fbcfe0;
-  box-shadow:0 2px 6px rgba(200,16,46,.14);
-}
+.q-format-pill.pill-amanhecer{background:linear-gradient(135deg,#fff5f7,#ffe4e9);color:#9e0b23;border-color:#fbcfe0;box-shadow:0 2px 6px rgba(200,16,46,.14)}
 .q-format-pill.pill-amanhecer::before{content:"⭐"}
 
-/* Seletor de formato na fila — mais visível */
-.q-format-select{
-  height:38px;min-height:38px;padding:0 10px;
-  font-size:13px!important;font-weight:800;
+/* ===== SELECTOR FORMATO COM LEGENDA (fila) ===== */
+.q-format-row{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;
+  padding:10px 12px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);
+  border:1.5px dashed var(--line-2);border-radius:var(--r-md);
+  margin-top:2px;
+}
+.q-format-row .q-format-label{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10.5px;font-weight:900;color:var(--ink-2);
+  text-transform:uppercase;letter-spacing:.06em;
+  background:#fff;border:1px solid var(--line);
+  padding:5px 10px;border-radius:8px;flex-shrink:0;
+  white-space:nowrap;
+}
+.q-format-row .q-format-label::before{content:"🎨";font-size:12px}
+.q-format-row .q-format-select{
+  flex:1 1 auto;min-width:0;
+  height:40px;min-height:40px;padding:0 12px;
+  font-size:13.5px!important;font-weight:800;
   background:#fff;border:1.5px solid var(--line);border-radius:9px;
   color:var(--ink);
   -webkit-appearance:none;appearance:none;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-position:calc(100% - 10px) 50%;
+  background-position:calc(100% - 12px) 50%;
   background-repeat:no-repeat;
-  padding-right:30px;
+  padding-right:34px;
   text-transform:none!important;
   box-shadow:0 1px 3px rgba(15,23,42,.05);
 }
-.q-format-select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+.q-format-row .q-format-select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+@media (max-width:520px){
+  .q-format-row{flex-direction:column;align-items:stretch;gap:6px}
+  .q-format-row .q-format-label{align-self:flex-start}
+}
 
-/* ===== VARIANTES / FORMATO (badge pequeno, continua a existir para o Drive) ===== */
+/* ===== RESTO ===== */
 .fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;border:1px solid #c7d2fe;line-height:1.3}
 .fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
 .fmt-badge.large{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
 .btn-dup-queue{background:#eff6ff!important;color:#1d4ed8!important}
 .queue-item .q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
 .queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
-@media (max-width:520px){.queue-actions-row .q-format-select{flex:1 1 100%;width:100%}}
 .drive-filter-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
 .drive-filter-row select,.drive-filter-row input{height:42px;min-height:42px;padding:0 12px;font-size:14px!important}
 .drive-filter-row select{flex:0 0 auto;min-width:150px}
@@ -466,16 +518,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .quick-actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
-/* ===== PREÇO + IVA INLINE ===== */
-.price-iva-wrap{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
-.price-iva-wrap > input[type=text]{flex:1 1 auto;min-width:0}
-.price-iva-wrap > select{flex:0 0 auto;min-width:112px;max-width:130px;padding:12px 26px 12px 10px;background-position:calc(100% - 8px) 50%;font-weight:800;font-size:14px!important;color:#065f46;background-color:#ecfdf5;border-color:#a7f3d0;text-transform:none}
-.price-iva-wrap > select.iva-vazio{color:var(--ink-3);background-color:var(--surface-2);border-color:var(--line);font-weight:700}
-.price-iva-wrap > select:focus{background-color:#fff;border-color:var(--brand);box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand)}
-.price-iva-hint{display:block;font-size:10.5px;font-weight:700;color:var(--ink-3);margin-top:4px;text-transform:none;letter-spacing:0}
-.price-iva-hint.iva-ok{color:#065f46}
-.price-iva-hint.iva-empty{color:#b45309}
-@media (max-width:380px){.price-iva-wrap > select{min-width:96px;max-width:110px;padding:12px 22px 12px 8px;font-size:13px!important}}
 </style>
 </head>
 <body data-view="editor" data-format="normal">
@@ -530,13 +572,15 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
               <label for="price">Preço de venda (€) + IVA</label>
               <div class="price-iva-wrap">
                 <input id="price" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
-                <select id="ivaSelect" aria-label="Taxa de IVA" class="iva-vazio">
-                  <option value="" selected>— IVA —</option>
-                  <option value="6">IVA 6%</option>
-                  <option value="13">IVA 13%</option>
-                  <option value="23">IVA 23%</option>
-                  <option value="custom">Outro…</option>
-                </select>
+                <span class="iva-select-wrap">
+                  <select id="ivaSelect" aria-label="Taxa de IVA" class="iva-vazio">
+                    <option value="" selected>— IVA —</option>
+                    <option value="6">IVA 6%</option>
+                    <option value="13">IVA 13%</option>
+                    <option value="23">IVA 23%</option>
+                    <option value="custom">Outro…</option>
+                  </select>
+                </span>
               </div>
               <span class="price-iva-hint iva-empty" id="ivaHint">⚠️ Selecione a taxa de IVA</span>
             </div>
@@ -866,12 +910,12 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v240';
-const CACHE_SCHEMA_VERSION = 9;
+const CACHE_KEY = 'balcao_cache_v241';
+const CACHE_SCHEMA_VERSION = 10;
 const IMG_MAX_SIZE = 2400, IMG_QUALITY = 0.98, THUMB_SIZE = 200;
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
-const FETCH_TIMEOUT_MS = 20000;
+const FETCH_TIMEOUT_MS = 30000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
 
@@ -1199,14 +1243,16 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API */
+/* 9. API — TIMEOUTS GENEROSOS + MÚLTIPLOS RETRIES */
 var _apiWarm = false;
 const _apiInFlight = new Map();
 async function api(fn,payload,retries,jaReaut){
   payload=payload||{};
-  if(retries===undefined) retries = (NO_RETRY_FNS.indexOf(fn)!==-1)?0:1;
+  if(retries===undefined) retries = (NO_RETRY_FNS.indexOf(fn)!==-1)?0:2;   /* 2 retries */
+
   var dedupKey = jaReaut?null:(fn+'::'+JSON.stringify(payload));
   if(dedupKey && _apiInFlight.has(dedupKey)) return _apiInFlight.get(dedupKey);
+
   var promessa = (async function(){
     var token=getStoredToken();
     if(!token){
@@ -1214,28 +1260,49 @@ async function api(fn,payload,retries,jaReaut){
       toast("Inicie sessão primeiro.","error");
       throw new Error("Não autenticado.");
     }
-    var timeout = _apiWarm?8000:20000;
+
+    /* Timeouts: 30s frio / 15s quente — Google Apps Script pode ser lento */
+    var timeout = _apiWarm ? 15000 : 30000;
     var controller=new AbortController(); var timedOut=false;
     var tid=setTimeout(function(){ timedOut=true; try{ controller.abort(); }catch(e){} },timeout);
+
     try{
       var resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn:fn,payload:payload,sessionToken:token}),signal:controller.signal});
       clearTimeout(tid); _apiWarm=true;
-      if(resp.status===401){ clearStoredToken(); atualizarUICredenciais(); if(!jaReaut){ var ok2=await tentarReauthSilenciosa(); if(ok2) return api(fn,payload,retries,true); } throw new Error("Sessão expirada."); }
+
+      if(resp.status===401){
+        clearStoredToken(); atualizarUICredenciais();
+        if(!jaReaut){ var ok2=await tentarReauthSilenciosa(); if(ok2) return api(fn,payload,retries,true); }
+        throw new Error("Sessão expirada.");
+      }
       var texto=await resp.text();
       if(!resp.ok) throw new Error('HTTP '+resp.status);
       var j; try{ j=JSON.parse(texto); }catch(e){ throw new Error('Resposta inválida.'); }
       if(!j.ok) throw new Error(j.error||'Erro no servidor');
       return j.data;
+
     }catch(e){
       clearTimeout(tid);
       var msg=String((e&&e.message)||e||'');
       var isAbort = timedOut || (e&&(e.name==='AbortError')) || msg.indexOf('aborted')!==-1;
-      if(isAbort && retries>0){ await new Promise(function(r){ setTimeout(r,300); }); setGlobalStatus("Servidor a acordar…","loading"); return api(fn,payload,retries-1,true); }
+
+      if(isAbort && retries>0){
+        var delay = 800 * Math.pow(1.6, (2 - retries));
+        setGlobalStatus("Servidor a acordar… tentativa " + (3 - retries) + "/3", "loading");
+        await new Promise(function(r){ setTimeout(r, delay); });
+        return api(fn,payload,retries-1,true);
+      }
       if(isAbort) throw new Error('Servidor demorou demasiado. Tente novamente.');
-      if(retries>0){ await new Promise(function(r){ setTimeout(r,250); }); return api(fn,payload,retries-1,true); }
+
+      if(retries>0){
+        var delay2 = 500 * Math.pow(1.5, (2 - retries));
+        await new Promise(function(r){ setTimeout(r, delay2); });
+        return api(fn,payload,retries-1,true);
+      }
       throw e;
     }
   })();
+
   if(dedupKey){ _apiInFlight.set(dedupKey,promessa); promessa.then(function(){ _apiInFlight.delete(dedupKey); },function(){ _apiInFlight.delete(dedupKey); }); }
   return promessa;
 }
@@ -1674,8 +1741,6 @@ function renderQueue(){
     var ref = d.internalCode ? ('Ref: ' + escapeHTML(d.internalCode) + ' · ') : "";
     var ivaShow = normIvaClient(d.iva||"");
     var ivaBadge = ivaShow ? ('<span class="iva-badge">IVA ' + escapeHTML(ivaShow) + '%</span>') : '';
-
-    // ⭐ NOVO: pill de formato em destaque
     var formatPill = '<span class="q-format-pill ' + fmtPillClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span>';
 
     var opcoes = [['amanhecer','⭐ Amanhecer · 70×38'],['80x60','🆕 6×8 · 80×60'],['125x80','🍎 Suporte · 125×80'],['frutaPromo125x80','💡 Leve 2+ · 125×80'],['A6','📄 A6 · 148×105'],['frutaPromoA6','💡 Leve 2+ · A6'],['A5','📄 A5 · 210×148'],['100x70','🏷️ Cartaz · 100×70'],['custom','⚙️ Personalizado']];
@@ -1688,8 +1753,11 @@ function renderQueue(){
           formatPill + ' ' + ref + pr + ' ' + ivaBadge + ' ' + stateBadge +
         '</div>' +
       '</div>' +
+      '<div class="q-format-row">' +
+        '<span class="q-format-label">Formato / Tamanho</span>' +
+        '<select class="q-format-select" data-action="format-queue" data-index="' + i + '" aria-label="Alterar formato da etiqueta">' + selOpts + '</select>' +
+      '</div>' +
       '<div class="queue-actions-row">' +
-        '<select class="q-format-select" data-action="format-queue" data-index="' + i + '" data-tip="Alterar formato desta linha">' + selOpts + '</select>' +
         '<input type="number" class="copies-input" value="' + (item.copies||1) + '" min="1" max="500" data-action="copies" data-index="' + i + '" data-tip="Nº de cópias">' +
         '<button class="btn-dup-queue" data-action="dup-queue" data-index="' + i + '" data-tip="Duplicar linha (variante)">🧬</button>' +
         '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '" data-tip="' + tipSave + '">' + ic + '</button>' +
@@ -2611,7 +2679,7 @@ async function openScanner(){
 }
 async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; } scanTrack = null; scanTorchOn = false; $("scannerModal").classList.remove("show"); }
 
-/* 26. TOGGLE EAN — FIX VISUAL */
+/* 26. TOGGLE EAN */
 (function(){
   var code = document.getElementById("internalCode"), sync = document.getElementById("syncCodeToEan"), wrap = document.getElementById("syncToggleWrap");
   if(!code||!sync||!wrap) return;
@@ -2626,10 +2694,8 @@ async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await sca
     if(sync.checked){ ap(); if(code.value.trim()){ toast("Código interno será copiado para o código de barras","info",2400); updateCard(); } }
     else { toast("Sincronização desativada","info",1800); }
   });
-  // Click no <label> — garantir que o input é alternado corretamente
   wrap.addEventListener('click', function(e){
     if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN' && e.target.tagName !== 'svg' && e.target.tagName !== 'path'){
-      // clique na área livre — toggle manual
       sync.checked = !sync.checked;
       sync.dispatchEvent(new Event('change'));
     }
