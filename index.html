@@ -98,7 +98,7 @@ button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,in
 .view{display:none;flex-direction:column;gap:16px}
 body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,body[data-view="fila"] .view-fila,body[data-view="drive"] .view-drive,body[data-view="mais"] .view-mais{display:flex}
 @media (min-width:1000px){.main{padding:28px 32px 100px}body[data-view="editor"] .grid-main{grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:26px;align-items:start}body[data-view="editor"] .col-preview{display:block !important;position:sticky;top:100px}body[data-view="editor"] .col-preview .view-preview{display:flex !important;flex-direction:column;gap:16px}}
-.card{position:relative;background:var(--surface);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-2);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden}
+.card{position:relative;background:var(--surface);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-2);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;gap:16px;min-width:0;overflow:hidden}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad);opacity:.85;border-radius:var(--r-lg) var(--r-lg) 0 0}
 .card.accent-blue::before{background:linear-gradient(90deg,#3b82f6,#6366f1)}
 .card.accent-green::before{background:linear-gradient(90deg,#10b981,#059669)}
@@ -112,11 +112,11 @@ body[data-view="editor"] .view-editor,body[data-view="preview"] .view-preview,bo
 .card.accent-violet .card-h .ic{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
 .card-h h3{font-size:14px;font-weight:800;margin:0;flex:1}
 .card-h .badge{background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:800;padding:3px 10px;border-radius:var(--r-pill);min-width:26px;text-align:center}
-.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
-.fld > label{font-size:11px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
-.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-width:0}
-.row-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
-input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;padding:12px 14px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-md);color:var(--ink);font-weight:600;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;font-size:16px}
+.fld{display:flex;flex-direction:column;gap:7px;min-width:0}
+.fld > label{font-size:11px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;min-width:0}
+.row-3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px}
+input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],select,textarea{width:100%;padding:13px 14px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-md);color:var(--ink);font-weight:600;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;font-size:16px;transition:all .16s}
 input[type=text],textarea,input[type=search]{text-transform:uppercase}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);background:#fff;box-shadow:0 0 0 4px rgba(200,16,46,.09)}
 select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-position:calc(100% - 14px) 50%;background-repeat:no-repeat;padding-right:42px}
@@ -357,64 +357,19 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.btn{font-size:15px;min-height:48px}}
 @media (max-width:480px){.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row>.btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}}
 
-/* ===== PREÇO + IVA (NOVO LAYOUT EXPANSÍVEL) ===== */
-.price-iva-wrap{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(120px,auto);
-  gap:8px;align-items:stretch;width:100%;min-width:0;
-}
-.price-iva-wrap > input[type=text]{min-width:0;width:100%}
-.price-iva-wrap > .iva-select-wrap{display:flex;align-items:stretch;min-width:0}
-.price-iva-wrap > .iva-select-wrap > select{
-  min-width:0;width:100%;
-  padding:12px 30px 12px 12px;
-  background-color:#ecfdf5;border-color:#a7f3d0;
-  color:#065f46;font-weight:800;font-size:14px!important;
-  text-transform:none;border-radius:var(--r-md);
-}
-.price-iva-wrap > .iva-select-wrap > select.iva-vazio{
-  background-color:var(--surface-2);border-color:var(--line);
-  color:var(--ink-3);font-weight:700;
-}
-.price-iva-wrap > .iva-select-wrap > select:focus{
-  background-color:#fff;border-color:var(--brand);
-  box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand);
-}
-.price-iva-hint{
-  display:block;font-size:11px;font-weight:700;color:var(--ink-3);
-  margin-top:6px;text-transform:none;letter-spacing:0;line-height:1.3;
-}
-.price-iva-hint.iva-ok{color:#065f46}
-.price-iva-hint.iva-empty{color:#b45309}
-
-/* Em smartphones empilha verticalmente */
-@media (max-width:560px){
-  .price-iva-wrap{
-    grid-template-columns:minmax(0,1fr);
-    gap:8px;
-  }
-  .price-iva-wrap > .iva-select-wrap > select{
-    padding:14px 34px 14px 14px;font-size:15px!important;
-  }
-}
-/* Em ecrãs médios (tablet) mantém lado-a-lado mas com select mais largo */
-@media (min-width:561px) and (max-width:900px){
-  .price-iva-wrap{grid-template-columns:minmax(0,1fr) 130px}
-}
-
-/* ===== EAN TOGGLE (mantido) ===== */
-.code-with-sync{display:flex;gap:6px;align-items:stretch;width:100%;min-width:0}
+/* ===== EAN TOGGLE (com cor quando ativo) ===== */
+.code-with-sync{display:flex;gap:8px;align-items:stretch;width:100%;min-width:0}
 .code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
 .sync-toggle{
-  display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  padding:0 12px;min-height:48px;flex-shrink:0;min-width:66px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 14px;min-height:50px;flex-shrink:0;min-width:72px;cursor:pointer;
   background:var(--surface-2);border:1.5px solid var(--line);
-  border-radius:var(--r-md);font-size:11px;font-weight:900;color:var(--ink-3);
+  border-radius:var(--r-md);font-size:11.5px;font-weight:900;color:var(--ink-3);
   letter-spacing:.03em;transition:all .18s;user-select:none;white-space:nowrap;
 }
 .sync-toggle:hover{background:var(--surface-3)}
 .sync-toggle input[type=checkbox]{display:none}
-.sync-toggle svg{flex-shrink:0;transition:transform .18s}
+.sync-toggle svg{flex-shrink:0;transition:transform .18s;stroke:currentColor}
 .sync-toggle.active{
   background:linear-gradient(135deg,#10b981,#059669)!important;
   border-color:#047857!important;
@@ -427,8 +382,53 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .sync-toggle.active .sync-label-full{color:#fff}
 .sync-toggle:active{transform:scale(.96)}
 @media (max-width:480px){
-  .sync-toggle{padding:0 8px;gap:3px;min-width:52px}
+  .sync-toggle{padding:0 10px;gap:4px;min-width:58px;font-size:11px}
   .sync-toggle .sync-label-full{display:none}
+}
+
+/* ===== PREÇO + IVA (responsivo) ===== */
+.price-iva-wrap{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(140px,160px);
+  gap:10px;align-items:stretch;width:100%;min-width:0;
+}
+.price-iva-wrap > input[type=text]{min-width:0;width:100%}
+.price-iva-wrap > .iva-select-wrap{display:flex;align-items:stretch;min-width:0}
+.price-iva-wrap > .iva-select-wrap > select{
+  min-width:0;width:100%;
+  padding:13px 34px 13px 14px;
+  background-color:#ecfdf5;border-color:#a7f3d0;
+  color:#065f46;font-weight:800;font-size:15px!important;
+  text-transform:none;border-radius:var(--r-md);
+}
+.price-iva-wrap > .iva-select-wrap > select.iva-vazio{
+  background-color:var(--surface-2);border-color:var(--line);
+  color:var(--ink-3);font-weight:700;
+}
+.price-iva-wrap > .iva-select-wrap > select:focus{
+  background-color:#fff;border-color:var(--brand);
+  box-shadow:0 0 0 4px rgba(200,16,46,.09);color:var(--brand);
+}
+.price-iva-hint{
+  display:block;font-size:11.5px;font-weight:700;color:var(--ink-3);
+  margin-top:6px;text-transform:none;letter-spacing:0;line-height:1.3;
+}
+.price-iva-hint.iva-ok{color:#065f46}
+.price-iva-hint.iva-empty{color:#b45309}
+
+/* Em smartphones empilha verticalmente */
+@media (max-width:620px){
+  .price-iva-wrap{
+    grid-template-columns:minmax(0,1fr);
+    gap:8px;
+  }
+  .price-iva-wrap > .iva-select-wrap > select{
+    padding:14px 38px 14px 16px;font-size:16px!important;font-weight:800;
+  }
+}
+/* Tablet médio */
+@media (min-width:621px) and (max-width:900px){
+  .price-iva-wrap{grid-template-columns:minmax(0,1fr) 150px}
 }
 
 /* ===== FORMATO PILL NA FILA ===== */
@@ -448,7 +448,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .q-format-pill.pill-amanhecer{background:linear-gradient(135deg,#fff5f7,#ffe4e9);color:#9e0b23;border-color:#fbcfe0;box-shadow:0 2px 6px rgba(200,16,46,.14)}
 .q-format-pill.pill-amanhecer::before{content:"⭐"}
 
-/* ===== SELECTOR FORMATO COM LEGENDA (fila) ===== */
 .q-format-row{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;
   padding:10px 12px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);
@@ -466,15 +465,15 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .q-format-row .q-format-label::before{content:"🎨";font-size:12px}
 .q-format-row .q-format-select{
   flex:1 1 auto;min-width:0;
-  height:40px;min-height:40px;padding:0 12px;
-  font-size:13.5px!important;font-weight:800;
+  height:42px;min-height:42px;padding:0 14px;
+  font-size:14px!important;font-weight:800;
   background:#fff;border:1.5px solid var(--line);border-radius:9px;
   color:var(--ink);
   -webkit-appearance:none;appearance:none;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23c8102e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-position:calc(100% - 12px) 50%;
+  background-position:calc(100% - 14px) 50%;
   background-repeat:no-repeat;
-  padding-right:34px;
+  padding-right:38px;
   text-transform:none!important;
   box-shadow:0 1px 3px rgba(15,23,42,.05);
 }
@@ -518,6 +517,16 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .quick-actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
+
+/* ===== FIX RESPONSIVO: em mobile os campos empilham quando não cabem ===== */
+@media (max-width:520px){
+  /* Row de 2 colunas deixa de ser apertado */
+  .row{gap:10px}
+  /* Mantemos 2 colunas para unidade/loja que cabem bem */
+  .row .fld{min-width:0}
+  /* Dimensões custom também podem empilhar */
+  #customDimensionsRow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
 </style>
 </head>
 <body data-view="editor" data-format="normal">
@@ -555,35 +564,42 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
       <section class="view view-editor">
         <div class="card">
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
-          <div class="fld"><label for="product">Nome do produto</label><input id="product" type="text" class="input-hero" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
 
-          <div class="row">
-            <div class="fld"><label for="internalCode">Código interno</label>
-              <div class="code-with-sync">
-                <input id="internalCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
-                <label class="sync-toggle" id="syncToggleWrap" data-tip="Sincronizar código interno para código de barras">
-                  <input type="checkbox" id="syncCodeToEan">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
-                  <span class="sync-label-full">→ EAN</span>
-                </label>
-              </div>
+          <!-- Nome do produto — full width -->
+          <div class="fld">
+            <label for="product">Nome do produto</label>
+            <input id="product" type="text" class="input-hero" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex: MAÇÃ ROYAL GALA">
+          </div>
+
+          <!-- Código interno — FULL WIDTH com EAN toggle -->
+          <div class="fld">
+            <label for="internalCode">Código interno <span style="font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0;font-size:11px">(código de barras EAN opcional)</span></label>
+            <div class="code-with-sync">
+              <input id="internalCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex: 123456">
+              <label class="sync-toggle" id="syncToggleWrap" data-tip="Copiar código interno para o código de barras">
+                <input type="checkbox" id="syncCodeToEan">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M13 5v14M16 5v14M20 5v14"/></svg>
+                <span class="sync-label-full">→ EAN</span>
+              </label>
             </div>
-            <div class="fld">
-              <label for="price">Preço de venda (€) + IVA</label>
-              <div class="price-iva-wrap">
-                <input id="price" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
-                <span class="iva-select-wrap">
-                  <select id="ivaSelect" aria-label="Taxa de IVA" class="iva-vazio">
-                    <option value="" selected>— IVA —</option>
-                    <option value="6">IVA 6%</option>
-                    <option value="13">IVA 13%</option>
-                    <option value="23">IVA 23%</option>
-                    <option value="custom">Outro…</option>
-                  </select>
-                </span>
-              </div>
-              <span class="price-iva-hint iva-empty" id="ivaHint">⚠️ Selecione a taxa de IVA</span>
+          </div>
+
+          <!-- Preço + IVA — FULL WIDTH -->
+          <div class="fld">
+            <label for="price">Preço de venda (€) + Taxa de IVA</label>
+            <div class="price-iva-wrap">
+              <input id="price" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00">
+              <span class="iva-select-wrap">
+                <select id="ivaSelect" aria-label="Taxa de IVA" class="iva-vazio">
+                  <option value="" selected>— IVA —</option>
+                  <option value="6">IVA 6%</option>
+                  <option value="13">IVA 13%</option>
+                  <option value="23">IVA 23%</option>
+                  <option value="custom">Outro…</option>
+                </select>
+              </span>
             </div>
+            <span class="price-iva-hint iva-empty" id="ivaHint">⚠️ Selecione a taxa de IVA</span>
           </div>
 
           <div class="fld" id="customIvaField" style="display:none">
@@ -591,6 +607,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
             <input id="customIvaInput" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex: 6">
           </div>
 
+          <!-- Unidade + Loja (2 colunas cabem bem em mobile) -->
           <div class="row">
             <div class="fld"><label for="capacityUnit">Unidade</label>
               <select id="capacityUnit">
@@ -603,6 +620,8 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
               <select id="store"><option value="GARCIA/PATAIAS" selected>GARCIA/PATAIAS</option><option value="GARCIA">GARCIA</option><option value="PATAIAS">PATAIAS</option></select>
             </div>
           </div>
+
+          <!-- Formato — full width -->
           <div class="fld"><label for="presetSizes">Formato da etiqueta</label>
             <select id="presetSizes">
               <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Amanhecer · 70×38/40</option></optgroup>
@@ -612,22 +631,25 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
               <optgroup label="⚙️ Outro"><option value="custom">⚙️ Personalizado…</option></optgroup>
             </select>
           </div>
+
           <div id="customDimensionsRow" class="row" style="display:none">
             <div class="fld"><label for="customWidth">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
             <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
           </div>
         </div>
+
         <div class="card accent-blue">
           <div class="card-h"><div class="ic">📊</div><h3>Código de Barras</h3><span class="badge" id="eanBadge" style="display:none">—</span></div>
-          <div class="fld"><label for="ean">EAN-13 / EAN-14 / Code128</label><input id="ean" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+          <div class="fld"><label for="ean">EAN-13 / EAN-14 / Code128</label><input id="ean" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Introduza ou leia com a câmara"></div>
           <button type="button" class="btn btn-soft btn-block" id="scanEanBtn">📷 Ler código com a câmara</button>
         </div>
+
         <div class="card accent-green" id="fruitCard" style="display:none">
           <div class="card-h"><div class="ic">🍎</div><h3>Origem · Categoria · Calibre</h3></div>
           <div class="row-3">
-            <div class="fld"><label for="origem">Origem</label><input id="origem" type="text" autocapitalize="characters" spellcheck="false"></div>
-            <div class="fld"><label for="categoria">Categoria</label><input id="categoria" type="text" autocapitalize="characters" spellcheck="false"></div>
-            <div class="fld"><label for="calibre">Calibre</label><input id="calibre" type="text" autocapitalize="characters" spellcheck="false"></div>
+            <div class="fld"><label for="origem">Origem</label><input id="origem" type="text" autocapitalize="characters" spellcheck="false" placeholder="Ex: PORTUGAL"></div>
+            <div class="fld"><label for="categoria">Categoria</label><input id="categoria" type="text" autocapitalize="characters" spellcheck="false" placeholder="Ex: I"></div>
+            <div class="fld"><label for="calibre">Calibre</label><input id="calibre" type="text" autocapitalize="characters" spellcheck="false" placeholder="Ex: 70/75"></div>
           </div>
           <div id="fruitPromoPanel" class="fruit-promo-panel" style="display:none">
             <h4>💡 Oportunidade "Leve X ou mais"</h4>
@@ -635,18 +657,20 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
               <div class="fld"><label for="promoMinQty">Qtd. mínima</label><input id="promoMinQty" type="number" min="1" step="1" value="2"></div>
               <div class="fld"><label for="promoUnit">Unidade</label><select id="promoUnit"><option value="KG" selected>KG</option><option value="UN">UN</option></select></div>
             </div>
-            <div class="fld" style="margin-top:12px"><label for="promoPrice">Preço Especial (€)</label><input id="promoPrice" type="text" inputmode="decimal" autocomplete="off"></div>
+            <div class="fld" style="margin-top:12px"><label for="promoPrice">Preço Especial (€)</label><input id="promoPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
           </div>
         </div>
+
         <div class="card accent-amber" id="promoCard">
           <div class="card-h"><div class="ic">💡</div><h3>Oportunidade / Desconto</h3></div>
           <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">Preenche o preço anterior para mostrar o desconto.</p>
           <label class="check-row" for="isPromoActive"><input type="checkbox" id="isPromoActive"><span>Mostrar preço anterior e percentagem de desconto</span></label>
-          <div class="fld" id="promoBox"><label for="oldPrice">Preço Normal Anterior (€)</label><input id="oldPrice" type="text" inputmode="decimal" autocomplete="off"></div>
+          <div class="fld" id="promoBox"><label for="oldPrice">Preço Normal Anterior (€)</label><input id="oldPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
         </div>
+
         <div class="card accent-violet">
           <div class="card-h"><div class="ic">⚙️</div><h3>Quantidade & Extras</h3></div>
-          <div class="fld"><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001"><div id="capacityHint"></div></div>
+          <div class="fld"><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001" placeholder="Ex: 1.5"><div id="capacityHint"></div></div>
           <div class="fld"><label for="infoExtraTipo">Informação extra <span style="font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0;font-size:11px">opcional</span></label>
             <select id="infoExtraTipo">
               <option value="" selected>Nenhuma</option>
@@ -669,6 +693,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
             <div class="fld"><label for="promoEnd">Fim Oportunidade</label><input id="promoEnd" type="date"></div>
           </div>
         </div>
+
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
@@ -683,6 +708,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
           </div>
         </div>
       </section>
+
       <section class="view view-fila">
         <div class="card">
           <div class="card-h"><div class="ic">🖨️</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
@@ -691,6 +717,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
           <button class="btn btn-soft btn-block btn-sm" style="margin-top:8px;color:#b91c1c;display:none" id="clearQueueBtn" type="button">🗑️ Limpar Fila</button>
         </div>
       </section>
+
       <section class="view view-drive">
         <div class="card accent-green">
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
@@ -721,6 +748,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
       </section>
+
       <section class="view view-mais">
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
@@ -733,6 +761,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
         </div>
       </section>
     </div>
+
     <div class="col-preview">
       <section class="view view-preview">
         <div class="preview-shell">
@@ -785,13 +814,16 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     </div>
   </div>
 </main>
+
 <nav class="bnav">
   <button type="button" data-view="editor" class="active"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
   <button type="button" data-view="fila"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
   <button type="button" data-view="drive"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
   <button type="button" data-view="mais"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
 </nav>
+
 <button type="button" class="floating-preview" id="floatingPreviewBtn"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
   <div id="previewModalStage"></div>
@@ -803,8 +835,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     <button type="button" id="zoomResetBtn">1:1</button>
   </div>
 </div>
+
 <div id="printZone"></div>
 <div class="toast-container" id="toastContainer"></div>
+
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <p id="confirmMsg"></p>
@@ -814,6 +848,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     </div>
   </div>
 </div>
+
 <div class="choice-modal" id="choiceModal">
   <div class="choice-box">
     <h3 id="choiceTitle">O que pretende fazer?</h3>
@@ -825,6 +860,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     </div>
   </div>
 </div>
+
 <div class="name-modal" id="saveBancoModal">
   <div class="name-modal-box">
     <h3>📷 Guardar foto no banco</h3>
@@ -843,6 +879,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     </div>
   </div>
 </div>
+
 <div class="email-modal" id="emailModal">
   <div class="email-modal-box">
     <h3>📧 Enviar etiquetas por email</h3>
@@ -858,6 +895,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     </div>
   </div>
 </div>
+
 <div class="modal" id="cameraModal">
   <div class="cam-wrap">
     <video id="camVideo" autoplay playsinline muted></video>
@@ -869,6 +907,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     <button id="camClose" class="btn btn-ghost">✕ Fechar</button>
   </div>
 </div>
+
 <div class="modal" id="scannerModal">
   <div class="cam-wrap">
     <div id="reader"></div>
@@ -876,6 +915,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   </div>
   <button id="scanClose" class="btn btn-ghost">✕ Fechar</button>
 </div>
+
 <div class="modal" id="bancoFrutaModal">
   <div style="background:#fff;border-radius:var(--r-xl);padding:20px;max-width:1100px;width:100%;max-height:92vh;overflow:auto">
     <div class="bf-modal-header">
@@ -890,6 +930,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     <div id="gradeBancoFruta" class="bf-grid"></div>
   </div>
 </div>
+
 <div class="pro-print-overlay" id="proPrintOverlay">
   <div class="pro-print-box">
     <div class="pro-spinner"></div>
@@ -897,6 +938,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
     <div id="printPct" style="font-size:13px;font-weight:800;color:#0d9c4c">0%</div>
   </div>
 </div>
+
 <script>
 "use strict";
 /* 0. VIEWPORT */
@@ -910,14 +952,21 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v241';
-const CACHE_SCHEMA_VERSION = 10;
+const CACHE_KEY = 'balcao_cache_v242';
+const CACHE_SCHEMA_VERSION = 11;
 const IMG_MAX_SIZE = 2400, IMG_QUALITY = 0.98, THUMB_SIZE = 200;
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FETCH_TIMEOUT_MS = 30000;
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
+
+/* ⚡ Timeouts generosos por tipo de operação (Google Apps Script pode ser lento) */
+const SLOW_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta'];
+const TIMEOUT_COLD = 45000;   /* 1.º pedido após inatividade */
+const TIMEOUT_WARM = 20000;   /* pedidos seguintes */
+const TIMEOUT_SLOW_COLD = 60000;  /* 1.º pedido de escrita */
+const TIMEOUT_SLOW_WARM = 35000;  /* escrita normal */
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
@@ -1071,14 +1120,14 @@ function normalizarProdutoParaFila(p){
   return o;
 }
 
-/* 7. TOAST + STATUS */
+/* 7. TOAST + STATUS (com dedup robusto) */
 const TOAST_ICONS = {success:"✓",error:"✕",warning:"!",info:"i"};
 var _lastToastMsg="",_lastToastTime=0;
 function toast(msg,type,duration){
   if(!msg) return;
   type=(type||"info").toLowerCase();
   var now=Date.now();
-  if(msg===_lastToastMsg && (now-_lastToastTime)<3000) return;
+  if(msg===_lastToastMsg && (now-_lastToastTime)<3500) return;
   _lastToastMsg=msg; _lastToastTime=now;
   duration = duration||(type==="error"?5500:type==="warning"?4500:3200);
   var c=document.getElementById("toastContainer"); if(!c) return;
@@ -1107,7 +1156,7 @@ function setGlobalStatus(msg,type,opts){
 var _statusTimer=null,_statusLast={key:'',t:0};
 function setStatus(msg,type,opts){
   var now=Date.now(); var key=String(msg||'')+'|'+String(type||'');
-  if(key===_statusLast.key && (now-_statusLast.t)<1500) return;
+  if(key===_statusLast.key && (now-_statusLast.t)<1800) return;
   _statusLast={key:key,t:now};
   var el=document.getElementById("appStatus");
   var onEditor = (document.body.dataset.view==='editor');
@@ -1243,12 +1292,14 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — TIMEOUTS GENEROSOS + MÚLTIPLOS RETRIES */
+/* 9. API — TIMEOUTS ADAPTATIVOS + RETRY INTELIGENTE */
 var _apiWarm = false;
+var _lastApiTime = 0;
 const _apiInFlight = new Map();
+
 async function api(fn,payload,retries,jaReaut){
   payload=payload||{};
-  if(retries===undefined) retries = (NO_RETRY_FNS.indexOf(fn)!==-1)?0:2;   /* 2 retries */
+  if(retries===undefined) retries = (NO_RETRY_FNS.indexOf(fn)!==-1)?0:2;
 
   var dedupKey = jaReaut?null:(fn+'::'+JSON.stringify(payload));
   if(dedupKey && _apiInFlight.has(dedupKey)) return _apiInFlight.get(dedupKey);
@@ -1261,14 +1312,23 @@ async function api(fn,payload,retries,jaReaut){
       throw new Error("Não autenticado.");
     }
 
-    /* Timeouts: 30s frio / 15s quente — Google Apps Script pode ser lento */
-    var timeout = _apiWarm ? 15000 : 30000;
+    /* Timeout adaptativo: SLOW_FNS tem timeouts maiores */
+    var isSlow = SLOW_FNS.indexOf(fn) !== -1;
+    var now = Date.now();
+    var gap = _lastApiTime ? (now - _lastApiTime) : 99999;
+    var isCold = !_apiWarm || gap > 90000; /* >90s = volta a ficar frio */
+    var timeout = isSlow
+      ? (isCold ? TIMEOUT_SLOW_COLD : TIMEOUT_SLOW_WARM)
+      : (isCold ? TIMEOUT_COLD : TIMEOUT_WARM);
+
     var controller=new AbortController(); var timedOut=false;
     var tid=setTimeout(function(){ timedOut=true; try{ controller.abort(); }catch(e){} },timeout);
 
     try{
       var resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn:fn,payload:payload,sessionToken:token}),signal:controller.signal});
-      clearTimeout(tid); _apiWarm=true;
+      clearTimeout(tid);
+      _apiWarm = true;
+      _lastApiTime = Date.now();
 
       if(resp.status===401){
         clearStoredToken(); atualizarUICredenciais();
@@ -1287,16 +1347,15 @@ async function api(fn,payload,retries,jaReaut){
       var isAbort = timedOut || (e&&(e.name==='AbortError')) || msg.indexOf('aborted')!==-1;
 
       if(isAbort && retries>0){
-        var delay = 800 * Math.pow(1.6, (2 - retries));
-        setGlobalStatus("Servidor a acordar… tentativa " + (3 - retries) + "/3", "loading");
-        await new Promise(function(r){ setTimeout(r, delay); });
+        var attemptNum = 3 - retries + 1;
+        setGlobalStatus("Servidor a processar… (" + attemptNum + "/3)", "loading");
+        await new Promise(function(r){ setTimeout(r, 900); });
         return api(fn,payload,retries-1,true);
       }
-      if(isAbort) throw new Error('Servidor demorou demasiado. Tente novamente.');
+      if(isAbort) throw new Error('O servidor está sobrecarregado. Aguarde e tente novamente.');
 
       if(retries>0){
-        var delay2 = 500 * Math.pow(1.5, (2 - retries));
-        await new Promise(function(r){ setTimeout(r, delay2); });
+        await new Promise(function(r){ setTimeout(r, 500); });
         return api(fn,payload,retries-1,true);
       }
       throw e;
@@ -2679,25 +2738,55 @@ async function openScanner(){
 }
 async function closeScanner(){ if(scanner){ try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner = null; } scanTrack = null; scanTorchOn = false; $("scannerModal").classList.remove("show"); }
 
-/* 26. TOGGLE EAN */
+/* 26. TOGGLE EAN — SIMPLIFICADO (sem handler duplicado) */
 (function(){
-  var code = document.getElementById("internalCode"), sync = document.getElementById("syncCodeToEan"), wrap = document.getElementById("syncToggleWrap");
-  if(!code||!sync||!wrap) return;
-  function refreshVisual(){ wrap.classList.toggle('active', !!sync.checked); }
+  var code = document.getElementById("internalCode");
+  var sync = document.getElementById("syncCodeToEan");
+  var wrap = document.getElementById("syncToggleWrap");
+  if(!code || !sync || !wrap) return;
+
+  /* Ler preferência guardada */
   try{ var s = localStorage.getItem(SYNC_EAN_KEY); if(s === '1'){ sync.checked = true; } }catch(e){}
+
+  /* Função para atualizar visual */
+  function refreshVisual(){
+    wrap.classList.toggle('active', !!sync.checked);
+  }
+
+  /* Função que copia o código para o EAN */
+  function aplicarCopia(){
+    if(!sync.checked) return;
+    var v = String(code.value || '').trim().toUpperCase();
+    if(!v) return;
+    var eanEl = document.getElementById("ean");
+    if(eanEl && eanEl.value !== v){
+      eanEl.value = v;
+      updateEanBadge();
+    }
+  }
+
+  /* Estado inicial */
   refreshVisual();
-  function ap(){ if(!sync.checked) return; var v = String(code.value||'').trim().toUpperCase(); if(v){ var e = document.getElementById("ean"); if(e && e.value !== v){ e.value = v; updateEanBadge(); } } }
-  code.addEventListener("input", function(){ ap(); updateCard(); });
+  if(sync.checked) aplicarCopia();
+
+  /* Input no código: se sync ativo, copia silenciosamente (SEM toast) */
+  code.addEventListener("input", function(){
+    if(sync.checked){ aplicarCopia(); }
+    updateCard();
+  });
+
+  /* Change no checkbox: única fonte de verdade.
+     Nota: como o <label> envolve o <input>, o browser já faz o toggle automaticamente.
+     NÃO adicionar listener de click ao label — causaria toggle duplo. */
   sync.addEventListener("change", function(){
     refreshVisual();
-    try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked?'1':'0'); }catch(e){}
-    if(sync.checked){ ap(); if(code.value.trim()){ toast("Código interno será copiado para o código de barras","info",2400); updateCard(); } }
-    else { toast("Sincronização desativada","info",1800); }
-  });
-  wrap.addEventListener('click', function(e){
-    if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'SPAN' && e.target.tagName !== 'svg' && e.target.tagName !== 'path'){
-      sync.checked = !sync.checked;
-      sync.dispatchEvent(new Event('change'));
+    try{ localStorage.setItem(SYNC_EAN_KEY, sync.checked ? '1' : '0'); }catch(e){}
+    if(sync.checked){
+      aplicarCopia();
+      /* Um único toast informativo, apenas na primeira vez que ativa */
+      if(code.value.trim()){
+        toast("EAN sincronizado com o código interno", "success", 2400);
+      }
     }
   });
 })();
