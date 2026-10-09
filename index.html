@@ -179,7 +179,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 
-/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado (sem ellipsis) — o JS encolhe uniformemente se preciso */
+/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado — o JS encolhe uniformemente se preciso */
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:11%;flex-shrink:0;overflow:hidden;gap:2px}
 .promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
@@ -235,6 +235,18 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .floating-preview{position:fixed;right:calc(14px + var(--safe-r));bottom:calc(84px + var(--safe-b));z-index:8600;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--brand-grad);color:#fff;box-shadow:0 10px 28px rgba(200,16,46,.38);border:none;cursor:pointer;opacity:0;transform:scale(.5);pointer-events:none;transition:all .18s}
 .floating-preview.ready{opacity:1;transform:scale(1);pointer-events:auto}
 .floating-preview svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ⚡ Botões flutuantes extra — só visíveis na página "fila" */
+.floating-print,.floating-clear{position:fixed;right:calc(14px + var(--safe-r));z-index:8600;width:56px;height:56px;border-radius:50%;display:none;align-items:center;justify-content:center;border:none;cursor:pointer;transition:transform .15s}
+.floating-print{bottom:calc(150px + var(--safe-b));background:var(--brand-grad);color:#fff;box-shadow:0 10px 28px rgba(200,16,46,.38)}
+.floating-print:active{transform:scale(.93)}
+.floating-print svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.floating-clear{bottom:calc(216px + var(--safe-b));background:#fff;color:#dc2626;border:1.5px solid #fecaca;box-shadow:0 10px 28px rgba(220,38,38,.2)}
+.floating-clear:active{transform:scale(.93)}
+.floating-clear svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body[data-view="fila"] .floating-print,
+body[data-view="fila"] .floating-clear{display:flex}
+
 .global-status{position:fixed;top:calc(76px + var(--safe-t));left:50%;transform:translateX(-50%);z-index:9000;display:none;align-items:center;gap:10px;padding:10px 16px;max-width:calc(100vw - 28px);background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:var(--r-pill);box-shadow:0 12px 32px rgba(15,23,42,.14);font-size:12.5px;font-weight:700;color:var(--ink-2);opacity:0;pointer-events:none;transition:opacity .26s,transform .26s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .global-status.show{display:flex;opacity:1;pointer-events:auto}
 .global-status .gs-dot{width:10px;height:10px;border-radius:50%;background:var(--ink-3);flex-shrink:0}
@@ -371,7 +383,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
   html,body{background:#fff!important;background-image:none!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  .app-header,.main,.bnav,.floating-preview,.global-status,.toast-container,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
+  .app-header,.main,.bnav,.floating-preview,.floating-print,.floating-clear,.global-status,.toast-container,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
   #printZone{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;background:#fff!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;animation:none!important;transition:none!important}
   #printZone .label-card{transform:none!important;background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important}
@@ -693,8 +705,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
         <div class="card">
           <div class="card-h"><div class="ic">🖨️</div><h3>Fila de Impressão</h3><span class="badge" id="queueBadge">0</span></div>
           <div id="queueListContainer"><div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div></div>
-          <button class="btn btn-primary btn-block btn-lg" id="printBtn" type="button" style="margin-top:12px">🖨️ Imprimir Fila</button>
-          <button class="btn btn-soft btn-block btn-sm" style="margin-top:8px;color:#b91c1c;display:none" id="clearQueueBtn" type="button">🗑️ Limpar Fila</button>
         </div>
       </section>
 
@@ -804,6 +814,14 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 </nav>
 
 <button type="button" class="floating-preview" id="floatingPreviewBtn"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+
+<!-- ⚡ Botões flutuantes extra — só aparecem na página "fila" -->
+<button type="button" class="floating-print" id="floatingPrintBtn" data-tip="Imprimir Fila" aria-label="Imprimir Fila">
+  <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+</button>
+<button type="button" class="floating-clear" id="floatingClearBtn" data-tip="Limpar Fila" aria-label="Limpar Fila">
+  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2l-1-14"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+</button>
 
 <div class="preview-modal" id="previewModal">
   <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
@@ -1575,7 +1593,7 @@ async function _apiCall(fn, payload, retryCount){
     });
     clearTimeout(tid);
     _apiWarm = true;
-    _lastApiTime = Date.now();
+    _apiLastTime = Date.now();
 
     if(resp.status === 401){
       clearStoredToken();
@@ -2098,7 +2116,6 @@ function renderQueue(){
   var c = $("queueListContainer");
   var qb = $("queueBadge"); if(qb) qb.textContent = printQueue.length;
   var bb = $("bnQueueBadge"); if(bb) bb.textContent = printQueue.length || "";
-  var cq = $("clearQueueBtn"); if(cq) cq.style.display = printQueue.length === 0 ? "none" : "block";
   try{ localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(printQueue)); }catch(e){}
   if(!c) return;
   if(printQueue.length === 0){
@@ -2599,10 +2616,7 @@ function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
 
-/* ⚡⚡⚡ autoFitFooterText — Encolhe TODOS os elementos do rodapé em conjunto ⚡⚡⚡
-   Nunca corta texto (sem ellipsis). Quando o rodapé não cabe, reduz uniformemente
-   os 4 elementos (promo-text + promo-dates + iva-text + print-date) para caber.
-   Funciona na pré-visualização, impressão e PDF. Idempotente. */
+/* ⚡⚡⚡ autoFitFooterText — Encolhe TODOS os elementos do rodapé em conjunto ⚡⚡⚡ */
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container");
@@ -2616,12 +2630,10 @@ function autoFitFooterText(card){
   ].filter(Boolean);
   if(!els.length) return;
 
-  /* Reset — volta ao tamanho natural */
   els.forEach(function(el){
     el.style.removeProperty("font-size");
     el.style.removeProperty("display");
   });
-  /* Esconde elementos vazios */
   els.forEach(function(el){
     if(!el.textContent || !el.textContent.trim()) el.style.display = "none";
   });
@@ -2642,9 +2654,8 @@ function autoFitFooterText(card){
   }
 
   var needed = totalWidth();
-  if(needed <= fw) return; /* cabe no tamanho natural — nada a fazer */
+  if(needed <= fw) return;
 
-  /* Encolhe TODOS uniformemente para caber */
   var ratio = (fw * 0.97) / needed;
   var baseSize = 0;
   els.forEach(function(el){
@@ -2661,7 +2672,6 @@ function autoFitFooterText(card){
   });
   void footer.offsetHeight;
 
-  /* Último recurso: se mesmo assim não cabe, esconde o texto longo */
   if(totalWidth() > fw){
     var pt = footer.querySelector(".promo-text");
     if(pt && pt.style.display !== "none"){
@@ -2895,8 +2905,9 @@ function updateCardUnsafe(){
     if(barcodeToDraw && !card.classList.contains("size-tiny")){ bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw); }
     else { bcBox.classList.remove("show"); }
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
+    /* ⚡ Datas compactas removidas do rodapé — manter sempre vazio */
     var pdEl = $("cardPromoDates");
-    if(pdEl){ var pdTxt = formatPromoDatesCompact($("promoStart").value, $("promoEnd").value); pdEl.textContent = pdTxt; }
+    if(pdEl){ pdEl.textContent = ""; }
     $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
     if(!_skipAutofitInCard){
       autoAdaptImage(card);
@@ -2994,8 +3005,9 @@ function populateClone(clone, d){
   else if(bcBox){ bcBox.classList.remove('show'); }
   var promoTextEl = clone.querySelector('.promo-text');
   if(promoTextEl) promoTextEl.textContent = formatPromoDate(d.promoStart, d.promoEnd);
+  /* ⚡ Datas compactas removidas do rodapé — manter sempre vazio */
   var promoDatesEl = clone.querySelector('.promo-dates');
-  if(promoDatesEl) promoDatesEl.textContent = formatPromoDatesCompact(d.promoStart, d.promoEnd);
+  if(promoDatesEl) promoDatesEl.textContent = "";
   var printDateEl = clone.querySelector('.print-date');
   if(printDateEl) printDateEl.textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
 }
@@ -3652,7 +3664,6 @@ function updateSaveButtonsState(){ var b = document.getElementById('saveDbBtn');
 document.getElementById('addToQueueBtn').addEventListener("click", addToQueue);
 document.getElementById('saveDbBtn').addEventListener("click", function(){ saveToDb(); });
 document.getElementById('saveDbAndQueueBtn').addEventListener("click", saveDbAndQueue);
-document.getElementById('printBtn').addEventListener("click", function(){ window.triggerPrint(); });
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('recarregarDbBtn').addEventListener("click", function(){
@@ -3702,7 +3713,14 @@ document.getElementById('hardResetBtn').addEventListener("click", async function
     setTimeout(function(){ location.reload(); },700);
   }catch(e){ toast("Erro: "+e.message,"error"); }
 });
-document.getElementById('clearQueueBtn').addEventListener("click", async function(){ if(await confirmDialog("Limpar toda a fila?")){ printQueue = []; renderQueue(); toast("Fila limpa","info"); } });
+
+/* ⚡ Botões flutuantes na página "fila": imprimir + limpar */
+document.getElementById('floatingPrintBtn').addEventListener("click", function(){ window.triggerPrint(); });
+document.getElementById('floatingClearBtn').addEventListener("click", async function(){
+  if(printQueue.length === 0){ toast("A fila já está vazia.","info"); return; }
+  if(await confirmDialog("Limpar toda a fila?")){ printQueue = []; renderQueue(); toast("Fila limpa","info"); }
+});
+
 document.getElementById('scanEanBtn').addEventListener("click", openScanner);
 document.getElementById('scanClose').addEventListener("click", closeScanner);
 document.getElementById('scanTorch').addEventListener("click", toggleTorchScan);
