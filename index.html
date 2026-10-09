@@ -148,10 +148,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .label-card{background:#fff!important;border:1px solid #cbd5e1;box-shadow:0 10px 25px rgba(15,23,42,.14);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:3px;padding:2px 5px!important;container-type:inline-size;--header-h:13%;--img-pad:1px;--gap-main:4px;--img-scale:100%;--accent:#c8102e;-webkit-font-smoothing:antialiased;backface-visibility:hidden}
 .label-card > *{min-height:0;max-width:100%}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%;border-bottom:1px solid #e2e8f0}
-.logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
+.logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:visible;min-width:0;flex-shrink:0}
 .logo-wrapper-2{justify-content:center}
 .header-store-container{flex:1;text-align:right;overflow:hidden;margin-right:1mm;min-width:0}
-.brand-logo{max-width:100%;max-height:85%;object-fit:contain}
+.brand-logo{max-width:100%;max-height:85%;width:auto;height:auto;object-fit:contain;display:block;flex-shrink:0}
 .store-text{font-size:clamp(6px,1.8cqw,10px);font-weight:800;text-transform:uppercase;color:#0f172a;line-height:1;letter-spacing:-.01em}
 .main-content{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);align-items:center!important;width:100%;flex:1 1 auto;gap:var(--gap-main);overflow:hidden;margin:1px 0;min-height:0}
 .label-card:not(.has-image) .main-content{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)!important}
@@ -567,9 +567,9 @@ body[data-view="fila"] .floating-clear{display:flex}
   <div class="hdr-inner">
     <div class="hdr-left">
       <div class="hdr-logos">
-        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w120-h60-p-k-nu-rw" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
+        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w400" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
         <div class="divider"></div>
-        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w120-h60-p-k-nu-rw" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
+        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w400" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
       </div>
       <div class="hdr-txt"><strong>Etiquetas</strong></div>
     </div>
@@ -843,8 +843,8 @@ body[data-view="fila"] .floating-clear{display:flex}
             <div class="preview-scaler" id="previewScaler">
               <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
                 <div class="header">
-                  <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w120-h60-p-k-nu-rw" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
-                  <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w120-h60-p-k-nu-rw" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
+                  <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w400" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
+                  <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w400" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
                   <div class="header-store-container"><div class="store-text" id="cardStore">GARCIA/PATAIAS</div></div>
                 </div>
                 <div class="main-content">
