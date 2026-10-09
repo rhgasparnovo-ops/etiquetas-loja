@@ -64,7 +64,6 @@ a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
 
-/* ⚡ TOOLTIP GLOBAL — fixo em cima, sempre visível, nunca cortado */
 .global-tooltip{position:fixed;left:50%;top:calc(84px + var(--safe-t));transform:translate(-50%,-8px);background:rgba(15,23,42,.96);color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:700;max-width:calc(100vw - 24px);width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:100050;box-shadow:0 14px 38px rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.12)}
 .global-tooltip.show{opacity:1;transform:translate(-50%,0)}
 @media (max-width:600px){.global-tooltip{font-size:12.5px;padding:9px 14px;top:calc(78px + var(--safe-t))}}
@@ -180,7 +179,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 
-/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado; ellipsis como fallback final */
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:11%;flex-shrink:0;overflow:hidden;gap:2px}
 .promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
@@ -238,7 +236,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .floating-preview.ready{opacity:1;transform:scale(1);pointer-events:auto}
 .floating-preview svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ⚡ Botões flutuantes extra — só visíveis na página "fila" */
 .floating-print,.floating-clear{position:fixed;right:calc(14px + var(--safe-r));z-index:8600;width:56px;height:56px;border-radius:50%;display:none;align-items:center;justify-content:center;border:none;cursor:pointer;transition:transform .15s}
 .floating-print{bottom:calc(150px + var(--safe-b));background:var(--brand-grad);color:#fff;box-shadow:0 10px 28px rgba(200,16,46,.38)}
 .floating-print:active{transform:scale(.93)}
@@ -485,6 +482,64 @@ body[data-view="fila"] .floating-clear{display:flex}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
 
+/* ⚡ NOVO: Barra de seleção em massa + ações para Etiquetas Guardadas */
+.db-actions-bar{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  margin-top:4px;padding:10px;
+  background:linear-gradient(135deg,#f8fafc,#f1f5f9);
+  border:1.5px dashed var(--line-2);border-radius:var(--r-md)
+}
+.db-select-all{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 14px;background:#fff;
+  border:1.5px solid var(--line);border-radius:var(--r-pill);
+  font-size:12px;font-weight:800;color:var(--ink-2);
+  cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap
+}
+.db-select-all:hover{background:var(--surface-2);border-color:var(--line-2)}
+.db-select-all input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer;margin:0}
+.db-select-all.active{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+.db-actions-bar .db-bulk-btn{
+  flex:1 1 auto;min-width:130px;min-height:42px;padding:8px 14px;
+  font-size:12.5px;font-weight:800;border-radius:var(--r-pill);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:1.5px solid transparent;transition:all .15s;white-space:nowrap;line-height:1.1
+}
+.db-actions-bar .db-bulk-btn:active:not(:disabled){transform:scale(.97)}
+.db-actions-bar .db-bulk-btn:disabled{opacity:.5;cursor:not-allowed}
+.db-actions-bar .db-add-sel{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.28)}
+.db-actions-bar .db-add-all{background:#fff;border-color:var(--line);color:var(--ink-2)}
+.db-actions-bar .db-add-all:hover{background:var(--surface-2);border-color:var(--line-2)}
+@media (max-width:420px){.db-actions-bar .db-bulk-btn{flex-basis:100%;min-width:0}}
+
+/* ⚡ NOVO: Items guardados com checkbox + ações em grelha 2×2 */
+.list-item.db-item{align-items:flex-start;flex-wrap:wrap}
+.list-item.db-item .db-check{
+  display:flex;align-items:center;justify-content:center;
+  padding-top:4px;flex-shrink:0
+}
+.list-item.db-item .db-check input[type=checkbox]{
+  width:22px;height:22px;min-width:22px;accent-color:var(--brand);
+  cursor:pointer;margin:0
+}
+.list-item.db-item.selected{background:var(--brand-tint);border-color:#fbd0d8;box-shadow:0 0 0 1px rgba(200,16,46,.12)}
+.list-item.db-item.selected:hover{background:#ffe8ee;border-color:#fbcfe0}
+.list-item.db-item .db-item-actions{
+  flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)
+}
+.list-item.db-item .db-item-actions button{
+  min-height:40px;padding:6px 12px;font-size:12.5px;font-weight:800;
+  border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;
+  gap:5px;border:1.5px solid transparent;transition:all .15s;line-height:1.1;
+  width:100%
+}
+.list-item.db-item .db-item-actions button:active{transform:scale(.96)}
+.list-item.db-item .db-item-actions .db-act-load{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+.list-item.db-item .db-item-actions .db-act-queue{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,.24)}
+.list-item.db-item .db-item-actions .db-act-variant{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.list-item.db-item .db-item-actions .db-act-remove{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+
 @media (max-width:520px){.row.stack-mobile{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
@@ -524,7 +579,6 @@ body[data-view="fila"] .floating-clear{display:flex}
         <div class="card">
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
 
-          <!-- ⚡ FORMATO DA ETIQUETA — primeira coisa a escolher -->
           <div class="fld"><label for="presetSizes">Formato da etiqueta *</label>
             <select id="presetSizes">
               <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Amanhecer · 70×38/40</option></optgroup>
@@ -686,17 +740,16 @@ body[data-view="fila"] .floating-clear{display:flex}
           </div>
         </div>
 
+        <!-- ⚡ CARD AÇÕES — 4 botões full-width, ordem: Adicionar à Fila · Limpar · Guardar · Guardar + Fila -->
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
           <div class="editing-banner" id="editingBanner"></div>
           <div class="quick-actions-row">
-            <button class="btn btn-success btn-block" id="addToQueueBtn" type="button" data-tip="Adicionar à fila de impressão">➕ Adicionar à Fila</button>
-            <button class="btn btn-primary btn-block" id="saveDbBtn" type="button" data-tip="Guardar no Drive">💾 Guardar</button>
+            <button class="btn btn-success btn-block full" id="addToQueueBtn" type="button" data-tip="Adicionar à fila de impressão">➕ Adicionar à Fila</button>
+            <button class="btn btn-soft btn-block full" id="clearBtn" type="button" data-tip="Limpar todos os campos">🗑️ Limpar</button>
+            <button class="btn btn-primary btn-block full" id="saveDbBtn" type="button" data-tip="Guardar no Drive">💾 Guardar</button>
             <button class="btn btn-primary btn-block full" id="saveDbAndQueueBtn" type="button" style="background:linear-gradient(135deg,#059669,#0d9c4c)" data-tip="Guardar no Drive E adicionar à fila">💾🖨️ Guardar + Fila</button>
-          </div>
-          <div class="row">
-            <button class="btn btn-soft btn-block" id="clearBtn" type="button" data-tip="Limpar todos os campos">🗑️ Limpar</button>
           </div>
         </div>
       </section>
@@ -723,6 +776,17 @@ body[data-view="fila"] .floating-clear{display:flex}
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
           <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · 🧬 cria variante · ✕ apaga.</p>
+
+          <!-- ⚡ NOVO: barra de seleção em massa + ações em bloco -->
+          <div class="db-actions-bar">
+            <label class="db-select-all" id="dbSelectAllWrap">
+              <input type="checkbox" id="dbSelectAll">
+              <span>Selecionar</span>
+            </label>
+            <button type="button" class="db-bulk-btn db-add-sel" id="dbAddSelectedBtn" disabled>➕ Adicionar selecionadas</button>
+            <button type="button" class="db-bulk-btn db-add-all" id="dbAddAllBtn">📚 Adicionar todas à fila</button>
+          </div>
+
           <div class="row">
             <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" data-tip="Recarregar lista do Drive">🔄 Recarregar</button>
             <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
@@ -815,7 +879,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 
 <button type="button" class="floating-preview" id="floatingPreviewBtn" data-tip="Ver pré-visualização"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
 
-<!-- ⚡ Botões flutuantes extra — só aparecem na página "fila" -->
 <button type="button" class="floating-print" id="floatingPrintBtn" data-tip="Imprimir Fila" aria-label="Imprimir Fila">
   <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
 </button>
@@ -943,7 +1006,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 /* 0. VIEWPORT */
 (function(){ function s(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} } s(); window.addEventListener('resize', s, {passive:true}); window.addEventListener('orientationchange', function(){ setTimeout(s, 120); }); try{ var ua = navigator.userAgent||''; if(/\bwv\b/.test(ua) || /; wv\)/.test(ua) || window.matchMedia('(display-mode: standalone)').matches || location.protocol === 'file:'){ document.documentElement.classList.add('is-apk'); } }catch(e){} })();
 
-/* 1. TOOLTIP GLOBAL FIXO — funciona em todos os browsers de smartphones */
+/* 1. TOOLTIP GLOBAL FIXO */
 (function(){
   if(document.getElementById('globalTooltip')) return;
   var tip = document.createElement('div');
@@ -1399,7 +1462,6 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO E OTIMIZADO DE IMAGENS ⚡⚡⚡ */
 var _printImgCache = {};
 
 async function _fotoViaBackend(url){
@@ -1519,7 +1581,6 @@ function _waitImageReady(img){
   });
 }
 
-/* ⚡ OTIMIZADO: agrupa por URL e processa uma vez por URL única */
 async function _preloadPrintImages(container){
   if(!container) return;
   var imgs = Array.from(container.querySelectorAll('img'));
@@ -1705,6 +1766,10 @@ var _printCleanupTimer=null, _restoreQueueAfterPrint=null;
 var _printBackupData=null, _skipAutofitInCard=false;
 var _syncErrorShown = false;
 
+/* ⚡ NOVO: seleção em massa para Etiquetas Guardadas */
+var _dbSelection = new Set();
+var _dbVisibleCache = [];
+
 function fitPreviewCard(){
   var scaler=document.getElementById('previewScaler'), card=document.getElementById('mainLabelCard');
   if(!scaler||!card) return;
@@ -1826,6 +1891,12 @@ async function carregarTudo(opts){
 
       savedProducts = ensureArray(results[0]);
       bancoFruta    = ensureArray(results[1]);
+
+      /* ⚡ Limpar seleção de IDs que já não existem */
+      try{
+        var existentes = new Set(savedProducts.map(function(p){ return String(p._id||''); }));
+        Array.from(_dbSelection).forEach(function(id){ if(!existentes.has(id)) _dbSelection.delete(id); });
+      }catch(e){}
 
       if(editingId){
         var ainda = savedProducts.find(function(p){ return String(p._id)===String(editingId); });
@@ -2112,7 +2183,7 @@ function drawITF14(svg,digits){
   svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
   for(var j=0;j<bits.length;j++){ if(bits[j]!=="1") continue; var r=document.createElementNS(ns,"rect"); r.setAttribute("x",j+qz); r.setAttribute("y",6); r.setAttribute("width",1); r.setAttribute("height",50); r.setAttribute("fill","black"); svg.appendChild(r); }
   var bt=document.createElementNS(ns,"rect"); bt.setAttribute("x",qz); bt.setAttribute("y",0); bt.setAttribute("width",bits.length); bt.setAttribute("height",6); bt.setAttribute("fill","black"); svg.appendChild(bt);
-  var bb=document.createElementNS(ns,"rect"); bb.setAttribute("x",qz); bb.setAttribute("y",56); bb.setAttribute("width",bits.length); bb.setAttribute("height",6); bb.setAttribute("fill","black"); svg.appendChild(bb);
+  var bb=document.createElementNS(ns,"rect"); bb.setAttribute("x",qz); bt.setAttribute("y",56); bb.setAttribute("width",bits.length); bb.setAttribute("height",6); bb.setAttribute("fill","black"); svg.appendChild(bb);
 }
 function drawBarcode(svg,value){
   if(!svg) return; svg.innerHTML="";
@@ -2351,6 +2422,7 @@ async function resolverFotoParaPayload(d){
   return {fotoId: up.id, fotoUrl: up.url};
 }
 
+/* ⚡ renderDb atualizado — checkbox + ações em grelha 2×2 + controlo de seleção */
 function renderDb(){
   var c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -2363,14 +2435,26 @@ function renderDb(){
   }
   var busca = ($("dbBusca") && $("dbBusca").value || '').trim().toUpperCase();
   var filtro = filtroEl ? filtroEl.value : '';
-  if(savedProducts.length === 0){ c.innerHTML = '<div class="empty-msg">Nenhum produto guardado no Drive.</div>'; return; }
+  if(savedProducts.length === 0){
+    c.innerHTML = '<div class="empty-msg">Nenhum produto guardado no Drive.</div>';
+    _dbVisibleCache = [];
+    updateDbBulkState();
+    return;
+  }
   var lista = savedProducts.map(function(p,i){ return {p:p,i:i}; });
   if(filtro) lista = lista.filter(function(o){ return (o.p.formato||'amanhecer') === filtro; });
   if(busca) lista = lista.filter(function(o){
     var n = String(o.p.nome||'').toUpperCase(), cd = String(o.p.codigo||'').toUpperCase();
     return n.indexOf(busca)>-1 || cd.indexOf(busca)>-1;
   });
-  if(lista.length === 0){ c.innerHTML = '<div class="empty-msg">Sem resultados com os filtros atuais.</div>'; return; }
+  if(lista.length === 0){
+    c.innerHTML = '<div class="empty-msg">Sem resultados com os filtros atuais.</div>';
+    _dbVisibleCache = [];
+    updateDbBulkState();
+    return;
+  }
+  _dbVisibleCache = lista.map(function(o){ return o.p; });
+
   var grupos = {};
   lista.forEach(function(o){
     var p = o.p;
@@ -2387,7 +2471,11 @@ function renderDb(){
     g.items.sort(function(a,b){ var fa=a.p.formato||'amanhecer', fb=b.p.formato||'amanhecer'; return fa.localeCompare(fb); }).forEach(function(o){
       var d = o.p, i = o.i;
       var fr = d.formato || 'amanhecer';
-      var div = document.createElement('div'); div.className = 'list-item';
+      var itemId = String(d._id || '');
+      var isSelected = _dbSelection.has(itemId);
+      var div = document.createElement('div');
+      div.className = 'list-item db-item';
+      if(isSelected) div.classList.add('selected');
       var isEditingThis = editingId && d._id && String(editingId) === String(d._id);
       if(isEditingThis){ div.classList.add('editing'); }
       var pr = (d.preco!==undefined && d.preco!=="" && d.preco!==null) ? (escapeHTML(sanitizePrice(d.preco)) + "€") : "S/ preço";
@@ -2401,21 +2489,51 @@ function renderDb(){
         else { stateBadges += ' <span class="chip-red">✏️ EM EDIÇÃO</span>'; }
       }
       div.innerHTML =
-        '<div class="list-item-info"><strong>' + escapeHTML(d.nome||"Sem Nome") + '</strong>' +
-        '<div class="q-meta">' +
-          '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' +
-          ivaBadge + ' ' + pr + stateBadges +
-        '</div></div>' +
-        '<div class="list-item-actions">' +
-        '<button class="btn-load" data-action="load-db" data-index="' + i + '" data-tip="Editar">📥</button>' +
-        '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕</button>' +
-        '<button class="btn-dup-queue" data-action="variant-db" data-index="' + i + '" data-tip="Criar variante">🧬</button>' +
-        '<button class="btn-remove" data-action="remove-db" data-index="' + i + '" data-tip="Apagar do Drive">✕</button>' +
+        '<label class="db-check" data-tip="Selecionar para adicionar em bloco"><input type="checkbox" data-action="select-db" data-index="' + i + '"' + (isSelected ? ' checked' : '') + '></label>' +
+        '<div class="list-item-info">' +
+          '<strong>' + escapeHTML(d.nome||"Sem Nome") + '</strong>' +
+          '<div class="q-meta">' +
+            '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' +
+            ivaBadge + ' ' + pr + stateBadges +
+          '</div>' +
+        '</div>' +
+        '<div class="db-item-actions">' +
+          '<button class="db-act-load" data-action="load-db" data-index="' + i + '" data-tip="Editar">📥 Editar</button>' +
+          '<button class="db-act-queue" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕ Fila</button>' +
+          '<button class="db-act-variant" data-action="variant-db" data-index="' + i + '" data-tip="Criar variante">🧬 Variante</button>' +
+          '<button class="db-act-remove" data-action="remove-db" data-index="' + i + '" data-tip="Apagar do Drive">✕ Apagar</button>' +
         '</div>';
       c.appendChild(div);
     });
   });
+  updateDbBulkState();
 }
+
+/* ⚡ NOVO: estado da barra de seleção em massa */
+function updateDbBulkState(){
+  var visible = _dbVisibleCache || [];
+  var totalVis = visible.length;
+  var selVis = visible.filter(function(p){ return _dbSelection.has(String(p._id||'')); }).length;
+
+  var selAll = $("dbSelectAll");
+  var wrap = $("dbSelectAllWrap");
+  if(selAll){
+    selAll.checked = totalVis > 0 && selVis === totalVis;
+    selAll.indeterminate = selVis > 0 && selVis < totalVis;
+  }
+  if(wrap) wrap.classList.toggle("active", selVis > 0);
+
+  var btnSel = $("dbAddSelectedBtn");
+  if(btnSel){
+    btnSel.disabled = _dbSelection.size === 0;
+    if(_dbSelection.size > 0){
+      btnSel.textContent = "➕ Adicionar " + _dbSelection.size + " à fila";
+    } else {
+      btnSel.textContent = "➕ Adicionar selecionadas";
+    }
+  }
+}
+
 async function saveToDb(options){
   options = options || {};
   var forceNew = !!options.forceNew;
@@ -2666,7 +2784,6 @@ function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
 
-/* ⚡⚡⚡ autoFitFooterText — encolhe TODOS os elementos em conjunto; ellipsis como fallback final ⚡⚡⚡ */
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container");
@@ -2725,7 +2842,6 @@ function autoFitFooterText(card){
   });
   void footer.offsetHeight;
 
-  /* Se ainda não couber, deixa o promo-text truncar com "…" em vez de desaparecer */
   if(totalWidth() > fw){
     var pt = footer.querySelector(".promo-text");
     if(pt && pt.style.display !== "none"){
@@ -3648,6 +3764,7 @@ window.removeFromDb = async function(i){
   var fr = d.formato || 'amanhecer';
   if(!(await confirmDialog("Eliminar \""+n+"\" ("+fmtShort(fr)+") do Drive?"))) return;
   var backup = savedProducts.splice(i, 1)[0];
+  if(backup && backup._id) _dbSelection.delete(String(backup._id));
   renderDb();
   if(editingId && d._id && String(editingId) === String(d._id)){
     editingId=null; editingCode=null; editingFormato=null;
@@ -3668,7 +3785,7 @@ window.apagarTudo = async function(){
   var ok = await confirmDialog("⚠️ APAGAR TODAS as " + savedProducts.length + " etiquetas do Drive?\n\nEsta ação NÃO pode ser desfeita.", "Apagar tudo");
   if(!ok) return;
   var backup = savedProducts.slice();
-  savedProducts = []; renderDb();
+  savedProducts = []; _dbSelection.clear(); renderDb();
   editingId=null; editingCode=null; editingFormato=null;
   editingOriginal=null; editingFromDrive=false; editingDirty=false;
   updateEditingBanner();
@@ -3688,6 +3805,27 @@ window.queueFromDb = function(i){
   toast("Adicionado à Fila · "+fmtShort(data.presetSizes),"success");
   setTimeout(function(){ document.body.dataset.view='fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 };
+
+/* ⚡ NOVO: adicionar em bloco à fila */
+function _adicionarEmBloco(produtos){
+  if(!produtos || !produtos.length) return 0;
+  var n = 0;
+  produtos.forEach(function(p){
+    var data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(p)));
+    printQueue.push({qid: gerarQid(), data: data, copies: 1, addedAt: Date.now()});
+    n++;
+  });
+  renderQueue();
+  return n;
+}
+function _irParaFila(){
+  setTimeout(function(){
+    document.body.dataset.view = 'fila';
+    _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 420);
+}
+
 function updateEditingBanner(){
   var b = $("editingBanner"); if(!b) return;
   if(editingFromDrive && (editingId || editingDirty)){
@@ -3731,6 +3869,53 @@ document.getElementById('recarregarDbBtn').addEventListener("click", function(){
 });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
+/* ⚡ NOVO: barra de seleção em massa */
+(function(){
+  var selAll = document.getElementById('dbSelectAll');
+  var wrap = document.getElementById('dbSelectAllWrap');
+  if(selAll){
+    selAll.addEventListener("change", function(){
+      var checked = selAll.checked;
+      _dbVisibleCache.forEach(function(p){
+        var id = String(p._id||'');
+        if(!id) return;
+        if(checked) _dbSelection.add(id);
+        else _dbSelection.delete(id);
+      });
+      renderDb();
+    });
+  }
+  if(wrap){
+    wrap.addEventListener("click", function(e){
+      /* deixa o input tratar do toggle */
+    });
+  }
+  var btnSel = document.getElementById('dbAddSelectedBtn');
+  if(btnSel){
+    btnSel.addEventListener("click", function(){
+      var ids = Array.from(_dbSelection);
+      if(!ids.length){ toast("Nenhuma etiqueta selecionada.","warning"); return; }
+      var produtos = savedProducts.filter(function(p){ return ids.indexOf(String(p._id||'')) !== -1; });
+      var n = _adicionarEmBloco(produtos);
+      _dbSelection.clear();
+      renderDb();
+      toast(n + " etiqueta(s) adicionada(s) à fila","success",3500);
+      _irParaFila();
+    });
+  }
+  var btnAll = document.getElementById('dbAddAllBtn');
+  if(btnAll){
+    btnAll.addEventListener("click", async function(){
+      if(!savedProducts.length){ toast("Sem etiquetas guardadas.","info"); return; }
+      var ok = await confirmDialog("Adicionar TODAS as " + savedProducts.length + " etiquetas guardadas à fila de impressão?");
+      if(!ok) return;
+      var n = _adicionarEmBloco(savedProducts.slice());
+      toast(n + " etiqueta(s) adicionada(s) à fila","success",3500);
+      _irParaFila();
+    });
+  }
+})();
+
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
   setStatus("A sincronizar banco (incremental)…","loading");
   try{
@@ -3767,7 +3952,6 @@ document.getElementById('hardResetBtn').addEventListener("click", async function
   }catch(e){ toast("Erro: "+e.message,"error"); }
 });
 
-/* ⚡ Botões flutuantes na página "fila" */
 document.getElementById('floatingPrintBtn').addEventListener("click", function(){ window.triggerPrint(); });
 document.getElementById('floatingClearBtn').addEventListener("click", async function(){
   if(printQueue.length === 0){ toast("A fila já está vazia.","info"); return; }
@@ -3908,24 +4092,41 @@ document.addEventListener("click", function(e){
   if(a === "queue-db" && isFinite(i)) window.queueFromDb(i);
   if(a === "variant-db" && isFinite(i)) window.variantFromDb(i);
   if(a === "remove-db" && isFinite(i)) window.removeFromDb(i);
+  /* select-db é tratado no change handler abaixo */
 });
+/* ⚡ NOVO: mudança de estado do checkbox de seleção */
 document.addEventListener("change", function(e){
+  var cb = e.target.closest('input[data-action="select-db"]');
+  if(cb){
+    var idx = parseInt(cb.dataset.index, 10);
+    if(!isFinite(idx)) return;
+    var item = savedProducts[idx];
+    if(!item) return;
+    var id = String(item._id||'');
+    if(!id) return;
+    if(cb.checked) _dbSelection.add(id);
+    else _dbSelection.delete(id);
+    var parent = cb.closest('.db-item');
+    if(parent) parent.classList.toggle('selected', cb.checked);
+    updateDbBulkState();
+    return;
+  }
   var inp = e.target.closest('input[data-action="copies"]');
   if(inp){ var i = parseInt(inp.dataset.index,10); if(!isFinite(i)) return; if(printQueue[i]){ printQueue[i].copies = Math.max(1,Math.min(500,parseInt(inp.value)||1)); renderQueue(); } return; }
   var sel = e.target.closest('select[data-action="format-queue"]');
   if(sel){
-    var idx = parseInt(sel.dataset.index,10); if(!isFinite(idx)) return;
-    if(printQueue[idx]){
+    var idx2 = parseInt(sel.dataset.index,10); if(!isFinite(idx2)) return;
+    if(printQueue[idx2]){
       var novoFmt = sel.value;
       if(novoFmt === 'custom'){
-        var w = prompt("Largura (mm):", printQueue[idx].data.customWidth || "70");
-        var h = prompt("Altura (mm):", printQueue[idx].data.customHeight || "38");
+        var w = prompt("Largura (mm):", printQueue[idx2].data.customWidth || "70");
+        var h = prompt("Altura (mm):", printQueue[idx2].data.customHeight || "38");
         if(!w || !h){ renderQueue(); return; }
-        printQueue[idx].data.customWidth = String(parseFloat(w)||70);
-        printQueue[idx].data.customHeight = String(parseFloat(h)||38);
+        printQueue[idx2].data.customWidth = String(parseFloat(w)||70);
+        printQueue[idx2].data.customHeight = String(parseFloat(h)||38);
       }
-      printQueue[idx].data.presetSizes = novoFmt;
-      printQueue[idx]._queueState = undefined;
+      printQueue[idx2].data.presetSizes = novoFmt;
+      printQueue[idx2]._queueState = undefined;
       renderQueue();
       toast("Formato alterado · " + fmtShort(novoFmt) + " — guardar irá criar NOVA se o original era diferente", "info", 3200);
     }
@@ -3958,7 +4159,6 @@ document.addEventListener("change", function(e){
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
     setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
-    /* ⚡ Pré-carregar os 2 logotipos em background (são usados em todas as etiquetas) */
     setTimeout(function(){
       try{
         _urlToDataUrl('https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO').catch(function(){});
