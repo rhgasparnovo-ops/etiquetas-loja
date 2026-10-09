@@ -825,6 +825,7 @@ body[data-view="fila"] .floating-clear{display:flex}
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
           <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button" data-tip="Testar ligação ao servidor">🩺 Testar ligação</button>
+          <button class="btn btn-ghost btn-block" id="diagnosticarBancoBtn" type="button" data-tip="Ver o estado das imagens do banco" style="margin-top:8px">🔍 Diagnóstico do Banco</button>
           <div id="diagBox" class="diag-box"></div>
         </div>
         <div class="card">
@@ -1116,15 +1117,6 @@ const TIMEOUT_WRITE_COLD = 45000;
 const TIMEOUT_WRITE_WARM = 25000;
 const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
 
-/* ═══════════════════════════════════════════════════════════════
-   📉 OTIMIZAÇÃO DE IMAGENS — Configuração global
-   ═══════════════════════════════════════════════════════════════ */
-const OTIM_MAX_DIM          = 2000;        // Só reduz imagens gigantes
-const OTIM_QUALIDADE        = 0.92;        // WebP q=0.92 → visualmente sem perda
-const OTIM_PARALELO         = 3;           // 3 imagens em simultâneo
-const OTIM_LIMITE_PULAR     = 350 * 1024;  // Se < 350 KB e já WebP → salta
-const OTIM_MARGEM_MELHORIA  = 0.95;        // Se novo >= 95% do tamanho atual → não estraga
-
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
 function fmtShort(v){ if(!v) return 'Amanhecer'; if(v==='amanhecer') return 'Amanhecer'; if(v==='80x60') return '6×8'; if(v==='125x80') return 'Sup.125×80'; if(v==='frutaPromo125x80') return 'Leve2+ 125×80'; if(v==='frutaPromoA6') return 'Leve2+ A6'; return v; }
@@ -1232,40 +1224,35 @@ function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ ret
 function escapeAttr(s){ return String(s||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;'); }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⚡ THUMBNAILS — 3 CAMADAS PARA GARANTIR FUNCIONAMENTO
-   Camada 1: Cache local (IndexedDB) - instantâneo
-   Camada 2: drive.google.com/thumbnail?id=X&sz=wXXX - FUNCIONA EM MOBILE!
-   Camada 3: lh3.googleusercontent.com - fallback
-   Camada 4: Backend obterFotoThumb - último recurso
+   ⚡ THUMBNAILS — CDN PRIMEIRO (MAIS RÁPIDO)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Lista de URLs candidatos por ordem de preferência */
+/* Lista de URLs candidatos por ordem de preferência (CDN primeiro) */
 function _candidatosThumb(fotoId, size){
   if(!fotoId) return [];
   var s = Math.max(120, Math.min(1600, parseInt(size,10) || THUMB_GRID_2X));
   return [
-    /* 1º: drive.google.com/thumbnail — o mais fiável em mobile */
-    'https://drive.google.com/thumbnail?id=' + fotoId + '&sz=w' + s,
-    /* 2º: lh3 com -rw (WebP) */
-    'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s + '-h' + s + '-p-k-nu-rw',
-    /* 3º: lh3 sem -rw */
+    /* 1º: CDN direto — MAIS RÁPIDO */
+    'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s,
+    /* 2º: CDN com crop quadrado */
     'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s + '-h' + s + '-p-k-nu',
-    /* 4º: lh3 simples */
-    'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s
+    /* 3º: CDN com WebP */
+    'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s + '-h' + s + '-p-k-nu-rw',
+    /* 4º: drive.google.com — último recurso (faz redirect) */
+    'https://drive.google.com/thumbnail?id=' + fotoId + '&sz=w' + s
   ];
 }
 
-/* Mantido por compatibilidade com código existente */
 function thumbUrl(id, size){ var c = _candidatosThumb(id, size); return c.length ? c[0] : ''; }
 function thumbUrlApply(id){
   if(!id) return '';
-  return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + THUMB_APPLY;
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + THUMB_APPLY;
 }
 
 /* ─── Cache em IndexedDB + memória ─── */
 var _thumbMemCache = Object.create(null);
 var _thumbSaveTimer = null;
-var _thumbPending = Object.create(null);   /* promessas pendentes p/ dedupe */
+var _thumbPending = Object.create(null);
 
 async function _getThumbFromCache(fotoId, size){
   if(!fotoId) return null;
@@ -1273,7 +1260,22 @@ async function _getThumbFromCache(fotoId, size){
   if(_thumbMemCache[k]) return _thumbMemCache[k];
   try{
     var c = await localforage.getItem(THUMB_CACHE_LF_KEY);
-    if(c && c[k]){ _thumbMemCache[k] = c[k]; return c[k]; }
+    if(c && c[k]){
+      var cached = c[k];
+      if(cached.indexOf('data:') === 0){
+        _thumbMemCache[k] = cached;
+        return cached;
+      }
+      /* Valida rapidamente que ainda funciona; se falhar, remove */
+      var ok = await _testarUrlImagem(cached, 2000);
+      if(ok){
+        _thumbMemCache[k] = cached;
+        return cached;
+      } else {
+        delete c[k];
+        try { await localforage.setItem(THUMB_CACHE_LF_KEY, c); } catch(e){}
+      }
+    }
   }catch(e){}
   return null;
 }
@@ -1294,33 +1296,26 @@ async function _setThumbInCache(fotoId, size, dataUrl){
   }, 400);
 }
 
-/* ─── Carrega uma miniatura testando URLs em cascata.
-   Devolve um URL pronto (ou data URL) ou null. */
 async function _resolveThumbUrl(fotoId, size){
   if(!fotoId) return null;
   var k = fotoId + '_' + size;
 
-  /* 1. Cache */
   var cached = await _getThumbFromCache(fotoId, size);
   if(cached) return cached;
 
-  /* 2. Dedupe — se já há um pedido em curso, espera por ele */
   if(_thumbPending[k]) return _thumbPending[k];
 
   var promise = (async function(){
     var candidatos = _candidatosThumb(fotoId, size);
 
-    /* Testa cada URL da lista — timeout generoso de 6s cada */
     for(var i = 0; i < candidatos.length; i++){
-      var ok = await _testarUrlImagem(candidatos[i], 6000);
+      var ok = await _testarUrlImagem(candidatos[i], 3500);
       if(ok){
-        /* Guarda o URL vencedor em cache (não o base64 — economiza espaço) */
         await _setThumbInCache(fotoId, size, candidatos[i]);
         return candidatos[i];
       }
     }
 
-    /* 3. Backend proxy (último recurso) */
     try{
       var r = await api('obterFotoThumb', { fotoId: fotoId, size: size });
       if(r && r.base64){
@@ -1337,7 +1332,7 @@ async function _resolveThumbUrl(fotoId, size){
   finally{ delete _thumbPending[k]; }
 }
 
-/* Testa se um URL de imagem carrega com sucesso */
+/* ⚡ Versão otimizada: timeout máximo de 3.5s */
 function _testarUrlImagem(url, timeoutMs){
   return new Promise(function(resolve){
     var done = false;
@@ -1348,7 +1343,7 @@ function _testarUrlImagem(url, timeoutMs){
       img.onload = null; img.onerror = null;
       try{ img.src = ''; }catch(e){}
       resolve(false);
-    }, timeoutMs);
+    }, Math.min(timeoutMs || 3500, 3500));
     img.onload = function(){
       if(done) return; done = true;
       clearTimeout(tid);
@@ -1364,20 +1359,17 @@ function _testarUrlImagem(url, timeoutMs){
   });
 }
 
-/* Aplica a miniatura resolvida diretamente ao <img> */
 async function _aplicarThumb(img, fotoId, size){
   if(!img || !fotoId) return;
   var fallbackUrl = img.getAttribute('data-fallback') || '';
 
   var url = await _resolveThumbUrl(fotoId, size);
   if(url){
-    /* Se for data URL, aplica direto */
     if(url.indexOf('data:') === 0){
       img.src = url;
       img.classList.add('loaded');
       return;
     }
-    /* É URL — aplica com onerror para fallback final */
     await new Promise(function(resolve){
       var done = false;
       function finish(){ if(done) return; done = true; resolve(); }
@@ -1394,13 +1386,11 @@ async function _aplicarThumb(img, fotoId, size){
     return;
   }
 
-  /* Nada funcionou — mostra fallback ou placeholder */
   if(fallbackUrl) img.src = fallbackUrl;
   else img.src = _BF_PLACEHOLDER;
   img.classList.add('loaded');
 }
 
-/* ═══ Lazy loading com IntersectionObserver ═══ */
 var _bfObserver = null, _bfObserverInit = false;
 function _setupBfObserver(){
   if(_bfObserverInit) return;
@@ -1419,7 +1409,6 @@ function _setupBfObserver(){
   }, {rootMargin: '900px 0px', threshold: 0.01});
 }
 
-/* Pré-carrega N miniaturas em paralelo */
 async function _prefetchThumbs(fotoIds, size, concurrency){
   size = size || THUMB_GRID_2X;
   concurrency = Math.max(1, Math.min(8, concurrency || 4));
@@ -1599,61 +1588,6 @@ function compressSmart(dataUrl,maxSize,quality){
     };
     img.onerror=function(){ resolve(dataUrl); };
     img.src=dataUrl;
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   📉 compressSmartHQ — Compressão de alta qualidade (WebP q=0.92)
-   Preserva dimensões originais, sem padding quadrado forçado
-   ═══════════════════════════════════════════════════════════════ */
-function compressSmartHQ(dataUrl, maxSize, quality){
-  maxSize = maxSize || OTIM_MAX_DIM;
-  quality = quality || OTIM_QUALIDADE;
-  return new Promise(function(resolve){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
-      try{
-        var w = img.naturalWidth || img.width;
-        var h = img.naturalHeight || img.height;
-        /* Só reduz se for gigante — preserva resolução original */
-        if(w > maxSize || h > maxSize){
-          if(w > h){ h = Math.round(h * maxSize / w); w = maxSize; }
-          else     { w = Math.round(w * maxSize / h); h = maxSize; }
-        }
-        var c = document.createElement('canvas');
-        c.width = w; c.height = h;
-        var ctx = c.getContext('2d');
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-
-        /* Deteta transparência */
-        var temTransp = false;
-        try{
-          var tmp = document.createElement('canvas');
-          tmp.width = Math.min(w, 60); tmp.height = Math.min(h, 60);
-          var tc = tmp.getContext('2d');
-          tc.drawImage(img, 0, 0, tmp.width, tmp.height);
-          var px = tc.getImageData(0, 0, tmp.width, tmp.height).data;
-          for(var i = 3; i < px.length; i += 4){ if(px[i] < 250){ temTransp = true; break; } }
-        }catch(e){}
-
-        if(temTransp){
-          ctx.clearRect(0, 0, w, h);
-          ctx.drawImage(img, 0, 0, w, h);
-          var wp = c.toDataURL('image/webp', quality);
-          resolve(wp.indexOf('image/webp') === -1 ? c.toDataURL('image/png') : wp);
-        } else {
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(0, 0, w, h);
-          ctx.drawImage(img, 0, 0, w, h);
-          var wp2 = c.toDataURL('image/webp', quality);
-          resolve(wp2.indexOf('image/webp') === -1 ? c.toDataURL('image/jpeg', quality) : wp2);
-        }
-      }catch(e){ resolve(dataUrl); }
-    };
-    img.onerror = function(){ resolve(dataUrl); };
-    img.src = dataUrl;
   });
 }
 
@@ -2967,111 +2901,36 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
     toast("Foto \"" + r.nome + "\" guardada em " + ((tipo==='legume')?"Banco de Legumes":"Banco de Frutas"),"success",4500);
   }catch(e){ setStatus("Erro ao guardar foto","error"); toast("Erro ao guardar foto: " + e.message,"error"); throw e; }
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   📉 otimizarImagensDrive — OTIMIZAÇÃO EM LOTE PARALELA
-   • WebP q=0.92 (visualmente sem perda)
-   • Sem redução de resolução (só corta acima de 2000px)
-   • Processamento paralelo (3 em simultâneo)
-   • Salta imagens já otimizadas
-   • Substitui conteúdo — mantém fotoId e linha da sheet
-   ═══════════════════════════════════════════════════════════════ */
 async function otimizarImagensDrive(){
-  if(!bancoFruta.length){ toast("Sem imagens no banco.","warning"); return; }
-
-  var ok = await confirmDialog(
-    "Otimizar " + bancoFruta.length + " imagens?\n\n" +
-    "• Conversão para WebP q=0.92 (visualmente sem perda)\n" +
-    "• Sem redução de resolução (só acima de 2000px)\n" +
-    "• Processamento paralelo (mais rápido)\n" +
-    "• Imagens já otimizadas são ignoradas",
-    "Otimizar imagens"
-  );
+  if(!bancoFruta.length){ toast("Sem imagens no banco para otimizar.","warning"); return; }
+  var ok = await confirmDialog("Otimizar as " + bancoFruta.length + " imagens do Drive?");
   if(!ok) return;
-
   var btn = $("optimizarImagensBtn"), orig = btn ? btn.textContent : '';
   if(btn) btn.disabled = true;
-
-  var done = 0, pulados = 0, errs = 0;
-  var total = bancoFruta.length;
-  var fila = bancoFruta.slice();
-
-  async function processar(f){
+  var done=0,errs=0;
+  for(var i=0;i<bancoFruta.length;i++){
+    var f = bancoFruta[i];
+    if(btn) btn.textContent = "⏳ "+(i+1)+"/"+bancoFruta.length;
+    setStatus("A otimizar imagem "+(i+1)+"/"+bancoFruta.length+"…","loading");
     try{
-      var url = f.fotoId
-        ? ('https://drive.google.com/thumbnail?id=' + f.fotoId + '&sz=w' + OTIM_MAX_DIM)
-        : f.fotoUrl;
-      if(!url){ pulados++; return; }
-
-      var resp = await fetch(url, { mode:'cors', cache:'force-cache' });
-      if(!resp.ok) throw new Error('HTTP ' + resp.status);
+      var url = f.fotoId ? thumbUrlApply(f.fotoId) : f.fotoUrl;
+      var resp = await fetch(url,{mode:'cors'}); if(!resp.ok) throw new Error("HTTP "+resp.status);
       var blob = await resp.blob();
-
-      /* Já está ótima → não toca (evita perda cumulativa) */
-      if(blob.type === 'image/webp' && blob.size < OTIM_LIMITE_PULAR){
-        pulados++; return;
-      }
-
-      var dataUrl = await new Promise(function(res,rej){
-        var r = new FileReader();
-        r.onloadend = function(){ res(r.result); };
-        r.onerror = rej;
-        r.readAsDataURL(blob);
-      });
-
-      var compressed = await compressSmartHQ(dataUrl, OTIM_MAX_DIM, OTIM_QUALIDADE);
-
-      /* Se não melhorou → não estraga */
-      if(compressed.length >= dataUrl.length * OTIM_MARGEM_MELHORIA){
-        pulados++; return;
-      }
-
-      /* substituirFotoBanco mantém a linha da sheet (não apaga+cria) */
-      var r2 = await api('substituirFotoBanco', {
-        fotoId: f.fotoId,
-        nome:   f.nome,
-        tipo:   f.tipo || 'fruta',
-        base64: compressed
-      });
-
-      f.fotoId = r2.id;
-      f.fotoUrl = r2.url;
-      f.atualizadoEm = new Date().toISOString();
+      var dataUrl = await new Promise(function(res,rej){ var r=new FileReader(); r.onloadend=function(){ res(r.result); }; r.onerror=rej; r.readAsDataURL(blob); });
+      var uniforme = await normalizeImageForLabel(dataUrl);
+      var compressed = await compressSmart(uniforme,1400,0.88);
+      var r2 = await api('uploadBancoFruta',{base64:compressed,nome:f.nome,tipo:f.tipo||'fruta'});
+      f.fotoId = r2.id; f.fotoUrl = r2.url; f.atualizadoEm = new Date().toISOString();
       try{ delete _thumbMemCache[r2.id + '_' + THUMB_GRID_2X]; }catch(e){}
       done++;
     }catch(e){ errs++; }
-
-    if(btn) btn.textContent = "⏳ " + (done + pulados + errs) + "/" + total;
-    setStatus("A otimizar " + (done + pulados + errs) + "/" + total + "…", "loading");
   }
-
-  /* Workers paralelos */
-  async function worker(){
-    while(fila.length){
-      var f = fila.shift();
-      if(f) await processar(f);
-    }
-  }
-  var workers = [];
-  for(var i = 0; i < OTIM_PARALELO; i++) workers.push(worker());
-  await Promise.all(workers);
-
   if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar"; }
-
   bancoFruta = dedupeBancoFruta(bancoFruta);
-  try{
-    await localforage.setItem(CACHE_KEY, {
-      schemaVersion: CACHE_SCHEMA_VERSION,
-      produtos: savedProducts, banco: bancoFruta, t: Date.now()
-    });
-  }catch(e){}
-
+  try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
   renderBancoFruta($("buscaBancoFruta").value);
-  setStatus(
-    "✅ " + done + " otimizadas · " + pulados + " já boas · " + errs + " erros",
-    errs ? "warning" : "success"
-  );
-  toast("✅ " + done + " otimizadas · " + pulados + " ignoradas · " + errs + " erros", "success", 6500);
+  setStatus("Otimizadas: "+done+(errs?" · Erros: "+errs:""), errs?"warning":"success");
+  toast("✅ Otimizadas: "+done+(errs?" · Erros: "+errs:""),"success",6500);
 }
 
 var _updateCardTimer = null;
@@ -3866,6 +3725,75 @@ window.queueFromDb = function(i){
   setTimeout(function(){ document.body.dataset.view='fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 };
 
+/* ═══════════════════════════════════════════════════════════════
+   🔍 DIAGNÓSTICO DO BANCO — NOVA FUNÇÃO
+   Mostra exatamente o que funciona e o que falha em cada imagem
+   ═══════════════════════════════════════════════════════════════ */
+window.diagnosticarBanco = async function(){
+  var out = [];
+  out.push('=== DIAGNÓSTICO DO BANCO DE IMAGENS ===');
+  out.push('Total de registos: ' + bancoFruta.length);
+  out.push('');
+
+  if(bancoFruta.length === 0){
+    out.push('❌ Banco vazio — sincroniza primeiro');
+    var txt0 = out.join('\n');
+    console.log(txt0);
+    var bx0 = document.getElementById('diagBox');
+    if(bx0){ bx0.classList.add('show'); bx0.textContent = txt0; }
+    return txt0;
+  }
+
+  var tipos = {};
+  bancoFruta.forEach(function(f){
+    var t = f.tipo || '(vazio)';
+    tipos[t] = (tipos[t] || 0) + 1;
+  });
+  out.push('Tipos: ' + JSON.stringify(tipos));
+  out.push('');
+
+  var amostra = bancoFruta.slice(0, 3);
+  for(var i = 0; i < amostra.length; i++){
+    var f = amostra[i];
+    out.push('--- Imagem ' + (i+1) + ': ' + (f.nome || '?') + ' ---');
+    out.push('fotoId: ' + (f.fotoId || '(VAZIO)').substring(0, 25));
+    out.push('tipo: ' + (f.tipo || '(VAZIO)'));
+
+    if(!f.fotoId){
+      out.push('❌ SEM fotoId — impossível carregar');
+      out.push('');
+      continue;
+    }
+
+    var cands = _candidatosThumb(f.fotoId, THUMB_GRID_2X);
+    var hosts = ['lh3-simples','lh3-crop','lh3-webp','drive'];
+    for(var j = 0; j < cands.length; j++){
+      var url = cands[j];
+      var host = hosts[j] || '?';
+      var t0 = performance.now();
+      var ok = await _testarUrlImagem(url, 4000);
+      var dt = Math.round(performance.now() - t0);
+      out.push('  [' + host + '] ' + (ok ? '✅' : '❌') + ' (' + dt + 'ms)');
+    }
+
+    try{
+      var t1 = performance.now();
+      var r = await api('obterFotoThumb', { fotoId: f.fotoId, size: 320 });
+      var dt2 = Math.round(performance.now() - t1);
+      out.push('  [backend] ' + (r && r.base64 ? '✅' : '❌') + ' (' + dt2 + 'ms)');
+    }catch(e){
+      out.push('  [backend] ❌ ' + e.message);
+    }
+    out.push('');
+  }
+
+  var txt = out.join('\n');
+  console.log(txt);
+  var bx = document.getElementById('diagBox');
+  if(bx){ bx.classList.add('show'); bx.textContent = txt; }
+  return txt;
+};
+
 function _adicionarEmBloco(produtos){
   if(!produtos || !produtos.length) return 0;
   var n = 0;
@@ -3900,6 +3828,12 @@ document.getElementById('saveDbAndQueueBtn').addEventListener("click", saveDbAnd
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
+
+/* Botão do diagnóstico do banco */
+(function(){
+  var btn = document.getElementById('diagnosticarBancoBtn');
+  if(btn) btn.addEventListener('click', function(){ window.diagnosticarBanco(); });
+})();
 
 document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   var visiveis = _dbVisibleCache.filter(function(p){ return p && p._id; });
@@ -4019,10 +3953,10 @@ document.getElementById('diagnosticoBtn').addEventListener("click", async functi
     try{
       var fid = bancoFruta[0].fotoId;
       l.push(""); l.push("Teste thumbnail (ID: "+fid.substring(0,8)+"…)");
-      var okDrive = await _testarUrlImagem('https://drive.google.com/thumbnail?id='+fid+'&sz=w320', 6000);
-      l.push(okDrive ? '<span class="ok">✔ drive.google.com/thumbnail</span>' : '<span class="err">✘ drive.google.com/thumbnail</span>');
-      var okLh3 = await _testarUrlImagem('https://lh3.googleusercontent.com/d/'+fid+'=w320-h320-p-k-nu-rw', 6000);
+      var okLh3 = await _testarUrlImagem('https://lh3.googleusercontent.com/d/'+fid+'=w320', 3500);
       l.push(okLh3 ? '<span class="ok">✔ lh3.googleusercontent.com</span>' : '<span class="err">✘ lh3.googleusercontent.com</span>');
+      var okDrive = await _testarUrlImagem('https://drive.google.com/thumbnail?id='+fid+'&sz=w320', 3500);
+      l.push(okDrive ? '<span class="ok">✔ drive.google.com/thumbnail</span>' : '<span class="err">✘ drive.google.com/thumbnail</span>');
     }catch(e){ l.push('<span class="err">✘ teste: '+e.message+'</span>'); }
   }
   box.innerHTML = l.join("\n"); setStatus("Diagnóstico concluído","success");
