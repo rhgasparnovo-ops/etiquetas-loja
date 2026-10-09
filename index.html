@@ -2909,55 +2909,104 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
   }catch(e){ setStatus("Erro ao guardar foto","error"); toast("Erro ao guardar foto: " + e.message,"error"); throw e; }
 }
 async function otimizarImagensDrive(){
-  if(!bancoFruta.length){ toast("Sem imagens no banco para otimizar.","warning"); return; }
-  var ok = await confirmDialog("Otimizar as " + bancoFruta.length + " imagens do Drive?");
+  if(!bancoFruta.length){ toast("Sem imagens no banco.","warning"); return; }
+
+  var ok = await confirmDialog(
+    "Otimizar " + bancoFruta.length + " imagens?\n\n" +
+    "• Conversão para WebP q=0.92 (visualmente sem perda)\n" +
+    "• Sem redução de resolução\n" +
+    "• Processamento paralelo (mais rápido)\n" +
+    "• Imagens já otimizadas são ignoradas",
+    "Otimizar imagens"
+  );
   if(!ok) return;
+
   var btn = $("optimizarImagensBtn"), orig = btn ? btn.textContent : '';
   if(btn) btn.disabled = true;
-  var done=0,errs=0;
-  for(var i=0;i<bancoFruta.length;i++){
-    var f = bancoFruta[i];
-    if(btn) btn.textContent = "⏳ "+(i+1)+"/"+bancoFruta.length;
-    setStatus("A otimizar imagem "+(i+1)+"/"+bancoFruta.length+"…","loading");
+
+  var LIMITE_PULAR_BYTES = 350 * 1024; // < 350 KB e já WebP → salta
+  var MAX_DIM = 2000;                  // só reduz acima disto
+  var QUALIDADE = 0.92;
+  var PARALELO = 3;                    // 3 em simultâneo
+
+  var done = 0, pulados = 0, errs = 0;
+  var total = bancoFruta.length;
+  var fila = bancoFruta.slice();
+
+  async function processar(f){
     try{
-      var url = f.fotoId ? thumbUrlApply(f.fotoId) : f.fotoUrl;
-      var resp = await fetch(url,{mode:'cors'}); if(!resp.ok) throw new Error("HTTP "+resp.status);
+      var url = f.fotoId
+        ? 'https://drive.google.com/thumbnail?id=' + f.fotoId + '&sz=w' + MAX_DIM
+        : f.fotoUrl;
+      if(!url) { pulados++; return; }
+
+      var resp = await fetch(url, { mode:'cors', cache:'force-cache' });
+      if(!resp.ok) throw new Error('HTTP ' + resp.status);
       var blob = await resp.blob();
-      var dataUrl = await new Promise(function(res,rej){ var r=new FileReader(); r.onloadend=function(){ res(r.result); }; r.onerror=rej; r.readAsDataURL(blob); });
-      var uniforme = await normalizeImageForLabel(dataUrl);
-      var compressed = await compressSmart(uniforme,1400,0.88);
-      var r2 = await api('uploadBancoFruta',{base64:compressed,nome:f.nome,tipo:f.tipo||'fruta'});
-      f.fotoId = r2.id; f.fotoUrl = r2.url; f.atualizadoEm = new Date().toISOString();
+
+      // Já está ótima → não toca (evita perda cumulativa)
+      if(blob.type === 'image/webp' && blob.size < LIMITE_PULAR_BYTES){
+        pulados++; return;
+      }
+
+      var dataUrl = await new Promise(function(res,rej){
+        var r = new FileReader();
+        r.onloadend = function(){ res(r.result); };
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+
+      var compressed = await compressSmartHQ(dataUrl, MAX_DIM, QUALIDADE);
+
+      // Se não melhorou → não estraga
+      if(compressed.length >= dataUrl.length * 0.95){
+        pulados++; return;
+      }
+
+      // substituirFotoBanco mantém a linha da sheet (não apaga+cria)
+      var r2 = await api('substituirFotoBanco', {
+        fotoId: f.fotoId,
+        nome:   f.nome,
+        tipo:   f.tipo || 'fruta',
+        base64: compressed
+      });
+
+      f.fotoId = r2.id;
+      f.fotoUrl = r2.url;
+      f.atualizadoEm = new Date().toISOString();
       try{ delete _thumbMemCache[r2.id + '_' + THUMB_GRID_2X]; }catch(e){}
       done++;
     }catch(e){ errs++; }
-  }
-  if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar"; }
-  bancoFruta = dedupeBancoFruta(bancoFruta);
-  try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-  renderBancoFruta($("buscaBancoFruta").value);
-  setStatus("Otimizadas: "+done+(errs?" · Erros: "+errs:""), errs?"warning":"success");
-  toast("✅ Otimizadas: "+done+(errs?" · Erros: "+errs:""),"success",6500);
-}
 
-var _updateCardTimer = null;
-function updateCard(){
-  if(_updateCardTimer) clearTimeout(_updateCardTimer);
-  if(editingFromDrive && editingId){ editingDirty = true; }
-  _updateCardTimer = setTimeout(function(){
-    try{
-      sanitizePriceAll(); updateIvaVisual();
-      updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
-      updateAllChipStates();
-      if(editingFromDrive && editingId){ updateEditingBanner(); if(document.body.dataset.view === 'drive') renderDb(); }
-      requestAnimationFrame(fitPreviewCard);
-      if(document.getElementById('previewModal').classList.contains('show')){
-        var z=_previewZoom, sx=_previewPanX, sy=_previewPanY;
-        abrirPreviewModal(); _previewZoom=z; _previewPanX=sx; _previewPanY=sy;
-        applyPreviewZoom(true);
-      }
-    }catch(err){}
-  }, 16);
+    if(btn) btn.textContent = "⏳ " + (done + pulados + errs) + "/" + total;
+    setStatus("A otimizar " + (done + pulados + errs) + "/" + total + "…", "loading");
+  }
+
+  // 3 workers em paralelo
+  async function worker(){
+    while(fila.length){
+      var f = fila.shift();
+      if(f) await processar(f);
+    }
+  }
+  await Promise.all([worker(), worker(), worker()]);
+
+  if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar"; }
+
+  bancoFruta = dedupeBancoFruta(bancoFruta);
+  try{
+    await localforage.setItem(CACHE_KEY, {
+      schemaVersion: CACHE_SCHEMA_VERSION,
+      produtos: savedProducts, banco: bancoFruta, t: Date.now()
+    });
+  }catch(e){}
+
+  renderBancoFruta($("buscaBancoFruta").value);
+  setStatus(
+    "✅ " + done + " otimizadas · " + pulados + " já boas · " + errs + " erros",
+    errs ? "warning" : "success"
+  );
+  toast("✅ " + done + " otimizadas · " + pulados + " ignoradas · " + errs + " erros", "success", 6500);
 }
 function updateCapacityHint(){
   var h = document.getElementById("capacityHint"); if(!h) return;
