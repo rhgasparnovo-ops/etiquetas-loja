@@ -64,7 +64,6 @@ a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
 
-/* ⚡ TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
 .global-tooltip{position:fixed;left:0;top:0;background:rgba(15,23,42,.97);color:#fff;padding:7px 11px;border-radius:9px;font-size:11.5px;font-weight:700;max-width:min(240px,calc(100vw - 16px));width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .14s ease;z-index:100050;box-shadow:0 10px 26px rgba(15,23,42,.42);border:1px solid rgba(255,255,255,.14);will-change:left,top}
 .global-tooltip.show{opacity:1}
 
@@ -454,7 +453,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .queue-item .q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
 .queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
 
-/* ⚡ Filtros super compactos e discretos */
 .drive-filter-row{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center}
 .drive-filter-row select,.drive-filter-row input{height:34px;min-height:34px;padding:0 11px;font-size:12px!important;border-radius:9px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);transition:all .15s}
 .drive-filter-row select:focus,.drive-filter-row input:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.08);outline:none}
@@ -487,7 +485,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
 
-/* ⚡ Barra de ferramentas compacta */
 .db-tools-row{
   display:flex;flex-wrap:wrap;gap:6px;align-items:center;
   margin-top:2px;padding-top:12px;border-top:1px dashed var(--line)
@@ -549,6 +546,11 @@ body[data-view="fila"] .floating-clear{display:flex}
   .db-title-row{flex-direction:column;gap:2px;align-items:flex-start}
   .db-title-row .db-date{font-size:10.5px}
 }
+
+/* Placeholder visual para imagens a carregar */
+.bf-card img.bf-img{background:#f1f5f9}
+.bf-card img.bf-img[data-src]{filter:blur(0);opacity:.6;transition:opacity .2s}
+.bf-card img.bf-img:not([data-src]){opacity:1}
 
 @media (max-width:520px){.row.stack-mobile{grid-template-columns:minmax(0,1fr)}}
 </style>
@@ -1015,7 +1017,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 /* 0. VIEWPORT */
 (function(){ function s(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} } s(); window.addEventListener('resize', s, {passive:true}); window.addEventListener('orientationchange', function(){ setTimeout(s, 120); }); try{ var ua = navigator.userAgent||''; if(/\bwv\b/.test(ua) || /; wv\)/.test(ua) || window.matchMedia('(display-mode: standalone)').matches || location.protocol === 'file:'){ document.documentElement.classList.add('is-apk'); } }catch(e){} })();
 
-/* 1. TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
+/* 1. TOOLTIP GLOBAL */
 (function(){
   if(document.getElementById('globalTooltip')) return;
   var tip = document.createElement('div');
@@ -2623,6 +2625,7 @@ async function saveDbAndQueue(){
 
 function updateBancoCounts(){ var f=0,l=0; bancoFruta.forEach(function(x){ if(x.tipo==='legume') l++; else if(x.tipo==='fruta') f++; }); if($("bfCountFruta")) $("bfCountFruta").textContent = f; if($("bfCountLegume")) $("bfCountLegume").textContent = l; }
 
+/* ⚡ Dedupe otimizado — O(n) em vez de O(n²) */
 function dedupeBancoFruta(lista){
   var arr = ensureArray(lista);
   var seen = {};
@@ -2632,45 +2635,146 @@ function dedupeBancoFruta(lista){
     if(!f) continue;
     var nome = String(f.nome||'').trim().toUpperCase();
     var tipo = String(f.tipo||'fruta').trim().toLowerCase();
-    if(!nome) { out.unshift(f); continue; }
-    var key = nome + '|' + tipo;
-    if(seen[key]) continue;
-    seen[key] = true;
-    out.unshift(f);
+    var key = nome ? (nome + '|' + tipo) : null;
+    if(key){
+      if(seen[key]) continue;
+      seen[key] = true;
+    }
+    out.push(f);
   }
+  out.reverse();
   return out;
 }
 
-function renderBancoFruta(filtro){
-  filtro = filtro||'';
-  var c = $("gradeBancoFruta"); if(!c) return;
-  bancoFruta = dedupeBancoFruta(bancoFruta);
-  var q = filtro.toUpperCase();
-  var lista = bancoFruta.filter(function(f){ if((f.tipo||'') !== bancoTipoFiltro) return false; if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false; return true; });
-  updateBancoCounts();
-  if(lista.length === 0){ c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>'; return; }
-  c.innerHTML = lista.map(function(f){
-    var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
-    var tag = '<span class="bf-tag ' + tipo + '">' + (tipo==='legume'?'🥬 Legume':'🍎 Fruta') + '</span>';
-    var thumb = f.fotoId ? thumbUrl(f.fotoId,400) : (f.fotoUrl||'');
-    var applyUrl = f.fotoId ? thumbUrl(f.fotoId,1200) : (f.fotoUrl||'');
-    var fallback = f.fotoUrl||'';
-    return '<div class="bf-card" data-url="' + escapeAttr(applyUrl) + '" data-nome="' + escapeAttr(f.nome||'') + '">' +
-      '<img src="' + escapeAttr(thumb) + '" loading="lazy" decoding="async" alt="" ' + (fallback ? 'onerror="this.onerror=null;this.src=\'' + escapeAttr(fallback) + '\'"' : '') + '>' +
-      tag + '<div class="bf-nome">' + escapeHTML(f.nome) + '</div></div>';
-  }).join('');
-  c.querySelectorAll('.bf-card').forEach(function(el){
-    el.addEventListener('click', async function(){
-      var url = el.dataset.url;
-      $('bancoFrutaModal').classList.remove('show');
-      setStatus("A preparar imagem…","loading");
+/* ⚡ LAZY LOADING COM IntersectionObserver — só carrega imagens visíveis */
+var _bfObserver = null, _bfObserverInit = false;
+function _setupBfObserver(){
+  if(_bfObserverInit) return;
+  _bfObserverInit = true;
+  if(!('IntersectionObserver' in window)) return;
+  _bfObserver = new IntersectionObserver(function(entries){
+    for(var i = 0; i < entries.length; i++){
+      var entry = entries[i];
+      if(!entry.isIntersecting) continue;
+      var img = entry.target;
+      var src = img.getAttribute('data-src');
+      if(src){
+        img.removeAttribute('data-src');
+        img.src = src;
+      }
+      try{ _bfObserver.unobserve(img); }catch(e){}
+    }
+  }, {rootMargin: '300px 0px', threshold: 0.01});
+}
+
+var _BF_PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 110%22%3E%3Crect width=%22200%22 height=%22110%22 fill=%22%23f1f5f9%22/%3E%3C/svg%3E';
+
+/* Event delegation — um só listener para todos os cards */
+var _bfClickSetup = false;
+function _setupBfClick(){
+  if(_bfClickSetup) return;
+  _bfClickSetup = true;
+  var c = $("gradeBancoFruta");
+  if(!c) return;
+  c.addEventListener('click', async function(e){
+    var el = e.target.closest('.bf-card');
+    if(!el) return;
+    var url = el.dataset.url;
+    if(!url) return;
+    $('bancoFrutaModal').classList.remove('show');
+    setStatus("A preparar imagem…","loading");
+    try{
       var norm = await normalizeUrlForLabel(url);
       globalOriginalPhoto = norm;
       globalProcessedPhoto = norm;
-      if(!$('product').value.trim()) $('product').value = el.dataset.nome;
+      if(!$('product').value.trim()) $('product').value = el.dataset.nome || '';
       updateCard();
       setStatus("");
       toast("Imagem aplicada","success");
+    }catch(err){
+      setStatus("Erro ao carregar imagem","error");
+    }
+  });
+}
+
+function renderBancoFruta(filtro){
+  filtro = filtro || '';
+  var c = $("gradeBancoFruta"); if(!c) return;
+  bancoFruta = dedupeBancoFruta(bancoFruta);
+  var q = filtro.toUpperCase();
+  var lista = bancoFruta.filter(function(f){
+    if((f.tipo||'') !== bancoTipoFiltro) return false;
+    if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false;
+    return true;
+  });
+  updateBancoCounts();
+  if(lista.length === 0){
+    c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>';
+    return;
+  }
+
+  var frag = document.createDocumentFragment();
+  for(var i = 0; i < lista.length; i++){
+    var f = lista[i];
+    var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
+    var card = document.createElement('div');
+    card.className = 'bf-card';
+    card.dataset.url = f.fotoId ? thumbUrl(f.fotoId, 1200) : (f.fotoUrl || '');
+    card.dataset.nome = f.nome || '';
+
+    var img = document.createElement('img');
+    img.className = 'bf-img';
+    img.setAttribute('loading', 'lazy');
+    img.setAttribute('decoding', 'async');
+    img.setAttribute('alt', '');
+    img.src = _BF_PLACEHOLDER;
+    if(f.fotoId){
+      img.setAttribute('data-src', thumbUrl(f.fotoId, 200));
+    } else if(f.fotoUrl){
+      img.setAttribute('data-src', f.fotoUrl);
+    }
+    if(f.fotoUrl && f.fotoId){
+      img.setAttribute('data-fallback', f.fotoUrl);
+    }
+
+    var tag = document.createElement('span');
+    tag.className = 'bf-tag ' + tipo;
+    tag.textContent = tipo === 'legume' ? '🥬 Legume' : '🍎 Fruta';
+
+    var nome = document.createElement('div');
+    nome.className = 'bf-nome';
+    nome.textContent = f.nome || '';
+
+    card.appendChild(img);
+    card.appendChild(tag);
+    card.appendChild(nome);
+    frag.appendChild(card);
+  }
+  c.innerHTML = '';
+  c.appendChild(frag);
+
+  _setupBfObserver();
+  _setupBfClick();
+
+  var imgs = c.querySelectorAll('img[data-src]');
+  if(_bfObserver){
+    for(var k = 0; k < imgs.length; k++) _bfObserver.observe(imgs[k]);
+  } else {
+    for(var k2 = 0; k2 < imgs.length; k2++){
+      var src = imgs[k2].getAttribute('data-src');
+      if(src){ imgs[k2].removeAttribute('data-src'); imgs[k2].src = src; }
+    }
+  }
+
+  /* Fallback automático se o thumbnail falhar */
+  c.querySelectorAll('img[data-fallback]').forEach(function(img){
+    img.addEventListener('error', function(){
+      var fb = img.getAttribute('data-fallback');
+      if(fb && img.dataset.fbUsed !== '1'){
+        img.dataset.fbUsed = '1';
+        img.removeAttribute('data-src');
+        img.src = fb;
+      }
     });
   });
 }
@@ -3857,7 +3961,6 @@ document.getElementById('emailLabelsBtn').addEventListener("click", function(){ 
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* Botão "Selecionar todas / Desselecionar" */
 document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   var visiveis = _dbVisibleCache.filter(function(p){ return p && p._id; });
   if(!visiveis.length){ toast("Sem etiquetas visíveis.","warning"); return; }
@@ -3871,7 +3974,6 @@ document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   if(!todosSel){ toast(visiveis.length + " etiqueta(s) selecionada(s)","success",2200); }
 });
 
-/* Botão "Adicionar selecionadas" */
 document.getElementById('dbAddSelectedBtn').addEventListener("click", function(){
   var ids = Array.from(_dbSelection);
   if(!ids.length){ toast("Nenhuma etiqueta selecionada.","warning"); return; }
@@ -3977,7 +4079,6 @@ function _abrirBancoFrom(presetTipo){
   renderBancoFruta($('buscaBancoFruta').value);
 }
 document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); _abrirBancoFrom('fruta'); });
-/* ⚡ Atalho do Banco na página Editor (Quantidade & Extras) */
 (function(){
   var b = document.getElementById('bancoEditorBtn');
   if(!b) return;
@@ -4031,7 +4132,6 @@ document.getElementById('photo').addEventListener("change", async function(e){
         updateCard();
       }catch(e){}
     }
-    /* ⚡ Perguntar se quer guardar no banco */
     try{
       var querGuardar = await confirmDialog(
         "Guardar esta fotografia no banco de imagens?\n\nPoderás reutilizá-la em etiquetas futuras sem voltar a fotografar.",
