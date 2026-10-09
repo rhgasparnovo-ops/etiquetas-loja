@@ -178,12 +178,14 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container{width:100%;height:72%;display:flex;justify-content:center;overflow:hidden}
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
-.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;flex-shrink:0;overflow:hidden;gap:2px}
-.promo-text{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
-.print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
-.promo-dates{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
+
+/* ⚡ FOOTER — Fonte aumentada e footer mais alto para caber tudo legível */
+.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:11%;flex-shrink:0;overflow:hidden;gap:2px}
+.promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;flex:1;min-width:0}
+.print-date{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
+.promo-dates{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
 .promo-dates:empty{display:none!important}
-.iva-text{font-size:clamp(5px,1.4cqw,7.5px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;text-transform:uppercase;display:inline-block}
+.iva-text{font-size:clamp(7px,1.9cqw,10px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;text-transform:uppercase;display:inline-block}
 .iva-text:empty{display:none!important}
 
 .fruit-promo-prices{
@@ -1337,14 +1339,9 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS ⚡⚡⚡
-   Corrigido: para ficheiros do Google Drive, o backend Apps Script funciona
-   como proxy (devolve base64 do ficheiro autenticado), garantindo que a imagem
-   aparece SEMPRE no PDF/email, sem depender de CORS nem de rate-limits. */
+/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS ⚡⚡⚡ */
 var _printImgCache = {};
 
-/* ⚡ NOVO: pede ao backend Apps Script o base64 do ficheiro do Drive.
-   Só é usado quando a URL é de ficheiro Drive (tem fotoId identificável). */
 async function _fotoViaBackend(url){
   var fotoId = extrairFotoIdDoUrl(url);
   if(!fotoId) return null;
@@ -1353,7 +1350,7 @@ async function _fotoViaBackend(url){
     if(r && r.base64 && String(r.base64).indexOf('data:') === 0){
       return r.base64;
     }
-  }catch(e){ /* continua para os fallbacks */ }
+  }catch(e){}
   return null;
 }
 
@@ -1362,14 +1359,12 @@ async function _urlToDataUrl(url){
   if(String(url).indexOf('data:') === 0) return url;
   if(_printImgCache[url]) return _printImgCache[url];
 
-  // ⚡ 1ª tentativa: backend (funciona SEMPRE para ficheiros do Drive)
   var backendB64 = await _fotoViaBackend(url);
   if(backendB64){
     _printImgCache[url] = backendB64;
     return backendB64;
   }
 
-  // 2ª tentativa: fetch CORS
   try{
     var ctrl = new AbortController();
     var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
@@ -1392,7 +1387,6 @@ async function _urlToDataUrl(url){
     }
   }catch(e){}
 
-  // 3ª tentativa: fetch no-cors
   try{
     var r2 = await fetch(url, { cache:'force-cache', mode:'no-cors' });
     if(r2){
@@ -1412,7 +1406,6 @@ async function _urlToDataUrl(url){
     }
   }catch(e){}
 
-  // 4ª tentativa: Image + canvas
   try{
     var du3 = await new Promise(function(res,rej){
       var img = new Image();
@@ -2598,7 +2591,8 @@ function applyPrintSizes(card,dims){
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
   set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8);
-  set('.promo-text',1.6); set('.print-date',1.6); set('.promo-dates',1.6); set('.iva-text',1.6);
+  /* ⚡ FOOTER — tamanho maior (2.4mm) em vez de 1.6mm */
+  set('.promo-text',2.4); set('.print-date',2.4); set('.promo-dates',2.4); set('.iva-text',2.4);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
 function _vis(el){ if(!el) return false; if(el.offsetParent===null && el!==document.body) return false; var cs=window.getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden") return false; return true; }
@@ -2606,16 +2600,15 @@ function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
 
-/* ⚡⚡⚡ autoFitFooterText CORRIGIDO ⚡⚡⚡
-   ANTES: encolhia APENAS o .promo-text, deixando o "Impresso a:" com tamanho diferente.
-   AGORA: encolhe TODOS os elementos do footer (promo-text, print-date, promo-dates, iva-text)
-   em conjunto, mantendo-os sempre com o mesmo tamanho de letra.
-   Funciona igual na pré-visualização E na impressão/PDF. */
+/* ⚡⚡⚡ autoFitFooterText — JÁ NÃO ENCOLHE ⚡⚡⚡
+   Os elementos do footer têm todos o mesmo tamanho natural no CSS
+   (clamp(7px,1.9cqw,10px)). Deixamos ficar assim para que TODOS fiquem
+   iguais ao "Impresso a:". Se o .promo-text for demasiado longo, o CSS
+   aplica text-overflow: ellipsis (trunca com "…"). */
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container");
   if(!footer) return;
-
   var els = [
     footer.querySelector(".promo-text"),
     footer.querySelector(".print-date"),
@@ -2623,64 +2616,12 @@ function autoFitFooterText(card){
     footer.querySelector(".iva-text")
   ].filter(Boolean);
   if(!els.length) return;
-
-  // Reset
   els.forEach(function(el){
     el.style.removeProperty("font-size");
     el.style.removeProperty("display");
-  });
-  // Esconde elementos vazios
-  els.forEach(function(el){
     if(!el.textContent || !el.textContent.trim()) el.style.display = "none";
   });
   void footer.offsetHeight;
-
-  var fw = footer.clientWidth;
-  if(!fw) return;
-
-  var MIN_PX = 4.5;
-  var GAP    = 2;
-
-  function needed(){
-    var t = 0, n = 0;
-    els.forEach(function(el){
-      if(el.style.display === "none") return;
-      t += el.scrollWidth;
-      n++;
-    });
-    t += GAP * Math.max(0, n - 1);
-    return t;
-  }
-
-  // Encolhe TODOS uniformemente até caber
-  var iter = 0;
-  while(iter < 100 && needed() > fw){
-    var anyShrunk = false;
-    els.forEach(function(el){
-      if(el.style.display === "none") return;
-      var cur = parseFloat(getComputedStyle(el).fontSize);
-      if(cur && cur > MIN_PX){
-        el.style.setProperty(
-          "font-size",
-          Math.max(MIN_PX, cur * 0.95).toFixed(2) + "px",
-          "important"
-        );
-        anyShrunk = true;
-      }
-    });
-    if(!anyShrunk) break;
-    iter++;
-    void footer.offsetHeight;
-  }
-
-  // Último recurso: esconde o compacto das datas se mesmo assim não couber
-  if(needed() > fw){
-    var pdt = footer.querySelector(".promo-dates");
-    if(pdt && pdt.style.display !== "none"){
-      pdt.style.display = "none";
-      void footer.offsetHeight;
-    }
-  }
 }
 
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
