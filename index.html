@@ -812,6 +812,7 @@ body[data-view="fila"] .floating-clear{display:flex}
             <button type="button" class="db-tool select-all" id="dbSelectAllBtn" data-tip="Selecionar / desselecionar todas as etiquetas visíveis">☑️ Selecionar todas</button>
             <button type="button" class="db-tool add" id="dbAddSelectedBtn" disabled data-tip="Adicionar as etiquetas marcadas à fila">➕ Adicionar selecionadas</button>
             <button type="button" class="db-tool" id="syncBancoBtn" data-tip="Sincronizar banco de imagens">🔄 Banco</button>
+            <button type="button" class="db-tool" id="repararPartilhasBtn" data-tip="Reparar permissões das imagens do Drive" style="border-color:#fde68a;color:#92400e;background:#fffbeb">🔧 Reparar</button>
             <button type="button" class="db-tool" id="optimizarImagensBtn" data-tip="Comprimir imagens do banco">📉 Otimizar</button>
             <button type="button" class="db-tool danger" id="apagarTudoBtn" data-tip="Apagar TODAS as etiquetas do Drive">🗑️ Apagar todas</button>
             <button type="button" class="db-tool ghost-red" id="hardResetBtn" data-tip="Limpar cache local e ressincronizar">🔥 Reset</button>
@@ -1115,7 +1116,7 @@ const TIMEOUT_READ_COLD = 45000;
 const TIMEOUT_READ_WARM = 25000;
 const TIMEOUT_WRITE_COLD = 45000;
 const TIMEOUT_WRITE_WARM = 25000;
-const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
+const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail','repararPartilhas'];
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
@@ -1227,18 +1228,13 @@ function escapeAttr(s){ return String(s||"").replace(/&/g,'&amp;').replace(/"/g,
    ⚡ THUMBNAILS — CDN PRIMEIRO (MAIS RÁPIDO)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Lista de URLs candidatos por ordem de preferência (CDN primeiro) */
 function _candidatosThumb(fotoId, size){
   if(!fotoId) return [];
   var s = Math.max(120, Math.min(1600, parseInt(size,10) || THUMB_GRID_2X));
   return [
-    /* 1º: CDN direto — MAIS RÁPIDO */
     'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s,
-    /* 2º: CDN com crop quadrado */
     'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s + '-h' + s + '-p-k-nu',
-    /* 3º: CDN com WebP */
     'https://lh3.googleusercontent.com/d/' + fotoId + '=w' + s + '-h' + s + '-p-k-nu-rw',
-    /* 4º: drive.google.com — último recurso (faz redirect) */
     'https://drive.google.com/thumbnail?id=' + fotoId + '&sz=w' + s
   ];
 }
@@ -1249,7 +1245,6 @@ function thumbUrlApply(id){
   return 'https://lh3.googleusercontent.com/d/' + id + '=w' + THUMB_APPLY;
 }
 
-/* ─── Cache em IndexedDB + memória ─── */
 var _thumbMemCache = Object.create(null);
 var _thumbSaveTimer = null;
 var _thumbPending = Object.create(null);
@@ -1266,7 +1261,6 @@ async function _getThumbFromCache(fotoId, size){
         _thumbMemCache[k] = cached;
         return cached;
       }
-      /* Valida rapidamente que ainda funciona; se falhar, remove */
       var ok = await _testarUrlImagem(cached, 2000);
       if(ok){
         _thumbMemCache[k] = cached;
@@ -1332,7 +1326,6 @@ async function _resolveThumbUrl(fotoId, size){
   finally{ delete _thumbPending[k]; }
 }
 
-/* ⚡ Versão otimizada: timeout máximo de 3.5s */
 function _testarUrlImagem(url, timeoutMs){
   return new Promise(function(resolve){
     var done = false;
@@ -3725,10 +3718,6 @@ window.queueFromDb = function(i){
   setTimeout(function(){ document.body.dataset.view='fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   🔍 DIAGNÓSTICO DO BANCO — NOVA FUNÇÃO
-   Mostra exatamente o que funciona e o que falha em cada imagem
-   ═══════════════════════════════════════════════════════════════ */
 window.diagnosticarBanco = async function(){
   var out = [];
   out.push('=== DIAGNÓSTICO DO BANCO DE IMAGENS ===');
@@ -3828,6 +3817,58 @@ document.getElementById('saveDbAndQueueBtn').addEventListener("click", saveDbAnd
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
+
+/* ═══════════════════════════════════════════════════════════════
+   🔧 BOTÃO "REPARAR PARTILHAS"
+   Chama o backend RESET_repararPartilhas, limpa a cache e recarrega
+   ═══════════════════════════════════════════════════════════════ */
+document.getElementById('repararPartilhasBtn').addEventListener("click", async function(){
+  if(!(await confirmDialog(
+    "🔧 Reparar partilhas das imagens do Drive?\n\n" +
+    "Esta operação percorre TODAS as imagens do banco e reaplica a permissão \"Qualquer pessoa com o link\".\n\n" +
+    "Usa isto sempre que:\n" +
+    "• Adicionares imagens novas e aparecerem em branco\n" +
+    "• Cópias antigas foram importadas de outra conta\n" +
+    "• As imagens deixarem de carregar de um dia para o outro\n\n" +
+    "Pode demorar 30-60 segundos.",
+    "🔧 Reparar partilhas"
+  ))) return;
+
+  var btn = this, orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "⏳ A reparar…";
+  setGlobalStatus("A reparar partilhas das imagens…", "loading");
+
+  try{
+    var r = await api('repararPartilhas', {});
+    var total = (r && r.total) || 0;
+    var reparadas = (r && r.reparadas) || 0;
+    var falhas = (r && r.falhas) || 0;
+
+    if(falhas === 0){
+      setGlobalStatus("✅ " + reparadas + "/" + total + " reparadas", "success", { duration: 4500 });
+      toast("✅ Reparadas " + reparadas + "/" + total + " imagens", "success", 5000);
+    } else {
+      setGlobalStatus("⚠️ " + reparadas + "/" + total + " reparadas · " + falhas + " falhas", "warning", { duration: 6000 });
+      toast("⚠️ " + reparadas + " ok · " + falhas + " falhas — verifica os logs no Apps Script", "warning", 7000);
+    }
+
+    try{
+      Object.keys(_thumbMemCache).forEach(function(k){ delete _thumbMemCache[k]; });
+      await localforage.removeItem(THUMB_CACHE_LF_KEY);
+    }catch(e){}
+
+    await carregarTudo({ manual: true });
+    renderBancoFruta($("buscaBancoFruta").value);
+
+  } catch(e){
+    setGlobalStatus("Erro ao reparar", "error");
+    toast("Erro: " + e.message, "error", 6000);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = orig;
+  }
+});
 
 /* Botão do diagnóstico do banco */
 (function(){
