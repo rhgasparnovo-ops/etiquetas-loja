@@ -2605,24 +2605,84 @@ function _vis(el){ if(!el) return false; if(el.offsetParent===null && el!==docum
 function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.height) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.height===0) continue; if(cr.top<pr.top-0.5||cr.bottom>pr.bottom+0.5) return true; } return false; }
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
+
+/* ⚡⚡⚡ autoFitFooterText CORRIGIDO ⚡⚡⚡
+   ANTES: encolhia APENAS o .promo-text, deixando o "Impresso a:" com tamanho diferente.
+   AGORA: encolhe TODOS os elementos do footer (promo-text, print-date, promo-dates, iva-text)
+   em conjunto, mantendo-os sempre com o mesmo tamanho de letra.
+   Funciona igual na pré-visualização E na impressão/PDF. */
 function autoFitFooterText(card){
   if(!card) return;
-  var footer = card.querySelector(".footer-container"); if(!footer) return;
-  var pt = footer.querySelector(".promo-text"), pd = footer.querySelector(".print-date"), pdt = footer.querySelector(".promo-dates"), pi = footer.querySelector(".iva-text");
-  if(!pt||!pd) return;
-  pt.style.removeProperty("font-size"); if(pi) pi.style.removeProperty("font-size"); if(pdt) pdt.style.removeProperty("font-size"); void pt.offsetHeight;
-  var fw = footer.clientWidth, i = 0;
-  while(i<30){
-    var ivaW = (pi && pi.offsetWidth) ? pi.offsetWidth : 0;
-    var pdW  = (pdt && pdt.offsetWidth) ? pdt.offsetWidth : 0;
-    var total = pt.offsetWidth + pd.offsetWidth + ivaW + pdW + 12;
-    if(total <= fw) break;
-    var cur = parseFloat(getComputedStyle(pt).fontSize);
-    if(!cur||cur<3) break;
-    pt.style.setProperty("font-size",(cur*0.9)+"px","important");
-    i++; void pt.offsetHeight;
+  var footer = card.querySelector(".footer-container");
+  if(!footer) return;
+
+  var els = [
+    footer.querySelector(".promo-text"),
+    footer.querySelector(".print-date"),
+    footer.querySelector(".promo-dates"),
+    footer.querySelector(".iva-text")
+  ].filter(Boolean);
+  if(!els.length) return;
+
+  // Reset
+  els.forEach(function(el){
+    el.style.removeProperty("font-size");
+    el.style.removeProperty("display");
+  });
+  // Esconde elementos vazios
+  els.forEach(function(el){
+    if(!el.textContent || !el.textContent.trim()) el.style.display = "none";
+  });
+  void footer.offsetHeight;
+
+  var fw = footer.clientWidth;
+  if(!fw) return;
+
+  var MIN_PX = 4.5;
+  var GAP    = 2;
+
+  function needed(){
+    var t = 0, n = 0;
+    els.forEach(function(el){
+      if(el.style.display === "none") return;
+      t += el.scrollWidth;
+      n++;
+    });
+    t += GAP * Math.max(0, n - 1);
+    return t;
+  }
+
+  // Encolhe TODOS uniformemente até caber
+  var iter = 0;
+  while(iter < 100 && needed() > fw){
+    var anyShrunk = false;
+    els.forEach(function(el){
+      if(el.style.display === "none") return;
+      var cur = parseFloat(getComputedStyle(el).fontSize);
+      if(cur && cur > MIN_PX){
+        el.style.setProperty(
+          "font-size",
+          Math.max(MIN_PX, cur * 0.95).toFixed(2) + "px",
+          "important"
+        );
+        anyShrunk = true;
+      }
+    });
+    if(!anyShrunk) break;
+    iter++;
+    void footer.offsetHeight;
+  }
+
+  // Último recurso: esconde o compacto das datas se mesmo assim não couber
+  if(needed() > fw){
+    var pdt = footer.querySelector(".promo-dates");
+    if(pdt && pdt.style.display !== "none"){
+      pdt.style.display = "none";
+      void footer.offsetHeight;
+    }
   }
 }
+
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
 
 function autoFitFruitBar(card){
