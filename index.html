@@ -65,7 +65,6 @@ a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
 
-/* ⚡ TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento */
 .global-tooltip{position:fixed;left:0;top:0;background:rgba(15,23,42,.97);color:#fff;padding:7px 11px;border-radius:9px;font-size:11.5px;font-weight:700;max-width:min(240px,calc(100vw - 16px));width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .14s ease;z-index:100050;box-shadow:0 10px 26px rgba(15,23,42,.42);border:1px solid rgba(255,255,255,.14);will-change:left,top}
 .global-tooltip.show{opacity:1}
 
@@ -344,7 +343,10 @@ body[data-view="fila"] .floating-clear{display:flex}
 .bf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .bf-card{cursor:pointer;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;text-align:center;background:var(--surface-2);position:relative}
 .bf-card:hover{border-color:var(--brand);transform:translateY(-2px)}
-.bf-card img{width:100%;height:110px;object-fit:contain;background:#fff}
+.bf-card .bf-img-wrap{width:100%;height:110px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.bf-card .bf-img-wrap img{width:100%;height:110px;object-fit:contain;background:#fff;display:block}
+.bf-card .bf-spinner{width:22px;height:22px;border-radius:50%;border:2px solid #e5e7eb;border-top-color:var(--brand);animation:spin .7s linear infinite}
+.bf-card .bf-placeholder{font-size:36px;color:#cbd5e1;user-select:none;line-height:1}
 .bf-card .bf-nome{font-size:12px;font-weight:600;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
 .bf-card .bf-tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:900;padding:3px 8px;border-radius:var(--r-pill)}
 .bf-card .bf-tag.fruta{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
@@ -1014,7 +1016,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 /* 0. VIEWPORT */
 (function(){ function s(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} } s(); window.addEventListener('resize', s, {passive:true}); window.addEventListener('orientationchange', function(){ setTimeout(s, 120); }); try{ var ua = navigator.userAgent||''; if(/\bwv\b/.test(ua) || /; wv\)/.test(ua) || window.matchMedia('(display-mode: standalone)').matches || location.protocol === 'file:'){ document.documentElement.classList.add('is-apk'); } }catch(e){} })();
 
-/* 1. TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
+/* 1. TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento */
 (function(){
   if(document.getElementById('globalTooltip')) return;
   var tip = document.createElement('div');
@@ -1095,8 +1097,8 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v248';
-const CACHE_SCHEMA_VERSION = 17;
+const CACHE_KEY = 'balcao_cache_v249';
+const CACHE_SCHEMA_VERSION = 18;
 
 const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
@@ -1189,7 +1191,6 @@ window.handleCredentialResponse = async function(response){
 };
 function fazerLogout(){ clearStoredToken(); atualizarUICredenciais(); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} toast('Sessão terminada','info'); setTimeout(function(){ location.reload(); },400); }
 
-/* ⚡ CORRIGIDO: restaura sempre o callback original, mesmo em erro/timeout */
 function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise = new Promise(function(resolve){
@@ -1720,7 +1721,7 @@ function warmUpServer(){
   return _warmUpPromise;
 }
 
-/* ⚡ Dedupe APENAS para funções de leitura (evita stringify de base64 gigantes) */
+/* ⚡ Dedupe APENAS para funções de leitura */
 const DEDUP_FNS = ['listarTudo','listarProdutos','listarBancoFruta','ping','obterFotoBase64','getUserInfo'];
 async function api(fn, payload){
   payload = payload || {};
@@ -2698,6 +2699,132 @@ function dedupeBancoFruta(lista){
   return out;
 }
 
+/* ⚡ CARREGAMENTO ROBUSTO DE IMAGENS DO BANCO — cache + retry + lazy + proxy */
+var _bfObserver = null;
+var _bfImgQueue = [];
+var _bfImgActive = 0;
+var _BF_MAX_CONCURRENT = 4;
+var _bfThumbMemCache = new Map();
+var _BF_MEM_CACHE_MAX = 120;
+
+function _bfMemGet(k){ return _bfThumbMemCache.get(k); }
+function _bfMemSet(k,v){
+  if(_bfThumbMemCache.has(k)) _bfThumbMemCache.delete(k);
+  _bfThumbMemCache.set(k,v);
+  while(_bfThumbMemCache.size > _BF_MEM_CACHE_MAX){
+    var first = _bfThumbMemCache.keys().next().value;
+    _bfThumbMemCache.delete(first);
+  }
+}
+
+async function _bfIdbGet(fotoId){
+  try{ return await localforage.getItem('bf_thumb_' + fotoId); }
+  catch(e){ return null; }
+}
+async function _bfIdbSet(fotoId, dataUrl){
+  try{
+    if(dataUrl && dataUrl.length < 250000){
+      await localforage.setItem('bf_thumb_' + fotoId, dataUrl);
+    }
+  }catch(e){}
+}
+
+async function _bfFetchThumbFromCdn(fotoId, size){
+  var url = thumbUrl(fotoId, size || 400);
+  try{
+    var ctrl = new AbortController();
+    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
+    var r = await fetch(url, { mode:'cors', cache:'force-cache', credentials:'omit', signal: ctrl.signal, referrerPolicy: 'no-referrer' });
+    clearTimeout(tid);
+    if(!r.ok) return null;
+    var blob = await r.blob();
+    if(!blob || blob.size === 0) return null;
+    return await new Promise(function(res,rej){
+      var fr = new FileReader();
+      fr.onloadend = function(){ res(fr.result); };
+      fr.onerror = rej;
+      fr.readAsDataURL(blob);
+    });
+  }catch(e){ return null; }
+}
+
+async function _bfFetchThumbFromProxy(fotoId){
+  try{
+    var r = await api('obterFotoBase64', {fotoId: fotoId});
+    if(r && r.base64 && r.base64.indexOf('data:') === 0) return r.base64;
+  }catch(e){}
+  return null;
+}
+
+async function _bfLoadThumb(fotoId){
+  if(!fotoId) return null;
+  var mem = _bfMemGet(fotoId);
+  if(mem) return mem;
+  var idb = await _bfIdbGet(fotoId);
+  if(idb){ _bfMemSet(fotoId, idb); return idb; }
+
+  var du = await _bfFetchThumbFromCdn(fotoId, 400);
+  if(du){
+    _bfMemSet(fotoId, du);
+    _bfIdbSet(fotoId, du);
+    return du;
+  }
+
+  var proxy = await _bfFetchThumbFromProxy(fotoId);
+  if(proxy){
+    _bfMemSet(fotoId, proxy);
+    _bfIdbSet(fotoId, proxy);
+    return proxy;
+  }
+
+  return null;
+}
+
+function _bfEnqueue(fn){
+  return new Promise(function(resolve){
+    _bfImgQueue.push({fn: fn, resolve: resolve});
+    _bfProcessQueue();
+  });
+}
+function _bfProcessQueue(){
+  while(_bfImgActive < _BF_MAX_CONCURRENT && _bfImgQueue.length > 0){
+    var item = _bfImgQueue.shift();
+    _bfImgActive++;
+    Promise.resolve()
+      .then(item.fn)
+      .then(function(r){ item.resolve(r); }, function(){ item.resolve(null); })
+      .then(function(){
+        _bfImgActive--;
+        _bfProcessQueue();
+      });
+  }
+}
+
+async function _bfLoadCardImage(el){
+  var fotoId = el.dataset.fotoid;
+  var wrap = el.querySelector('.bf-img-wrap');
+  if(!wrap) return;
+  var dataUrl = null;
+  if(fotoId){
+    dataUrl = await _bfEnqueue(function(){ return _bfLoadThumb(fotoId); });
+  }
+  if(!dataUrl){
+    wrap.innerHTML = '<div class="bf-placeholder">📷</div>';
+    return;
+  }
+  var img = document.createElement('img');
+  img.alt = '';
+  img.decoding = 'async';
+  img.loading = 'lazy';
+  img.referrerPolicy = 'no-referrer';
+  img.src = dataUrl;
+  img.onload = function(){ wrap.innerHTML = ''; wrap.appendChild(img); };
+  img.onerror = function(){ wrap.innerHTML = '<div class="bf-placeholder">📷</div>'; };
+  if(img.complete && img.naturalWidth > 0){
+    wrap.innerHTML = ''; wrap.appendChild(img);
+  }
+}
+
 function renderBancoFruta(filtro){
   filtro = filtro||'';
   var c = $("gradeBancoFruta"); if(!c) return;
@@ -2705,24 +2832,50 @@ function renderBancoFruta(filtro){
   var lista = bancoFruta.filter(function(f){ if((f.tipo||'') !== bancoTipoFiltro) return false; if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false; return true; });
   updateBancoCounts();
   if(lista.length === 0){ c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>'; return; }
+
+  if(_bfObserver){ try{ _bfObserver.disconnect(); }catch(e){} _bfObserver = null; }
+
   c.innerHTML = lista.map(function(f){
     var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
     var tag = '<span class="bf-tag ' + tipo + '">' + (tipo==='legume'?'🥬 Legume':'🍎 Fruta') + '</span>';
-    var thumb = f.fotoId ? thumbUrl(f.fotoId,400) : (f.fotoUrl||'');
     var applyUrl = f.fotoId ? thumbUrl(f.fotoId,1200) : (f.fotoUrl||'');
-    var fallback = f.fotoUrl||'';
-    return '<div class="bf-card" data-url="' + escapeAttr(applyUrl) + '" data-nome="' + escapeAttr(f.nome||'') + '">' +
-      '<img src="' + escapeAttr(thumb) + '" loading="lazy" decoding="async" alt="" ' + (fallback ? 'onerror="this.onerror=null;this.src=\'' + escapeAttr(fallback) + '\'"' : '') + '>' +
+    var fid = f.fotoId || '';
+    return '<div class="bf-card" data-url="' + escapeAttr(applyUrl) + '" data-nome="' + escapeAttr(f.nome||'') + '" data-fotoid="' + escapeAttr(fid) + '">' +
+      '<div class="bf-img-wrap"><div class="bf-spinner"></div></div>' +
       tag + '<div class="bf-nome">' + escapeHTML(f.nome) + '</div></div>';
   }).join('');
+
+  var cards = c.querySelectorAll('.bf-card');
+  if('IntersectionObserver' in window){
+    _bfObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var el = entry.target;
+          try{ _bfObserver.unobserve(el); }catch(e){}
+          _bfLoadCardImage(el);
+        }
+      });
+    }, { root: c, rootMargin: '300px' });
+    cards.forEach(function(el){ _bfObserver.observe(el); });
+  } else {
+    cards.forEach(function(el){ _bfLoadCardImage(el); });
+  }
+
   c.querySelectorAll('.bf-card').forEach(function(el){
     el.addEventListener('click', async function(){
       var url = el.dataset.url;
+      var fotoId = el.dataset.fotoid;
       $('bancoFrutaModal').classList.remove('show');
       setStatus("A preparar imagem…","loading");
-      var norm = await normalizeUrlForLabel(url);
-      globalOriginalPhoto = norm;
-      globalProcessedPhoto = norm;
+      var norm = null;
+      if(fotoId){
+        var cached = _bfMemGet(fotoId) || await _bfIdbGet(fotoId);
+        if(cached) norm = cached;
+        if(!norm) norm = await _bfFetchThumbFromProxy(fotoId);
+      }
+      if(!norm) norm = await normalizeUrlForLabel(url);
+      globalOriginalPhoto = norm || url;
+      globalProcessedPhoto = norm || url;
       if(!$('product').value.trim()) $('product').value = el.dataset.nome;
       updateCard();
       setStatus("");
@@ -2743,6 +2896,9 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
     bancoFruta.push({nome:r.nome,fotoId:r.id,fotoUrl:r.url,tipo:r.tipo||tipo});
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
     bancoFruta = dedupeBancoFruta(bancoFruta);
+    /* invalida cache do thumb (imagem nova) */
+    try{ _bfThumbMemCache.delete(r.id); }catch(e){}
+    try{ localforage.removeItem('bf_thumb_' + r.id); }catch(e){}
     renderBancoFruta($("buscaBancoFruta").value);
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
     setStatus("Foto guardada no Drive","success");
@@ -2769,6 +2925,7 @@ async function otimizarImagensDrive(){
       var compressed = await compressSmart(uniforme,1400,0.88);
       var r2 = await api('uploadBancoFruta',{base64:compressed,nome:f.nome,tipo:f.tipo||'fruta'});
       f.fotoId = r2.id; f.fotoUrl = r2.url; f.atualizadoEm = new Date().toISOString();
+      try{ _bfThumbMemCache.delete(r2.id); }catch(e){}
       done++;
     }catch(e){ errs++; }
   }
@@ -2780,14 +2937,13 @@ async function otimizarImagensDrive(){
   toast("✅ Otimizadas: "+done+(errs?" · Erros: "+errs:""),"success",6500);
 }
 
-/* ⚡ Separado em 2 fases: visual (16ms) + autofit lento (150ms após parar de escrever) */
+/* ⚡ updateCard em 2 fases */
 var _updateCardTimer = null;
 var _autoFitTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
   if(editingFromDrive && editingId){ editingDirty = true; }
 
-  /* Fase 1 — atualização visual rápida (sem autofit) */
   _updateCardTimer = setTimeout(function(){
     try{
       sanitizePriceAll();
@@ -2805,7 +2961,6 @@ function updateCard(){
     }catch(err){}
   }, 16);
 
-  /* Fase 2 — autofit (caro) só após parar de escrever */
   if(_autoFitTimer) clearTimeout(_autoFitTimer);
   _autoFitTimer = setTimeout(function(){
     try{
@@ -3973,6 +4128,8 @@ document.getElementById('hardResetBtn').addEventListener("click", async function
     var filaBackup=[]; try{ var f = localStorage.getItem(FILA_BACKUP_KEY); if(f) filaBackup = JSON.parse(f); }catch(e){}
     var jwt=localStorage.getItem(AUTH_KEY_JWT), exp=localStorage.getItem(AUTH_KEY_EXP), usr=localStorage.getItem(AUTH_KEY_USER);
     try{ await localforage.clear(); }catch(e){}
+    try{ _bfThumbMemCache.clear(); }catch(e){}
+    try{ _printImgCache.clear(); }catch(e){}
     try{ Object.keys(localStorage).filter(function(k){ return k.indexOf('balcao_')===0; }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
     if(jwt) localStorage.setItem(AUTH_KEY_JWT,jwt);
     if(exp) localStorage.setItem(AUTH_KEY_EXP,exp);
