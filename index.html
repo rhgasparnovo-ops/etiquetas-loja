@@ -360,6 +360,27 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 @media (max-width:600px){.card{padding:16px}.card-h{padding-bottom:10px}.btn{font-size:15px;min-height:48px}}
 @media (max-width:480px){.row-3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row>.btn{font-size:13.5px!important;padding:11px 6px!important;min-height:52px!important}}
 
+/* ===== CHIPS RÁPIDOS (Origem / Categoria / Calibre) ===== */
+.chips-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.chips-row .chips-hint{font-size:10.5px;font-weight:800;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-right:2px;white-space:nowrap}
+.chip-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:5px 11px;min-height:32px;
+  background:var(--surface-2);border:1.5px solid var(--line);
+  border-radius:var(--r-pill);
+  font-size:11.5px;font-weight:800;color:var(--ink-2);
+  cursor:pointer;transition:all .15s;
+  white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;
+  -webkit-tap-highlight-color:transparent;
+}
+.chip-btn:hover{background:var(--surface-3);border-color:var(--line-2)}
+.chip-btn:active{transform:scale(.94)}
+.chip-btn.active{
+  background:var(--brand-soft);border-color:var(--brand);color:var(--brand);
+  box-shadow:0 0 0 2px rgba(200,16,46,.14);
+}
+@media (max-width:520px){.chip-btn{padding:5px 9px;font-size:11px;min-height:30px}}
+
 /* ===== EAN TOGGLE ===== */
 .code-with-sync{display:flex;gap:8px;align-items:stretch;width:100%;min-width:0}
 .code-with-sync > input[type=text]{flex:1 1 auto;min-width:0}
@@ -657,6 +678,52 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
             <div class="fld"><label for="categoria">Categoria</label><input id="categoria" type="text" autocapitalize="characters" spellcheck="false"></div>
             <div class="fld"><label for="calibre">Calibre</label><input id="calibre" type="text" autocapitalize="characters" spellcheck="false"></div>
           </div>
+
+          <div class="chips-row" id="origemChipsRow">
+            <span class="chips-hint">🌍 Origem:</span>
+            <button type="button" class="chip-btn" data-field="origem" data-val="PORTUGAL">Portugal</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="ESPANHA">Espanha</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="MARROCOS">Marrocos</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="BRASIL">Brasil</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="ÁFRICA DO SUL">África do Sul</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="CHILE">Chile</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="PERU">Peru</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="ARGENTINA">Argentina</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="COSTA RICA">Costa Rica</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="EQUADOR">Equador</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="COLÔMBIA">Colômbia</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="FRANÇA">França</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="ITÁLIA">Itália</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="HOLANDA">Holanda</button>
+            <button type="button" class="chip-btn" data-field="origem" data-val="NOVA ZELÂNDIA">Nova Zelândia</button>
+          </div>
+
+          <div class="chips-row" id="categoriaChipsRow">
+            <span class="chips-hint">🏷️ Categoria:</span>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="EXTRA">Extra</button>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="I">I</button>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="II">II</button>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="CAT I">Cat. I</button>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="CAT II">Cat. II</button>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="PREMIUM">Premium</button>
+          </div>
+
+          <div class="chips-row" id="calibreChipsRow">
+            <span class="chips-hint">📏 Calibre:</span>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="PP">PP</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="P">P</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="M">M</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="G">G</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="GG">GG</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="55/60">55/60</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="60/65">60/65</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="65/70">65/70</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="70/75">70/75</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="75/80">75/80</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="80/85">80/85</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="85/90">85/90</button>
+          </div>
+
           <div id="fruitPromoPanel" class="fruit-promo-panel" style="display:none">
             <h4>💡 Oportunidade "Leve X ou mais"</h4>
             <div class="row">
@@ -966,6 +1033,9 @@ const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
 const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
 
+/* ⚡ NOVO — normalização uniforme de imagens para as etiquetas */
+const IMG_LABEL_CANVAS = 1000; /* canvas quadrado, garante medida uniforme */
+
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
@@ -1271,6 +1341,73 @@ function compressSmart(dataUrl,maxSize,quality){
     img.src=dataUrl;
   });
 }
+
+/* ⚡⚡⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS PARA ETIQUETAS ⚡⚡⚡
+   Toda a imagem aplicada numa etiqueta passa por aqui — canvas quadrado
+   1000×1000 com padding, mantendo sempre a MESMA medida, nunca come texto. */
+function normalizeImageForLabel(dataUrl){
+  if(!dataUrl || String(dataUrl).indexOf('data:image') !== 0) return Promise.resolve(dataUrl);
+  return new Promise(function(resolve){
+    var img = new Image(); img.crossOrigin = "anonymous";
+    img.onload = function(){
+      try{
+        var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+        if(!iw || !ih) return resolve(dataUrl);
+        var size = IMG_LABEL_CANVAS;
+        var scale = Math.min(size / iw, size / ih);
+        var nw = Math.max(1, Math.round(iw * scale));
+        var nh = Math.max(1, Math.round(ih * scale));
+        var ox = Math.round((size - nw) / 2);
+        var oy = Math.round((size - nh) / 2);
+        var c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        var ctx = c.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        var temAlpha = false;
+        try{
+          var tmp = document.createElement('canvas');
+          tmp.width = Math.min(iw, 60); tmp.height = Math.min(ih, 60);
+          var tc = tmp.getContext('2d');
+          tc.drawImage(img, 0, 0, tmp.width, tmp.height);
+          var px = tc.getImageData(0, 0, tmp.width, tmp.height).data;
+          for(var i = 3; i < px.length; i += 4){ if(px[i] < 250){ temAlpha = true; break; } }
+        }catch(e){}
+        if(temAlpha){
+          ctx.clearRect(0, 0, size, size);
+          ctx.drawImage(img, ox, oy, nw, nh);
+          var outWebp = c.toDataURL('image/webp', 0.92);
+          if(outWebp.indexOf('image/webp') === -1) outWebp = c.toDataURL('image/png');
+          resolve(outWebp);
+        } else {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, size, size);
+          ctx.drawImage(img, ox, oy, nw, nh);
+          resolve(c.toDataURL('image/jpeg', 0.92));
+        }
+      }catch(e){ resolve(dataUrl); }
+    };
+    img.onerror = function(){ resolve(dataUrl); };
+    img.src = dataUrl;
+  });
+}
+async function normalizeUrlForLabel(url){
+  if(!url) return url;
+  if(String(url).indexOf('data:image') === 0) return normalizeImageForLabel(url);
+  try{
+    var resp = await fetch(url, { mode:'cors', cache:'force-cache' });
+    if(!resp.ok) return url;
+    var blob = await resp.blob();
+    var du = await new Promise(function(res,rej){
+      var r = new FileReader();
+      r.onloadend = function(){ res(r.result); };
+      r.onerror = rej;
+      r.readAsDataURL(blob);
+    });
+    return await normalizeImageForLabel(du);
+  }catch(e){ return url; }
+}
+
 var _photoToken=0;
 function removeBackgroundSimple(dataUrl,cb){
   var token=++_photoToken;
@@ -1694,6 +1831,7 @@ function setFormData(d){
   $("photo").value = "";
   $("customDimensionsRow").style.display = ($("presetSizes").value==="custom")?"grid":"none";
   updateOrientationVisibility(); updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
+  updateAllChipStates();
 }
 
 /* 15. VALIDAÇÃO */
@@ -1748,7 +1886,33 @@ function getDimensionsFor(fv,cw,ch){
 function getDimensions(){ return getDimensionsFor($("presetSizes").value,$("customWidth").value,$("customHeight").value); }
 function getSizeClass(w,h){ var m=Math.max(w,h); if(m<55) return "size-tiny"; if(m<82) return "size-small"; if(m<115) return "size-medium"; if(m<165) return "size-large"; return "size-xl"; }
 function applySizeClass(el,w,h){ if(!el) return; el.classList.remove("size-tiny","size-small","size-medium","size-large","size-xl"); el.classList.add(getSizeClass(w,h)); }
-window.setField = function(id,val){ var el=$(id); if(el){ el.value=val; updateCard(); } };
+
+window.setField = function(id,val){
+  var el=$(id);
+  if(el){
+    el.value=val;
+    updateCard();
+    if(id === 'origem' || id === 'categoria' || id === 'calibre') updateChipStatesFor(id);
+  }
+};
+
+/* ⚡ CHIPS: estado ativo + sincronização */
+function updateChipStatesFor(field){
+  try{
+    var el = $(field); if(!el) return;
+    var v = String(el.value || '').trim().toUpperCase();
+    document.querySelectorAll('.chip-btn[data-field="'+field+'"]').forEach(function(b){
+      var match = v !== "" && String(b.dataset.val || '').toUpperCase() === v;
+      b.classList.toggle('active', match);
+    });
+  }catch(e){}
+}
+function updateAllChipStates(){
+  updateChipStatesFor('origem');
+  updateChipStatesFor('categoria');
+  updateChipStatesFor('calibre');
+}
+
 function calcUnitInfo(capUnit){
   switch(capUnit){
     case "peso": return {mainSuffix:"€/KG",refSuffix:"€/KG",normalizar:1};
@@ -2052,15 +2216,30 @@ window.saveQueueItem = async function(i){
     else { setStatus("Nova etiqueta criada (" + dt + "s)","success"); toast("🆕 NOVA ETIQUETA criada · " + fmtShort(fr) + (variantReason ? " — " + variantReason : ""),"success",4500); }
   }catch(e){ setStatus("Erro ao guardar","error"); toast("Erro ao guardar: " + e.message,"error"); }
 };
+
+/* ⚡ resolverFotoParaPayload — normalização uniforme ANTES do upload */
 async function resolverFotoParaPayload(d){
   var fid = d.fotoId || "", furl = d.fotoUrl || "";
   var foto = d.processedPhoto || d.originalPhoto;
   if(!foto) return {fotoId:"",fotoUrl:""};
-  if(foto.indexOf('http') === 0){ furl = foto; if(!fid){ var ex = extrairFotoIdDoUrl(foto); if(ex) fid = ex; } return {fotoId:fid,fotoUrl:furl}; }
 
-  var comp = await compressSmart(foto, IMG_MAX_SIZE, IMG_QUALITY);
+  /* URL remoto → tenta normalizar (uniformiza medida); se falhar, mantém referência */
+  if(String(foto).indexOf('http') === 0){
+    var norm = await normalizeUrlForLabel(foto);
+    if(norm && String(norm).indexOf('data:image') === 0){
+      foto = norm; fid = ""; furl = "";
+    } else {
+      furl = foto; if(!fid){ var ex = extrairFotoIdDoUrl(foto); if(ex) fid = ex; }
+      return {fotoId:fid, fotoUrl:furl};
+    }
+  }
+
+  /* data URL → normalização uniforme (mesmo que já venha normalizado, é idempotente) */
+  var uniforme = await normalizeImageForLabel(foto);
+
+  var comp = await compressSmart(uniforme, IMG_MAX_SIZE, IMG_QUALITY);
   if(comp.length > IMG_B64_FALLBACK_LIMIT){
-    comp = await compressSmart(foto, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
+    comp = await compressSmart(uniforme, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
   }
 
   var up = await api('uploadFoto', {base64: comp, nomeFicheiro: (d.internalCode||'artigo')+'_'+Date.now()+'.jpg'});
@@ -2228,19 +2407,28 @@ function renderBancoFruta(filtro){
       tag + '<div class="bf-nome">' + escapeHTML(f.nome) + '</div></div>';
   }).join('');
   c.querySelectorAll('.bf-card').forEach(function(el){
-    el.addEventListener('click', function(){
-      globalOriginalPhoto = el.dataset.url; globalProcessedPhoto = el.dataset.url;
+    el.addEventListener('click', async function(){
+      var url = el.dataset.url;
+      $('bancoFrutaModal').classList.remove('show');
+      setStatus("A preparar imagem…","loading");
+      var norm = await normalizeUrlForLabel(url);
+      globalOriginalPhoto = norm;
+      globalProcessedPhoto = norm;
       if(!$('product').value.trim()) $('product').value = el.dataset.nome;
-      updateCard(); $('bancoFrutaModal').classList.remove('show'); toast("Imagem aplicada","success");
+      updateCard();
+      setStatus("");
+      toast("Imagem aplicada","success");
     });
   });
 }
 async function guardarFotoBanco(nome,dataUrl,tipo){
   setStatus("A enviar foto para o Drive…","loading");
   try{
-    var comp = await compressSmart(dataUrl, IMG_MAX_SIZE, IMG_QUALITY);
+    /* ⚡ garantir medida uniforme antes do upload do banco */
+    var uniforme = await normalizeImageForLabel(dataUrl);
+    var comp = await compressSmart(uniforme, IMG_MAX_SIZE, IMG_QUALITY);
     if(comp.length > IMG_B64_FALLBACK_LIMIT){
-      comp = await compressSmart(dataUrl, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
+      comp = await compressSmart(uniforme, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
     }
     var r = await api('uploadBancoFruta',{base64:comp,nome:nome,tipo:tipo});
     bancoFruta = ensureArray(bancoFruta).filter(function(f){ return String(f.nome||"").toUpperCase() !== nome || (f.tipo||'') !== tipo; });
@@ -2268,7 +2456,8 @@ async function otimizarImagensDrive(){
       var resp = await fetch(url,{mode:'cors'}); if(!resp.ok) throw new Error("HTTP "+resp.status);
       var blob = await resp.blob();
       var dataUrl = await new Promise(function(res,rej){ var r=new FileReader(); r.onloadend=function(){ res(r.result); }; r.onerror=rej; r.readAsDataURL(blob); });
-      var compressed = await compressSmart(dataUrl,1400,0.88);
+      var uniforme = await normalizeImageForLabel(dataUrl);
+      var compressed = await compressSmart(uniforme,1400,0.88);
       var r2 = await api('uploadBancoFruta',{base64:compressed,nome:f.nome,tipo:f.tipo||'fruta'});
       f.fotoId = r2.id; f.fotoUrl = r2.url; f.atualizadoEm = new Date().toISOString();
       done++;
@@ -2291,6 +2480,7 @@ function updateCard(){
       sanitizePriceAll();
       updateIvaVisual();
       updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
+      updateAllChipStates();
       if(editingFromDrive && editingId){
         updateEditingBanner();
         if(document.body.dataset.view === 'drive') renderDb();
@@ -2866,7 +3056,6 @@ async function enviarEtiquetasPorEmail(){
    25. CÂMARA — COM SUPORTE ROBUSTO DE TORCH / LANTERNA
    ============================================================ */
 
-/* Detetar se a track suporta torch. Devolve true/false/null (desconhecido) */
 function getTorchCap(track){
   if(!track) return null;
   try{
@@ -2875,8 +3064,6 @@ function getTorchCap(track){
   }catch(e){}
   return null;
 }
-
-/* Mostrar/esconder botão conforme suporte */
 function updateTorchBtnVisibility(btn, track){
   if(!btn) return;
   var cap = getTorchCap(track);
@@ -2886,26 +3073,18 @@ function updateTorchBtnVisibility(btn, track){
     btn.classList.remove('torch-unsupported');
   }
 }
-
-/* Aplicar torch de forma robusta (múltiplos formatos de constraint) */
 async function applyTorch(track, on){
   if(!track) return false;
   on = !!on;
-
-  /* Tentativa 1: advanced */
   try{
     await track.applyConstraints({ advanced: [{ torch: on }] });
     var st = track.getSettings ? track.getSettings() : {};
     if(typeof st.torch === 'undefined' || st.torch === on) return true;
   }catch(e){}
-
-  /* Tentativa 2: direto */
   try{
     await track.applyConstraints({ torch: on });
     return true;
   }catch(e){}
-
-  /* Tentativa 3: imageCapture via MediaStreamTrack (Android recente) */
   try{
     if(track.getCapabilities){
       var caps = track.getCapabilities();
@@ -2914,7 +3093,6 @@ async function applyTorch(track, on){
       }
     }
   }catch(e){}
-
   return false;
 }
 
@@ -2931,7 +3109,6 @@ async function openCamera(){
     tb.style.opacity = '1';
   }
   try{
-    /* Resolução moderada — 4K bloqueia torch em muitos dispositivos */
     var constraints = {
       video: {
         facingMode: { ideal: "environment" },
@@ -2943,12 +3120,10 @@ async function openCamera(){
     try{
       camStream = await navigator.mediaDevices.getUserMedia(constraints);
     }catch(e1){
-      /* Fallback: constraints simples */
       camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
     }
     $("camVideo").srcObject = camStream;
     camTrack = camStream.getVideoTracks()[0] || null;
-    /* Deixar o browser estabilizar antes de pedir capabilities */
     if(camTrack){
       setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300);
     }
@@ -3012,7 +3187,6 @@ async function openScanner(){
       },
       function(){}
     );
-    /* Apanhar a track de vídeo criada pelo Html5Qrcode */
     setTimeout(function(){
       try{
         var videos = document.querySelectorAll('#reader video');
@@ -3101,6 +3275,18 @@ async function toggleTorchScan(){
 
 /* 27. FILTROS DRIVE */
 (function(){ var s = document.getElementById('dbFiltroFormato'), b = document.getElementById('dbBusca'); if(s) s.addEventListener('change', renderDb); if(b){ var t = null; b.addEventListener('input', function(){ if(t) clearTimeout(t); t = setTimeout(renderDb, 180); }); } })();
+
+/* ⚡ CHIPS — sincronização com inputs de origem/categoria/calibre */
+(function(){
+  ['origem','categoria','calibre'].forEach(function(field){
+    var el = document.getElementById(field);
+    if(el){
+      el.addEventListener('input', function(){ updateChipStatesFor(field); });
+      el.addEventListener('change', function(){ updateChipStatesFor(field); });
+      el.addEventListener('blur', function(){ updateChipStatesFor(field); });
+    }
+  });
+})();
 
 /* 28. LOADFROMDB / VARIANT / REMOVE / QUEUE */
 window.loadFromDb = function(i){
@@ -3270,6 +3456,8 @@ document.getElementById('openCameraBtn').addEventListener("click", function(){ f
 document.getElementById('fotoBancoBtn').addEventListener("click", function(){ fotoBancoModo = true; openCamera(); });
 document.getElementById('camClose').addEventListener("click", closeCamera);
 document.getElementById('camTorch').addEventListener("click", toggleTorchCam);
+
+/* ⚡ CAM SNAP — normaliza sempre a imagem para medida uniforme */
 document.getElementById('camSnap').addEventListener("click", async function(){
   var v = $("camVideo"), c = $("camCanvas");
   var w = v.videoWidth, h = v.videoHeight;
@@ -3277,11 +3465,39 @@ document.getElementById('camSnap').addEventListener("click", async function(){
   if(w>2400){ h = Math.round(h*2400/w); w = 2400; }
   c.width = w; c.height = h; c.getContext("2d").drawImage(v,0,0,w,h);
   var dataUrl = c.toDataURL("image/jpeg",0.98);
-  if(fotoBancoModo){ fotoBancoModo = false; closeCamera(); setStatus("A processar…","loading"); var ff = dataUrl; if($("autoRemoveBg").checked){ try{ ff = await removeBackgroundSmart(dataUrl); }catch(e){} } var info = await pedirNomeTipoArtigo($("product").value); if(!info){ setStatus(""); return; } try{ await guardarFotoBanco(info.nome,ff,info.tipo); }catch(e){} return; }
-  globalOriginalPhoto = dataUrl; globalProcessedPhoto = ""; updateCard(); closeCamera();
+
+  if(fotoBancoModo){
+    fotoBancoModo = false;
+    closeCamera();
+    setStatus("A processar imagem…","loading");
+    var ff = await normalizeImageForLabel(dataUrl);
+    if($("autoRemoveBg").checked){
+      try{ var sf = await removeBackgroundSmart(ff); ff = await normalizeImageForLabel(sf); }catch(e){}
+    }
+    var info = await pedirNomeTipoArtigo($("product").value);
+    if(!info){ setStatus(""); return; }
+    try{ await guardarFotoBanco(info.nome, ff, info.tipo); }catch(e){}
+    return;
+  }
+
+  /* MODO NORMAL — normaliza sempre antes de aplicar */
+  setStatus("A preparar imagem…","loading");
+  globalOriginalPhoto = await normalizeImageForLabel(dataUrl);
+  globalProcessedPhoto = "";
+  updateCard();
+  closeCamera();
+  setStatus("");
   toast("Fotografia capturada","success");
-  if($("autoRemoveBg").checked){ try{ globalProcessedPhoto = await removeBackgroundSmart(dataUrl); updateCard(); }catch(e){} }
+
+  if($("autoRemoveBg").checked){
+    try{
+      var sf2 = await removeBackgroundSmart(globalOriginalPhoto);
+      globalProcessedPhoto = await normalizeImageForLabel(sf2);
+      updateCard();
+    }catch(e){}
+  }
 });
+
 document.getElementById('bfTabs').addEventListener("click", function(e){ var btn = e.target.closest("button[data-tipo]"); if(!btn) return; var t = btn.dataset.tipo; if(t !== 'fruta' && t !== 'legume') return; bancoTipoFiltro = t; document.getElementById('bfTabs').querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b === btn); }); renderBancoFruta($("buscaBancoFruta").value); });
 document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); bancoTipoFiltro = 'fruta'; document.getElementById('bfTabs').querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b.dataset.tipo === 'fruta'); }); document.getElementById('bancoFrutaModal').classList.add('show'); renderBancoFruta($('buscaBancoFruta').value); });
 document.getElementById('fecharBancoFruta').addEventListener("click", function(){ document.getElementById('bancoFrutaModal').classList.remove("show"); });
@@ -3311,16 +3527,28 @@ document.getElementById('presetSizes').addEventListener("change", function(){ va
 document.getElementById('isPromoActive').addEventListener("change", function(){ var l = this.closest("label"); if(l) l.classList.toggle("checked", this.checked); updateCard(); });
 document.getElementById('depositFeeSelect').addEventListener("change", function(){ var cf = $("customDepositField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } updateCard(); });
 document.getElementById('capacityUnit').addEventListener("change", function(){ var c = $("capacity"); var d = DEFAULTS_UNIDADE[this.value]; c.value = (d !== undefined) ? d : ""; updateCard(); });
+
+/* ⚡ PHOTO INPUT — normaliza sempre a imagem escolhida */
 document.getElementById('photo').addEventListener("change", async function(e){
   var f = e.target.files[0]; globalOriginalPhoto = ""; globalProcessedPhoto = "";
   if(!f){ updateCard(); return; }
+  setStatus("A preparar imagem…","loading");
   var r = new FileReader();
   r.onload = async function(ev){
-    globalOriginalPhoto = ev.target.result; updateCard();
-    if($("autoRemoveBg").checked){ try{ var sf = await removeBackgroundSmart(globalOriginalPhoto); globalProcessedPhoto = sf; updateCard(); }catch(e){} }
+    globalOriginalPhoto = await normalizeImageForLabel(ev.target.result);
+    updateCard();
+    setStatus("");
+    if($("autoRemoveBg").checked){
+      try{
+        var sf = await removeBackgroundSmart(globalOriginalPhoto);
+        globalProcessedPhoto = await normalizeImageForLabel(sf);
+        updateCard();
+      }catch(e){}
+    }
   };
   r.readAsDataURL(f);
 });
+
 document.getElementById('clearBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Limpar todos os campos?"))) return;
   ["internalCode","product","price","oldPrice","ean","customDepositInput","promoStart","promoEnd","origem","categoria","calibre","infoExtraData"].forEach(function(id){ if($(id)) $(id).value = ""; });
@@ -3343,6 +3571,7 @@ document.getElementById('clearBtn').addEventListener("click", async function(){
   currentFormId = null;
   updateEditingBanner(); renderDb();
   updateOrientationVisibility(); updateCard();
+  updateAllChipStates();
   toast("Editor limpo","info");
 });
 document.addEventListener("click", function(e){
@@ -3403,6 +3632,7 @@ document.addEventListener("change", function(e){
     var t = 0;
     var ag = setInterval(function(){ t++; if(window.google && google.accounts && google.accounts.id){ clearInterval(ag); inicializarBotaoGoogle(); var tk = getStoredToken(); if(!tk) setTimeout(function(){ tentarReauthSilenciosa(); },800); } else if(t>40) clearInterval(ag); },200);
     updateCard(); renderQueue(); updateEditingBanner();
+    updateAllChipStates();
     if(getStoredToken()) carregarTudo({manual:false});
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
