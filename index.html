@@ -63,11 +63,12 @@ input,select,textarea{font-family:inherit}
 a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
-[data-tip]{position:relative}
-[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) scale(.88);background:rgba(15,23,42,.96);color:#fff;padding:6px 11px;border-radius:8px;font-size:11.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;z-index:10000;box-shadow:0 8px 22px rgba(15,23,42,.32)}
-[data-tip]::before{content:"";position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%) scale(.88);border:6px solid transparent;border-top-color:rgba(15,23,42,.96);opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s ease;z-index:10000}
-[data-tip]:hover::after,[data-tip]:hover::before,[data-tip].tip-show::after,[data-tip].tip-show::before{opacity:1;transform:translateX(-50%) scale(1)}
-@media (hover:none){[data-tip]:hover::after,[data-tip]:hover::before{opacity:0;transform:translateX(-50%) scale(.88)}}
+
+/* ⚡ TOOLTIP GLOBAL — fixo em cima, sempre visível, nunca cortado */
+.global-tooltip{position:fixed;left:50%;top:calc(84px + var(--safe-t));transform:translate(-50%,-8px);background:rgba(15,23,42,.96);color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:700;max-width:calc(100vw - 24px);width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:100050;box-shadow:0 14px 38px rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.12)}
+.global-tooltip.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:600px){.global-tooltip{font-size:12.5px;padding:9px 14px;top:calc(78px + var(--safe-t))}}
+
 .app-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding:12px 18px;padding-top:calc(12px + var(--safe-t));padding-left:calc(18px + var(--safe-l));padding-right:calc(18px + var(--safe-r));box-shadow:0 1px 20px rgba(15,23,42,.04)}
 .app-header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad)}
 .hdr-inner{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0}
@@ -179,9 +180,9 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 
-/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado — o JS encolhe uniformemente se preciso */
+/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado; ellipsis como fallback final */
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:11%;flex-shrink:0;overflow:hidden;gap:2px}
-.promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
+.promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
 .promo-dates{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
 .promo-dates:empty{display:none!important}
@@ -222,9 +223,10 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
   opacity:.9;flex-shrink:0;white-space:nowrap;
 }
 
-.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny .deposit-row{display:none!important}
+.label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny .deposit-row{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
+
 .bnav{position:fixed;left:10px;right:10px;bottom:calc(10px + var(--safe-b));z-index:8500;background:rgba(255,255,255,.97);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--line);border-radius:var(--r-2xl);padding:5px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;box-shadow:0 8px 32px rgba(15,23,42,.12);max-width:500px;margin:0 auto}
 .bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;color:var(--ink-3);font-size:11px;font-weight:700;border-radius:18px;transition:all .18s;position:relative}
 .bnav button.active{color:#fff;background:var(--brand-grad)}
@@ -383,7 +385,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 @media print{
   @page{size:A4 portrait;margin:6mm!important}
   html,body{background:#fff!important;background-image:none!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  .app-header,.main,.bnav,.floating-preview,.floating-print,.floating-clear,.global-status,.toast-container,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
+  .app-header,.main,.bnav,.floating-preview,.floating-print,.floating-clear,.global-status,.global-tooltip,.toast-container,.pro-print-overlay,.modal,.confirm-overlay,.name-modal,.email-modal,.install-modal,.preview-modal,.choice-modal{display:none!important}
   #printZone{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;background:#fff!important}
   #printZone,#printZone *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;animation:none!important;transition:none!important}
   #printZone .label-card{transform:none!important;background:#fff!important;border:1px dashed #999!important;margin:0!important;box-sizing:border-box!important;page-break-inside:avoid!important}
@@ -522,6 +524,22 @@ body[data-view="fila"] .floating-clear{display:flex}
         <div class="card">
           <div class="card-h"><div class="ic">📝</div><h3>Produto</h3></div>
 
+          <!-- ⚡ FORMATO DA ETIQUETA — primeira coisa a escolher -->
+          <div class="fld"><label for="presetSizes">Formato da etiqueta *</label>
+            <select id="presetSizes">
+              <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Amanhecer · 70×38/40</option></optgroup>
+              <optgroup label="🆕 Destaque"><option value="80x60">🆕 6×8 · 80×60</option></optgroup>
+              <optgroup label="🍎 Fruta e Legumes"><option value="125x80">🍎 Suporte · 125×80</option><option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option></optgroup>
+              <optgroup label="📄 Tabuletas"><option value="A6">📄 A6 · 148×105</option><option value="frutaPromoA6">💡 A6 Leve 2+ · 148×105</option><option value="A5">📄 A5 · 210×148</option><option value="100x70">🏷️ Cartaz · 100×70</option></optgroup>
+              <optgroup label="⚙️ Outro"><option value="custom">⚙️ Personalizado…</option></optgroup>
+            </select>
+          </div>
+
+          <div id="customDimensionsRow" class="row" style="display:none">
+            <div class="fld"><label for="customWidth">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
+            <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
+          </div>
+
           <div class="fld">
             <label for="product">Nome do produto</label>
             <input id="product" type="text" class="input-hero" autocomplete="off" autocapitalize="characters" spellcheck="false">
@@ -567,27 +585,12 @@ body[data-view="fila"] .floating-clear{display:flex}
               <select id="store"><option value="GARCIA/PATAIAS" selected>GARCIA/PATAIAS</option><option value="GARCIA">GARCIA</option><option value="PATAIAS">PATAIAS</option></select>
             </div>
           </div>
-
-          <div class="fld"><label for="presetSizes">Formato da etiqueta</label>
-            <select id="presetSizes">
-              <optgroup label="⭐ Amanhecer"><option value="amanhecer" selected>⭐ Amanhecer · 70×38/40</option></optgroup>
-              <optgroup label="🆕 Destaque"><option value="80x60">🆕 6×8 · 80×60</option></optgroup>
-              <optgroup label="🍎 Fruta e Legumes"><option value="125x80">🍎 Suporte · 125×80</option><option value="frutaPromo125x80">💡 Suporte Leve 2+ · 125×80</option></optgroup>
-              <optgroup label="📄 Tabuletas"><option value="A6">📄 A6 · 148×105</option><option value="frutaPromoA6">💡 A6 Leve 2+ · 148×105</option><option value="A5">📄 A5 · 210×148</option><option value="100x70">🏷️ Cartaz · 100×70</option></optgroup>
-              <optgroup label="⚙️ Outro"><option value="custom">⚙️ Personalizado…</option></optgroup>
-            </select>
-          </div>
-
-          <div id="customDimensionsRow" class="row" style="display:none">
-            <div class="fld"><label for="customWidth">Largura (mm)</label><input id="customWidth" type="number" min="10" max="300" value="70"></div>
-            <div class="fld"><label for="customHeight">Altura (mm)</label><input id="customHeight" type="number" min="10" max="300" value="38"></div>
-          </div>
         </div>
 
         <div class="card accent-blue">
           <div class="card-h"><div class="ic">📊</div><h3>Código de Barras</h3><span class="badge" id="eanBadge" style="display:none">—</span></div>
           <div class="fld"><label for="ean">EAN-13 / EAN-14 / Code128</label><input id="ean" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
-          <button type="button" class="btn btn-soft btn-block" id="scanEanBtn">📷 Ler código com a câmara</button>
+          <button type="button" class="btn btn-soft btn-block" id="scanEanBtn" data-tip="Abrir a câmara para ler o código de barras">📷 Ler código com a câmara</button>
         </div>
 
         <div class="card accent-green" id="fruitCard" style="display:none">
@@ -619,6 +622,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 
           <div class="chips-row" id="categoriaChipsRow">
             <span class="chips-hint">🏷️ Categoria:</span>
+            <button type="button" class="chip-btn" data-field="categoria" data-val="N/C">N/C</button>
             <button type="button" class="chip-btn" data-field="categoria" data-val="EXTRA">Extra</button>
             <button type="button" class="chip-btn" data-field="categoria" data-val="I">I</button>
             <button type="button" class="chip-btn" data-field="categoria" data-val="II">II</button>
@@ -629,11 +633,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 
           <div class="chips-row" id="calibreChipsRow">
             <span class="chips-hint">📏 Calibre:</span>
-            <button type="button" class="chip-btn" data-field="calibre" data-val="PP">PP</button>
-            <button type="button" class="chip-btn" data-field="calibre" data-val="P">P</button>
-            <button type="button" class="chip-btn" data-field="calibre" data-val="M">M</button>
-            <button type="button" class="chip-btn" data-field="calibre" data-val="G">G</button>
-            <button type="button" class="chip-btn" data-field="calibre" data-val="GG">GG</button>
+            <button type="button" class="chip-btn" data-field="calibre" data-val="N/C">N/C</button>
             <button type="button" class="chip-btn" data-field="calibre" data-val="55/60">55/60</button>
             <button type="button" class="chip-btn" data-field="calibre" data-val="60/65">60/65</button>
             <button type="button" class="chip-btn" data-field="calibre" data-val="65/70">65/70</button>
@@ -713,28 +713,28 @@ body[data-view="fila"] .floating-clear{display:flex}
           <div class="card-h"><div class="ic">📷</div><h3>Fotografia do Produto</h3></div>
           <div class="fld"><label for="photo">Ficheiro de imagem</label><input id="photo" type="file" accept="image/*"></div>
           <div class="row">
-            <button type="button" class="btn btn-ghost" id="openCameraBtn">📷 Tirar Foto</button>
-            <button type="button" class="btn btn-ghost" id="abrirBancoFrutaBtn">📚 Banco</button>
+            <button type="button" class="btn btn-ghost" id="openCameraBtn" data-tip="Tirar fotografia com a câmara">📷 Tirar Foto</button>
+            <button type="button" class="btn btn-ghost" id="abrirBancoFrutaBtn" data-tip="Abrir banco de frutas e legumes">📚 Banco</button>
           </div>
-          <button type="button" class="btn btn-soft btn-block" id="fotoBancoBtn">📥 Fotografar para o banco</button>
-          <label class="check-row" for="autoRemoveBg"><input type="checkbox" id="autoRemoveBg" checked><span>✨ Remover fundo automaticamente</span></label>
-          <label class="check-row" for="useAI"><input type="checkbox" id="useAI" checked><span>🤖 Usar IA (melhor qualidade)</span></label>
+          <button type="button" class="btn btn-soft btn-block" id="fotoBancoBtn" data-tip="Fotografar e guardar no banco">📥 Fotografar para o banco</button>
+          <label class="check-row" for="autoRemoveBg" data-tip="Remove automaticamente o fundo da fotografia"><input type="checkbox" id="autoRemoveBg" checked><span>✨ Remover fundo automaticamente</span></label>
+          <label class="check-row" for="useAI" data-tip="Usa IA para melhor qualidade no recorte"><input type="checkbox" id="useAI" checked><span>🤖 Usar IA (melhor qualidade)</span></label>
         </div>
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
           <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · 🧬 cria variante · ✕ apaga.</p>
           <div class="row">
-            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button">🔄 Recarregar</button>
-            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button">🔄 Sincronizar</button>
+            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" data-tip="Recarregar lista do Drive">🔄 Recarregar</button>
+            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
           </div>
           <div class="drive-filter-row">
-            <select id="dbFiltroFormato"><option value="">Todos os formatos</option></select>
-            <input id="dbBusca" type="search" placeholder="🔍 Procurar…" autocapitalize="characters" spellcheck="false">
+            <select id="dbFiltroFormato" data-tip="Filtrar por formato"><option value="">Todos os formatos</option></select>
+            <input id="dbBusca" type="search" placeholder="🔍 Procurar…" autocapitalize="characters" spellcheck="false" data-tip="Procurar por nome ou código">
           </div>
-          <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8">📉 Otimizar imagens</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706">🧹 Remover duplicados</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="apagarTudoBtn" type="button" style="border-color:#7f1d1d;color:#7f1d1d;font-weight:800">🗑️ Apagar TODAS as etiquetas do Drive</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="hardResetBtn" type="button" style="border-color:#dc2626;color:#dc2626">🔥 Limpar cache local e ressincronizar</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" data-tip="Comprimir todas as imagens do banco">📉 Otimizar imagens</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706" data-tip="Remover etiquetas duplicadas do Drive">🧹 Remover duplicados</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="apagarTudoBtn" type="button" style="border-color:#7f1d1d;color:#7f1d1d;font-weight:800" data-tip="Apagar TODAS as etiquetas do Drive">🗑️ Apagar TODAS as etiquetas do Drive</button>
+          <button class="btn btn-ghost btn-block btn-sm" id="hardResetBtn" type="button" style="border-color:#dc2626;color:#dc2626" data-tip="Limpar cache local e ressincronizar tudo">🔥 Limpar cache local e ressincronizar</button>
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
       </section>
@@ -742,12 +742,12 @@ body[data-view="fila"] .floating-clear{display:flex}
       <section class="view view-mais">
         <div class="card">
           <div class="card-h"><div class="ic">🩺</div><h3>Diagnóstico</h3></div>
-          <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button">🩺 Testar ligação</button>
+          <button class="btn btn-ghost btn-block" id="diagnosticoBtn" type="button" data-tip="Testar ligação ao servidor">🩺 Testar ligação</button>
           <div id="diagBox" class="diag-box"></div>
         </div>
         <div class="card">
           <div class="card-h"><div class="ic">📧</div><h3>Enviar por Email</h3></div>
-          <button class="btn btn-primary btn-block" id="emailLabelsBtn" type="button">📧 Enviar por Email</button>
+          <button class="btn btn-primary btn-block" id="emailLabelsBtn" type="button" data-tip="Enviar as etiquetas da fila por email em PDF">📧 Enviar por Email</button>
         </div>
       </section>
     </div>
@@ -807,13 +807,13 @@ body[data-view="fila"] .floating-clear{display:flex}
 </main>
 
 <nav class="bnav">
-  <button type="button" data-view="editor" class="active"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
-  <button type="button" data-view="fila"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
-  <button type="button" data-view="drive"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
-  <button type="button" data-view="mais"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
+  <button type="button" data-view="editor" class="active" data-tip="Editor"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Editor</button>
+  <button type="button" data-view="fila" data-tip="Fila de Impressão"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Fila<span class="n-badge" id="bnQueueBadge"></span></button>
+  <button type="button" data-view="drive" data-tip="Etiquetas Guardadas"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Drive</button>
+  <button type="button" data-view="mais" data-tip="Mais opções"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>Mais</button>
 </nav>
 
-<button type="button" class="floating-preview" id="floatingPreviewBtn"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+<button type="button" class="floating-preview" id="floatingPreviewBtn" data-tip="Ver pré-visualização"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
 
 <!-- ⚡ Botões flutuantes extra — só aparecem na página "fila" -->
 <button type="button" class="floating-print" id="floatingPrintBtn" data-tip="Imprimir Fila" aria-label="Imprimir Fila">
@@ -827,11 +827,11 @@ body[data-view="fila"] .floating-clear{display:flex}
   <button type="button" class="preview-modal-close" id="previewModalClose">✕</button>
   <div id="previewModalStage"></div>
   <div id="previewZoomBar">
-    <button type="button" id="zoomOutBtn">−</button>
+    <button type="button" id="zoomOutBtn" data-tip="Reduzir zoom">−</button>
     <span class="zoom-label" id="zoomLabel">100%</span>
-    <button type="button" id="zoomInBtn">+</button>
-    <button type="button" id="zoomFitBtn">Ajustar</button>
-    <button type="button" id="zoomResetBtn">1:1</button>
+    <button type="button" id="zoomInBtn" data-tip="Aumentar zoom">+</button>
+    <button type="button" id="zoomFitBtn" data-tip="Ajustar à janela">Ajustar</button>
+    <button type="button" id="zoomResetBtn" data-tip="Tamanho real">1:1</button>
   </div>
 </div>
 
@@ -898,7 +898,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 <div class="modal" id="cameraModal">
   <div class="cam-wrap">
     <video id="camVideo" autoplay playsinline muted></video>
-    <button type="button" class="torch-btn off" id="camTorch">💡</button>
+    <button type="button" class="torch-btn off" id="camTorch" data-tip="Ligar/desligar flash">💡</button>
   </div>
   <canvas id="camCanvas" style="display:none"></canvas>
   <div class="cam-actions">
@@ -910,7 +910,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 <div class="modal" id="scannerModal">
   <div class="cam-wrap">
     <div id="reader"></div>
-    <button type="button" class="torch-btn off" id="scanTorch">💡</button>
+    <button type="button" class="torch-btn off" id="scanTorch" data-tip="Ligar/desligar flash">💡</button>
   </div>
   <button id="scanClose" class="btn btn-ghost">✕ Fechar</button>
 </div>
@@ -943,8 +943,50 @@ body[data-view="fila"] .floating-clear{display:flex}
 /* 0. VIEWPORT */
 (function(){ function s(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} } s(); window.addEventListener('resize', s, {passive:true}); window.addEventListener('orientationchange', function(){ setTimeout(s, 120); }); try{ var ua = navigator.userAgent||''; if(/\bwv\b/.test(ua) || /; wv\)/.test(ua) || window.matchMedia('(display-mode: standalone)').matches || location.protocol === 'file:'){ document.documentElement.classList.add('is-apk'); } }catch(e){} })();
 
-/* 1. TOOLTIPS */
-(function(){ var c=null,t=null; function h(){ document.querySelectorAll('[data-tip].tip-show').forEach(function(el){ el.classList.remove('tip-show'); }); c=null; } document.addEventListener('touchstart', function(e){ var el=e.target.closest('[data-tip]'); if(el){ if(c!==el){ h(); el.classList.add('tip-show'); c=el; if(t) clearTimeout(t); t=setTimeout(h,2200); } } else h(); }, {passive:true}); document.addEventListener('click', function(e){ var el=e.target.closest('[data-tip]'); if(el){ h(); el.classList.add('tip-show'); c=el; if(t) clearTimeout(t); t=setTimeout(h,1800); } }); document.addEventListener('scroll', h, {passive:true, capture:true}); })();
+/* 1. TOOLTIP GLOBAL FIXO — funciona em todos os browsers de smartphones */
+(function(){
+  if(document.getElementById('globalTooltip')) return;
+  var tip = document.createElement('div');
+  tip.id = 'globalTooltip';
+  tip.className = 'global-tooltip';
+  tip.setAttribute('role','tooltip');
+  document.body.appendChild(tip);
+  var hideTimer = null;
+  function show(text){
+    if(!text) return;
+    tip.textContent = text;
+    tip.classList.add('show');
+    if(hideTimer) clearTimeout(hideTimer);
+    hideTimer = setTimeout(function(){ tip.classList.remove('show'); }, 2600);
+  }
+  function hide(){
+    tip.classList.remove('show');
+    if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
+  }
+  document.addEventListener('mouseover', function(e){
+    try{ var el = e.target && e.target.closest && e.target.closest('[data-tip]'); if(el) show(el.getAttribute('data-tip')); }catch(err){}
+  }, true);
+  document.addEventListener('mouseout', function(e){
+    try{
+      var el = e.target && e.target.closest && e.target.closest('[data-tip]');
+      if(!el) return;
+      var to = e.relatedTarget;
+      if(to && to.closest && to.closest('[data-tip]')) return;
+      hide();
+    }catch(err){}
+  }, true);
+  document.addEventListener('touchstart', function(e){
+    try{
+      var el = e.target && e.target.closest && e.target.closest('[data-tip]');
+      if(el) show(el.getAttribute('data-tip'));
+      else hide();
+    }catch(err){}
+  }, {passive:true});
+  document.addEventListener('click', function(e){
+    try{ var el = e.target && e.target.closest && e.target.closest('[data-tip]'); if(el) show(el.getAttribute('data-tip')); }catch(err){}
+  });
+  document.addEventListener('scroll', hide, {passive:true, capture:true});
+})();
 
 /* 2. CONSTANTES */
 const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
@@ -1357,7 +1399,7 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS ⚡⚡⚡ */
+/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO E OTIMIZADO DE IMAGENS ⚡⚡⚡ */
 var _printImgCache = {};
 
 async function _fotoViaBackend(url){
@@ -1385,7 +1427,7 @@ async function _urlToDataUrl(url){
 
   try{
     var ctrl = new AbortController();
-    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
+    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 10000);
     var r = await fetch(url, { mode:'cors', cache:'force-cache', credentials:'omit', signal: ctrl.signal });
     clearTimeout(tid);
     if(r.ok){
@@ -1428,7 +1470,7 @@ async function _urlToDataUrl(url){
     var du3 = await new Promise(function(res,rej){
       var img = new Image();
       img.crossOrigin = 'anonymous';
-      var to = setTimeout(function(){ rej(new Error('timeout')); }, 12000);
+      var to = setTimeout(function(){ rej(new Error('timeout')); }, 10000);
       img.onload = function(){
         clearTimeout(to);
         try{
@@ -1473,47 +1515,55 @@ function _waitImageReady(img){
     }
     img.addEventListener('load', finish, {once:true});
     img.addEventListener('error', finish, {once:true});
-    setTimeout(finish, 8000);
+    setTimeout(finish, 4000);
   });
 }
 
+/* ⚡ OTIMIZADO: agrupa por URL e processa uma vez por URL única */
 async function _preloadPrintImages(container){
   if(!container) return;
   var imgs = Array.from(container.querySelectorAll('img'));
   if(!imgs.length) return;
-  await Promise.all(imgs.map(async function(img){
+
+  var groups = new Map();
+  imgs.forEach(function(img){
     var src = img.getAttribute('src') || '';
     if(!src) return;
-    if(src.indexOf('data:') === 0){
-      try{
-        if(typeof img.decode === 'function'){ await img.decode(); }
-        else { await _waitImageReady(img); }
-      }catch(e){ await _waitImageReady(img); }
-      return;
-    }
-    if(src.indexOf('http') !== 0){
-      await _waitImageReady(img);
-      return;
-    }
-    var du = await _urlToDataUrl(src);
-    if(du && du !== src && du.indexOf('data:') === 0){
-      await new Promise(function(res){
-        var done = false;
-        function finish(){
-          if(done) return; done = true;
-          if(typeof img.decode === 'function'){
-            img.decode().then(function(){ res(); }).catch(function(){ res(); });
-          } else { res(); }
-        }
-        img.addEventListener('load', finish, {once:true});
-        img.addEventListener('error', finish, {once:true});
-        setTimeout(finish, 8000);
-        img.src = du;
-      });
-    } else {
-      await _waitImageReady(img);
-    }
-  }));
+    if(!groups.has(src)) groups.set(src, []);
+    groups.get(src).push(img);
+  });
+
+  var tasks = [];
+  groups.forEach(function(group, src){
+    tasks.push((async function(){
+      if(src.indexOf('data:') === 0 || src.indexOf('http') !== 0){
+        await Promise.all(group.map(_waitImageReady));
+        return;
+      }
+      var allLoaded = group.every(function(im){ return im.complete && im.naturalWidth > 0; });
+      if(allLoaded){
+        await Promise.all(group.map(_waitImageReady));
+        return;
+      }
+      var du = await _urlToDataUrl(src);
+      if(du && du !== src && du.indexOf('data:') === 0){
+        await Promise.all(group.map(function(im){
+          return new Promise(function(res){
+            var done = false;
+            function finish(){ if(done) return; done = true; res(); }
+            im.addEventListener('load', finish, {once:true});
+            im.addEventListener('error', finish, {once:true});
+            setTimeout(finish, 4000);
+            im.src = du;
+          });
+        }));
+      } else {
+        await Promise.all(group.map(_waitImageReady));
+      }
+    })());
+  });
+
+  await Promise.all(tasks);
 }
 
 var _apiWarm = false;
@@ -1593,7 +1643,7 @@ async function _apiCall(fn, payload, retryCount){
     });
     clearTimeout(tid);
     _apiWarm = true;
-    _apiLastTime = Date.now();
+    _lastApiTime = Date.now();
 
     if(resp.status === 401){
       clearStoredToken();
@@ -2616,7 +2666,7 @@ function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
 
-/* ⚡⚡⚡ autoFitFooterText — Encolhe TODOS os elementos do rodapé em conjunto ⚡⚡⚡ */
+/* ⚡⚡⚡ autoFitFooterText — encolhe TODOS os elementos em conjunto; ellipsis como fallback final ⚡⚡⚡ */
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container");
@@ -2633,6 +2683,9 @@ function autoFitFooterText(card){
   els.forEach(function(el){
     el.style.removeProperty("font-size");
     el.style.removeProperty("display");
+    el.style.removeProperty("text-overflow");
+    el.style.removeProperty("min-width");
+    el.style.removeProperty("flex");
   });
   els.forEach(function(el){
     if(!el.textContent || !el.textContent.trim()) el.style.display = "none";
@@ -2672,11 +2725,13 @@ function autoFitFooterText(card){
   });
   void footer.offsetHeight;
 
+  /* Se ainda não couber, deixa o promo-text truncar com "…" em vez de desaparecer */
   if(totalWidth() > fw){
     var pt = footer.querySelector(".promo-text");
     if(pt && pt.style.display !== "none"){
-      pt.style.display = "none";
-      void footer.offsetHeight;
+      pt.style.setProperty("text-overflow", "ellipsis", "important");
+      pt.style.setProperty("flex", "1 1 0%", "important");
+      pt.style.setProperty("min-width", "0", "important");
     }
   }
 }
@@ -2905,7 +2960,6 @@ function updateCardUnsafe(){
     if(barcodeToDraw && !card.classList.contains("size-tiny")){ bcBox.classList.add("show"); $("cardBarcodeText").textContent = barcodeToDraw.toUpperCase(); drawBarcode($("cardBarcodeSvg"),barcodeToDraw); }
     else { bcBox.classList.remove("show"); }
     $("cardPromoText").textContent = formatPromoDate($("promoStart").value,$("promoEnd").value);
-    /* ⚡ Datas compactas removidas do rodapé — manter sempre vazio */
     var pdEl = $("cardPromoDates");
     if(pdEl){ pdEl.textContent = ""; }
     $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
@@ -3005,7 +3059,6 @@ function populateClone(clone, d){
   else if(bcBox){ bcBox.classList.remove('show'); }
   var promoTextEl = clone.querySelector('.promo-text');
   if(promoTextEl) promoTextEl.textContent = formatPromoDate(d.promoStart, d.promoEnd);
-  /* ⚡ Datas compactas removidas do rodapé — manter sempre vazio */
   var promoDatesEl = clone.querySelector('.promo-dates');
   if(promoDatesEl) promoDatesEl.textContent = "";
   var printDateEl = clone.querySelector('.print-date');
@@ -3169,9 +3222,9 @@ async function triggerPrint(){
       if(i % 10 === 0){ var pct = 45 + (i / Math.max(1,totalC)) * 15; setProgress("A ajustar " + i + "/" + totalC + "…", pct); await new Promise(function(r){ requestAnimationFrame(r); }); }
     }
     setProgress("A pré-carregar imagens…", 65);
-    try{ await Promise.race([ _preloadPrintImages(pz), new Promise(function(r){ setTimeout(r, 30000); }) ]); }catch(e){}
+    try{ await Promise.race([ _preloadPrintImages(pz), new Promise(function(r){ setTimeout(r, 20000); }) ]); }catch(e){}
     setProgress("A aguardar renderização…", 88);
-    try{ await Promise.race([ _waitForImages(pz), new Promise(function(r){ setTimeout(r, 6000); }) ]); }catch(e){}
+    try{ await Promise.race([ _waitForImages(pz), new Promise(function(r){ setTimeout(r, 5000); }) ]); }catch(e){}
     for(var j = 0; j < cards.length; j++){
       try{
         if(cards[j].classList.contains("has-image")) autoAdaptImage(cards[j]);
@@ -3179,7 +3232,7 @@ async function triggerPrint(){
       }catch(e){}
     }
     setProgress("A abrir impressão…", 98);
-    await new Promise(function(r){ setTimeout(r, 250); });
+    await new Promise(function(r){ setTimeout(r, 200); });
     clearTimeout(safetyTimer);
     try{ window.print(); }catch(e){}
     setTimeout(function(){ clearTimeout(safetyTimer); cleanupAfterPrint(); }, isMobile() ? 1500 : 1000);
@@ -3714,7 +3767,7 @@ document.getElementById('hardResetBtn').addEventListener("click", async function
   }catch(e){ toast("Erro: "+e.message,"error"); }
 });
 
-/* ⚡ Botões flutuantes na página "fila": imprimir + limpar */
+/* ⚡ Botões flutuantes na página "fila" */
 document.getElementById('floatingPrintBtn').addEventListener("click", function(){ window.triggerPrint(); });
 document.getElementById('floatingClearBtn').addEventListener("click", async function(){
   if(printQueue.length === 0){ toast("A fila já está vazia.","info"); return; }
@@ -3905,6 +3958,13 @@ document.addEventListener("change", function(e){
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
     setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
+    /* ⚡ Pré-carregar os 2 logotipos em background (são usados em todas as etiquetas) */
+    setTimeout(function(){
+      try{
+        _urlToDataUrl('https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO').catch(function(){});
+        _urlToDataUrl('https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb').catch(function(){});
+      }catch(e){}
+    }, 3000);
   }catch(err){}
 })();
 </script>
