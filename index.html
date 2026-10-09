@@ -179,7 +179,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;flex-shrink:0;overflow:hidden;gap:2px}
-/* ⚡ FIX 1 — "Preço sujeito às condições comerciais" agora igual a "Impresso a:" */
 .promo-text{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
 .promo-dates{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
@@ -187,7 +186,6 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .iva-text{font-size:clamp(5px,1.4cqw,7.5px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;text-transform:uppercase;display:inline-block}
 .iva-text:empty{display:none!important}
 
-/* faixa dos dois preços (LEVE 2+) */
 .fruit-promo-prices{
   display:none;
   flex-direction:row;
@@ -1339,78 +1337,146 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ⚡⚡⚡ FIX 3 — PRÉ-CARREGAMENTO ROBUSTO DE IMAGENS PARA IMPRESSÃO (aguarda descodificação de data URLs e src) ⚡⚡⚡ */
+/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS (CORRIGIDO — 3 estratégias em cascata + decode obrigatório) ⚡⚡⚡ */
 var _printImgCache = {};
+
 async function _urlToDataUrl(url){
   if(!url) return '';
   if(String(url).indexOf('data:') === 0) return url;
   if(_printImgCache[url]) return _printImgCache[url];
-  // 1) fetch + blob (com timeout)
+
+  // Estratégia 1: fetch com CORS
   try{
     var ctrl = new AbortController();
-    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 10000);
+    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
     var r = await fetch(url, { mode:'cors', cache:'force-cache', credentials:'omit', signal: ctrl.signal });
     clearTimeout(tid);
     if(r.ok){
       var b = await r.blob();
-      var du = await new Promise(function(res,rej){
-        var fr = new FileReader();
-        fr.onloadend = function(){ res(fr.result); };
-        fr.onerror = rej;
-        fr.readAsDataURL(b);
-      });
-      _printImgCache[url] = du;
-      return du;
+      if(b && b.size > 0){
+        var du = await new Promise(function(res,rej){
+          var fr = new FileReader();
+          fr.onloadend = function(){ res(fr.result); };
+          fr.onerror = rej;
+          fr.readAsDataURL(b);
+        });
+        if(du && du.indexOf('data:') === 0){
+          _printImgCache[url] = du;
+          return du;
+        }
+      }
     }
   }catch(e){}
-  // 2) fallback: Image + canvas
+
+  // Estratégia 2: fetch no-cors (para Google Drive)
   try{
-    var du2 = await new Promise(function(res,rej){
+    var r2 = await fetch(url, { cache:'force-cache', mode:'no-cors' });
+    if(r2){
+      var b2 = await r2.blob();
+      if(b2 && b2.size > 0){
+        var du2 = await new Promise(function(res,rej){
+          var fr = new FileReader();
+          fr.onloadend = function(){ res(fr.result); };
+          fr.onerror = rej;
+          fr.readAsDataURL(b2);
+        });
+        if(du2 && du2.indexOf('data:') === 0){
+          _printImgCache[url] = du2;
+          return du2;
+        }
+      }
+    }
+  }catch(e){}
+
+  // Estratégia 3: Image + canvas (fallback clássico)
+  try{
+    var du3 = await new Promise(function(res,rej){
       var img = new Image();
       img.crossOrigin = 'anonymous';
+      var to = setTimeout(function(){ rej(new Error('timeout')); }, 12000);
       img.onload = function(){
+        clearTimeout(to);
         try{
           var c = document.createElement('canvas');
-          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.width = img.naturalWidth || img.width;
+          c.height = img.naturalHeight || img.height;
+          if(!c.width || !c.height) return rej(new Error('empty'));
           var ctx = c.getContext('2d');
           ctx.drawImage(img, 0, 0);
           res(c.toDataURL('image/jpeg', 0.92));
         }catch(err){ rej(err); }
       };
-      img.onerror = rej;
+      img.onerror = function(){ clearTimeout(to); rej(new Error('img error')); };
       img.src = url;
     });
-    _printImgCache[url] = du2;
-    return du2;
+    if(du3 && du3.indexOf('data:') === 0){
+      _printImgCache[url] = du3;
+      return du3;
+    }
   }catch(e2){}
+
   return url;
 }
+
 function _waitImageReady(img){
   if(!img) return Promise.resolve();
-  if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+  // Se já está "complete" e tem dimensões, garantir decode real
+  if(img.complete && img.naturalWidth > 0){
+    if(typeof img.decode === 'function'){
+      return img.decode().catch(function(){});
+    }
+    return Promise.resolve();
+  }
   return new Promise(function(res){
-    img.addEventListener('load', res, {once:true});
-    img.addEventListener('error', res, {once:true});
-    setTimeout(res, 4000);
+    var done = false;
+    function finish(){
+      if(done) return; done = true;
+      if(typeof img.decode === 'function'){
+        img.decode().then(function(){ res(); }).catch(function(){ res(); });
+      } else {
+        res();
+      }
+    }
+    img.addEventListener('load', finish, {once:true});
+    img.addEventListener('error', finish, {once:true});
+    setTimeout(finish, 8000);
   });
 }
+
 async function _preloadPrintImages(container){
   if(!container) return;
   var imgs = Array.from(container.querySelectorAll('img'));
+  if(!imgs.length) return;
   await Promise.all(imgs.map(async function(img){
     var src = img.getAttribute('src') || '';
     if(!src) return;
+    // Se já é Data URL → forçar decode completo
     if(src.indexOf('data:') === 0){
-      // já é data URL → apenas aguardar descodificação
+      try{
+        if(typeof img.decode === 'function'){ await img.decode(); }
+        else { await _waitImageReady(img); }
+      }catch(e){ await _waitImageReady(img); }
+      return;
+    }
+    // Se já tem a mesma origem (não é http externo), só esperar
+    if(src.indexOf('http') !== 0){
       await _waitImageReady(img);
       return;
     }
+    // Tentar converter para Data URL
     var du = await _urlToDataUrl(src);
-    if(du && du !== src){
+    if(du && du !== src && du.indexOf('data:') === 0){
       await new Promise(function(res){
-        img.addEventListener('load', res, {once:true});
-        img.addEventListener('error', res, {once:true});
-        setTimeout(res, 4000);
+        var done = false;
+        function finish(){
+          if(done) return; done = true;
+          if(typeof img.decode === 'function'){
+            img.decode().then(function(){ res(); }).catch(function(){ res(); });
+          } else { res(); }
+        }
+        img.addEventListener('load', finish, {once:true});
+        img.addEventListener('error', finish, {once:true});
+        setTimeout(finish, 8000);
         img.src = du;
       });
     } else {
@@ -2324,7 +2390,6 @@ async function saveToDb(options){
     if(resp && resp._id) payload._id = resp._id;
     atualizarProdutoLocal(payload); renderDb();
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-    // ⚡ FIX — após guardar, o banner "A editar etiqueta do Drive" DESAPARECE sempre.
     editingDirty = false;
     editingFromDrive = false;
     if(modo === 'update'){
@@ -2361,7 +2426,6 @@ async function saveDbAndQueue(){
 
 function updateBancoCounts(){ var f=0,l=0; bancoFruta.forEach(function(x){ if(x.tipo==='legume') l++; else if(x.tipo==='fruta') f++; }); if($("bfCountFruta")) $("bfCountFruta").textContent = f; if($("bfCountLegume")) $("bfCountLegume").textContent = l; }
 
-/* ⚡ DEDUPLICAÇÃO DO BANCO (nome+tipo, mantém o último = mais recente) */
 function dedupeBancoFruta(lista){
   var arr = ensureArray(lista);
   var seen = {};
@@ -2514,7 +2578,6 @@ function applyPrintSizes(card,dims){
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
   set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8);
-  /* ⚡ FIX — promo-text e print-date com o mesmo tamanho */
   set('.promo-text',1.6); set('.print-date',1.6); set('.promo-dates',1.6); set('.iva-text',1.6);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
@@ -2782,7 +2845,6 @@ function updateCardUnsafe(){
 }
 
 function populateClone(clone, d){
-  /* ⚡ FIX 2 — aplicar SEMPRE a classe de layout correto (fruta promo vs normal) com base no formato do ITEM, não no estado do editor */
   var frItem = d.presetSizes || d.formato || 'amanhecer';
   var isFPitem = isFruitPromoFormat(frItem);
   if(isFPitem) clone.classList.add('layout-fruit-promo'); else clone.classList.remove('layout-fruit-promo');
@@ -2938,7 +3000,6 @@ function construirPaginasA4(container,groups,amanhecerQueue){
     var first = g.items[0];
     var baseDims = getDimensionsFor(g.format,first.customWidth,first.customHeight);
     var dims = getPrintDimensions(g.format,baseDims);
-    /* ⚡ FIX 2 — incluir o format no key para NÃO misturar frutaPromo com normal */
     var key = g.format + "|" + dims.width + "x" + dims.height;
     if(!byDims[key]) byDims[key] = {width:dims.width,height:dims.height,format:g.format,items:[]};
     g.items.forEach(function(it){ byDims[key].items.push(it); });
@@ -2963,7 +3024,6 @@ function construirPaginasA4(container,groups,amanhecerQueue){
   });
 }
 function _fmtDoItem(q,ef){
-  /* ⚡ FIX — garantir que presetSizes NUNCA fica vazio (usa q.data.presetSizes, senao q.data.formato, senao o editor) */
   if(q && q.data){
     var ps = q.data.presetSizes;
     if(ps && String(ps).trim()) return String(ps).trim();
@@ -2983,7 +3043,6 @@ async function _waitForImages(container){
   var imgs = Array.from(container.querySelectorAll("img"));
   if(!imgs.length) return;
   await Promise.all(imgs.map(function(img){
-    /* ⚡ FIX 3 — também espera por Data URLs e por imagens "complete" mas sem naturalWidth */
     return _waitImageReady(img);
   }));
 }
@@ -3029,12 +3088,10 @@ async function triggerPrint(){
       }catch(e){}
       if(i % 10 === 0){ var pct = 45 + (i / Math.max(1,totalC)) * 15; setProgress("A ajustar " + i + "/" + totalC + "…", pct); await new Promise(function(r){ requestAnimationFrame(r); }); }
     }
-    // ⚡ FIX 3 — pré-carregar TODAS as imagens para Data URLs e ESPERAR que fiquem descodificadas
     setProgress("A pré-carregar imagens…", 65);
-    try{ await Promise.race([ _preloadPrintImages(pz), new Promise(function(r){ setTimeout(r, 25000); }) ]); }catch(e){}
+    try{ await Promise.race([ _preloadPrintImages(pz), new Promise(function(r){ setTimeout(r, 30000); }) ]); }catch(e){}
     setProgress("A aguardar renderização…", 88);
-    try{ await Promise.race([ _waitForImages(pz), new Promise(function(r){ setTimeout(r, 5000); }) ]); }catch(e){}
-    // Reajustar depois de as imagens terem carregado
+    try{ await Promise.race([ _waitForImages(pz), new Promise(function(r){ setTimeout(r, 6000); }) ]); }catch(e){}
     for(var j = 0; j < cards.length; j++){
       try{
         if(cards[j].classList.contains("has-image")) autoAdaptImage(cards[j]);
@@ -3056,6 +3113,8 @@ function loadHtml2CanvasPro(){ if(window.html2canvas && window.html2canvas.versi
 var _jsPDFLoading = null;
 function loadJsPDF(){ if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(); if(_jsPDFLoading) return _jsPDFLoading; _jsPDFLoading = new Promise(function(resolve,reject){ var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload=function(){ _jsPDFLoading=null; resolve(); }; s.onerror=function(){ _jsPDFLoading=null; reject(new Error('Falha jsPDF')); }; document.head.appendChild(s); }); return _jsPDFLoading; }
 async function preloadImagesAsDataURLs(container){ return _preloadPrintImages(container); }
+
+/* ⚡⚡⚡ GERAR PDF — CORRIGIDO: garantia EXTRA de imagens carregadas ANTES do html2canvas ⚡⚡⚡ */
 async function gerarPDFBlob(){
   await loadHtml2CanvasPro(); await loadJsPDF();
   var jsPDF = window.jspdf.jsPDF;
@@ -3070,13 +3129,44 @@ async function gerarPDFBlob(){
   var rz = document.createElement("div");
   rz.style.cssText = "position:fixed;top:0;left:0;width:260mm;background:#fff;padding:0;margin:0;z-index:-1;opacity:0.01;overflow:visible;pointer-events:none;";
   document.body.appendChild(rz);
+
+  /* ⚡ Função auxiliar: garante que TODAS as imgs do elemento estão prontas (src data URL + decode completo) */
+  async function garantirImagensProntas(el){
+    var imgs = el.querySelectorAll("img");
+    if(!imgs.length) return;
+    // Fase 1: converter srcs para data URL
+    await _preloadPrintImages(el);
+    // Fase 2: forçar decode em cada imagem e esperar que tenha naturalWidth > 0
+    for(var i = 0; i < imgs.length; i++){
+      var im = imgs[i];
+      var src = im.getAttribute("src") || "";
+      if(!src) continue;
+      // Aguardar load
+      if(!(im.complete && im.naturalWidth > 0)){
+        await new Promise(function(res){
+          var done = false;
+          function fin(){ if(done) return; done = true; res(); }
+          im.addEventListener('load', fin, {once:true});
+          im.addEventListener('error', fin, {once:true});
+          setTimeout(fin, 5000);
+        });
+      }
+      // Forçar decode
+      try{
+        if(typeof im.decode === 'function'){ await im.decode(); }
+      }catch(e){}
+    }
+  }
+
   async function rl(el){
     el.style.transform = "none"; el.style.position = "relative"; el.style.display = "flex";
     el.style.boxSizing = "border-box"; el.style.boxShadow = "none"; el.style.borderRadius = "0";
     el.style.border = "1px solid #222"; el.style.margin = "0"; el.style.visibility = "visible"; el.style.opacity = "1";
     rz.appendChild(el);
-    try{ await _preloadPrintImages(el); }catch(e){}
-    try{ await _waitForImages(el); }catch(e){}
+
+    // ⚡ GARANTIA EXTRA: imagens prontas antes de renderizar
+    try{ await garantirImagensProntas(el); }catch(e){}
+
     autoFitExtraUnit(el);
     autoFitDeposit(el);
     autoFitDescription(el);
@@ -3085,17 +3175,36 @@ async function gerarPDFBlob(){
     autoFitFruitBar(el);
     if(el.classList.contains("has-image")) autoAdaptImage(el);
     autoFixCardOverflow(el);
-    await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,80); }); });
+
+    // Esperar 2 frames para o browser pintar
+    await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,120); }); });
+    // Segunda passagem de decode (após layout final)
+    try{ await garantirImagensProntas(el); }catch(e){}
+    await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,60); }); });
+
     var w = el.offsetWidth||250, h = el.offsetHeight||144;
-    var cv = await window.html2canvas(el,{scale:PRINT_SCALE,backgroundColor:'#ffffff',useCORS:true,allowTaint:true,logging:false,imageTimeout:0,width:w,height:h,windowWidth:w,windowHeight:h});
+    var cv = await window.html2canvas(el,{
+      scale:PRINT_SCALE,
+      backgroundColor:'#ffffff',
+      useCORS:true,
+      allowTaint:true,
+      logging:false,
+      imageTimeout:0,
+      width:w,
+      height:h,
+      windowWidth:w,
+      windowHeight:h
+    });
     var du = cv.toDataURL('image/jpeg',PDF_QUALITY);
     rz.removeChild(el);
     return du;
   }
+
   var fp = true;
   var ARH = [38,40,40,40,40,40,40];
   var ACW = 66, OFF = 6;
   var BL = OFF + (198 - ACW*3)/2, BT = OFF;
+
   for(var i=0;i<aq.length;i+=21){
     var ch = aq.slice(i,i+21);
     if(!fp) doc.addPage(); fp = false;
@@ -3114,6 +3223,7 @@ async function gerarPDFBlob(){
       }
     }
   }
+
   var byDims = {};
   groups.forEach(function(g){
     if(g.format === "amanhecer") return;
@@ -3124,6 +3234,7 @@ async function gerarPDFBlob(){
     if(!byDims[k]) byDims[k] = {width:dd.width,height:dd.height,format:g.format,items:[]};
     g.items.forEach(function(it){ byDims[k].items.push(it); });
   });
+
   for(var k in byDims){
     var o = byDims[k];
     var lay = computeLayout(o.width,o.height), G = lay.gutter;
