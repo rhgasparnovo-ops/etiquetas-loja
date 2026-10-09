@@ -139,6 +139,7 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .preview-wrap{width:100%;display:flex;justify-content:center;min-width:0}
 .preview-scaler{display:flex;justify-content:center;align-items:flex-start;width:100%;position:relative;overflow:hidden}
 .label-card{background:#fff!important;border:1px solid #cbd5e1;box-shadow:0 10px 25px rgba(15,23,42,.14);display:flex!important;flex-direction:column!important;justify-content:space-between!important;box-sizing:border-box!important;overflow:hidden!important;position:relative!important;border-radius:3px;padding:2px 5px!important;container-type:inline-size;--header-h:13%;--img-pad:1px;--gap-main:4px;--img-scale:100%;--accent:#c8102e;-webkit-font-smoothing:antialiased;backface-visibility:hidden}
+.label-card > *{min-height:0;max-width:100%}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:1px;height:var(--header-h);flex-shrink:0;overflow:hidden;width:100%;border-bottom:1px solid #e2e8f0}
 .logo-wrapper-1,.logo-wrapper-2{width:28%;height:100%;display:flex;align-items:center;justify-content:flex-start;overflow:hidden}
 .logo-wrapper-2{justify-content:center}
@@ -171,13 +172,13 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .deposit-row{display:none;justify-content:center;align-items:center;width:100%;padding:1px 0 0;line-height:1}
 .deposit-row.show{display:flex}
 .deposit-box{display:inline-block;font-size:clamp(5.5px,1.8cqw,9px);color:#b91c1c;background:linear-gradient(180deg,#fff5f5,#fee2e2);border:1px solid #fca5a5;padding:1px 7px;border-radius:4px;font-weight:900;line-height:1.2;text-align:center;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
-.fruit-full-bar{width:100%;display:none;text-align:center;white-space:nowrap;overflow:hidden;line-height:1.1;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);margin:1px 0}
-.barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;height:18%;overflow:hidden}
+.fruit-full-bar{width:100%;display:none;text-align:center;white-space:normal;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;line-height:1.05;font-weight:800;color:#084298;text-transform:uppercase;font-size:clamp(6px,2cqw,11px);margin:1px 0;flex-shrink:0;max-height:22%}
+.barcode-container{display:none;flex-direction:column;justify-content:center;align-items:center;width:100%;height:18%;min-height:0;flex-shrink:0;overflow:hidden}
 .barcode-container.show{display:flex!important}
 .svg-container{width:100%;height:72%;display:flex;justify-content:center;overflow:hidden}
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
-.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;overflow:hidden;gap:2px}
+.footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:9%;flex-shrink:0;overflow:hidden;gap:2px}
 .promo-text{font-size:clamp(5px,1.5cqw,8px);color:#475569;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
 .promo-dates{font-size:clamp(5px,1.4cqw,7.5px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
@@ -1033,8 +1034,8 @@ const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
 const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
 
-/* ⚡ NOVO — normalização uniforme de imagens para as etiquetas */
-const IMG_LABEL_CANVAS = 1000; /* canvas quadrado, garante medida uniforme */
+/* ⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS */
+const IMG_LABEL_CANVAS = 1000;
 
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
@@ -1096,7 +1097,7 @@ function sanitizePriceAll(){
   });
 }
 
-/* ===== DATAS OPORTUNIDADE — formato compacto para o rodapé ===== */
+/* ===== DATAS OPORTUNIDADE — formato compacto ===== */
 function formatPromoDatesCompact(s,e){
   function ddmm(str){
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(str||''));
@@ -1342,9 +1343,7 @@ function compressSmart(dataUrl,maxSize,quality){
   });
 }
 
-/* ⚡⚡⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS PARA ETIQUETAS ⚡⚡⚡
-   Toda a imagem aplicada numa etiqueta passa por aqui — canvas quadrado
-   1000×1000 com padding, mantendo sempre a MESMA medida, nunca come texto. */
+/* ⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS PARA ETIQUETAS */
 function normalizeImageForLabel(dataUrl){
   if(!dataUrl || String(dataUrl).indexOf('data:image') !== 0) return Promise.resolve(dataUrl);
   return new Promise(function(resolve){
@@ -1445,7 +1444,7 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* 9. API — timeouts adaptativos + warm-up + retry automático */
+/* 9. API */
 var _apiWarm = false;
 var _lastApiTime = 0;
 const _apiInFlight = new Map();
@@ -1896,7 +1895,6 @@ window.setField = function(id,val){
   }
 };
 
-/* ⚡ CHIPS: estado ativo + sincronização */
 function updateChipStatesFor(field){
   try{
     var el = $(field); if(!el) return;
@@ -2216,14 +2214,11 @@ window.saveQueueItem = async function(i){
     else { setStatus("Nova etiqueta criada (" + dt + "s)","success"); toast("🆕 NOVA ETIQUETA criada · " + fmtShort(fr) + (variantReason ? " — " + variantReason : ""),"success",4500); }
   }catch(e){ setStatus("Erro ao guardar","error"); toast("Erro ao guardar: " + e.message,"error"); }
 };
-
-/* ⚡ resolverFotoParaPayload — normalização uniforme ANTES do upload */
 async function resolverFotoParaPayload(d){
   var fid = d.fotoId || "", furl = d.fotoUrl || "";
   var foto = d.processedPhoto || d.originalPhoto;
   if(!foto) return {fotoId:"",fotoUrl:""};
 
-  /* URL remoto → tenta normalizar (uniformiza medida); se falhar, mantém referência */
   if(String(foto).indexOf('http') === 0){
     var norm = await normalizeUrlForLabel(foto);
     if(norm && String(norm).indexOf('data:image') === 0){
@@ -2234,7 +2229,6 @@ async function resolverFotoParaPayload(d){
     }
   }
 
-  /* data URL → normalização uniforme (mesmo que já venha normalizado, é idempotente) */
   var uniforme = await normalizeImageForLabel(foto);
 
   var comp = await compressSmart(uniforme, IMG_MAX_SIZE, IMG_QUALITY);
@@ -2424,7 +2418,6 @@ function renderBancoFruta(filtro){
 async function guardarFotoBanco(nome,dataUrl,tipo){
   setStatus("A enviar foto para o Drive…","loading");
   try{
-    /* ⚡ garantir medida uniforme antes do upload do banco */
     var uniforme = await normalizeImageForLabel(dataUrl);
     var comp = await compressSmart(uniforme, IMG_MAX_SIZE, IMG_QUALITY);
     if(comp.length > IMG_B64_FALLBACK_LIMIT){
@@ -2549,6 +2542,95 @@ function autoFitFooterText(card){
   }
 }
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
+
+/* ⚡ AUTO-FIT FRUIT-BAR — nunca corta ORIGEM/CAT/CAL */
+function autoFitFruitBar(card){
+  if(!card) return;
+  var bar = card.querySelector('.fruit-full-bar');
+  if(!bar) return;
+  var cs = window.getComputedStyle(bar);
+  if(cs.display === 'none' || cs.visibility === 'hidden') return;
+  if(!bar.textContent || !bar.textContent.trim()) return;
+
+  bar.style.removeProperty('font-size');
+  bar.style.removeProperty('line-height');
+  bar.style.removeProperty('letter-spacing');
+  bar.style.removeProperty('padding');
+  bar.style.removeProperty('transform');
+  void bar.offsetHeight;
+
+  var parent = bar.parentElement;
+  if(!parent) return;
+
+  function overflow(){
+    var pr = parent.getBoundingClientRect();
+    var br = bar.getBoundingClientRect();
+    if(br.width > pr.width + 1) return true;
+    if(bar.scrollHeight > bar.clientHeight + 1) return true;
+    if(bar.scrollWidth  > bar.clientWidth  + 1) return true;
+    if(br.bottom > pr.bottom + 1) return true;
+    return false;
+  }
+
+  if(!overflow()) return;
+
+  var g = 0;
+  while(g < 60){
+    var cur = parseFloat(getComputedStyle(bar).fontSize);
+    if(!cur || cur <= 4) break;
+    bar.style.setProperty("font-size", Math.max(4, cur * 0.9).toFixed(2) + "px", "important");
+    g++;
+    void bar.offsetHeight;
+    if(!overflow()) return;
+  }
+
+  bar.style.setProperty("transform", "scaleX(0.92)", "important");
+  bar.style.setProperty("transform-origin", "center", "important");
+}
+
+/* ⚡ FIX FINAL — garante que NADA transborda os limites do cartão */
+function autoFixCardOverflow(card){
+  if(!card) return;
+  var cr = card.getBoundingClientRect();
+  if(cr.height <= 0) return;
+  var TOL = 2;
+
+  function checkOverflow(){
+    for(var i = 0; i < card.children.length; i++){
+      var k = card.children[i];
+      if(!_vis(k)) continue;
+      var kr = k.getBoundingClientRect();
+      if(kr.height === 0) continue;
+      if(kr.bottom > cr.bottom + TOL) return true;
+      if(kr.right  > cr.right  + TOL) return true;
+    }
+    return false;
+  }
+
+  if(!checkOverflow()) return;
+
+  autoFitFruitBar(card);
+  if(!checkOverflow()) return;
+
+  try{ autoFitFooterText(card); }catch(e){}
+  if(!checkOverflow()) return;
+
+  try{ autoFitExtraUnit(card); }catch(e){}
+  if(!checkOverflow()) return;
+
+  try{ autoFitDeposit(card); }catch(e){}
+  if(!checkOverflow()) return;
+
+  try{ autoFitDescription(card); }catch(e){}
+  if(!checkOverflow()) return;
+
+  card.style.setProperty("padding", "1px 3px", "important");
+  if(!checkOverflow()) return;
+
+  var prod = card.querySelector('.product');
+  if(prod) autoFitTextSync(prod);
+}
+
 function autoFitExtraUnit(card){
   if(!card) return;
   var desc = card.querySelector(".col-desc"), el = card.querySelector(".extra-unit");
@@ -2616,7 +2698,7 @@ function autoLayoutCard(card){
   if(card.classList.contains('print-locked')) return;
   var co = function(){ var cr=card.getBoundingClientRect(); if(cr.height<=0) return false; var TOL=4; for(var i=0;i<card.children.length;i++){ var k=card.children[i]; if(!_vis(k)) continue; var kr=k.getBoundingClientRect(); if(kr.height===0) continue; if(kr.bottom>cr.bottom+TOL||kr.top<cr.top-TOL) return true; } return false; };
   if(!co()) return;
-  autoFitDescription(card); autoFitFooterText(card);
+  autoFitDescription(card); autoFitFooterText(card); autoFitFruitBar(card);
   if(!co()) return;
   card.style.setProperty("padding","1px 3px","important");
 }
@@ -2688,7 +2770,17 @@ function updateCardUnsafe(){
     var pdEl = $("cardPromoDates");
     if(pdEl){ var pdTxt = formatPromoDatesCompact($("promoStart").value, $("promoEnd").value); pdEl.textContent = pdTxt; }
     $("cardPrintDate").textContent = "Impresso a: " + new Date().toLocaleDateString("pt-PT");
-    if(!_skipAutofitInCard){ autoAdaptImage(card); autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); autoLayoutCard(card); }
+    if(!_skipAutofitInCard){
+      autoAdaptImage(card);
+      autoFitExtraUnit(card);
+      autoFitDeposit(card);
+      autoFitDescription(card);
+      autoFitPromoArea(card);
+      autoFitFooterText(card);
+      autoFitFruitBar(card);
+      autoLayoutCard(card);
+      autoFixCardOverflow(card);
+    }
   }catch(err){}
 }
 
@@ -2917,7 +3009,16 @@ async function triggerPrint(){
     var totalC = cards.length;
     for(var i = 0; i < totalC; i++){
       var card = cards[i];
-      try{ autoFitExtraUnit(card); autoFitDeposit(card); autoFitDescription(card); autoFitPromoArea(card); autoFitFooterText(card); if(card.classList.contains("has-image")) autoAdaptImage(card); }catch(e){}
+      try{
+        autoFitExtraUnit(card);
+        autoFitDeposit(card);
+        autoFitDescription(card);
+        autoFitPromoArea(card);
+        autoFitFooterText(card);
+        autoFitFruitBar(card);
+        if(card.classList.contains("has-image")) autoAdaptImage(card);
+        autoFixCardOverflow(card);
+      }catch(e){}
       if(i % 10 === 0){ var pct = 55 + (i / Math.max(1,totalC)) * 30; setProgress("A ajustar " + i + "/" + totalC + "…", pct); await new Promise(function(r){ requestAnimationFrame(r); }); }
     }
     setProgress("A carregar imagens…", 88);
@@ -2965,8 +3066,14 @@ async function gerarPDFBlob(){
     el.style.border = "1px solid #222"; el.style.margin = "0"; el.style.visibility = "visible"; el.style.opacity = "1";
     rz.appendChild(el);
     try{ await preloadImagesAsDataURLs(el); }catch(e){}
-    autoFitExtraUnit(el); autoFitDeposit(el); autoFitDescription(el); autoFitPromoArea(el); autoFitFooterText(el);
+    autoFitExtraUnit(el);
+    autoFitDeposit(el);
+    autoFitDescription(el);
+    autoFitPromoArea(el);
+    autoFitFooterText(el);
+    autoFitFruitBar(el);
     if(el.classList.contains("has-image")) autoAdaptImage(el);
+    autoFixCardOverflow(el);
     await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,80); }); });
     var w = el.offsetWidth||250, h = el.offsetHeight||144;
     var cv = await window.html2canvas(el,{scale:PRINT_SCALE,backgroundColor:'#ffffff',useCORS:true,allowTaint:true,logging:false,imageTimeout:0,width:w,height:h,windowWidth:w,windowHeight:h});
@@ -3052,10 +3159,7 @@ async function enviarEtiquetasPorEmail(){
   } finally { _emailSending = false; if(btn){ btn.disabled = false; btn.textContent = bt||"📧 Enviar por Email"; } }
 }
 
-/* ============================================================
-   25. CÂMARA — COM SUPORTE ROBUSTO DE TORCH / LANTERNA
-   ============================================================ */
-
+/* 25. CÂMARA — TORCH ROBUSTA */
 function getTorchCap(track){
   if(!track) return null;
   try{
@@ -3067,11 +3171,8 @@ function getTorchCap(track){
 function updateTorchBtnVisibility(btn, track){
   if(!btn) return;
   var cap = getTorchCap(track);
-  if(cap === false){
-    btn.classList.add('torch-unsupported');
-  } else {
-    btn.classList.remove('torch-unsupported');
-  }
+  if(cap === false){ btn.classList.add('torch-unsupported'); }
+  else { btn.classList.remove('torch-unsupported'); }
 }
 async function applyTorch(track, on){
   if(!track) return false;
@@ -3084,14 +3185,6 @@ async function applyTorch(track, on){
   try{
     await track.applyConstraints({ torch: on });
     return true;
-  }catch(e){}
-  try{
-    if(track.getCapabilities){
-      var caps = track.getCapabilities();
-      if(caps && caps.torch){
-        var s = new MediaStreamTrack();
-      }
-    }
   }catch(e){}
   return false;
 }
@@ -3110,11 +3203,7 @@ async function openCamera(){
   }
   try{
     var constraints = {
-      video: {
-        facingMode: { ideal: "environment" },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      },
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
       audio: false
     };
     try{
@@ -3124,9 +3213,7 @@ async function openCamera(){
     }
     $("camVideo").srcObject = camStream;
     camTrack = camStream.getVideoTracks()[0] || null;
-    if(camTrack){
-      setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300);
-    }
+    if(camTrack){ setTimeout(function(){ updateTorchBtnVisibility(tb, camTrack); }, 300); }
   }catch(e){
     toast("Não foi possível aceder à câmara","error");
     closeCamera();
@@ -3150,11 +3237,7 @@ async function toggleTorchCam(){
     var ok = await applyTorch(camTrack, novoEstado);
     if(ok){
       torchOn = novoEstado;
-      if(tb){
-        tb.classList.toggle('on',torchOn);
-        tb.classList.toggle('off',!torchOn);
-        tb.textContent = torchOn ? '🔆' : '💡';
-      }
+      if(tb){ tb.classList.toggle('on',torchOn); tb.classList.toggle('off',!torchOn); tb.textContent = torchOn ? '🔆' : '💡'; }
     } else {
       toast('Este dispositivo não permite controlar a luz','warning');
       if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
@@ -3216,11 +3299,7 @@ async function toggleTorchScan(){
     var ok = await applyTorch(scanTrack, novoEstado);
     if(ok){
       scanTorchOn = novoEstado;
-      if(tb){
-        tb.classList.toggle('on',scanTorchOn);
-        tb.classList.toggle('off',!scanTorchOn);
-        tb.textContent = scanTorchOn ? '🔆' : '💡';
-      }
+      if(tb){ tb.classList.toggle('on',scanTorchOn); tb.classList.toggle('off',!scanTorchOn); tb.textContent = scanTorchOn ? '🔆' : '💡'; }
     } else {
       toast('Este dispositivo não permite controlar a luz','warning');
       if(tb){ tb.classList.remove('on'); tb.classList.add('off'); tb.textContent = '💡'; }
@@ -3276,7 +3355,7 @@ async function toggleTorchScan(){
 /* 27. FILTROS DRIVE */
 (function(){ var s = document.getElementById('dbFiltroFormato'), b = document.getElementById('dbBusca'); if(s) s.addEventListener('change', renderDb); if(b){ var t = null; b.addEventListener('input', function(){ if(t) clearTimeout(t); t = setTimeout(renderDb, 180); }); } })();
 
-/* ⚡ CHIPS — sincronização com inputs de origem/categoria/calibre */
+/* ⚡ CHIPS — sync com inputs origem/categoria/calibre */
 (function(){
   ['origem','categoria','calibre'].forEach(function(field){
     var el = document.getElementById(field);
@@ -3457,7 +3536,7 @@ document.getElementById('fotoBancoBtn').addEventListener("click", function(){ fo
 document.getElementById('camClose').addEventListener("click", closeCamera);
 document.getElementById('camTorch').addEventListener("click", toggleTorchCam);
 
-/* ⚡ CAM SNAP — normaliza sempre a imagem para medida uniforme */
+/* ⚡ CAM SNAP — normaliza sempre */
 document.getElementById('camSnap').addEventListener("click", async function(){
   var v = $("camVideo"), c = $("camCanvas");
   var w = v.videoWidth, h = v.videoHeight;
@@ -3480,7 +3559,6 @@ document.getElementById('camSnap').addEventListener("click", async function(){
     return;
   }
 
-  /* MODO NORMAL — normaliza sempre antes de aplicar */
   setStatus("A preparar imagem…","loading");
   globalOriginalPhoto = await normalizeImageForLabel(dataUrl);
   globalProcessedPhoto = "";
@@ -3528,7 +3606,7 @@ document.getElementById('isPromoActive').addEventListener("change", function(){ 
 document.getElementById('depositFeeSelect').addEventListener("change", function(){ var cf = $("customDepositField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } updateCard(); });
 document.getElementById('capacityUnit').addEventListener("change", function(){ var c = $("capacity"); var d = DEFAULTS_UNIDADE[this.value]; c.value = (d !== undefined) ? d : ""; updateCard(); });
 
-/* ⚡ PHOTO INPUT — normaliza sempre a imagem escolhida */
+/* ⚡ PHOTO INPUT — normaliza */
 document.getElementById('photo').addEventListener("change", async function(e){
   var f = e.target.files[0]; globalOriginalPhoto = ""; globalProcessedPhoto = "";
   if(!f){ updateCard(); return; }
