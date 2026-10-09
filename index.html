@@ -1116,6 +1116,15 @@ const TIMEOUT_WRITE_COLD = 45000;
 const TIMEOUT_WRITE_WARM = 25000;
 const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
 
+/* ═══════════════════════════════════════════════════════════════
+   📉 OTIMIZAÇÃO DE IMAGENS — Configuração global
+   ═══════════════════════════════════════════════════════════════ */
+const OTIM_MAX_DIM          = 2000;        // Só reduz imagens gigantes
+const OTIM_QUALIDADE        = 0.92;        // WebP q=0.92 → visualmente sem perda
+const OTIM_PARALELO         = 3;           // 3 imagens em simultâneo
+const OTIM_LIMITE_PULAR     = 350 * 1024;  // Se < 350 KB e já WebP → salta
+const OTIM_MARGEM_MELHORIA  = 0.95;        // Se novo >= 95% do tamanho atual → não estraga
+
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
 function fmtShort(v){ if(!v) return 'Amanhecer'; if(v==='amanhecer') return 'Amanhecer'; if(v==='80x60') return '6×8'; if(v==='125x80') return 'Sup.125×80'; if(v==='frutaPromo125x80') return 'Leve2+ 125×80'; if(v==='frutaPromoA6') return 'Leve2+ A6'; return v; }
@@ -1590,6 +1599,61 @@ function compressSmart(dataUrl,maxSize,quality){
     };
     img.onerror=function(){ resolve(dataUrl); };
     img.src=dataUrl;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   📉 compressSmartHQ — Compressão de alta qualidade (WebP q=0.92)
+   Preserva dimensões originais, sem padding quadrado forçado
+   ═══════════════════════════════════════════════════════════════ */
+function compressSmartHQ(dataUrl, maxSize, quality){
+  maxSize = maxSize || OTIM_MAX_DIM;
+  quality = quality || OTIM_QUALIDADE;
+  return new Promise(function(resolve){
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function(){
+      try{
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        /* Só reduz se for gigante — preserva resolução original */
+        if(w > maxSize || h > maxSize){
+          if(w > h){ h = Math.round(h * maxSize / w); w = maxSize; }
+          else     { w = Math.round(w * maxSize / h); h = maxSize; }
+        }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        var ctx = c.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        /* Deteta transparência */
+        var temTransp = false;
+        try{
+          var tmp = document.createElement('canvas');
+          tmp.width = Math.min(w, 60); tmp.height = Math.min(h, 60);
+          var tc = tmp.getContext('2d');
+          tc.drawImage(img, 0, 0, tmp.width, tmp.height);
+          var px = tc.getImageData(0, 0, tmp.width, tmp.height).data;
+          for(var i = 3; i < px.length; i += 4){ if(px[i] < 250){ temTransp = true; break; } }
+        }catch(e){}
+
+        if(temTransp){
+          ctx.clearRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          var wp = c.toDataURL('image/webp', quality);
+          resolve(wp.indexOf('image/webp') === -1 ? c.toDataURL('image/png') : wp);
+        } else {
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          var wp2 = c.toDataURL('image/webp', quality);
+          resolve(wp2.indexOf('image/webp') === -1 ? c.toDataURL('image/jpeg', quality) : wp2);
+        }
+      }catch(e){ resolve(dataUrl); }
+    };
+    img.onerror = function(){ resolve(dataUrl); };
+    img.src = dataUrl;
   });
 }
 
@@ -2782,7 +2846,6 @@ function _setupBfClick(){
     $('bancoFrutaModal').classList.remove('show');
     setStatus("A preparar imagem…","loading");
     try{
-      /* Tenta cache primeiro */
       var cached = id ? await _getThumbFromCache(id, THUMB_GRID_2X) : null;
       if(cached && cached.indexOf('data:') === 0){ globalOriginalPhoto = cached; globalProcessedPhoto = cached; updateCard(); }
 
@@ -2834,7 +2897,6 @@ function renderBancoFruta(filtro){
       img.setAttribute('data-fotoid', f.fotoId);
       img.setAttribute('data-size', String(THUMB_GRID_2X));
       if(f.fotoUrl) img.setAttribute('data-fallback', f.fotoUrl);
-      /* Se já estiver em memória, aplica já (evita flash) */
       var cached = _thumbMemCache[f.fotoId + '_' + THUMB_GRID_2X];
       if(cached){
         if(cached.indexOf('data:') === 0){ img.src = cached; img.classList.add('loaded'); }
@@ -2862,7 +2924,6 @@ function renderBancoFruta(filtro){
   _setupBfObserver();
   _setupBfClick();
 
-  /* Dispara carregamento agressivo para os primeiros — não espera scroll */
   var imgs = c.querySelectorAll('img.bf-img[data-fotoid]');
   var PRIMEIROS_RAPIDOS = Math.min(12, imgs.length);
   for(var k = 0; k < PRIMEIROS_RAPIDOS; k++){
@@ -2871,7 +2932,6 @@ function renderBancoFruta(filtro){
     var sz = parseInt(im.getAttribute('data-size') || THUMB_GRID_2X, 10);
     if(fid) _aplicarThumb(im, fid, sz);
   }
-  /* Restantes via observer */
   if(_bfObserver){
     for(var k2 = PRIMEIROS_RAPIDOS; k2 < imgs.length; k2++) _bfObserver.observe(imgs[k2]);
   } else {
@@ -2882,7 +2942,6 @@ function renderBancoFruta(filtro){
     }
   }
 
-  /* Prefetch restante em background */
   try{
     var restantes = Array.from(imgs).slice(PRIMEIROS_RAPIDOS, 60).map(function(x){ return x.getAttribute('data-fotoid'); }).filter(Boolean);
     if(restantes.length) setTimeout(function(){ _prefetchThumbs(restantes, THUMB_GRID_2X, 4); }, 800);
@@ -2908,13 +2967,22 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
     toast("Foto \"" + r.nome + "\" guardada em " + ((tipo==='legume')?"Banco de Legumes":"Banco de Frutas"),"success",4500);
   }catch(e){ setStatus("Erro ao guardar foto","error"); toast("Erro ao guardar foto: " + e.message,"error"); throw e; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   📉 otimizarImagensDrive — OTIMIZAÇÃO EM LOTE PARALELA
+   • WebP q=0.92 (visualmente sem perda)
+   • Sem redução de resolução (só corta acima de 2000px)
+   • Processamento paralelo (3 em simultâneo)
+   • Salta imagens já otimizadas
+   • Substitui conteúdo — mantém fotoId e linha da sheet
+   ═══════════════════════════════════════════════════════════════ */
 async function otimizarImagensDrive(){
   if(!bancoFruta.length){ toast("Sem imagens no banco.","warning"); return; }
 
   var ok = await confirmDialog(
     "Otimizar " + bancoFruta.length + " imagens?\n\n" +
     "• Conversão para WebP q=0.92 (visualmente sem perda)\n" +
-    "• Sem redução de resolução\n" +
+    "• Sem redução de resolução (só acima de 2000px)\n" +
     "• Processamento paralelo (mais rápido)\n" +
     "• Imagens já otimizadas são ignoradas",
     "Otimizar imagens"
@@ -2924,11 +2992,6 @@ async function otimizarImagensDrive(){
   var btn = $("optimizarImagensBtn"), orig = btn ? btn.textContent : '';
   if(btn) btn.disabled = true;
 
-  var LIMITE_PULAR_BYTES = 350 * 1024; // < 350 KB e já WebP → salta
-  var MAX_DIM = 2000;                  // só reduz acima disto
-  var QUALIDADE = 0.92;
-  var PARALELO = 3;                    // 3 em simultâneo
-
   var done = 0, pulados = 0, errs = 0;
   var total = bancoFruta.length;
   var fila = bancoFruta.slice();
@@ -2936,16 +2999,16 @@ async function otimizarImagensDrive(){
   async function processar(f){
     try{
       var url = f.fotoId
-        ? 'https://drive.google.com/thumbnail?id=' + f.fotoId + '&sz=w' + MAX_DIM
+        ? ('https://drive.google.com/thumbnail?id=' + f.fotoId + '&sz=w' + OTIM_MAX_DIM)
         : f.fotoUrl;
-      if(!url) { pulados++; return; }
+      if(!url){ pulados++; return; }
 
       var resp = await fetch(url, { mode:'cors', cache:'force-cache' });
       if(!resp.ok) throw new Error('HTTP ' + resp.status);
       var blob = await resp.blob();
 
-      // Já está ótima → não toca (evita perda cumulativa)
-      if(blob.type === 'image/webp' && blob.size < LIMITE_PULAR_BYTES){
+      /* Já está ótima → não toca (evita perda cumulativa) */
+      if(blob.type === 'image/webp' && blob.size < OTIM_LIMITE_PULAR){
         pulados++; return;
       }
 
@@ -2956,14 +3019,14 @@ async function otimizarImagensDrive(){
         r.readAsDataURL(blob);
       });
 
-      var compressed = await compressSmartHQ(dataUrl, MAX_DIM, QUALIDADE);
+      var compressed = await compressSmartHQ(dataUrl, OTIM_MAX_DIM, OTIM_QUALIDADE);
 
-      // Se não melhorou → não estraga
-      if(compressed.length >= dataUrl.length * 0.95){
+      /* Se não melhorou → não estraga */
+      if(compressed.length >= dataUrl.length * OTIM_MARGEM_MELHORIA){
         pulados++; return;
       }
 
-      // substituirFotoBanco mantém a linha da sheet (não apaga+cria)
+      /* substituirFotoBanco mantém a linha da sheet (não apaga+cria) */
       var r2 = await api('substituirFotoBanco', {
         fotoId: f.fotoId,
         nome:   f.nome,
@@ -2982,14 +3045,16 @@ async function otimizarImagensDrive(){
     setStatus("A otimizar " + (done + pulados + errs) + "/" + total + "…", "loading");
   }
 
-  // 3 workers em paralelo
+  /* Workers paralelos */
   async function worker(){
     while(fila.length){
       var f = fila.shift();
       if(f) await processar(f);
     }
   }
-  await Promise.all([worker(), worker(), worker()]);
+  var workers = [];
+  for(var i = 0; i < OTIM_PARALELO; i++) workers.push(worker());
+  await Promise.all(workers);
 
   if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar"; }
 
@@ -3007,6 +3072,26 @@ async function otimizarImagensDrive(){
     errs ? "warning" : "success"
   );
   toast("✅ " + done + " otimizadas · " + pulados + " ignoradas · " + errs + " erros", "success", 6500);
+}
+
+var _updateCardTimer = null;
+function updateCard(){
+  if(_updateCardTimer) clearTimeout(_updateCardTimer);
+  if(editingFromDrive && editingId){ editingDirty = true; }
+  _updateCardTimer = setTimeout(function(){
+    try{
+      sanitizePriceAll(); updateIvaVisual();
+      updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
+      updateAllChipStates();
+      if(editingFromDrive && editingId){ updateEditingBanner(); if(document.body.dataset.view === 'drive') renderDb(); }
+      requestAnimationFrame(fitPreviewCard);
+      if(document.getElementById('previewModal').classList.contains('show')){
+        var z=_previewZoom, sx=_previewPanX, sy=_previewPanY;
+        abrirPreviewModal(); _previewZoom=z; _previewPanX=sx; _previewPanY=sy;
+        applyPreviewZoom(true);
+      }
+    }catch(err){}
+  }, 16);
 }
 function updateCapacityHint(){
   var h = document.getElementById("capacityHint"); if(!h) return;
@@ -3930,7 +4015,6 @@ document.getElementById('diagnosticoBtn').addEventListener("click", async functi
   try{ var p = await api('ping'); l.push('<span class="ok">✔ ping</span> → '+p); }catch(e){ l.push('<span class="err">✘ ping</span> → '+e.message); box.innerHTML = l.join("\n"); return; }
   await new Promise(function(r){ setTimeout(r,400); });
   try{ var r = await api('listarTudo',{forceRefresh:true}); l.push('<span class="ok">✔ listarTudo</span> → '+(r.produtos?r.produtos.length:0)+" produtos, "+(r.banco?r.banco.length:0)+" imagens"); }catch(e){ l.push('<span class="err">✘ listarTudo</span> → '+e.message); }
-  /* Testa thumbnail */
   if(bancoFruta.length > 0 && bancoFruta[0].fotoId){
     try{
       var fid = bancoFruta[0].fotoId;
