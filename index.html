@@ -1528,95 +1528,42 @@ function _cacheSet(k,v){
   }
 }
 
-async function _fotoViaBackend(url){
-  var fotoId = extrairFotoIdDoUrl(url);
-  if(!fotoId) return null;
-  try{
-    var r = await api('obterFotoBase64', { fotoId: fotoId });
-    if(r && r.base64 && String(r.base64).indexOf('data:') === 0){
-      return r.base64;
-    }
-  }catch(e){}
-  return null;
-}
-
 async function _urlToDataUrl(url){
   if(!url) return '';
   if(String(url).indexOf('data:') === 0) return url;
   var _c = _cacheGet(url); if(_c) return _c;
 
-  var backendB64 = await _fotoViaBackend(url);
-  if(backendB64){
-    _cacheSet(url, backendB64);
-    return backendB64;
+  /* 1. Proxy backend primeiro (fiável) */
+  var fotoId = extrairFotoIdDoUrl(url);
+  if(fotoId){
+    try{
+      var r = await api('obterFotoBase64', { fotoId: fotoId });
+      if(r && r.base64 && String(r.base64).indexOf('data:') === 0){
+        _cacheSet(url, r.base64);
+        return r.base64;
+      }
+    }catch(e){}
   }
 
+  /* 2. Fetch CORS */
   try{
     var ctrl = new AbortController();
-    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 10000);
-    var r = await fetch(url, { mode:'cors', cache:'force-cache', credentials:'omit', signal: ctrl.signal });
+    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 8000);
+    var resp = await fetch(url, { mode: 'cors', cache: 'force-cache', credentials: 'omit', signal: ctrl.signal });
     clearTimeout(tid);
-    if(r.ok){
-      var b = await r.blob();
+    if(resp.ok){
+      var b = await resp.blob();
       if(b && b.size > 0){
-        var du = await new Promise(function(res,rej){
+        var du = await new Promise(function(res, rej){
           var fr = new FileReader();
           fr.onloadend = function(){ res(fr.result); };
           fr.onerror = rej;
           fr.readAsDataURL(b);
         });
-        if(du && du.indexOf('data:') === 0){
-          _cacheSet(url, du);
-          return du;
-        }
+        if(du && du.indexOf('data:') === 0){ _cacheSet(url, du); return du; }
       }
     }
   }catch(e){}
-
-  try{
-    var r2 = await fetch(url, { cache:'force-cache', mode:'no-cors' });
-    if(r2){
-      var b2 = await r2.blob();
-      if(b2 && b2.size > 0){
-        var du2 = await new Promise(function(res,rej){
-          var fr = new FileReader();
-          fr.onloadend = function(){ res(fr.result); };
-          fr.onerror = rej;
-          fr.readAsDataURL(b2);
-        });
-        if(du2 && du2.indexOf('data:') === 0){
-          _cacheSet(url, du2);
-          return du2;
-        }
-      }
-    }
-  }catch(e){}
-
-  try{
-    var du3 = await new Promise(function(res,rej){
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      var to = setTimeout(function(){ rej(new Error('timeout')); }, 10000);
-      img.onload = function(){
-        clearTimeout(to);
-        try{
-          var c = document.createElement('canvas');
-          c.width = img.naturalWidth || img.width;
-          c.height = img.naturalHeight || img.height;
-          if(!c.width || !c.height) return rej(new Error('empty'));
-          var ctx = c.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          res(c.toDataURL('image/jpeg', 0.92));
-        }catch(err){ rej(err); }
-      };
-      img.onerror = function(){ clearTimeout(to); rej(new Error('img error')); };
-      img.src = url;
-    });
-    if(du3 && du3.indexOf('data:') === 0){
-      _cacheSet(url, du3);
-      return du3;
-    }
-  }catch(e2){}
 
   return url;
 }
@@ -2699,18 +2646,18 @@ function dedupeBancoFruta(lista){
   return out;
 }
 
-/* ⚡ CARREGAMENTO ROBUSTO DE IMAGENS DO BANCO — cache + retry + lazy + proxy */
+/* ⚡ CARREGAMENTO OTIMIZADO — <img src> nativo, sem fetch+blob+FileReader */
 var _bfObserver = null;
-var _bfImgQueue = [];
-var _bfImgActive = 0;
-var _BF_MAX_CONCURRENT = 4;
 var _bfThumbMemCache = new Map();
-var _BF_MEM_CACHE_MAX = 120;
+var _BF_MEM_CACHE_MAX = 300;
+var _BF_DIRECT_URL = 'https://lh3.googleusercontent.com/d/';
+var _bfRetryInflight = new Set();
 
 function _bfMemGet(k){ return _bfThumbMemCache.get(k); }
-function _bfMemSet(k,v){
+function _bfMemSet(k, v){
+  if(!k) return;
   if(_bfThumbMemCache.has(k)) _bfThumbMemCache.delete(k);
-  _bfThumbMemCache.set(k,v);
+  _bfThumbMemCache.set(k, v);
   while(_bfThumbMemCache.size > _BF_MEM_CACHE_MAX){
     var first = _bfThumbMemCache.keys().next().value;
     _bfThumbMemCache.delete(first);
@@ -2723,29 +2670,10 @@ async function _bfIdbGet(fotoId){
 }
 async function _bfIdbSet(fotoId, dataUrl){
   try{
-    if(dataUrl && dataUrl.length < 250000){
+    if(dataUrl && dataUrl.length < 300000){
       await localforage.setItem('bf_thumb_' + fotoId, dataUrl);
     }
   }catch(e){}
-}
-
-async function _bfFetchThumbFromCdn(fotoId, size){
-  var url = thumbUrl(fotoId, size || 400);
-  try{
-    var ctrl = new AbortController();
-    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
-    var r = await fetch(url, { mode:'cors', cache:'force-cache', credentials:'omit', signal: ctrl.signal, referrerPolicy: 'no-referrer' });
-    clearTimeout(tid);
-    if(!r.ok) return null;
-    var blob = await r.blob();
-    if(!blob || blob.size === 0) return null;
-    return await new Promise(function(res,rej){
-      var fr = new FileReader();
-      fr.onloadend = function(){ res(fr.result); };
-      fr.onerror = rej;
-      fr.readAsDataURL(blob);
-    });
-  }catch(e){ return null; }
 }
 
 async function _bfFetchThumbFromProxy(fotoId){
@@ -2756,96 +2684,121 @@ async function _bfFetchThumbFromProxy(fotoId){
   return null;
 }
 
-async function _bfLoadThumb(fotoId){
-  if(!fotoId) return null;
-  var mem = _bfMemGet(fotoId);
-  if(mem) return mem;
-  var idb = await _bfIdbGet(fotoId);
-  if(idb){ _bfMemSet(fotoId, idb); return idb; }
-
-  var du = await _bfFetchThumbFromCdn(fotoId, 400);
-  if(du){
-    _bfMemSet(fotoId, du);
-    _bfIdbSet(fotoId, du);
-    return du;
-  }
-
-  var proxy = await _bfFetchThumbFromProxy(fotoId);
-  if(proxy){
-    _bfMemSet(fotoId, proxy);
-    _bfIdbSet(fotoId, proxy);
-    return proxy;
-  }
-
-  return null;
-}
-
-function _bfEnqueue(fn){
-  return new Promise(function(resolve){
-    _bfImgQueue.push({fn: fn, resolve: resolve});
-    _bfProcessQueue();
-  });
-}
-function _bfProcessQueue(){
-  while(_bfImgActive < _BF_MAX_CONCURRENT && _bfImgQueue.length > 0){
-    var item = _bfImgQueue.shift();
-    _bfImgActive++;
-    Promise.resolve()
-      .then(item.fn)
-      .then(function(r){ item.resolve(r); }, function(){ item.resolve(null); })
-      .then(function(){
-        _bfImgActive--;
-        _bfProcessQueue();
-      });
-  }
-}
-
-async function _bfLoadCardImage(el){
-  var fotoId = el.dataset.fotoid;
-  var wrap = el.querySelector('.bf-img-wrap');
+function _bfRenderImage(wrap, src){
   if(!wrap) return;
-  var dataUrl = null;
-  if(fotoId){
-    dataUrl = await _bfEnqueue(function(){ return _bfLoadThumb(fotoId); });
-  }
-  if(!dataUrl){
-    wrap.innerHTML = '<div class="bf-placeholder">📷</div>';
-    return;
-  }
   var img = document.createElement('img');
   img.alt = '';
   img.decoding = 'async';
   img.loading = 'lazy';
   img.referrerPolicy = 'no-referrer';
-  img.src = dataUrl;
-  img.onload = function(){ wrap.innerHTML = ''; wrap.appendChild(img); };
-  img.onerror = function(){ wrap.innerHTML = '<div class="bf-placeholder">📷</div>'; };
-  if(img.complete && img.naturalWidth > 0){
-    wrap.innerHTML = ''; wrap.appendChild(img);
+  img.src = src;
+  wrap.innerHTML = '';
+  wrap.appendChild(img);
+}
+
+/* Carrega imagem: mem cache → <img> direto → IDB → proxy (último recurso) */
+function _bfLoadCardImage(el){
+  var fotoId = el.dataset.fotoid;
+  var wrap = el.querySelector('.bf-img-wrap');
+  if(!wrap) return;
+  if(wrap.querySelector('img')) return;
+
+  if(!fotoId){
+    wrap.innerHTML = '<div class="bf-placeholder">📷</div>';
+    return;
+  }
+
+  /* 1. Cache em memória */
+  var mem = _bfMemGet(fotoId);
+  if(mem){ _bfRenderImage(wrap, mem); return; }
+
+  /* 2. <img src> direto do CDN (nativo, rápido, browser faz cache) */
+  var directUrl = _BF_DIRECT_URL + fotoId + '=w400';
+  var img = new Image();
+  img.alt = '';
+  img.decoding = 'async';
+  img.loading = 'lazy';
+  img.referrerPolicy = 'no-referrer';
+
+  var done = false;
+  var timer = setTimeout(function(){
+    if(done) return; done = true;
+    _bfImageFallback(wrap, fotoId);
+  }, 7000);
+
+  img.onload = function(){
+    if(done) return; done = true;
+    clearTimeout(timer);
+    wrap.innerHTML = '';
+    wrap.appendChild(img);
+  };
+  img.onerror = function(){
+    if(done) return; done = true;
+    clearTimeout(timer);
+    _bfImageFallback(wrap, fotoId);
+  };
+  img.src = directUrl;
+}
+
+async function _bfImageFallback(wrap, fotoId){
+  if(!fotoId){ wrap.innerHTML = '<div class="bf-placeholder">📷</div>'; return; }
+  if(_bfRetryInflight.has(fotoId)){
+    var p = await _bfFetchThumbFromProxy(fotoId);
+    if(p) _bfRenderImage(wrap, p);
+    else wrap.innerHTML = '<div class="bf-placeholder">📷</div>';
+    return;
+  }
+  _bfRetryInflight.add(fotoId);
+  try{
+    /* 3. IDB */
+    var idb = await _bfIdbGet(fotoId);
+    if(idb){ _bfMemSet(fotoId, idb); _bfRenderImage(wrap, idb); return; }
+    /* 4. Proxy backend */
+    var proxy = await _bfFetchThumbFromProxy(fotoId);
+    if(proxy){
+      _bfMemSet(fotoId, proxy);
+      _bfIdbSet(fotoId, proxy);
+      _bfRenderImage(wrap, proxy);
+      return;
+    }
+    wrap.innerHTML = '<div class="bf-placeholder">📷</div>';
+  } finally {
+    _bfRetryInflight.delete(fotoId);
   }
 }
 
 function renderBancoFruta(filtro){
-  filtro = filtro||'';
+  filtro = filtro || '';
   var c = $("gradeBancoFruta"); if(!c) return;
   var q = filtro.toUpperCase();
-  var lista = bancoFruta.filter(function(f){ if((f.tipo||'') !== bancoTipoFiltro) return false; if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false; return true; });
+  var lista = bancoFruta.filter(function(f){
+    if((f.tipo || '') !== bancoTipoFiltro) return false;
+    if(q && String(f.nome || '').toUpperCase().indexOf(q) < 0) return false;
+    return true;
+  });
   updateBancoCounts();
-  if(lista.length === 0){ c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length===0 ? 'Nenhuma imagem no banco ainda.' : (bancoTipoFiltro==='fruta'?'Sem frutas com esse filtro.':'Sem legumes com esse filtro.')) + '</div>'; return; }
+  if(lista.length === 0){
+    c.innerHTML = '<div class="bf-empty">' + (bancoFruta.length === 0
+      ? 'Nenhuma imagem no banco ainda.'
+      : (bancoTipoFiltro === 'fruta' ? 'Sem frutas com esse filtro.' : 'Sem legumes com esse filtro.')) + '</div>';
+    return;
+  }
 
   if(_bfObserver){ try{ _bfObserver.disconnect(); }catch(e){} _bfObserver = null; }
 
   c.innerHTML = lista.map(function(f){
     var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
-    var tag = '<span class="bf-tag ' + tipo + '">' + (tipo==='legume'?'🥬 Legume':'🍎 Fruta') + '</span>';
-    var applyUrl = f.fotoId ? thumbUrl(f.fotoId,1200) : (f.fotoUrl||'');
+    var tag = '<span class="bf-tag ' + tipo + '">' + (tipo === 'legume' ? '🥬 Legume' : '🍎 Fruta') + '</span>';
+    var applyUrl = f.fotoId ? thumbUrl(f.fotoId, 1200) : (f.fotoUrl || '');
     var fid = f.fotoId || '';
-    return '<div class="bf-card" data-url="' + escapeAttr(applyUrl) + '" data-nome="' + escapeAttr(f.nome||'') + '" data-fotoid="' + escapeAttr(fid) + '">' +
+    return '<div class="bf-card" data-url="' + escapeAttr(applyUrl) + '" data-nome="' + escapeAttr(f.nome || '') + '" data-fotoid="' + escapeAttr(fid) + '">' +
       '<div class="bf-img-wrap"><div class="bf-spinner"></div></div>' +
       tag + '<div class="bf-nome">' + escapeHTML(f.nome) + '</div></div>';
   }).join('');
 
   var cards = c.querySelectorAll('.bf-card');
+
+  /* ⚡ IntersectionObserver no viewport (root: null) + pré-fetch agressivo */
   if('IntersectionObserver' in window){
     _bfObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
@@ -2855,7 +2808,7 @@ function renderBancoFruta(filtro){
           _bfLoadCardImage(el);
         }
       });
-    }, { root: c, rootMargin: '300px' });
+    }, { root: null, rootMargin: '900px 0px', threshold: 0.01 });
     cards.forEach(function(el){ _bfObserver.observe(el); });
   } else {
     cards.forEach(function(el){ _bfLoadCardImage(el); });
@@ -2866,7 +2819,8 @@ function renderBancoFruta(filtro){
       var url = el.dataset.url;
       var fotoId = el.dataset.fotoid;
       $('bancoFrutaModal').classList.remove('show');
-      setStatus("A preparar imagem…","loading");
+      if(_bfObserver){ try{ _bfObserver.disconnect(); }catch(e){} _bfObserver = null; }
+      setStatus("A preparar imagem…", "loading");
       var norm = null;
       if(fotoId){
         var cached = _bfMemGet(fotoId) || await _bfIdbGet(fotoId);
@@ -2879,32 +2833,47 @@ function renderBancoFruta(filtro){
       if(!$('product').value.trim()) $('product').value = el.dataset.nome;
       updateCard();
       setStatus("");
-      toast("Imagem aplicada","success");
+      toast("Imagem aplicada", "success");
     });
   });
 }
-async function guardarFotoBanco(nome,dataUrl,tipo){
-  setStatus("A enviar foto para o Drive…","loading");
+
+async function guardarFotoBanco(nome, dataUrl, tipo){
+  setStatus("A enviar foto para o Drive…", "loading");
   try{
     var uniforme = await normalizeImageForLabel(dataUrl);
     var comp = await compressSmart(uniforme, IMG_MAX_SIZE, IMG_QUALITY);
     if(comp.length > IMG_B64_FALLBACK_LIMIT){
       comp = await compressSmart(uniforme, IMG_MAX_SIZE_FALLBACK, IMG_QUALITY_FALLBACK);
     }
-    var r = await api('uploadBancoFruta',{base64:comp,nome:nome,tipo:tipo});
-    bancoFruta = ensureArray(bancoFruta).filter(function(f){ return String(f.nome||"").toUpperCase() !== nome || (f.tipo||'') !== tipo; });
-    bancoFruta.push({nome:r.nome,fotoId:r.id,fotoUrl:r.url,tipo:r.tipo||tipo});
-    bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
+    var r = await api('uploadBancoFruta', {base64: comp, nome: nome, tipo: tipo});
+
+    /* ⚡ Cache imediata do thumb para aparecer instantâneo */
+    try{
+      var thumbData = await compressSmart(comp, 400, 0.85);
+      _bfMemSet(r.id, thumbData);
+      _bfIdbSet(r.id, thumbData);
+    }catch(e){}
+
+    bancoFruta = ensureArray(bancoFruta).filter(function(f){
+      return String(f.nome || "").toUpperCase() !== nome || (f.tipo || '') !== tipo;
+    });
+    bancoFruta.push({ nome: r.nome, fotoId: r.id, fotoUrl: r.url, tipo: r.tipo || tipo });
+    bancoFruta.sort(function(a, b){ return String(a.nome).localeCompare(String(b.nome), 'pt'); });
     bancoFruta = dedupeBancoFruta(bancoFruta);
-    /* invalida cache do thumb (imagem nova) */
-    try{ _bfThumbMemCache.delete(r.id); }catch(e){}
-    try{ localforage.removeItem('bf_thumb_' + r.id); }catch(e){}
+
     renderBancoFruta($("buscaBancoFruta").value);
-    try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
-    setStatus("Foto guardada no Drive","success");
-    toast("Foto \"" + r.nome + "\" guardada em " + ((tipo==='legume')?"Banco de Legumes":"Banco de Frutas"),"success",4500);
-  }catch(e){ setStatus("Erro ao guardar foto","error"); toast("Erro ao guardar foto: " + e.message,"error"); throw e; }
+    try{ await localforage.setItem(CACHE_KEY, { schemaVersion: CACHE_SCHEMA_VERSION, produtos: savedProducts, banco: bancoFruta, t: Date.now() }); }catch(e){}
+
+    setStatus("Foto guardada no Drive", "success");
+    toast("Foto \"" + r.nome + "\" guardada em " + ((tipo === 'legume') ? "Banco de Legumes" : "Banco de Frutas"), "success", 4500);
+  }catch(e){
+    setStatus("Erro ao guardar foto", "error");
+    toast("Erro ao guardar foto: " + e.message, "error");
+    throw e;
+  }
 }
+
 async function otimizarImagensDrive(){
   if(!bancoFruta.length){ toast("Sem imagens no banco para otimizar.","warning"); return; }
   var ok = await confirmDialog("Otimizar as " + bancoFruta.length + " imagens do Drive?");
@@ -4109,16 +4078,31 @@ document.getElementById('dbAddSelectedBtn').addEventListener("click", function()
 });
 
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
-  setStatus("A sincronizar banco…","loading");
+  var btn = this;
+  var orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "⏳";
+  setStatus("A sincronizar banco…", "loading");
   try{
     var r = await api('sincronizarBancoIncremental');
-    await carregarTudo({manual:true});
-    var msg = r && r.modo === 'incremental'
-      ? 'Sync: +' + (r.novos||0) + ' novos, ~' + (r.alterados||0) + ' alt, -' + (r.removidos||0) + ' rem'
-      : 'Sincronizado';
-    toast(msg,"success",3500);
+    var mudou = r && ((r.novos || 0) > 0 || (r.alterados || 0) > 0 || (r.removidos || 0) > 0 || r.modo === 'full' || r.modo === 'full-fallback');
+    if(mudou){
+      await carregarTudo({ manual: true });
+      var msg = r.modo === 'incremental'
+        ? 'Sync: +' + (r.novos || 0) + ' novos, ~' + (r.alterados || 0) + ' alt, -' + (r.removidos || 0) + ' rem'
+        : 'Sincronizado';
+      toast(msg, "success", 3500);
+    } else {
+      toast("Sem alterações no banco", "info", 2500);
+    }
+    setStatus("Sincronizado", "success", { duration: 2000 });
+  }catch(e){
+    setStatus("Erro", "error");
+    toast("Erro: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = orig;
   }
-  catch(e){ setStatus("Erro","error"); toast("Erro: "+e.message,"error"); }
 });
 
 document.getElementById('apagarTudoBtn').addEventListener("click", function(){ window.apagarTudo(); });
@@ -4213,10 +4197,18 @@ document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function
   });
 })();
 
-document.getElementById('fecharBancoFruta').addEventListener("click", function(){ document.getElementById('bancoFrutaModal').classList.remove("show"); });
+document.getElementById('fecharBancoFruta').addEventListener("click", function(){
+  if(_bfObserver){ try{ _bfObserver.disconnect(); }catch(e){} _bfObserver = null; }
+  document.getElementById('bancoFrutaModal').classList.remove("show");
+});
 var _buscaTimer = null;
 document.getElementById('buscaBancoFruta').addEventListener("input", function(e){ if(_buscaTimer) clearTimeout(_buscaTimer); var v = e.target.value; _buscaTimer = setTimeout(function(){ renderBancoFruta(v); },150); });
-document.getElementById('bancoFrutaModal').addEventListener("click", function(e){ if(e.target === document.getElementById('bancoFrutaModal')) document.getElementById('bancoFrutaModal').classList.remove("show"); });
+document.getElementById('bancoFrutaModal').addEventListener("click", function(e){
+  if(e.target === document.getElementById('bancoFrutaModal')){
+    if(_bfObserver){ try{ _bfObserver.disconnect(); }catch(e){} _bfObserver = null; }
+    document.getElementById('bancoFrutaModal').classList.remove("show");
+  }
+});
 document.getElementById('diagnosticoBtn').addEventListener("click", async function(){
   var box = $("diagBox"); box.innerHTML = "🩺 A diagnosticar…"; box.classList.add("show");
   setStatus("A testar API…","loading");
@@ -4395,4 +4387,4 @@ document.addEventListener("change", function(e){
 })();
 </script>
 </body>
-</html>
+</html>  
