@@ -1337,15 +1337,39 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS (CORRIGIDO — 3 estratégias em cascata + decode obrigatório) ⚡⚡⚡ */
+/* ⚡⚡⚡ PRE-CARREGAMENTO ROBUSTO DE IMAGENS ⚡⚡⚡
+   Corrigido: para ficheiros do Google Drive, o backend Apps Script funciona
+   como proxy (devolve base64 do ficheiro autenticado), garantindo que a imagem
+   aparece SEMPRE no PDF/email, sem depender de CORS nem de rate-limits. */
 var _printImgCache = {};
+
+/* ⚡ NOVO: pede ao backend Apps Script o base64 do ficheiro do Drive.
+   Só é usado quando a URL é de ficheiro Drive (tem fotoId identificável). */
+async function _fotoViaBackend(url){
+  var fotoId = extrairFotoIdDoUrl(url);
+  if(!fotoId) return null;
+  try{
+    var r = await api('obterFotoBase64', { fotoId: fotoId });
+    if(r && r.base64 && String(r.base64).indexOf('data:') === 0){
+      return r.base64;
+    }
+  }catch(e){ /* continua para os fallbacks */ }
+  return null;
+}
 
 async function _urlToDataUrl(url){
   if(!url) return '';
   if(String(url).indexOf('data:') === 0) return url;
   if(_printImgCache[url]) return _printImgCache[url];
 
-  // Estratégia 1: fetch com CORS
+  // ⚡ 1ª tentativa: backend (funciona SEMPRE para ficheiros do Drive)
+  var backendB64 = await _fotoViaBackend(url);
+  if(backendB64){
+    _printImgCache[url] = backendB64;
+    return backendB64;
+  }
+
+  // 2ª tentativa: fetch CORS
   try{
     var ctrl = new AbortController();
     var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
@@ -1368,7 +1392,7 @@ async function _urlToDataUrl(url){
     }
   }catch(e){}
 
-  // Estratégia 2: fetch no-cors (para Google Drive)
+  // 3ª tentativa: fetch no-cors
   try{
     var r2 = await fetch(url, { cache:'force-cache', mode:'no-cors' });
     if(r2){
@@ -1388,7 +1412,7 @@ async function _urlToDataUrl(url){
     }
   }catch(e){}
 
-  // Estratégia 3: Image + canvas (fallback clássico)
+  // 4ª tentativa: Image + canvas
   try{
     var du3 = await new Promise(function(res,rej){
       var img = new Image();
@@ -1420,7 +1444,6 @@ async function _urlToDataUrl(url){
 
 function _waitImageReady(img){
   if(!img) return Promise.resolve();
-  // Se já está "complete" e tem dimensões, garantir decode real
   if(img.complete && img.naturalWidth > 0){
     if(typeof img.decode === 'function'){
       return img.decode().catch(function(){});
@@ -1450,7 +1473,6 @@ async function _preloadPrintImages(container){
   await Promise.all(imgs.map(async function(img){
     var src = img.getAttribute('src') || '';
     if(!src) return;
-    // Se já é Data URL → forçar decode completo
     if(src.indexOf('data:') === 0){
       try{
         if(typeof img.decode === 'function'){ await img.decode(); }
@@ -1458,12 +1480,10 @@ async function _preloadPrintImages(container){
       }catch(e){ await _waitImageReady(img); }
       return;
     }
-    // Se já tem a mesma origem (não é http externo), só esperar
     if(src.indexOf('http') !== 0){
       await _waitImageReady(img);
       return;
     }
-    // Tentar converter para Data URL
     var du = await _urlToDataUrl(src);
     if(du && du !== src && du.indexOf('data:') === 0){
       await new Promise(function(res){
@@ -3114,7 +3134,6 @@ var _jsPDFLoading = null;
 function loadJsPDF(){ if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(); if(_jsPDFLoading) return _jsPDFLoading; _jsPDFLoading = new Promise(function(resolve,reject){ var s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.onload=function(){ _jsPDFLoading=null; resolve(); }; s.onerror=function(){ _jsPDFLoading=null; reject(new Error('Falha jsPDF')); }; document.head.appendChild(s); }); return _jsPDFLoading; }
 async function preloadImagesAsDataURLs(container){ return _preloadPrintImages(container); }
 
-/* ⚡⚡⚡ GERAR PDF — CORRIGIDO: garantia EXTRA de imagens carregadas ANTES do html2canvas ⚡⚡⚡ */
 async function gerarPDFBlob(){
   await loadHtml2CanvasPro(); await loadJsPDF();
   var jsPDF = window.jspdf.jsPDF;
@@ -3130,18 +3149,14 @@ async function gerarPDFBlob(){
   rz.style.cssText = "position:fixed;top:0;left:0;width:260mm;background:#fff;padding:0;margin:0;z-index:-1;opacity:0.01;overflow:visible;pointer-events:none;";
   document.body.appendChild(rz);
 
-  /* ⚡ Função auxiliar: garante que TODAS as imgs do elemento estão prontas (src data URL + decode completo) */
   async function garantirImagensProntas(el){
     var imgs = el.querySelectorAll("img");
     if(!imgs.length) return;
-    // Fase 1: converter srcs para data URL
     await _preloadPrintImages(el);
-    // Fase 2: forçar decode em cada imagem e esperar que tenha naturalWidth > 0
     for(var i = 0; i < imgs.length; i++){
       var im = imgs[i];
       var src = im.getAttribute("src") || "";
       if(!src) continue;
-      // Aguardar load
       if(!(im.complete && im.naturalWidth > 0)){
         await new Promise(function(res){
           var done = false;
@@ -3151,7 +3166,6 @@ async function gerarPDFBlob(){
           setTimeout(fin, 5000);
         });
       }
-      // Forçar decode
       try{
         if(typeof im.decode === 'function'){ await im.decode(); }
       }catch(e){}
@@ -3164,7 +3178,6 @@ async function gerarPDFBlob(){
     el.style.border = "1px solid #222"; el.style.margin = "0"; el.style.visibility = "visible"; el.style.opacity = "1";
     rz.appendChild(el);
 
-    // ⚡ GARANTIA EXTRA: imagens prontas antes de renderizar
     try{ await garantirImagensProntas(el); }catch(e){}
 
     autoFitExtraUnit(el);
@@ -3176,9 +3189,7 @@ async function gerarPDFBlob(){
     if(el.classList.contains("has-image")) autoAdaptImage(el);
     autoFixCardOverflow(el);
 
-    // Esperar 2 frames para o browser pintar
     await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,120); }); });
-    // Segunda passagem de decode (após layout final)
     try{ await garantirImagensProntas(el); }catch(e){}
     await new Promise(function(r){ requestAnimationFrame(function(){ setTimeout(r,60); }); });
 
