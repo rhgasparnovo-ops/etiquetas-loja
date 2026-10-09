@@ -270,7 +270,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 .list-item-info strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;font-weight:600;line-height:1.35;word-break:break-word}
 .list-item-info span{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:12px;color:var(--ink-3);margin-top:4px}
 .list-item-actions{display:flex;gap:4px;flex-shrink:0;align-items:flex-start;padding-top:2px}
-.list-item-actions button{width:42px;height:42px;min-width:42px;min-height:42px;padding:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;font-size:16px;background:var(--surface-3);color:var(--ink-2);transition:all .15s}
+.list-item-actions button{width:38px;height:38px;min-width:38px;min-height:38px;padding:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;font-size:15px;background:var(--surface-3);color:var(--ink-2);transition:all .15s}
 .list-item-actions button:active{transform:scale(.92)}
 .btn-remove{background:#fef2f2!important;color:#b91c1c!important}
 .btn-save-queue{background:#ecfdf5!important;color:#047857!important}
@@ -482,63 +482,47 @@ body[data-view="fila"] .floating-clear{display:flex}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
 
-/* ⚡ NOVO: Barra de seleção em massa + ações para Etiquetas Guardadas */
-.db-actions-bar{
-  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
-  margin-top:4px;padding:10px;
-  background:linear-gradient(135deg,#f8fafc,#f1f5f9);
-  border:1.5px dashed var(--line-2);border-radius:var(--r-md)
+/* ⚡ Nova barra de ferramentas compacta (chips discretos) */
+.db-tools-row{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+  margin-top:2px;padding-top:12px;border-top:1px dashed var(--line)
 }
-.db-select-all{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:9px 14px;background:#fff;
-  border:1.5px solid var(--line);border-radius:var(--r-pill);
-  font-size:12px;font-weight:800;color:var(--ink-2);
-  cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap
+.db-tool{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:7px 12px;font-size:11.5px;font-weight:800;
+  border-radius:var(--r-pill);border:1.5px solid var(--line);
+  background:#fff;color:var(--ink-2);cursor:pointer;
+  transition:all .15s;white-space:nowrap;line-height:1;min-height:34px;
+  letter-spacing:.02em;-webkit-tap-highlight-color:transparent
 }
-.db-select-all:hover{background:var(--surface-2);border-color:var(--line-2)}
-.db-select-all input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer;margin:0}
-.db-select-all.active{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
-.db-actions-bar .db-bulk-btn{
-  flex:1 1 auto;min-width:130px;min-height:42px;padding:8px 14px;
-  font-size:12.5px;font-weight:800;border-radius:var(--r-pill);
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  border:1.5px solid transparent;transition:all .15s;white-space:nowrap;line-height:1.1
-}
-.db-actions-bar .db-bulk-btn:active:not(:disabled){transform:scale(.97)}
-.db-actions-bar .db-bulk-btn:disabled{opacity:.5;cursor:not-allowed}
-.db-actions-bar .db-add-sel{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.28)}
-.db-actions-bar .db-add-all{background:#fff;border-color:var(--line);color:var(--ink-2)}
-.db-actions-bar .db-add-all:hover{background:var(--surface-2);border-color:var(--line-2)}
-@media (max-width:420px){.db-actions-bar .db-bulk-btn{flex-basis:100%;min-width:0}}
+.db-tool:hover:not(:disabled){background:var(--surface-2);border-color:var(--line-2)}
+.db-tool:active:not(:disabled){transform:scale(.96)}
+.db-tool:disabled{opacity:.45;cursor:not-allowed}
+.db-tool.add{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(16,185,129,.22);font-weight:900}
+.db-tool.add:hover:not(:disabled){box-shadow:0 4px 14px rgba(16,185,129,.32)}
+.db-tool.danger{border-color:#fecaca;color:#b91c1c}
+.db-tool.danger:hover:not(:disabled){background:#fef2f2}
+.db-tool.ghost-red{border-color:#fecaca;color:#dc2626}
+.db-tool.ghost-red:hover:not(:disabled){background:#fef2f2}
+@media (max-width:420px){.db-tool{padding:7px 10px;font-size:11px}}
 
-/* ⚡ NOVO: Items guardados com checkbox + ações em grelha 2×2 */
-.list-item.db-item{align-items:flex-start;flex-wrap:wrap}
+/* ⚡ Item de etiqueta guardada compacto */
+.list-item.db-item{align-items:flex-start}
 .list-item.db-item .db-check{
   display:flex;align-items:center;justify-content:center;
-  padding-top:4px;flex-shrink:0
+  padding-top:6px;flex-shrink:0
 }
 .list-item.db-item .db-check input[type=checkbox]{
-  width:22px;height:22px;min-width:22px;accent-color:var(--brand);
+  width:20px;height:20px;min-width:20px;accent-color:var(--brand);
   cursor:pointer;margin:0
 }
-.list-item.db-item.selected{background:var(--brand-tint);border-color:#fbd0d8;box-shadow:0 0 0 1px rgba(200,16,46,.12)}
+.list-item.db-item.selected{background:var(--brand-tint);border-color:#fbd0d8}
 .list-item.db-item.selected:hover{background:#ffe8ee;border-color:#fbcfe0}
-.list-item.db-item .db-item-actions{
-  flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;
-  margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)
-}
-.list-item.db-item .db-item-actions button{
-  min-height:40px;padding:6px 12px;font-size:12.5px;font-weight:800;
-  border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;
-  gap:5px;border:1.5px solid transparent;transition:all .15s;line-height:1.1;
-  width:100%
-}
-.list-item.db-item .db-item-actions button:active{transform:scale(.96)}
-.list-item.db-item .db-item-actions .db-act-load{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
-.list-item.db-item .db-item-actions .db-act-queue{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,.24)}
-.list-item.db-item .db-item-actions .db-act-variant{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-.list-item.db-item .db-item-actions .db-act-remove{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+.list-item.db-item .list-item-info{flex:1 1 auto;min-width:0}
+.list-item.db-item .list-item-actions{flex-shrink:0}
+
+/* ⚡ Data de criação a vermelho junto do título */
+.db-date{color:#dc2626;font-weight:900;font-size:11px;letter-spacing:.02em;white-space:nowrap}
 
 @media (max-width:520px){.row.stack-mobile{grid-template-columns:minmax(0,1fr)}}
 </style>
@@ -740,7 +724,6 @@ body[data-view="fila"] .floating-clear{display:flex}
           </div>
         </div>
 
-        <!-- ⚡ CARD AÇÕES — 4 botões full-width, ordem: Adicionar à Fila · Limpar · Guardar · Guardar + Fila -->
         <div class="card">
           <div class="card-h"><div class="ic">🔢</div><h3>Ações</h3></div>
           <div id="appStatus" role="status" aria-live="polite"></div>
@@ -775,30 +758,21 @@ body[data-view="fila"] .floating-clear{display:flex}
         </div>
         <div class="card">
           <div class="card-h"><div class="ic">🗃️</div><h3>Etiquetas Guardadas</h3><span class="badge" id="dbBadge">0</span></div>
-          <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · 🧬 cria variante · ✕ apaga.</p>
+          <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5;margin:0">📥 edita · ➕ adiciona à fila · 🧬 cria variante · ✕ apaga. Marque as caixas para adicionar várias à fila.</p>
 
-          <!-- ⚡ NOVO: barra de seleção em massa + ações em bloco -->
-          <div class="db-actions-bar">
-            <label class="db-select-all" id="dbSelectAllWrap">
-              <input type="checkbox" id="dbSelectAll">
-              <span>Selecionar</span>
-            </label>
-            <button type="button" class="db-bulk-btn db-add-sel" id="dbAddSelectedBtn" disabled>➕ Adicionar selecionadas</button>
-            <button type="button" class="db-bulk-btn db-add-all" id="dbAddAllBtn">📚 Adicionar todas à fila</button>
-          </div>
-
-          <div class="row">
-            <button class="btn btn-ghost btn-sm" id="recarregarDbBtn" type="button" data-tip="Recarregar lista do Drive">🔄 Recarregar</button>
-            <button class="btn btn-ghost btn-sm" id="syncBancoBtn" type="button" data-tip="Sincronizar banco de imagens">🔄 Sincronizar</button>
-          </div>
           <div class="drive-filter-row">
             <select id="dbFiltroFormato" data-tip="Filtrar por formato"><option value="">Todos os formatos</option></select>
             <input id="dbBusca" type="search" placeholder="🔍 Procurar…" autocapitalize="characters" spellcheck="false" data-tip="Procurar por nome ou código">
           </div>
-          <button class="btn btn-ghost btn-block btn-sm" id="optimizarImagensBtn" type="button" style="border-color:#6b21a8;color:#6b21a8" data-tip="Comprimir todas as imagens do banco">📉 Otimizar imagens</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="apagarDuplicadosBtn" type="button" style="border-color:#d97706;color:#d97706" data-tip="Remover etiquetas duplicadas do Drive">🧹 Remover duplicados</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="apagarTudoBtn" type="button" style="border-color:#7f1d1d;color:#7f1d1d;font-weight:800" data-tip="Apagar TODAS as etiquetas do Drive">🗑️ Apagar TODAS as etiquetas do Drive</button>
-          <button class="btn btn-ghost btn-block btn-sm" id="hardResetBtn" type="button" style="border-color:#dc2626;color:#dc2626" data-tip="Limpar cache local e ressincronizar tudo">🔥 Limpar cache local e ressincronizar</button>
+
+          <div class="db-tools-row">
+            <button type="button" class="db-tool add" id="dbAddSelectedBtn" disabled data-tip="Adicionar as etiquetas marcadas à fila">➕ Adicionar selecionadas</button>
+            <button type="button" class="db-tool" id="syncBancoBtn" data-tip="Sincronizar banco de imagens">🔄 Banco</button>
+            <button type="button" class="db-tool" id="optimizarImagensBtn" data-tip="Comprimir imagens do banco">📉 Otimizar</button>
+            <button type="button" class="db-tool danger" id="apagarTudoBtn" data-tip="Apagar TODAS as etiquetas do Drive">🗑️ Apagar todas</button>
+            <button type="button" class="db-tool ghost-red" id="hardResetBtn" data-tip="Limpar cache local e ressincronizar">🔥 Reset</button>
+          </div>
+
           <div id="dbListContainer"><div class="empty-msg">A carregar…</div></div>
         </div>
       </section>
@@ -1056,8 +1030,8 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v245';
-const CACHE_SCHEMA_VERSION = 14;
+const CACHE_KEY = 'balcao_cache_v246';
+const CACHE_SCHEMA_VERSION = 15;
 
 const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
@@ -1070,10 +1044,10 @@ const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
 
-const TIMEOUT_READ_COLD = 60000;
-const TIMEOUT_READ_WARM = 30000;
-const TIMEOUT_WRITE_COLD = 60000;
-const TIMEOUT_WRITE_WARM = 30000;
+const TIMEOUT_READ_COLD = 45000;
+const TIMEOUT_READ_WARM = 25000;
+const TIMEOUT_WRITE_COLD = 45000;
+const TIMEOUT_WRITE_WARM = 25000;
 const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
@@ -1738,14 +1712,13 @@ async function _apiCall(fn, payload, retryCount){
     var isRetryable = (e && e._retryable) || isAbort || is502;
 
     if(isRetryable && retryCount < 1){
-      setGlobalStatus("Servidor sobrecarregado. A tentar novamente…","warning",{duration:4000});
       try{ await warmUpServer(); }catch(_e){}
-      await new Promise(function(r){ setTimeout(r, 2500); });
+      await new Promise(function(r){ setTimeout(r, 800); });
       return _apiCall(fn, payload, retryCount + 1);
     }
 
     if(isAbort || is502){
-      throw new Error('Servidor sobrecarregado. Aguarde 5 segundos.');
+      throw new Error('Ligação instável. Tente novamente.');
     }
     throw e;
   }
@@ -1766,7 +1739,7 @@ var _printCleanupTimer=null, _restoreQueueAfterPrint=null;
 var _printBackupData=null, _skipAutofitInCard=false;
 var _syncErrorShown = false;
 
-/* ⚡ NOVO: seleção em massa para Etiquetas Guardadas */
+/* Seleção em massa (checkbox por item) */
 var _dbSelection = new Set();
 var _dbVisibleCache = [];
 
@@ -1874,72 +1847,52 @@ async function carregarTudo(opts){
 
   if(!getStoredToken()) return;
 
-  var maxAttempts = 3;
-  var attempt = 0;
-  var lastErr = null;
+  setStatus("A sincronizar…", "loading");
 
-  while(attempt < maxAttempts){
-    attempt++;
-    var msg = attempt === 1 ? "A sincronizar com o Drive…" : ("A sincronizar com o Drive… (tentativa " + attempt + "/" + maxAttempts + ")");
-    setStatus(msg, "loading");
+  try{
+    /* ⚡ UMA única chamada que devolve produtos + banco juntos (evita 2 pedidos em paralelo) */
+    var result = await api('listarTudo', { forceRefresh: manual });
+
+    savedProducts = ensureArray(result && result.produtos);
+    bancoFruta    = ensureArray(result && result.banco);
 
     try{
-      var results = await Promise.all([
-        api('listarProdutos', { forceRefresh: manual || attempt > 1 }),
-        api('listarBancoFruta', { forceRefresh: manual || attempt > 1 })
-      ]);
+      var existentes = new Set(savedProducts.map(function(p){ return String(p._id||''); }));
+      Array.from(_dbSelection).forEach(function(id){ if(!existentes.has(id)) _dbSelection.delete(id); });
+    }catch(e){}
 
-      savedProducts = ensureArray(results[0]);
-      bancoFruta    = ensureArray(results[1]);
-
-      /* ⚡ Limpar seleção de IDs que já não existem */
-      try{
-        var existentes = new Set(savedProducts.map(function(p){ return String(p._id||''); }));
-        Array.from(_dbSelection).forEach(function(id){ if(!existentes.has(id)) _dbSelection.delete(id); });
-      }catch(e){}
-
-      if(editingId){
-        var ainda = savedProducts.find(function(p){ return String(p._id)===String(editingId); });
-        if(!ainda){
-          editingId=null; editingCode=null; editingFormato=null;
-          editingOriginal=null; editingFromDrive=false; editingDirty=false;
-          currentFormId=null; updateEditingBanner();
-        }
-      }
-
-      renderDb();
-      renderBancoFruta($("buscaBancoFruta").value);
-
-      try{
-        await localforage.setItem(CACHE_KEY, {
-          schemaVersion: CACHE_SCHEMA_VERSION,
-          produtos: savedProducts,
-          banco: bancoFruta,
-          t: Date.now()
-        });
-      }catch(e){}
-
-      _syncErrorShown = false;
-      setStatus("Sincronizado", "success", { duration: 2200 });
-      return;
-
-    }catch(e){
-      lastErr = e;
-      if(attempt < maxAttempts){
-        await new Promise(function(r){ setTimeout(r, 1000 * attempt); });
+    if(editingId){
+      var ainda = savedProducts.find(function(p){ return String(p._id)===String(editingId); });
+      if(!ainda){
+        editingId=null; editingCode=null; editingFormato=null;
+        editingOriginal=null; editingFromDrive=false; editingDirty=false;
+        currentFormId=null; updateEditingBanner();
       }
     }
-  }
 
-  if(savedProducts.length === 0 && bancoFruta.length === 0){
-    setStatus("Não foi possível ligar ao Drive. Toque em Recarregar.", "error", { duration: 15000 });
-    if(manual){
-      toast("Erro ao sincronizar: " + (lastErr ? lastErr.message : "sem resposta do servidor"), "error", 8000);
-    }
-  } else {
-    setStatus("", "");
-    if(manual){
-      toast("Não foi possível atualizar. A mostrar dados guardados.", "warning", 5000);
+    renderDb();
+    renderBancoFruta($("buscaBancoFruta").value);
+
+    try{
+      await localforage.setItem(CACHE_KEY, {
+        schemaVersion: CACHE_SCHEMA_VERSION,
+        produtos: savedProducts,
+        banco: bancoFruta,
+        t: Date.now()
+      });
+    }catch(e){}
+
+    _syncErrorShown = false;
+    setStatus("Sincronizado", "success", { duration: 2000 });
+    return;
+
+  }catch(e){
+    if(savedProducts.length === 0 && bancoFruta.length === 0){
+      setStatus("Não foi possível ligar. Toque em 🔄 Banco.", "error", { duration: 10000 });
+      if(manual) toast("Erro ao sincronizar: " + e.message, "error", 6000);
+    } else {
+      setStatus("", "");
+      if(manual) toast("Não foi possível atualizar. A mostrar dados guardados.", "warning", 4500);
     }
   }
 }
@@ -2422,7 +2375,7 @@ async function resolverFotoParaPayload(d){
   return {fotoId: up.id, fotoUrl: up.url};
 }
 
-/* ⚡ renderDb atualizado — checkbox + ações em grelha 2×2 + controlo de seleção */
+/* ⚡ renderDb: itens discretos com data vermelha + checkbox de seleção */
 function renderDb(){
   var c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -2483,25 +2436,27 @@ function renderDb(){
       var ivaBadge = ivaShow ? ('<span class="iva-badge">IVA '+escapeHTML(ivaShow)+'%</span>') : '';
       var novaFlag = (d.novaEtiqueta === true || d.novaEtiqueta === 'true' || d.novaEtiqueta === 'TRUE');
       var stateBadges = '';
-      if(novaFlag){ stateBadges += ' <span class="chip-red pulse">🆕 NOVA ETIQUETA</span>'; }
+      if(novaFlag){ stateBadges += ' <span class="chip-red pulse">🆕 NOVA</span>'; }
       if(isEditingThis){
         if(editingDirty){ stateBadges += ' <span class="chip-red pulse">✏️ EDITADA</span>'; }
         else { stateBadges += ' <span class="chip-red">✏️ EM EDIÇÃO</span>'; }
       }
+      var dataCriacao = formatDatePT(d.atualizadoEm || '');
+      var dataHtml = dataCriacao ? (' <span class="db-date">· ' + escapeHTML(dataCriacao) + '</span>') : '';
       div.innerHTML =
-        '<label class="db-check" data-tip="Selecionar para adicionar em bloco"><input type="checkbox" data-action="select-db" data-index="' + i + '"' + (isSelected ? ' checked' : '') + '></label>' +
+        '<label class="db-check" data-tip="Marcar para adicionar à fila"><input type="checkbox" data-action="select-db" data-index="' + i + '"' + (isSelected ? ' checked' : '') + '></label>' +
         '<div class="list-item-info">' +
-          '<strong>' + escapeHTML(d.nome||"Sem Nome") + '</strong>' +
+          '<strong>' + escapeHTML(d.nome||"Sem Nome") + dataHtml + '</strong>' +
           '<div class="q-meta">' +
             '<span class="fmt-badge ' + fmtClass(fr) + '">' + escapeHTML(fmtShort(fr)) + '</span> ' +
             ivaBadge + ' ' + pr + stateBadges +
           '</div>' +
         '</div>' +
-        '<div class="db-item-actions">' +
-          '<button class="db-act-load" data-action="load-db" data-index="' + i + '" data-tip="Editar">📥 Editar</button>' +
-          '<button class="db-act-queue" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕ Fila</button>' +
-          '<button class="db-act-variant" data-action="variant-db" data-index="' + i + '" data-tip="Criar variante">🧬 Variante</button>' +
-          '<button class="db-act-remove" data-action="remove-db" data-index="' + i + '" data-tip="Apagar do Drive">✕ Apagar</button>' +
+        '<div class="list-item-actions">' +
+          '<button class="btn-load" data-action="load-db" data-index="' + i + '" data-tip="Editar">📥</button>' +
+          '<button class="btn-dup" data-action="queue-db" data-index="' + i + '" data-tip="Adicionar à fila">➕</button>' +
+          '<button class="btn-dup-queue" data-action="variant-db" data-index="' + i + '" data-tip="Criar variante">🧬</button>' +
+          '<button class="btn-remove" data-action="remove-db" data-index="' + i + '" data-tip="Apagar do Drive">✕</button>' +
         '</div>';
       c.appendChild(div);
     });
@@ -2509,20 +2464,8 @@ function renderDb(){
   updateDbBulkState();
 }
 
-/* ⚡ NOVO: estado da barra de seleção em massa */
+/* ⚡ Barra de ferramentas compacta: apenas o botão "Adicionar selecionadas" muda */
 function updateDbBulkState(){
-  var visible = _dbVisibleCache || [];
-  var totalVis = visible.length;
-  var selVis = visible.filter(function(p){ return _dbSelection.has(String(p._id||'')); }).length;
-
-  var selAll = $("dbSelectAll");
-  var wrap = $("dbSelectAllWrap");
-  if(selAll){
-    selAll.checked = totalVis > 0 && selVis === totalVis;
-    selAll.indeterminate = selVis > 0 && selVis < totalVis;
-  }
-  if(wrap) wrap.classList.toggle("active", selVis > 0);
-
   var btnSel = $("dbAddSelectedBtn");
   if(btnSel){
     btnSel.disabled = _dbSelection.size === 0;
@@ -2716,7 +2659,7 @@ async function otimizarImagensDrive(){
       done++;
     }catch(e){ errs++; }
   }
-  if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar imagens"; }
+  if(btn){ btn.disabled = false; btn.textContent = orig || "📉 Otimizar"; }
   bancoFruta = dedupeBancoFruta(bancoFruta);
   try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
   renderBancoFruta($("buscaBancoFruta").value);
@@ -3806,7 +3749,7 @@ window.queueFromDb = function(i){
   setTimeout(function(){ document.body.dataset.view='fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 };
 
-/* ⚡ NOVO: adicionar em bloco à fila */
+/* Adicionar em bloco à fila */
 function _adicionarEmBloco(produtos){
   if(!produtos || !produtos.length) return 0;
   var n = 0;
@@ -3857,84 +3800,33 @@ document.getElementById('saveDbBtn').addEventListener("click", function(){ saveT
 document.getElementById('saveDbAndQueueBtn').addEventListener("click", saveDbAndQueue);
 document.getElementById('emailLabelsBtn').addEventListener("click", function(){ enviarEtiquetasPorEmail(); });
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
-document.getElementById('recarregarDbBtn').addEventListener("click", function(){
-  var btn = this;
-  var original = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = "⏳ A sincronizar…";
-  carregarTudo({manual:true}).finally(function(){
-    btn.disabled = false;
-    btn.innerHTML = original;
-  });
-});
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* ⚡ NOVO: barra de seleção em massa */
-(function(){
-  var selAll = document.getElementById('dbSelectAll');
-  var wrap = document.getElementById('dbSelectAllWrap');
-  if(selAll){
-    selAll.addEventListener("change", function(){
-      var checked = selAll.checked;
-      _dbVisibleCache.forEach(function(p){
-        var id = String(p._id||'');
-        if(!id) return;
-        if(checked) _dbSelection.add(id);
-        else _dbSelection.delete(id);
-      });
-      renderDb();
-    });
-  }
-  if(wrap){
-    wrap.addEventListener("click", function(e){
-      /* deixa o input tratar do toggle */
-    });
-  }
-  var btnSel = document.getElementById('dbAddSelectedBtn');
-  if(btnSel){
-    btnSel.addEventListener("click", function(){
-      var ids = Array.from(_dbSelection);
-      if(!ids.length){ toast("Nenhuma etiqueta selecionada.","warning"); return; }
-      var produtos = savedProducts.filter(function(p){ return ids.indexOf(String(p._id||'')) !== -1; });
-      var n = _adicionarEmBloco(produtos);
-      _dbSelection.clear();
-      renderDb();
-      toast(n + " etiqueta(s) adicionada(s) à fila","success",3500);
-      _irParaFila();
-    });
-  }
-  var btnAll = document.getElementById('dbAddAllBtn');
-  if(btnAll){
-    btnAll.addEventListener("click", async function(){
-      if(!savedProducts.length){ toast("Sem etiquetas guardadas.","info"); return; }
-      var ok = await confirmDialog("Adicionar TODAS as " + savedProducts.length + " etiquetas guardadas à fila de impressão?");
-      if(!ok) return;
-      var n = _adicionarEmBloco(savedProducts.slice());
-      toast(n + " etiqueta(s) adicionada(s) à fila","success",3500);
-      _irParaFila();
-    });
-  }
-})();
+/* Botão "Adicionar selecionadas" */
+document.getElementById('dbAddSelectedBtn').addEventListener("click", function(){
+  var ids = Array.from(_dbSelection);
+  if(!ids.length){ toast("Nenhuma etiqueta selecionada.","warning"); return; }
+  var produtos = savedProducts.filter(function(p){ return ids.indexOf(String(p._id||'')) !== -1; });
+  var n = _adicionarEmBloco(produtos);
+  _dbSelection.clear();
+  renderDb();
+  toast(n + " etiqueta(s) adicionada(s) à fila","success",3500);
+  _irParaFila();
+});
 
 document.getElementById('syncBancoBtn').addEventListener("click", async function(){
-  setStatus("A sincronizar banco (incremental)…","loading");
+  setStatus("A sincronizar banco…","loading");
   try{
     var r = await api('sincronizarBancoIncremental');
     await carregarTudo({manual:true});
     var msg = r && r.modo === 'incremental'
-      ? 'Sync incremental: +' + (r.novos||0) + ' novos, ~' + (r.alterados||0) + ' alterados, -' + (r.removidos||0) + ' removidos'
-      : (r && r.modo === 'full-fallback' ? 'Sincronizado (recuperação completa)' : 'Sincronizado (completo)');
-    toast(msg,"success",4500);
+      ? 'Sync: +' + (r.novos||0) + ' novos, ~' + (r.alterados||0) + ' alt, -' + (r.removidos||0) + ' rem'
+      : 'Sincronizado';
+    toast(msg,"success",3500);
   }
   catch(e){ setStatus("Erro","error"); toast("Erro: "+e.message,"error"); }
 });
 
-document.getElementById('apagarDuplicadosBtn').addEventListener("click", async function(){
-  if(!(await confirmDialog("Remover etiquetas duplicadas do Drive?\n\nMantém apenas a mais recente de cada referência+formato."))) return;
-  setStatus("A remover…","loading");
-  try{ var r = await api('apagarDuplicados'); if(r && r.apagadas>0) toast("Removidas "+r.apagadas+" duplicadas","success",5000); else toast("Sem duplicados","info"); await carregarTudo({manual:true}); }
-  catch(e){ setStatus("Erro","error"); }
-});
 document.getElementById('apagarTudoBtn').addEventListener("click", function(){ window.apagarTudo(); });
 document.getElementById('hardResetBtn').addEventListener("click", async function(){
   if(!(await confirmDialog("Isto apaga TODO o cache local do browser."))) return;
@@ -4092,9 +3984,7 @@ document.addEventListener("click", function(e){
   if(a === "queue-db" && isFinite(i)) window.queueFromDb(i);
   if(a === "variant-db" && isFinite(i)) window.variantFromDb(i);
   if(a === "remove-db" && isFinite(i)) window.removeFromDb(i);
-  /* select-db é tratado no change handler abaixo */
 });
-/* ⚡ NOVO: mudança de estado do checkbox de seleção */
 document.addEventListener("change", function(e){
   var cb = e.target.closest('input[data-action="select-db"]');
   if(cb){
