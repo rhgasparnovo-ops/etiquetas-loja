@@ -179,9 +179,9 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .svg-container svg{width:80%;height:100%;shape-rendering:crispEdges}
 .ean-text{font-family:monospace;font-size:clamp(5px,1.5cqw,8px);font-weight:bold;line-height:1;text-transform:uppercase}
 
-/* ⚡ FOOTER — Fonte aumentada e footer mais alto para caber tudo legível */
+/* ⚡ FOOTER — fonte aumentada. Texto NUNCA cortado (sem ellipsis) — o JS encolhe uniformemente se preciso */
 .footer-container{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px dashed #cbd5e1;padding-top:1px;height:11%;flex-shrink:0;overflow:hidden;gap:2px}
-.promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1;flex:1;min-width:0}
+.promo-text{font-size:clamp(7px,1.9cqw,10px);color:#64748b;font-weight:600;white-space:nowrap;overflow:hidden;line-height:1;flex:1;min-width:0}
 .print-date{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0}
 .promo-dates{font-size:clamp(7px,1.9cqw,10px);color:#64748b;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 3px;font-weight:600}
 .promo-dates:empty{display:none!important}
@@ -2591,7 +2591,6 @@ function applyPrintSizes(card,dims){
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
   set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8);
-  /* ⚡ FOOTER — tamanho maior (2.4mm) em vez de 1.6mm */
   set('.promo-text',2.4); set('.print-date',2.4); set('.promo-dates',2.4); set('.iva-text',2.4);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
@@ -2600,15 +2599,15 @@ function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
 
-/* ⚡⚡⚡ autoFitFooterText — JÁ NÃO ENCOLHE ⚡⚡⚡
-   Os elementos do footer têm todos o mesmo tamanho natural no CSS
-   (clamp(7px,1.9cqw,10px)). Deixamos ficar assim para que TODOS fiquem
-   iguais ao "Impresso a:". Se o .promo-text for demasiado longo, o CSS
-   aplica text-overflow: ellipsis (trunca com "…"). */
+/* ⚡⚡⚡ autoFitFooterText — Encolhe TODOS os elementos do rodapé em conjunto ⚡⚡⚡
+   Nunca corta texto (sem ellipsis). Quando o rodapé não cabe, reduz uniformemente
+   os 4 elementos (promo-text + promo-dates + iva-text + print-date) para caber.
+   Funciona na pré-visualização, impressão e PDF. Idempotente. */
 function autoFitFooterText(card){
   if(!card) return;
   var footer = card.querySelector(".footer-container");
   if(!footer) return;
+
   var els = [
     footer.querySelector(".promo-text"),
     footer.querySelector(".print-date"),
@@ -2616,12 +2615,60 @@ function autoFitFooterText(card){
     footer.querySelector(".iva-text")
   ].filter(Boolean);
   if(!els.length) return;
+
+  /* Reset — volta ao tamanho natural */
   els.forEach(function(el){
     el.style.removeProperty("font-size");
     el.style.removeProperty("display");
+  });
+  /* Esconde elementos vazios */
+  els.forEach(function(el){
     if(!el.textContent || !el.textContent.trim()) el.style.display = "none";
   });
   void footer.offsetHeight;
+
+  var fw = footer.clientWidth;
+  if(!fw) return;
+
+  function totalWidth(){
+    var t = 0, n = 0;
+    els.forEach(function(el){
+      if(el.style.display === "none") return;
+      t += el.scrollWidth;
+      n++;
+    });
+    t += 2 * Math.max(0, n - 1);
+    return t;
+  }
+
+  var needed = totalWidth();
+  if(needed <= fw) return; /* cabe no tamanho natural — nada a fazer */
+
+  /* Encolhe TODOS uniformemente para caber */
+  var ratio = (fw * 0.97) / needed;
+  var baseSize = 0;
+  els.forEach(function(el){
+    if(el.style.display === "none") return;
+    var s = parseFloat(getComputedStyle(el).fontSize) || 0;
+    if(s > baseSize) baseSize = s;
+  });
+  if(!baseSize) return;
+
+  var newSize = Math.max(3, baseSize * ratio);
+  els.forEach(function(el){
+    if(el.style.display === "none") return;
+    el.style.setProperty("font-size", newSize.toFixed(2) + "px", "important");
+  });
+  void footer.offsetHeight;
+
+  /* Último recurso: se mesmo assim não cabe, esconde o texto longo */
+  if(totalWidth() > fw){
+    var pt = footer.querySelector(".promo-text");
+    if(pt && pt.style.display !== "none"){
+      pt.style.display = "none";
+      void footer.offsetHeight;
+    }
+  }
 }
 
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
