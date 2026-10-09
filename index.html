@@ -14,6 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Etiquetas">
 <meta name="format-detection" content="telephone=no">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Etiquetas</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -64,7 +65,7 @@ a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
 
-/* ⚡ TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
+/* ⚡ TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento */
 .global-tooltip{position:fixed;left:0;top:0;background:rgba(15,23,42,.97);color:#fff;padding:7px 11px;border-radius:9px;font-size:11.5px;font-weight:700;max-width:min(240px,calc(100vw - 16px));width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .14s ease;z-index:100050;box-shadow:0 10px 26px rgba(15,23,42,.42);border:1px solid rgba(255,255,255,.14);will-change:left,top}
 .global-tooltip.show{opacity:1}
 
@@ -454,7 +455,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .queue-item .q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
 .queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
 
-/* ⚡ Filtros super compactos e discretos */
 .drive-filter-row{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center}
 .drive-filter-row select,.drive-filter-row input{height:34px;min-height:34px;padding:0 11px;font-size:12px!important;border-radius:9px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);transition:all .15s}
 .drive-filter-row select:focus,.drive-filter-row input:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.08);outline:none}
@@ -487,7 +487,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .quick-actions-row .btn{flex:1 1 calc(50% - 4px);min-width:0}
 .quick-actions-row .btn.full{flex-basis:100%}
 
-/* ⚡ Barra de ferramentas compacta */
 .db-tools-row{
   display:flex;flex-wrap:wrap;gap:6px;align-items:center;
   margin-top:2px;padding-top:12px;border-top:1px dashed var(--line)
@@ -1117,6 +1116,7 @@ const TIMEOUT_WRITE_WARM = 25000;
 const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail'];
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
+const FORMATOS_VALIDOS = ['amanhecer','80x60','125x80','frutaPromo125x80','A6','frutaPromoA6','A5','100x70','custom'];
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
 function fmtShort(v){ if(!v) return 'Amanhecer'; if(v==='amanhecer') return 'Amanhecer'; if(v==='80x60') return '6×8'; if(v==='125x80') return 'Sup.125×80'; if(v==='frutaPromo125x80') return 'Leve2+ 125×80'; if(v==='frutaPromoA6') return 'Leve2+ A6'; return v; }
 function fmtClass(v){ if(v==='frutaPromo125x80'||v==='frutaPromoA6') return 'fruit'; if(['80x60','A6','A5','100x70','125x80'].indexOf(v)>-1) return 'large'; return ''; }
@@ -1189,21 +1189,41 @@ window.handleCredentialResponse = async function(response){
 };
 function fazerLogout(){ clearStoredToken(); atualizarUICredenciais(); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} toast('Sessão terminada','info'); setTimeout(function(){ location.reload(); },400); }
 
+/* ⚡ CORRIGIDO: restaura sempre o callback original, mesmo em erro/timeout */
 function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise = new Promise(function(resolve){
-    var done=false;
-    var tid = setTimeout(function(){ if(!done){ done=true; _reauthPromise=null; resolve(false); } },8000);
-    var orig = window.handleCredentialResponse;
+    var done = false;
+    var _origHandler = window.handleCredentialResponse;
+
+    function finish(ok){
+      if(done) return;
+      done = true;
+      try{ window.handleCredentialResponse = _origHandler; }catch(e){}
+      _reauthPromise = null;
+      resolve(ok);
+    }
+
+    var tid = setTimeout(function(){ finish(false); }, 8000);
+
     window.handleCredentialResponse = async function(r){
-      try{ await orig(r); }catch(e){}
-      if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(true); }
+      try{ await _origHandler(r); }catch(e){}
+      clearTimeout(tid);
+      finish(true);
     };
+
     try{
-      if(!window.google||!google.accounts||!google.accounts.id){ clearTimeout(tid); _reauthPromise=null; done=true; return resolve(false); }
+      if(!window.google||!google.accounts||!google.accounts.id){ clearTimeout(tid); return finish(false); }
       google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:window.handleCredentialResponse,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true});
-      google.accounts.id.prompt(function(n){ try{ if(n&&n.isNotDisplayed&&n.isNotDisplayed()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } } if(n&&n.isSkippedMoment&&n.isSkippedMoment()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } } }catch(e){} });
-    }catch(e){ clearTimeout(tid); _reauthPromise=null; done=true; resolve(false); }
+      google.accounts.id.prompt(function(n){
+        try{
+          if(n && ((n.isNotDisplayed && n.isNotDisplayed()) || (n.isSkippedMoment && n.isSkippedMoment()))){
+            clearTimeout(tid);
+            finish(false);
+          }
+        }catch(e){}
+      });
+    }catch(e){ clearTimeout(tid); finish(false); }
   });
   return _reauthPromise;
 }
@@ -1242,7 +1262,8 @@ function normalizarProdutoParaFila(p){
   if(!p) return p;
   var o = Object.assign({},p);
   o._id = o._id||"";
-  o.presetSizes = o.presetSizes||o.formato||"amanhecer";
+  var _fmt = o.presetSizes||o.formato||"amanhecer";
+  o.presetSizes = FORMATOS_VALIDOS.indexOf(_fmt) !== -1 ? _fmt : "amanhecer";
   o.product = o.product||o.nome||"";
   o.internalCode = o.internalCode||o.codigo||"";
   o.price = sanitizePrice(o.price||o.preco||"");
@@ -1294,7 +1315,7 @@ function setGlobalStatus(msg,type,opts){
 var _statusTimer=null,_statusLast={key:'',t:0};
 function setStatus(msg,type,opts){
   var now=Date.now(); var key=String(msg||'')+'|'+String(type||'');
-  if(key===_statusLast.key && (now-_statusLast.t)<1800) return;
+  if(key===_statusLast.key && (now-_statusLast.t)<800) return;
   _statusLast={key:key,t:now};
   var el=document.getElementById("appStatus");
   var onEditor = (document.body.dataset.view==='editor');
@@ -1493,7 +1514,18 @@ async function removeBackgroundSmart(dataUrl){
   }
 }
 
-var _printImgCache = {};
+/* ⚡ LRU cache — limita memória usada por imagens em cache */
+var _printImgCache = new Map();
+var _printImgCacheMax = 30;
+function _cacheGet(k){ return _printImgCache.get(k); }
+function _cacheSet(k,v){
+  if(_printImgCache.has(k)) _printImgCache.delete(k);
+  _printImgCache.set(k,v);
+  while(_printImgCache.size > _printImgCacheMax){
+    var first = _printImgCache.keys().next().value;
+    _printImgCache.delete(first);
+  }
+}
 
 async function _fotoViaBackend(url){
   var fotoId = extrairFotoIdDoUrl(url);
@@ -1510,11 +1542,11 @@ async function _fotoViaBackend(url){
 async function _urlToDataUrl(url){
   if(!url) return '';
   if(String(url).indexOf('data:') === 0) return url;
-  if(_printImgCache[url]) return _printImgCache[url];
+  var _c = _cacheGet(url); if(_c) return _c;
 
   var backendB64 = await _fotoViaBackend(url);
   if(backendB64){
-    _printImgCache[url] = backendB64;
+    _cacheSet(url, backendB64);
     return backendB64;
   }
 
@@ -1533,7 +1565,7 @@ async function _urlToDataUrl(url){
           fr.readAsDataURL(b);
         });
         if(du && du.indexOf('data:') === 0){
-          _printImgCache[url] = du;
+          _cacheSet(url, du);
           return du;
         }
       }
@@ -1552,7 +1584,7 @@ async function _urlToDataUrl(url){
           fr.readAsDataURL(b2);
         });
         if(du2 && du2.indexOf('data:') === 0){
-          _printImgCache[url] = du2;
+          _cacheSet(url, du2);
           return du2;
         }
       }
@@ -1580,7 +1612,7 @@ async function _urlToDataUrl(url){
       img.src = url;
     });
     if(du3 && du3.indexOf('data:') === 0){
-      _printImgCache[url] = du3;
+      _cacheSet(url, du3);
       return du3;
     }
   }catch(e2){}
@@ -1688,8 +1720,13 @@ function warmUpServer(){
   return _warmUpPromise;
 }
 
+/* ⚡ Dedupe APENAS para funções de leitura (evita stringify de base64 gigantes) */
+const DEDUP_FNS = ['listarTudo','listarProdutos','listarBancoFruta','ping','obterFotoBase64','getUserInfo'];
 async function api(fn, payload){
   payload = payload || {};
+  if(DEDUP_FNS.indexOf(fn) === -1){
+    return _apiCall(fn, payload, 0);
+  }
   var dedupKey = fn + '::' + JSON.stringify(payload);
   if(_apiInFlight.has(dedupKey)) return _apiInFlight.get(dedupKey);
 
@@ -1798,6 +1835,26 @@ var _syncErrorShown = false;
 
 var _dbSelection = new Set();
 var _dbVisibleCache = [];
+
+/* ⚡ Backup da fila: usa localforage (IndexedDB) e remove base64 grandes */
+function _backupFila(){
+  try{
+    var limpo = printQueue.map(function(it){
+      var c = Object.assign({}, it);
+      if(c.data){
+        c.data = Object.assign({}, c.data);
+        if(typeof c.data.originalPhoto === 'string' && c.data.originalPhoto.length > 5000) c.data.originalPhoto = '';
+        if(typeof c.data.processedPhoto === 'string' && c.data.processedPhoto.length > 5000) c.data.processedPhoto = '';
+      }
+      return c;
+    });
+    try{ localforage.setItem(FILA_BACKUP_KEY, limpo).catch(function(){}); }catch(e){}
+    try{
+      var slim = JSON.stringify(limpo);
+      if(slim.length < 200000) localStorage.setItem(FILA_BACKUP_KEY, slim);
+    }catch(e){}
+  }catch(e){}
+}
 
 function fitPreviewCard(){
   var scaler=document.getElementById('previewScaler'), card=document.getElementById('mainLabelCard');
@@ -2245,7 +2302,7 @@ function renderQueue(){
   var c = $("queueListContainer");
   var qb = $("queueBadge"); if(qb) qb.textContent = printQueue.length;
   var bb = $("bnQueueBadge"); if(bb) bb.textContent = printQueue.length || "";
-  try{ localStorage.setItem(FILA_BACKUP_KEY, JSON.stringify(printQueue)); }catch(e){}
+  _backupFila();
   if(!c) return;
   if(printQueue.length === 0){
     c.innerHTML = '<div class="empty-msg">A fila está vazia.<br>Preencha os dados no editor e clique em <b>➕ Adicionar à Fila</b>.</div>';
@@ -2644,7 +2701,6 @@ function dedupeBancoFruta(lista){
 function renderBancoFruta(filtro){
   filtro = filtro||'';
   var c = $("gradeBancoFruta"); if(!c) return;
-  bancoFruta = dedupeBancoFruta(bancoFruta);
   var q = filtro.toUpperCase();
   var lista = bancoFruta.filter(function(f){ if((f.tipo||'') !== bancoTipoFiltro) return false; if(q && String(f.nome||'').toUpperCase().indexOf(q) < 0) return false; return true; });
   updateBancoCounts();
@@ -2686,6 +2742,7 @@ async function guardarFotoBanco(nome,dataUrl,tipo){
     bancoFruta = ensureArray(bancoFruta).filter(function(f){ return String(f.nome||"").toUpperCase() !== nome || (f.tipo||'') !== tipo; });
     bancoFruta.push({nome:r.nome,fotoId:r.id,fotoUrl:r.url,tipo:r.tipo||tipo});
     bancoFruta.sort(function(a,b){ return String(a.nome).localeCompare(String(b.nome),'pt'); });
+    bancoFruta = dedupeBancoFruta(bancoFruta);
     renderBancoFruta($("buscaBancoFruta").value);
     try{ await localforage.setItem(CACHE_KEY,{schemaVersion:CACHE_SCHEMA_VERSION,produtos:savedProducts,banco:bancoFruta,t:Date.now()}); }catch(e){}
     setStatus("Foto guardada no Drive","success");
@@ -2723,28 +2780,43 @@ async function otimizarImagensDrive(){
   toast("✅ Otimizadas: "+done+(errs?" · Erros: "+errs:""),"success",6500);
 }
 
+/* ⚡ Separado em 2 fases: visual (16ms) + autofit lento (150ms após parar de escrever) */
 var _updateCardTimer = null;
+var _autoFitTimer = null;
 function updateCard(){
   if(_updateCardTimer) clearTimeout(_updateCardTimer);
   if(editingFromDrive && editingId){ editingDirty = true; }
+
+  /* Fase 1 — atualização visual rápida (sem autofit) */
   _updateCardTimer = setTimeout(function(){
     try{
       sanitizePriceAll();
       updateIvaVisual();
-      updateCardUnsafe(); setValidationState(); updateEanBadge(); updateCapacityHint();
+      _skipAutofitInCard = true;
+      updateCardUnsafe();
+      _skipAutofitInCard = false;
+      setValidationState(); updateEanBadge(); updateCapacityHint();
       updateAllChipStates();
       if(editingFromDrive && editingId){
         updateEditingBanner();
         if(document.body.dataset.view === 'drive') renderDb();
       }
       requestAnimationFrame(fitPreviewCard);
+    }catch(err){}
+  }, 16);
+
+  /* Fase 2 — autofit (caro) só após parar de escrever */
+  if(_autoFitTimer) clearTimeout(_autoFitTimer);
+  _autoFitTimer = setTimeout(function(){
+    try{
+      updateCardUnsafe();
       if(document.getElementById('previewModal').classList.contains('show')){
         var z=_previewZoom, sx=_previewPanX, sy=_previewPanY;
         abrirPreviewModal(); _previewZoom=z; _previewPanX=sx; _previewPanY=sy;
         applyPreviewZoom(true);
       }
-    }catch(err){}
-  }, 16);
+    }catch(e){}
+  }, 150);
 }
 function updateCapacityHint(){
   var h = document.getElementById("capacityHint"); if(!h) return;
@@ -3512,7 +3584,7 @@ async function enviarEtiquetasPorEmail(){
     setStatus("A gerar PDF…","loading");
     var blob; try{ blob = await gerarPDFBlob(); } catch(e){ setStatus("Erro ao gerar PDF","error"); toast("Erro ao gerar PDF: "+e.message,"error"); return; }
     if(!blob || blob.size < 500){ setStatus("PDF vazio","error"); return; }
-    if(blob.size > 25*1024*1024){ setStatus("PDF demasiado grande","error"); return; }
+    if(blob.size > 18*1024*1024){ setStatus("PDF demasiado grande","error"); toast("PDF excede 18 MB. Reduza o número de etiquetas.","error",8000); return; }
     var b64 = await blobToBase64(blob);
     setStatus("A enviar email…","loading");
     try{ await api('enviarEtiquetasEmail',{destino:info.destino,assunto:info.assunto,corpo:info.corpo,pdfBase64:b64,nomeFicheiro:"etiquetas_"+new Date().toISOString().slice(0,10)+".pdf"}); setStatus("Email enviado","success"); toast("Email enviado para "+info.destino,"success",7000); }
@@ -3857,7 +3929,6 @@ document.getElementById('emailLabelsBtn').addEventListener("click", function(){ 
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* Botão "Selecionar todas / Desselecionar" */
 document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   var visiveis = _dbVisibleCache.filter(function(p){ return p && p._id; });
   if(!visiveis.length){ toast("Sem etiquetas visíveis.","warning"); return; }
@@ -3871,7 +3942,6 @@ document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   if(!todosSel){ toast(visiveis.length + " etiqueta(s) selecionada(s)","success",2200); }
 });
 
-/* Botão "Adicionar selecionadas" */
 document.getElementById('dbAddSelectedBtn').addEventListener("click", function(){
   var ids = Array.from(_dbSelection);
   if(!ids.length){ toast("Nenhuma etiqueta selecionada.","warning"); return; }
@@ -3977,7 +4047,6 @@ function _abrirBancoFrom(presetTipo){
   renderBancoFruta($('buscaBancoFruta').value);
 }
 document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); _abrirBancoFrom('fruta'); });
-/* ⚡ Atalho do Banco na página Editor (Quantidade & Extras) */
 (function(){
   var b = document.getElementById('bancoEditorBtn');
   if(!b) return;
@@ -4031,7 +4100,6 @@ document.getElementById('photo').addEventListener("change", async function(e){
         updateCard();
       }catch(e){}
     }
-    /* ⚡ Perguntar se quer guardar no banco */
     try{
       var querGuardar = await confirmDialog(
         "Guardar esta fotografia no banco de imagens?\n\nPoderás reutilizá-la em etiquetas futuras sem voltar a fotografar.",
@@ -4138,14 +4206,18 @@ document.addEventListener("change", function(e){
     updateOrientationVisibility(); updateInfoExtraVisibility(); updateIvaVisual();
     try{ updateSaveButtonsState(); }catch(e){}
     try{
-      var b = localStorage.getItem(FILA_BACKUP_KEY);
-      if(b){
-        var arr = JSON.parse(b);
-        if(Array.isArray(arr) && arr.length > 0){
-          printQueue = arr.map(function(it){ if(!it.qid) it.qid = gerarQid(); if(!it.copies) it.copies = 1; return it; });
-          renderQueue();
-          setTimeout(function(){ toast("Fila restaurada ("+arr.length+" etiquetas)","info"); },800);
-        }
+      var arr = null;
+      try{ arr = await localforage.getItem(FILA_BACKUP_KEY); }catch(e){}
+      if(!arr || !Array.isArray(arr) || arr.length === 0){
+        try{
+          var b = localStorage.getItem(FILA_BACKUP_KEY);
+          if(b){ var parsed = JSON.parse(b); if(Array.isArray(parsed)) arr = parsed; }
+        }catch(e){}
+      }
+      if(arr && arr.length > 0){
+        printQueue = arr.map(function(it){ if(!it.qid) it.qid = gerarQid(); if(!it.copies) it.copies = 1; return it; });
+        renderQueue();
+        setTimeout(function(){ toast("Fila restaurada ("+arr.length+" etiquetas)","info"); },800);
       }
     }catch(e){}
     var t = 0;
