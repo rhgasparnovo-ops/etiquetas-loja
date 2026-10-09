@@ -18,6 +18,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
+
+<!-- ⚡ OTIMIZAÇÃO: preconnect aos servidores de imagens e API -->
+<link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
+<link rel="dns-prefetch" href="https://balcao-api.rh-gasparnovo.workers.dev">
+
 <script>
 (function(){
   if('serviceWorker' in navigator){
@@ -339,10 +346,19 @@ body[data-view="fila"] .floating-clear{display:flex}
 .pro-print-overlay{background:rgba(15,23,42,.72);z-index:99998;backdrop-filter:blur(6px);align-items:center;justify-content:center}
 .pro-print-box{min-width:300px;max-width:380px;padding:28px;border-radius:var(--r-xl);background:#fff;display:grid;gap:12px;text-align:center}
 .pro-spinner{width:32px;height:32px;margin:auto;border-radius:50%;border:3px solid var(--surface-3);border-top-color:var(--brand);animation:spin .7s linear infinite}
+
+/* ⚡ OTIMIZAÇÃO: grelha com content-visibility para saltar cards off-screen */
 .bf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.bf-card{cursor:pointer;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;text-align:center;background:var(--surface-2);position:relative}
+.bf-card{
+  cursor:pointer;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
+  text-align:center;background:var(--surface-2);position:relative;
+  content-visibility:auto;contain-intrinsic-size:0 130px;
+  will-change:auto;
+}
 .bf-card:hover{border-color:var(--brand);transform:translateY(-2px)}
-.bf-card img{width:100%;height:110px;object-fit:contain;background:#fff}
+.bf-card img{width:100%;height:110px;object-fit:contain;background:#fff;display:block}
+.bf-card img.bf-img{background:#f1f5f9;opacity:0;transition:opacity .25s ease}
+.bf-card img.bf-img.loaded{opacity:1}
 .bf-card .bf-nome{font-size:12px;font-weight:600;padding:8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
 .bf-card .bf-tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:900;padding:3px 8px;border-radius:var(--r-pill)}
 .bf-card .bf-tag.fruta{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
@@ -547,11 +563,6 @@ body[data-view="fila"] .floating-clear{display:flex}
   .db-title-row .db-date{font-size:10.5px}
 }
 
-/* Placeholder visual para imagens a carregar */
-.bf-card img.bf-img{background:#f1f5f9}
-.bf-card img.bf-img[data-src]{filter:blur(0);opacity:.6;transition:opacity .2s}
-.bf-card img.bf-img:not([data-src]){opacity:1}
-
 @media (max-width:520px){.row.stack-mobile{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
@@ -560,9 +571,9 @@ body[data-view="fila"] .floating-clear{display:flex}
   <div class="hdr-inner">
     <div class="hdr-left">
       <div class="hdr-logos">
-        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" alt="" onerror="this.style.display='none'">
+        <img src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w120-h60-p-k-nu-rw" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
         <div class="divider"></div>
-        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" alt="" onerror="this.style.display='none'">
+        <img src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w120-h60-p-k-nu-rw" alt="" loading="eager" decoding="async" onerror="this.style.display='none'">
       </div>
       <div class="hdr-txt"><strong>Etiquetas</strong></div>
     </div>
@@ -834,8 +845,8 @@ body[data-view="fila"] .floating-clear{display:flex}
             <div class="preview-scaler" id="previewScaler">
               <div class="label-card size-small" id="mainLabelCard" style="width:380px;height:214px">
                 <div class="header">
-                  <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO" onerror="this.style.opacity=.3" alt=""></div>
-                  <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb" onerror="this.style.opacity=.3" alt=""></div>
+                  <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w120-h60-p-k-nu-rw" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
+                  <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w120-h60-p-k-nu-rw" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
                   <div class="header-store-container"><div class="store-text" id="cardStore">GARCIA/PATAIAS</div></div>
                 </div>
                 <div class="main-content">
@@ -1098,10 +1109,17 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v248';
-const CACHE_SCHEMA_VERSION = 17;
+const CACHE_KEY = 'balcao_cache_v249';
+const CACHE_SCHEMA_VERSION = 18;
 
-const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
+/* ⚡ OTIMIZAÇÃO DE IMAGENS — parâmetros Google Drive thumbnails */
+const THUMB_GRID_1X  = 160;
+const THUMB_GRID_2X  = 320;
+const THUMB_GRID_3X  = 480;
+const THUMB_MODAL    = 640;
+const THUMB_APPLY    = 1200;
+
+const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
 const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
 
@@ -1111,6 +1129,7 @@ const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
+const THUMB_CACHE_KEY = 'balcao_thumbs_v1';
 
 const TIMEOUT_READ_COLD = 45000;
 const TIMEOUT_READ_WARM = 25000;
@@ -1228,7 +1247,35 @@ function ensureArray(v){ return Array.isArray(v)?v:(v?[v]:[]); }
 function gerarUUID(){ if(self.crypto&&crypto.randomUUID) return crypto.randomUUID(); return 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,10); }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]; }); }
 function escapeAttr(s){ return String(s||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;'); }
-function thumbUrl(id,size){ if(!id) return ''; return 'https://lh3.googleusercontent.com/d/'+id+'=w'+(size||THUMB_SIZE); }
+
+/* ⚡ THUMBNAILS OTIMIZADOS GOOGLE DRIVE
+ *  Parâmetros usados:
+ *   =wXXX       → largura
+ *   -hXXX       → altura (combinada com -p para pad)
+ *   -p          → pad (mantém aspect ratio dentro do quadrado)
+ *   -k          → keep aspect ratio
+ *   -nu         → no upscale (não aumenta imagens pequenas)
+ *   -rw         → WebP (formato moderno, ~30% menor que JPEG)
+ *  Isto reduz o tráfego sem perder qualidade visual.
+ */
+function thumbUrl(id, size){
+  if(!id) return '';
+  size = size || THUMB_GRID_2X;
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + size + '-h' + size + '-p-k-nu-rw';
+}
+function thumbUrlSimple(id, size){
+  if(!id) return '';
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + size + '-rw';
+}
+function thumbUrlSrcset(id){
+  if(!id) return '';
+  return thumbUrl(id, THUMB_GRID_1X) + ' 1x, ' + thumbUrl(id, THUMB_GRID_2X) + ' 2x, ' + thumbUrl(id, THUMB_GRID_3X) + ' 3x';
+}
+function thumbUrlApply(id){
+  if(!id) return '';
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + THUMB_APPLY + '-rw';
+}
+
 function extrairFotoIdDoUrl(url){ if(!url||url.indexOf('http')!==0) return ''; var m=String(url).match(/\/d\/([^=\/?#]+)/); if(m) return m[1]; m=String(url).match(/[?&]id=([^&=]+)/); return m?m[1]:''; }
 function formatDatePT(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); if(!m) return ""; return m[3]+"/"+m[2]+"/"+m[1]; }
 function getInfoExtraText(){
@@ -1537,25 +1584,6 @@ async function _urlToDataUrl(url){
         if(du && du.indexOf('data:') === 0){
           _printImgCache[url] = du;
           return du;
-        }
-      }
-    }
-  }catch(e){}
-
-  try{
-    var r2 = await fetch(url, { cache:'force-cache', mode:'no-cors' });
-    if(r2){
-      var b2 = await r2.blob();
-      if(b2 && b2.size > 0){
-        var du2 = await new Promise(function(res,rej){
-          var fr = new FileReader();
-          fr.onloadend = function(){ res(fr.result); };
-          fr.onerror = rej;
-          fr.readAsDataURL(b2);
-        });
-        if(du2 && du2.indexOf('data:') === 0){
-          _printImgCache[url] = du2;
-          return du2;
         }
       }
     }
@@ -2625,7 +2653,7 @@ async function saveDbAndQueue(){
 
 function updateBancoCounts(){ var f=0,l=0; bancoFruta.forEach(function(x){ if(x.tipo==='legume') l++; else if(x.tipo==='fruta') f++; }); if($("bfCountFruta")) $("bfCountFruta").textContent = f; if($("bfCountLegume")) $("bfCountLegume").textContent = l; }
 
-/* ⚡ Dedupe otimizado — O(n) em vez de O(n²) */
+/* ⚡ Dedupe O(n) */
 function dedupeBancoFruta(lista){
   var arr = ensureArray(lista);
   var seen = {};
@@ -2646,7 +2674,7 @@ function dedupeBancoFruta(lista){
   return out;
 }
 
-/* ⚡ LAZY LOADING COM IntersectionObserver — só carrega imagens visíveis */
+/* ⚡ LAZY LOADING com IntersectionObserver — só carrega imagens visíveis */
 var _bfObserver = null, _bfObserverInit = false;
 function _setupBfObserver(){
   if(_bfObserverInit) return;
@@ -2658,16 +2686,20 @@ function _setupBfObserver(){
       if(!entry.isIntersecting) continue;
       var img = entry.target;
       var src = img.getAttribute('data-src');
+      var srcset = img.getAttribute('data-srcset');
       if(src){
         img.removeAttribute('data-src');
+        if(srcset) img.removeAttribute('data-srcset');
         img.src = src;
+        if(srcset) img.srcset = srcset;
       }
       try{ _bfObserver.unobserve(img); }catch(e){}
     }
-  }, {rootMargin: '300px 0px', threshold: 0.01});
+  }, {rootMargin: '400px 0px', threshold: 0.01});
 }
 
-var _BF_PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 110%22%3E%3Crect width=%22200%22 height=%22110%22 fill=%22%23f1f5f9%22/%3E%3C/svg%3E';
+/* Placeholder SVG minúsculo embutido (0 pedidos de rede) */
+var _BF_PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110"><rect width="200" height="110" fill="#f1f5f9"/><circle cx="100" cy="55" r="18" fill="none" stroke="#cbd5e1" stroke-width="2"/><path d="M92 55l6 6 12-12" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 
 /* Event delegation — um só listener para todos os cards */
 var _bfClickSetup = false;
@@ -2679,12 +2711,15 @@ function _setupBfClick(){
   c.addEventListener('click', async function(e){
     var el = e.target.closest('.bf-card');
     if(!el) return;
+    var id = el.dataset.fotoId || '';
     var url = el.dataset.url;
-    if(!url) return;
+    if(!id && !url) return;
     $('bancoFrutaModal').classList.remove('show');
     setStatus("A preparar imagem…","loading");
     try{
-      var norm = await normalizeUrlForLabel(url);
+      /* ⚡ Aplica a versão de alta qualidade (w1200) — qualidade original preservada */
+      var applyUrl = id ? thumbUrlApply(id) : url;
+      var norm = await normalizeUrlForLabel(applyUrl);
       globalOriginalPhoto = norm;
       globalProcessedPhoto = norm;
       if(!$('product').value.trim()) $('product').value = el.dataset.nome || '';
@@ -2719,22 +2754,27 @@ function renderBancoFruta(filtro){
     var tipo = (f.tipo === 'legume') ? 'legume' : 'fruta';
     var card = document.createElement('div');
     card.className = 'bf-card';
-    card.dataset.url = f.fotoId ? thumbUrl(f.fotoId, 1200) : (f.fotoUrl || '');
+    card.dataset.fotoId = f.fotoId || '';
+    card.dataset.url = f.fotoUrl || '';
     card.dataset.nome = f.nome || '';
 
     var img = document.createElement('img');
     img.className = 'bf-img';
     img.setAttribute('loading', 'lazy');
     img.setAttribute('decoding', 'async');
+    img.setAttribute('fetchpriority', 'low');
     img.setAttribute('alt', '');
     img.src = _BF_PLACEHOLDER;
+
     if(f.fotoId){
-      img.setAttribute('data-src', thumbUrl(f.fotoId, 200));
+      /* ⚡ srcset responsivo com WebP + -nu (no upscale) + -p-k (pad+keep) */
+      var srcset = thumbUrlSrcset(f.fotoId);
+      img.setAttribute('data-src', thumbUrl(f.fotoId, THUMB_GRID_2X));
+      img.setAttribute('data-srcset', srcset);
+      img.setAttribute('sizes', '(max-width:400px) 45vw, (max-width:700px) 30vw, 160px');
+      if(f.fotoUrl) img.setAttribute('data-fallback', f.fotoUrl);
     } else if(f.fotoUrl){
       img.setAttribute('data-src', f.fotoUrl);
-    }
-    if(f.fotoUrl && f.fotoId){
-      img.setAttribute('data-fallback', f.fotoUrl);
     }
 
     var tag = document.createElement('span');
@@ -2762,18 +2802,29 @@ function renderBancoFruta(filtro){
   } else {
     for(var k2 = 0; k2 < imgs.length; k2++){
       var src = imgs[k2].getAttribute('data-src');
-      if(src){ imgs[k2].removeAttribute('data-src'); imgs[k2].src = src; }
+      var srcset = imgs[k2].getAttribute('data-srcset');
+      if(src){
+        imgs[k2].removeAttribute('data-src');
+        if(srcset) imgs[k2].removeAttribute('data-srcset');
+        imgs[k2].src = src;
+        if(srcset) imgs[k2].srcset = srcset;
+      }
     }
   }
 
-  /* Fallback automático se o thumbnail falhar */
-  c.querySelectorAll('img[data-fallback]').forEach(function(img){
+  /* Fade-in suave + fallback automático */
+  c.querySelectorAll('img.bf-img').forEach(function(img){
+    img.addEventListener('load', function(){ img.classList.add('loaded'); }, {once:true});
     img.addEventListener('error', function(){
       var fb = img.getAttribute('data-fallback');
       if(fb && img.dataset.fbUsed !== '1'){
         img.dataset.fbUsed = '1';
         img.removeAttribute('data-src');
+        img.removeAttribute('data-srcset');
         img.src = fb;
+      } else {
+        img.src = _BF_PLACEHOLDER;
+        img.classList.add('loaded');
       }
     });
   });
@@ -2808,7 +2859,7 @@ async function otimizarImagensDrive(){
     if(btn) btn.textContent = "⏳ "+(i+1)+"/"+bancoFruta.length;
     setStatus("A otimizar imagem "+(i+1)+"/"+bancoFruta.length+"…","loading");
     try{
-      var url = f.fotoId ? thumbUrl(f.fotoId,2800) : f.fotoUrl;
+      var url = f.fotoId ? thumbUrlApply(f.fotoId) : f.fotoUrl;
       var resp = await fetch(url,{mode:'cors'}); if(!resp.ok) throw new Error("HTTP "+resp.status);
       var blob = await resp.blob();
       var dataUrl = await new Promise(function(res,rej){ var r=new FileReader(); r.onloadend=function(){ res(r.result); }; r.onerror=rej; r.readAsDataURL(blob); });
@@ -4256,12 +4307,6 @@ document.addEventListener("change", function(e){
     setTimeout(fitPreviewCard,200); setTimeout(fitPreviewCard,600);
     setTimeout(function(){ var fb = document.getElementById('floatingPreviewBtn'); if(fb){ fb.classList.add('ready'); } },500);
     setTimeout(function(){ try{ warmUpServer(); }catch(e){} }, 200);
-    setTimeout(function(){
-      try{
-        _urlToDataUrl('https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO').catch(function(){});
-        _urlToDataUrl('https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb').catch(function(){});
-      }catch(e){}
-    }, 3000);
   }catch(err){}
 })();
 </script>
