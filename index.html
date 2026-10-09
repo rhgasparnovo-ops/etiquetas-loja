@@ -64,9 +64,9 @@ a{color:inherit;text-decoration:none}
 input[type=text],input[type=email],input[type=number],input[type=date],input[type=search],input[type=password],input[type=tel],textarea,select{font-size:16px !important}
 button,.chip-btn,.bnav button,.list-item-actions button,.tipo-selector button,input[type=checkbox],input[type=radio],label,.fld>label{touch-action:manipulation}
 
-.global-tooltip{position:fixed;left:50%;top:calc(84px + var(--safe-t));transform:translate(-50%,-8px);background:rgba(15,23,42,.96);color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:700;max-width:calc(100vw - 24px);width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease;z-index:100050;box-shadow:0 14px 38px rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.12)}
-.global-tooltip.show{opacity:1;transform:translate(-50%,0)}
-@media (max-width:600px){.global-tooltip{font-size:12.5px;padding:9px 14px;top:calc(78px + var(--safe-t))}}
+/* ⚡ TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
+.global-tooltip{position:fixed;left:0;top:0;background:rgba(15,23,42,.97);color:#fff;padding:7px 11px;border-radius:9px;font-size:11.5px;font-weight:700;max-width:min(240px,calc(100vw - 16px));width:max-content;text-align:center;line-height:1.35;word-break:break-word;white-space:normal;opacity:0;pointer-events:none;transition:opacity .14s ease;z-index:100050;box-shadow:0 10px 26px rgba(15,23,42,.42);border:1px solid rgba(255,255,255,.14);will-change:left,top}
+.global-tooltip.show{opacity:1}
 
 .app-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding:12px 18px;padding-top:calc(12px + var(--safe-t));padding-left:calc(18px + var(--safe-l));padding-right:calc(18px + var(--safe-r));box-shadow:0 1px 20px rgba(15,23,42,.04)}
 .app-header::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-grad)}
@@ -451,16 +451,17 @@ body[data-view="fila"] .floating-clear{display:flex}
 .fmt-badge{display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:#3730a3;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;text-transform:uppercase;border:1px solid #c7d2fe;line-height:1.3}
 .fmt-badge.fruit{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
 .fmt-badge.large{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
-.btn-dup-queue{background:#eff6ff!important;color:#1d4ed8!important}
 .queue-item .q-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.4}
 .queue-actions-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;width:100%}
 
-/* ⚡ Filtros compactos e discretos */
-.drive-filter-row{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
-.drive-filter-row select,.drive-filter-row input{height:36px;min-height:36px;padding:0 10px;font-size:12.5px!important;border-radius:8px;font-weight:600}
-.drive-filter-row select{flex:0 0 auto;min-width:120px;padding-right:28px;background-position:calc(100% - 10px) 50%}
-.drive-filter-row input{flex:1 1 140px;min-width:0}
-@media (max-width:400px){.drive-filter-row select{flex:1 1 100%}}
+/* ⚡ Filtros super compactos e discretos */
+.drive-filter-row{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center}
+.drive-filter-row select,.drive-filter-row input{height:34px;min-height:34px;padding:0 11px;font-size:12px!important;border-radius:9px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);transition:all .15s}
+.drive-filter-row select:focus,.drive-filter-row input:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px rgba(200,16,46,.08);outline:none}
+.drive-filter-row select{flex:0 0 auto;min-width:150px;padding-right:26px;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c8102e' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-position:calc(100% - 10px) 50%;background-repeat:no-repeat;background-color:var(--surface-2)}
+.drive-filter-row input{flex:1 1 120px;min-width:0}
+.drive-filter-row input::placeholder{color:var(--ink-3);font-weight:500;font-size:11.5px}
+@media (max-width:400px){.drive-filter-row select{flex:1 1 100%;min-width:0}}
 
 .drive-group-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;margin:12px 0 4px;background:linear-gradient(90deg,#fff5f7,#fff);border-left:3px solid var(--brand);border-radius:6px;font-size:11px;font-weight:900;color:var(--brand);text-transform:uppercase;letter-spacing:.03em}
 .drive-group-hdr:first-child{margin-top:4px}
@@ -513,7 +514,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .db-tool.select-all.on{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(99,102,241,.22)}
 @media (max-width:420px){.db-tool{padding:6px 9px;font-size:10.5px}}
 
-/* ⚡ Item de etiqueta guardada compacto */
 .list-item.db-item{align-items:flex-start}
 .list-item.db-item .db-check{
   display:flex;align-items:center;justify-content:center;
@@ -528,7 +528,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .list-item.db-item .list-item-info{flex:1 1 auto;min-width:0}
 .list-item.db-item .list-item-actions{flex-shrink:0}
 
-/* ⚡ Título + data em cada etiqueta (sempre visível, mesmo em mobile) */
 .db-title-row{
   display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;
   min-width:0;margin:0 0 4px
@@ -728,6 +727,15 @@ body[data-view="fila"] .floating-clear{display:flex}
         <div class="card accent-violet">
           <div class="card-h"><div class="ic">⚙️</div><h3>Quantidade & Extras</h3></div>
           <div class="fld"><label for="capacity">Quantidade / Medida</label><input id="capacity" type="number" min="0.001" step="0.001"><div id="capacityHint"></div></div>
+
+          <div class="fld">
+            <label>Banco de Imagens <span style="font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0;font-size:11px">(atalho rápido)</span></label>
+            <button type="button" class="btn btn-ghost btn-block" id="bancoEditorBtn" data-tip="Escolher imagem do banco de frutas e legumes" style="justify-content:flex-start;text-align:left;gap:10px;font-weight:600;padding-left:14px">
+              <span style="font-size:18px;line-height:1">📚</span>
+              <span>Abrir Banco de Frutas e Legumes</span>
+            </button>
+          </div>
+
           <div class="fld"><label for="infoExtraTipo">Informação extra <span style="font-weight:500;color:var(--ink-3);text-transform:none;letter-spacing:0;font-size:11px">opcional</span></label>
             <select id="infoExtraTipo">
               <option value="" selected>Nenhuma</option>
@@ -1007,7 +1015,7 @@ body[data-view="fila"] .floating-clear{display:flex}
 /* 0. VIEWPORT */
 (function(){ function s(){ try{ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }catch(e){} } s(); window.addEventListener('resize', s, {passive:true}); window.addEventListener('orientationchange', function(){ setTimeout(s, 120); }); try{ var ua = navigator.userAgent||''; if(/\bwv\b/.test(ua) || /; wv\)/.test(ua) || window.matchMedia('(display-mode: standalone)').matches || location.protocol === 'file:'){ document.documentElement.classList.add('is-apk'); } }catch(e){} })();
 
-/* 1. TOOLTIP GLOBAL FIXO */
+/* 1. TOOLTIP GLOBAL — posiciona-se JUNTO ao elemento, sempre visível */
 (function(){
   if(document.getElementById('globalTooltip')) return;
   var tip = document.createElement('div');
@@ -1016,40 +1024,71 @@ body[data-view="fila"] .floating-clear{display:flex}
   tip.setAttribute('role','tooltip');
   document.body.appendChild(tip);
   var hideTimer = null;
-  function show(text){
+  var _currentTarget = null;
+
+  function position(target){
+    if(!target) return;
+    var rect = target.getBoundingClientRect();
+    tip.style.left = '0px'; tip.style.top = '0px';
+    var tw = tip.offsetWidth, th = tip.offsetHeight;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var m = 8;
+    var top = rect.top - th - m;
+    if(top < m) top = rect.bottom + m;
+    if(top + th > vh - m) top = Math.max(m, vh - th - m);
+    var left = rect.left + (rect.width/2) - (tw/2);
+    if(left < m) left = m;
+    if(left + tw > vw - m) left = vw - tw - m;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function show(text, target){
     if(!text) return;
+    _currentTarget = target;
     tip.textContent = text;
     tip.classList.add('show');
+    position(target);
     if(hideTimer) clearTimeout(hideTimer);
-    hideTimer = setTimeout(function(){ tip.classList.remove('show'); }, 2600);
+    hideTimer = setTimeout(function(){ tip.classList.remove('show'); _currentTarget = null; }, 3200);
   }
   function hide(){
     tip.classList.remove('show');
+    _currentTarget = null;
     if(hideTimer){ clearTimeout(hideTimer); hideTimer = null; }
   }
+
   document.addEventListener('mouseover', function(e){
-    try{ var el = e.target && e.target.closest && e.target.closest('[data-tip]'); if(el) show(el.getAttribute('data-tip')); }catch(err){}
+    try{
+      var el = e.target && e.target.closest && e.target.closest('[data-tip]');
+      if(el) show(el.getAttribute('data-tip'), el);
+    }catch(err){}
   }, true);
   document.addEventListener('mouseout', function(e){
     try{
       var el = e.target && e.target.closest && e.target.closest('[data-tip]');
       if(!el) return;
       var to = e.relatedTarget;
-      if(to && to.closest && to.closest('[data-tip]')) return;
+      if(to && to.closest && to.closest('[data-tip]') === el) return;
       hide();
     }catch(err){}
   }, true);
   document.addEventListener('touchstart', function(e){
     try{
       var el = e.target && e.target.closest && e.target.closest('[data-tip]');
-      if(el) show(el.getAttribute('data-tip'));
+      if(el) show(el.getAttribute('data-tip'), el);
       else hide();
     }catch(err){}
   }, {passive:true});
   document.addEventListener('click', function(e){
-    try{ var el = e.target && e.target.closest && e.target.closest('[data-tip]'); if(el) show(el.getAttribute('data-tip')); }catch(err){}
+    try{
+      var el = e.target && e.target.closest && e.target.closest('[data-tip]');
+      if(el) show(el.getAttribute('data-tip'), el);
+    }catch(err){}
   });
   document.addEventListener('scroll', hide, {passive:true, capture:true});
+  window.addEventListener('resize', function(){ if(_currentTarget) position(_currentTarget); }, {passive:true});
+  window.addEventListener('orientationchange', function(){ if(_currentTarget) setTimeout(function(){ position(_currentTarget); }, 100); });
 })();
 
 /* 2. CONSTANTES */
@@ -1057,8 +1096,8 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v247';
-const CACHE_SCHEMA_VERSION = 16;
+const CACHE_KEY = 'balcao_cache_v248';
+const CACHE_SCHEMA_VERSION = 17;
 
 const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
@@ -1124,19 +1163,6 @@ function sanitizePriceAll(){
   });
 }
 
-function formatPromoDatesCompact(s,e){
-  function ddmm(str){
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(str||''));
-    if(!m) return '';
-    return m[3] + '/' + m[2];
-  }
-  var ds = ddmm(s), de = ddmm(e);
-  if(ds && de) return ds + ' → ' + de;
-  if(ds) return 'De ' + ds;
-  if(de) return 'Até ' + de;
-  return '';
-}
-
 let _reauthPromise = null, _currentUser = null;
 function parseJwt(token){ if(!token) return null; try{ var b=String(token).split('.')[1]; if(!b) return null; var s=b.replace(/-/g,'+').replace(/_/g,'/'); var pad=s+'==='.slice((s.length+3)%4); return JSON.parse(decodeURIComponent(atob(pad).split('').map(function(c){ return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2); }).join(''))); }catch(e){ return null; } }
 function getStoredToken(){ try{ var t=localStorage.getItem(AUTH_KEY_JWT); var e=parseInt(localStorage.getItem(AUTH_KEY_EXP)||'0',10); if(!t||!e) return null; if(e-60<=Math.floor(Date.now()/1000)) return null; return t; }catch(e){ return null; } }
@@ -1163,7 +1189,6 @@ window.handleCredentialResponse = async function(response){
 };
 function fazerLogout(){ clearStoredToken(); atualizarUICredenciais(); try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){} toast('Sessão terminada','info'); setTimeout(function(){ location.reload(); },400); }
 
-/* ⚡ CORRIGIDO: race condition no re-login silencioso */
 function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise = new Promise(function(resolve){
@@ -1771,7 +1796,6 @@ var _printCleanupTimer=null, _restoreQueueAfterPrint=null;
 var _printBackupData=null, _skipAutofitInCard=false;
 var _syncErrorShown = false;
 
-/* Seleção em massa (checkbox por item) */
 var _dbSelection = new Set();
 var _dbVisibleCache = [];
 
@@ -2267,7 +2291,6 @@ function renderQueue(){
       '</div>' +
       '<div class="queue-actions-row">' +
         '<input type="number" class="copies-input" value="' + (item.copies||1) + '" min="1" max="500" data-action="copies" data-index="' + i + '" data-tip="Nº de cópias">' +
-        '<button class="btn-dup-queue" data-action="dup-queue" data-index="' + i + '" data-tip="Duplicar linha (variante)">🧬</button>' +
         '<button class="btn-save-queue" data-action="save-queue" data-index="' + i + '" data-tip="' + tipSave + '">' + ic + '</button>' +
         '<button class="btn-remove" data-action="remove-queue" data-index="' + i + '" data-tip="Remover da fila">✕</button>' +
       '</div>';
@@ -2323,15 +2346,6 @@ function atualizarProdutoLocal(payload){
   else { if(!novo._id) novo._id = gerarUUID(); savedProducts.push(novo); }
 }
 window.removeFromQueue = function(i){ printQueue.splice(i,1); renderQueue(); };
-window.duplicateQueueItem = function(i){
-  var item = printQueue[i]; if(!item) return;
-  var clone = JSON.parse(JSON.stringify(item));
-  clone.qid = gerarQid(); clone.addedAt = Date.now();
-  clone._queueState = undefined;
-  printQueue.splice(i+1,0,clone);
-  renderQueue();
-  toast("🧬 Linha duplicada — altere o formato para criar variante","info",3000);
-};
 window.saveQueueItem = async function(i){
   var item = printQueue[i];
   if(!item){ toast("Item não encontrado.","error"); return; }
@@ -2406,7 +2420,6 @@ async function resolverFotoParaPayload(d){
   return {fotoId: up.id, fotoUrl: up.url};
 }
 
-/* ⚡ renderDb: título + data em vermelho, sem botão variante, estrutura melhorada */
 function renderDb(){
   var c = $("dbListContainer");
   $("dbBadge").textContent = savedProducts.length;
@@ -2496,7 +2509,6 @@ function renderDb(){
   updateDbBulkState();
 }
 
-/* ⚡ Estado dos botões de seleção */
 function updateDbBulkState(){
   var btnSel = $("dbAddSelectedBtn");
   if(btnSel){
@@ -3731,7 +3743,6 @@ window.loadFromDb = function(i){
   setTimeout(function(){ try{ updateCardUnsafe(); fitPreviewCard(); }catch(e){} },150);
   toast('✏️ A editar etiqueta do Drive — o original só muda se guardares','info',4200);
 };
-/* variantFromDb mantido para compatibilidade mas botão foi removido da UI */
 window.variantFromDb = function(i){
   var d = savedProducts[i]; if(!d) return;
   var data = normalizarProdutoParaFila(JSON.parse(JSON.stringify(d)));
@@ -3794,7 +3805,6 @@ window.queueFromDb = function(i){
   setTimeout(function(){ document.body.dataset.view='fila'; _navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === 'fila'); }); window.scrollTo({top:0,behavior:'smooth'}); },300);
 };
 
-/* Adicionar em bloco à fila */
 function _adicionarEmBloco(produtos){
   if(!produtos || !produtos.length) return 0;
   var n = 0;
@@ -3847,7 +3857,7 @@ document.getElementById('emailLabelsBtn').addEventListener("click", function(){ 
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* ⚡ Botão "Selecionar todas / Desselecionar" */
+/* Botão "Selecionar todas / Desselecionar" */
 document.getElementById('dbSelectAllBtn').addEventListener("click", function(){
   var visiveis = _dbVisibleCache.filter(function(p){ return p && p._id; });
   if(!visiveis.length){ toast("Sem etiquetas visíveis.","warning"); return; }
@@ -3957,7 +3967,26 @@ document.getElementById('camSnap').addEventListener("click", async function(){
 });
 
 document.getElementById('bfTabs').addEventListener("click", function(e){ var btn = e.target.closest("button[data-tipo]"); if(!btn) return; var t = btn.dataset.tipo; if(t !== 'fruta' && t !== 'legume') return; bancoTipoFiltro = t; document.getElementById('bfTabs').querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b === btn); }); renderBancoFruta($("buscaBancoFruta").value); });
-document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); bancoTipoFiltro = 'fruta'; document.getElementById('bfTabs').querySelectorAll("button").forEach(function(b){ b.classList.toggle("active", b.dataset.tipo === 'fruta'); }); document.getElementById('bancoFrutaModal').classList.add('show'); renderBancoFruta($('buscaBancoFruta').value); });
+
+function _abrirBancoFrom(presetTipo){
+  bancoTipoFiltro = presetTipo || 'fruta';
+  document.getElementById('bfTabs').querySelectorAll("button").forEach(function(b){
+    b.classList.toggle("active", b.dataset.tipo === bancoTipoFiltro);
+  });
+  document.getElementById('bancoFrutaModal').classList.add('show');
+  renderBancoFruta($('buscaBancoFruta').value);
+}
+document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); _abrirBancoFrom('fruta'); });
+/* ⚡ Atalho do Banco na página Editor (Quantidade & Extras) */
+(function(){
+  var b = document.getElementById('bancoEditorBtn');
+  if(!b) return;
+  b.addEventListener('click', function(e){
+    e.preventDefault();
+    _abrirBancoFrom('fruta');
+  });
+})();
+
 document.getElementById('fecharBancoFruta').addEventListener("click", function(){ document.getElementById('bancoFrutaModal').classList.remove("show"); });
 var _buscaTimer = null;
 document.getElementById('buscaBancoFruta').addEventListener("input", function(e){ if(_buscaTimer) clearTimeout(_buscaTimer); var v = e.target.value; _buscaTimer = setTimeout(function(){ renderBancoFruta(v); },150); });
@@ -4002,6 +4031,26 @@ document.getElementById('photo').addEventListener("change", async function(e){
         updateCard();
       }catch(e){}
     }
+    /* ⚡ Perguntar se quer guardar no banco */
+    try{
+      var querGuardar = await confirmDialog(
+        "Guardar esta fotografia no banco de imagens?\n\nPoderás reutilizá-la em etiquetas futuras sem voltar a fotografar.",
+        "Guardar no banco"
+      );
+      if(querGuardar){
+        var info = await pedirNomeTipoArtigo($("product").value);
+        if(info){
+          var fotoParaBanco = ($("autoRemoveBg").checked && globalProcessedPhoto) ? globalProcessedPhoto : globalOriginalPhoto;
+          setStatus("A guardar no banco…","loading");
+          try{
+            await guardarFotoBanco(info.nome, fotoParaBanco, info.tipo);
+          }catch(err){
+            setStatus("Erro ao guardar no banco","error");
+          }
+          setStatus("");
+        }
+      }
+    }catch(err){}
   };
   r.readAsDataURL(f);
 });
@@ -4038,7 +4087,6 @@ document.addEventListener("click", function(e){
   var a = btn.dataset.action, i = parseInt(btn.dataset.index,10);
   if(a === "remove-queue" && isFinite(i)) window.removeFromQueue(i);
   if(a === "save-queue" && isFinite(i)) window.saveQueueItem(i);
-  if(a === "dup-queue" && isFinite(i)) window.duplicateQueueItem(i);
   if(a === "load-db" && isFinite(i)) window.loadFromDb(i);
   if(a === "queue-db" && isFinite(i)) window.queueFromDb(i);
   if(a === "variant-db" && isFinite(i)) window.variantFromDb(i);
