@@ -185,16 +185,42 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .promo-dates:empty{display:none!important}
 .iva-text{font-size:clamp(5px,1.5cqw,8px);color:#0f172a;font-weight:900;white-space:nowrap;line-height:1;flex-shrink:0;padding:0 5px;text-transform:uppercase;display:inline-block}
 .iva-text:empty{display:none!important}
-.fruit-promo-prices{display:none;flex-direction:row;width:100%;gap:4px;padding:2px 0;align-items:stretch}
+
+/* ⚡ CORREÇÃO — faixa dos dois preços (LEVE 2+) nunca encolhe nem corta */
+.fruit-promo-prices{
+  display:none;
+  flex-direction:row;
+  width:100%;
+  gap:4px;
+  padding:2px 0;
+  align-items:stretch;
+  flex-shrink:0!important;
+  min-height:auto!important;
+  overflow:visible!important;
+}
 .label-card.layout-fruit-promo .col-price{display:none!important}
 .label-card.layout-fruit-promo .fruit-promo-prices{display:flex!important}
-.fp-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 6px;border-radius:6px;text-align:center;line-height:1;min-width:0;overflow:hidden}
+.fp-box{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4px 6px;border-radius:6px;text-align:center;line-height:1;
+  min-width:0;overflow:visible;
+}
 .fp-box.fp-normal{flex:1;background:#fff;border:2px solid #0f172a;color:#0f172a}
 .fp-box.fp-promo{flex:1.4;background:#c8102e;border:2px solid #c8102e;color:#fff;position:relative}
-.fp-label{font-size:clamp(7px,2cqw,13px);font-weight:800;text-transform:uppercase;margin-bottom:3px;line-height:1.05}
-.fp-price{font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;white-space:nowrap}
+.fp-label{
+  font-size:clamp(7px,2cqw,13px);font-weight:800;text-transform:uppercase;
+  margin-bottom:3px;line-height:1.05;flex-shrink:0;white-space:nowrap;
+}
+.fp-price{
+  font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;
+  white-space:nowrap;flex-shrink:0;
+}
 .fp-box.fp-promo .fp-price{font-size:clamp(22px,8cqw,54px)}
-.fp-unit{font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;opacity:.9}
+.fp-unit{
+  font-size:clamp(7px,1.9cqw,12px);font-weight:700;margin-top:2px;
+  opacity:.9;flex-shrink:0;white-space:nowrap;
+}
+
 .label-card.size-tiny .col-image,.label-card.size-tiny .barcode-container,.label-card.size-tiny .footer-container,.label-card.size-tiny .fruit-full-bar,.label-card.size-tiny .deposit-row{display:none!important}
 .label-card.size-tiny .product{font-size:clamp(7px,5cqw,14px)!important;line-height:1.02}
 .label-card.size-tiny .price{font-size:clamp(13px,9cqw,24px)!important}
@@ -1034,7 +1060,6 @@ const IMG_MAX_SIZE = 1600, IMG_QUALITY = 0.85, THUMB_SIZE = 200;
 const IMG_MAX_SIZE_FALLBACK = 1200, IMG_QUALITY_FALLBACK = 0.78;
 const IMG_B64_FALLBACK_LIMIT = 2 * 1024 * 1024;
 
-/* ⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS */
 const IMG_LABEL_CANVAS = 1000;
 
 const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
@@ -1343,7 +1368,6 @@ function compressSmart(dataUrl,maxSize,quality){
   });
 }
 
-/* ⚡ NORMALIZAÇÃO UNIFORME DE IMAGENS PARA ETIQUETAS */
 function normalizeImageForLabel(dataUrl){
   if(!dataUrl || String(dataUrl).indexOf('data:image') !== 0) return Promise.resolve(dataUrl);
   return new Promise(function(resolve){
@@ -2543,7 +2567,6 @@ function autoFitFooterText(card){
 }
 function autoFitDeposit(card){ if(!card) return; var wrap=card.querySelector(".deposit-row"), el=wrap?wrap.querySelector(".deposit-box"):null; if(!wrap||!el) return; var cs=window.getComputedStyle(wrap); if(cs.display==="none") return; if(!el.textContent||!el.textContent.trim()) return; el.style.removeProperty("font-size"); void el.offsetHeight; var ovf=function(){ var wr=wrap.getBoundingClientRect(); if(!wr.width) return false; var er=el.getBoundingClientRect(); return (er.right>wr.right+0.5)||(er.left<wr.left-0.5); }; if(!ovf()) return; var g=0; while(g<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<=2.5) break; el.style.setProperty("font-size",Math.max(2.5,cur*0.92)+"px","important"); g++; void el.offsetHeight; if(!ovf()) return; } }
 
-/* ⚡ AUTO-FIT FRUIT-BAR — nunca corta ORIGEM/CAT/CAL */
 function autoFitFruitBar(card){
   if(!card) return;
   var bar = card.querySelector('.fruit-full-bar');
@@ -2588,7 +2611,6 @@ function autoFitFruitBar(card){
   bar.style.setProperty("transform-origin", "center", "important");
 }
 
-/* ⚡ FIX FINAL — garante que NADA transborda os limites do cartão */
 function autoFixCardOverflow(card){
   if(!card) return;
   var cr = card.getBoundingClientRect();
@@ -3355,7 +3377,6 @@ async function toggleTorchScan(){
 /* 27. FILTROS DRIVE */
 (function(){ var s = document.getElementById('dbFiltroFormato'), b = document.getElementById('dbBusca'); if(s) s.addEventListener('change', renderDb); if(b){ var t = null; b.addEventListener('input', function(){ if(t) clearTimeout(t); t = setTimeout(renderDb, 180); }); } })();
 
-/* ⚡ CHIPS — sync com inputs origem/categoria/calibre */
 (function(){
   ['origem','categoria','calibre'].forEach(function(field){
     var el = document.getElementById(field);
@@ -3536,7 +3557,6 @@ document.getElementById('fotoBancoBtn').addEventListener("click", function(){ fo
 document.getElementById('camClose').addEventListener("click", closeCamera);
 document.getElementById('camTorch').addEventListener("click", toggleTorchCam);
 
-/* ⚡ CAM SNAP — normaliza sempre */
 document.getElementById('camSnap').addEventListener("click", async function(){
   var v = $("camVideo"), c = $("camCanvas");
   var w = v.videoWidth, h = v.videoHeight;
@@ -3606,7 +3626,6 @@ document.getElementById('isPromoActive').addEventListener("change", function(){ 
 document.getElementById('depositFeeSelect').addEventListener("change", function(){ var cf = $("customDepositField"); if(cf){ cf.style.display = (this.value === "custom") ? "flex" : "none"; } updateCard(); });
 document.getElementById('capacityUnit').addEventListener("change", function(){ var c = $("capacity"); var d = DEFAULTS_UNIDADE[this.value]; c.value = (d !== undefined) ? d : ""; updateCard(); });
 
-/* ⚡ PHOTO INPUT — normaliza */
 document.getElementById('photo').addEventListener("change", async function(e){
   var f = e.target.files[0]; globalOriginalPhoto = ""; globalProcessedPhoto = "";
   if(!f){ updateCard(); return; }
