@@ -1116,7 +1116,12 @@ const TIMEOUT_READ_COLD = 45000;
 const TIMEOUT_READ_WARM = 25000;
 const TIMEOUT_WRITE_COLD = 45000;
 const TIMEOUT_WRITE_WARM = 25000;
+const TIMEOUT_HEAVY = 90000;
+
 const WRITE_FNS = ['guardarProduto','apagarProduto','apagarTodosProdutos','apagarProdutosLote','guardarProdutosLote','uploadFoto','uploadBancoFruta','substituirFotoBanco','sincronizarBancoFruta','sincronizarBancoIncremental','apagarDuplicados','enviarEtiquetasEmail','repararPartilhas'];
+const HEAVY_FNS = ['repararPartilhas','otimizarBancoFruta','sincronizarBancoFruta'];
+
+const FORMATOS_CONHECIDOS = ['amanhecer','80x60','125x80','frutaPromo125x80','A6','frutaPromoA6','A5','100x70','custom'];
 
 const FORMAT_LABELS = {amanhecer:'⭐ Amanhecer','80x60':'🆕 6×8','125x80':'🍎 Suporte 125×80',frutaPromo125x80:'💡 Leve 2+ 125×80',A6:'📄 A6',frutaPromoA6:'💡 A6 Leve 2+',A5:'📄 A5','100x70':'🏷️ Cartaz 100×70',custom:'⚙️ Personalizado'};
 function fmtLabel(v){ return FORMAT_LABELS[v]||v||'—'; }
@@ -1189,18 +1194,35 @@ function fazerLogout(){ clearStoredToken(); atualizarUICredenciais(); try{ if(wi
 function tentarReauthSilenciosa(){
   if(_reauthPromise) return _reauthPromise;
   _reauthPromise = new Promise(function(resolve){
-    var done=false;
-    var tid = setTimeout(function(){ if(!done){ done=true; _reauthPromise=null; resolve(false); } },8000);
-    var orig = window.handleCredentialResponse;
+    var done = false;
+    var _origHCR = window.handleCredentialResponse;
+    function restaurar(){ try{ window.handleCredentialResponse = _origHCR; }catch(e){} }
+    var tid = setTimeout(function(){
+      if(!done){ done = true; restaurar(); _reauthPromise = null; resolve(false); }
+    }, 8000);
     window.handleCredentialResponse = async function(r){
-      try{ await orig(r); }catch(e){}
-      if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(true); }
+      try{ await _origHCR(r); }catch(e){}
+      if(!done){ done = true; clearTimeout(tid); restaurar(); _reauthPromise = null; resolve(true); }
     };
     try{
-      if(!window.google||!google.accounts||!google.accounts.id){ clearTimeout(tid); _reauthPromise=null; done=true; return resolve(false); }
-      google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:window.handleCredentialResponse,auto_select:true,cancel_on_tap_outside:false,itp_support:true,use_fedcm_for_prompt:true});
-      google.accounts.id.prompt(function(n){ try{ if(n&&n.isNotDisplayed&&n.isNotDisplayed()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } } if(n&&n.isSkippedMoment&&n.isSkippedMoment()){ if(!done){ done=true; clearTimeout(tid); _reauthPromise=null; resolve(false); } } }catch(e){} });
-    }catch(e){ clearTimeout(tid); _reauthPromise=null; done=true; resolve(false); }
+      if(!window.google || !google.accounts || !google.accounts.id){
+        clearTimeout(tid); restaurar(); _reauthPromise = null; done = true; return resolve(false);
+      }
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: window.handleCredentialResponse,
+        auto_select: true,
+        cancel_on_tap_outside: false,
+        itp_support: true,
+        use_fedcm_for_prompt: true
+      });
+      google.accounts.id.prompt(function(n){
+        try{
+          if(n && n.isNotDisplayed && n.isNotDisplayed()){ if(!done){ done = true; clearTimeout(tid); restaurar(); _reauthPromise = null; resolve(false); } }
+          if(n && n.isSkippedMoment && n.isSkippedMoment()){ if(!done){ done = true; clearTimeout(tid); restaurar(); _reauthPromise = null; resolve(false); } }
+        }catch(e){}
+      });
+    }catch(e){ clearTimeout(tid); restaurar(); _reauthPromise = null; done = true; resolve(false); }
   });
   return _reauthPromise;
 }
@@ -1222,10 +1244,10 @@ function isMobile(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent
 function ensureArray(v){ return Array.isArray(v)?v:(v?[v]:[]); }
 function gerarUUID(){ if(self.crypto&&crypto.randomUUID) return crypto.randomUUID(); return 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,10); }
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]; }); }
-function escapeAttr(s){ return String(s||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;'); }
+function escapeAttr(s){ return escapeHTML(s); }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⚡ THUMBNAILS — CDN PRIMEIRO (MAIS RÁPIDO)
+   ⚡ THUMBNAILS — CDN PRIMEIRO
    ═══════════════════════════════════════════════════════════════ */
 
 function _candidatosThumb(fotoId, size){
@@ -1404,7 +1426,7 @@ function _setupBfObserver(){
 
 async function _prefetchThumbs(fotoIds, size, concurrency){
   size = size || THUMB_GRID_2X;
-  concurrency = Math.max(1, Math.min(8, concurrency || 4));
+  concurrency = Math.max(1, Math.min(8, concurrency || 6));
   var queue = fotoIds.slice().filter(Boolean);
   async function worker(){
     while(queue.length){
@@ -1634,7 +1656,10 @@ async function normalizeUrlForLabel(url){
   if(!url) return url;
   if(String(url).indexOf('data:image') === 0) return normalizeImageForLabel(url);
   try{
-    var resp = await fetch(url, { mode:'cors', cache:'force-cache' });
+    var ctrl = new AbortController();
+    var tid = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 12000);
+    var resp = await fetch(url, { mode:'cors', cache:'force-cache', signal: ctrl.signal });
+    clearTimeout(tid);
     if(!resp.ok) return url;
     var blob = await resp.blob();
     var du = await new Promise(function(res,rej){
@@ -1685,6 +1710,20 @@ async function removeBackgroundSmart(dataUrl){
 }
 
 var _printImgCache = {};
+var _printImgCacheKeys = [];
+const _PRINT_IMG_CACHE_MAX = 80;
+
+function _printImgCacheSet(url, dataUrl){
+  if(!url || !dataUrl) return;
+  if(_printImgCache[url] === undefined){
+    _printImgCacheKeys.push(url);
+    if(_printImgCacheKeys.length > _PRINT_IMG_CACHE_MAX){
+      var old = _printImgCacheKeys.shift();
+      try{ delete _printImgCache[old]; }catch(e){}
+    }
+  }
+  _printImgCache[url] = dataUrl;
+}
 
 async function _fotoViaBackend(url){
   var fotoId = extrairFotoIdDoUrl(url);
@@ -1702,7 +1741,7 @@ async function _urlToDataUrl(url){
   if(_printImgCache[url]) return _printImgCache[url];
 
   var backendB64 = await _fotoViaBackend(url);
-  if(backendB64){ _printImgCache[url] = backendB64; return backendB64; }
+  if(backendB64){ _printImgCacheSet(url, backendB64); return backendB64; }
 
   try{
     var ctrl = new AbortController();
@@ -1718,7 +1757,7 @@ async function _urlToDataUrl(url){
           fr.onerror = rej;
           fr.readAsDataURL(b);
         });
-        if(du && du.indexOf('data:') === 0){ _printImgCache[url] = du; return du; }
+        if(du && du.indexOf('data:') === 0){ _printImgCacheSet(url, du); return du; }
       }
     }
   }catch(e){}
@@ -1743,7 +1782,7 @@ async function _urlToDataUrl(url){
       img.onerror = function(){ clearTimeout(to); rej(new Error('img error')); };
       img.src = url;
     });
-    if(du3 && du3.indexOf('data:') === 0){ _printImgCache[url] = du3; return du3; }
+    if(du3 && du3.indexOf('data:') === 0){ _printImgCacheSet(url, du3); return du3; }
   }catch(e2){}
 
   return url;
@@ -1856,19 +1895,22 @@ async function api(fn, payload){
 async function _apiCall(fn, payload, retryCount){
   var token = getStoredToken();
   if(!token){
+    if(retryCount >= 2){ toast("Sessão necessária. Faça login novamente.", "error"); throw new Error("Não autenticado."); }
     var ok = await tentarReauthSilenciosa();
-    if(ok){ return _apiCall(fn, payload, retryCount); }
+    if(ok){ return _apiCall(fn, payload, retryCount + 1); }
     toast("Inicie sessão primeiro.","error");
     throw new Error("Não autenticado.");
   }
 
+  var isHeavy = HEAVY_FNS.indexOf(fn) !== -1;
   var isWrite = WRITE_FNS.indexOf(fn) !== -1;
   var now = Date.now();
   var gap = _lastApiTime ? (now - _lastApiTime) : 999999;
   var isCold = !_apiWarm || gap > 90000;
 
   var timeout;
-  if(isWrite){ timeout = isCold ? TIMEOUT_WRITE_COLD : TIMEOUT_WRITE_WARM; }
+  if(isHeavy){ timeout = TIMEOUT_HEAVY; }
+  else if(isWrite){ timeout = isCold ? TIMEOUT_WRITE_COLD : TIMEOUT_WRITE_WARM; }
   else { timeout = isCold ? TIMEOUT_READ_COLD : TIMEOUT_READ_WARM; }
 
   var controller = new AbortController();
@@ -1891,8 +1933,9 @@ async function _apiCall(fn, payload, retryCount){
     if(resp.status === 401){
       clearStoredToken();
       atualizarUICredenciais();
+      if(retryCount >= 2){ throw new Error("Sessão expirada. Faça login novamente."); }
       var ok2 = await tentarReauthSilenciosa();
-      if(ok2) return _apiCall(fn,payload,retryCount);
+      if(ok2) return _apiCall(fn, payload, retryCount + 1);
       throw new Error("Sessão expirada. Faça login novamente.");
     }
 
@@ -2123,8 +2166,22 @@ function setFormData(d){
   if(!d) return;
   currentFormId = d._id||null;
   var fv = d.presetSizes||d.formato||"amanhecer";
-  var opt = $("presetSizes").querySelector('option[value="'+fv+'"]');
-  $("presetSizes").value = opt?fv:"amanhecer";
+  var selPreset = $("presetSizes");
+  var opt = selPreset.querySelector('option[value="'+fv+'"]');
+  if(opt){
+    selPreset.value = fv;
+  } else if(FORMATOS_CONHECIDOS.indexOf(fv) === -1 && fv){
+    var optNova = document.createElement('option');
+    optNova.value = fv;
+    optNova.textContent = '⚠️ ' + fv + ' (formato antigo)';
+    optNova.dataset.temp = '1';
+    selPreset.querySelectorAll('option[data-temp="1"]').forEach(function(o){ o.remove(); });
+    selPreset.appendChild(optNova);
+    selPreset.value = fv;
+    toast("Este produto usa um formato antigo: " + fv + ". Se guardares, será mantido.", "warning", 6000);
+  } else {
+    selPreset.value = "amanhecer";
+  }
   $("customWidth").value = sanitizePrice(d.customWidth)||"70";
   $("customHeight").value = sanitizePrice(d.customHeight)||"38";
   $("store").value = d.store||d.loja||"GARCIA/PATAIAS";
@@ -2871,7 +2928,7 @@ function renderBancoFruta(filtro){
 
   try{
     var restantes = Array.from(imgs).slice(PRIMEIROS_RAPIDOS, 60).map(function(x){ return x.getAttribute('data-fotoid'); }).filter(Boolean);
-    if(restantes.length) setTimeout(function(){ _prefetchThumbs(restantes, THUMB_GRID_2X, 4); }, 800);
+    if(restantes.length) setTimeout(function(){ _prefetchThumbs(restantes, THUMB_GRID_2X, 6); }, 700);
   }catch(e){}
 
   c.querySelectorAll('img.bf-img').forEach(function(img){
@@ -2956,15 +3013,18 @@ function updateCapacityHint(){
 function updateOrientationVisibility(){
   var fv = $("presetSizes").value;
   var is6x8 = (fv === "80x60");
-  var show = isLargeFormat(fv);
   var isFP = isFruitPromoFormat(fv);
-  document.body.dataset.format = isFP ? 'fruit-promo' : 'normal';
   var fruitEl = $("fruitCard");
-  var showFruitForm = !is6x8 && (show || fv === "A6" || fv === "125x80" || fv === "frutaPromo125x80" || fv === "frutaPromoA6");
+  var showFruitForm = !is6x8 && isLargeFormat(fv);
   if(fruitEl) fruitEl.style.display = showFruitForm ? "flex" : "none";
   $("fruitPromoPanel").style.display = isFP ? "block" : "none";
   var pc = $("promoCard"); if(pc) pc.style.display = isFP ? "none" : "flex";
-  if(isFP){ var cb = $("isPromoActive"); if(cb && cb.checked){ cb.checked = false; var lbl = cb.closest("label"); if(lbl) lbl.classList.remove("checked"); } var op = $("oldPrice"); if(op && op.value.trim()){ op.value = ""; op.classList.remove("input-error"); } }
+  if(isFP){
+    var cb = $("isPromoActive");
+    if(cb && cb.checked){ cb.checked = false; var lbl = cb.closest("label"); if(lbl) lbl.classList.remove("checked"); }
+    var op = $("oldPrice");
+    if(op && op.value.trim()){ op.value = ""; op.classList.remove("input-error"); }
+  }
 }
 function applyPrintSizes(card,dims){
   if(!card||!dims||!dims.width) return;
@@ -2977,7 +3037,13 @@ function applyPrintSizes(card,dims){
   set('.promo-text',2.4); set('.print-date',2.4); set('.promo-dates',2.4); set('.iva-text',2.4);
   set('.fp-label',2.4); set('.fp-price',6.0); set('.fp-box.fp-promo .fp-price',7.5); set('.fp-unit',1.9);
 }
-function _vis(el){ if(!el) return false; if(el.offsetParent===null && el!==document.body) return false; var cs=window.getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden") return false; return true; }
+function _vis(el){
+  if(!el) return false;
+  var cs = window.getComputedStyle(el);
+  if(cs.display === "none" || cs.visibility === "hidden") return false;
+  if(cs.position !== 'fixed' && el.offsetParent === null && el !== document.body) return false;
+  return true;
+}
 function _overflow(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.height) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.height===0) continue; if(cr.top<pr.top-0.5||cr.bottom>pr.bottom+0.5) return true; } return false; }
 function _overflowX(p){ if(!p) return false; var pr=p.getBoundingClientRect(); if(!pr.width) return false; for(var i=0;i<p.children.length;i++){ var c=p.children[i]; if(!_vis(c)) continue; var cr=c.getBoundingClientRect(); if(cr.width===0) continue; if(cr.left<pr.left-0.5||cr.right>pr.right+0.5) return true; } return false; }
 function autoFitTextSync(el){ if(!el) return; el.style.removeProperty("font-size"); var p=el.parentElement; if(!p) return; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) return; var i=0; while(i<40){ var cur=parseFloat(getComputedStyle(el).fontSize); if(!cur||cur<2.5) break; el.style.setProperty("font-size",(cur*0.92)+"px","important"); i++; void el.offsetHeight; if(!_overflow(p)&&!_overflowX(p)) break; } }
@@ -3259,6 +3325,9 @@ function validateBeforePrint(){
 }
 function cleanupAfterPrint(){
   printInProgress = false;
+  try{
+    if(_printImgCacheKeys.length > 60){ _printImgCache = {}; _printImgCacheKeys = []; }
+  }catch(e){}
   var pz = $("printZone"); if(pz){ pz.classList.remove("measure"); pz.innerHTML = ""; }
   var ov = $("proPrintOverlay"); if(ov){ ov.classList.remove("show"); ov.style.display = ""; var box = ov.querySelector(".pro-print-box"); if(box) box.innerHTML = '<div class="pro-spinner"></div><strong id="printStep">A preparar impressão…</strong><div id="printPct" style="font-size:13px;font-weight:800;color:#0d9c4c">0%</div>'; }
   if(_restoreQueueAfterPrint){ printQueue = _restoreQueueAfterPrint; _restoreQueueAfterPrint = null; renderQueue(); }
@@ -3727,7 +3796,6 @@ window.diagnosticarBanco = async function(){
   if(bancoFruta.length === 0){
     out.push('❌ Banco vazio — sincroniza primeiro');
     var txt0 = out.join('\n');
-    console.log(txt0);
     var bx0 = document.getElementById('diagBox');
     if(bx0){ bx0.classList.add('show'); bx0.textContent = txt0; }
     return txt0;
@@ -3777,7 +3845,6 @@ window.diagnosticarBanco = async function(){
   }
 
   var txt = out.join('\n');
-  console.log(txt);
   var bx = document.getElementById('diagBox');
   if(bx){ bx.classList.add('show'); bx.textContent = txt; }
   return txt;
@@ -3818,10 +3885,6 @@ document.getElementById('emailLabelsBtn').addEventListener("click", function(){ 
 document.getElementById('authLogoutBtn').addEventListener("click", function(e){ e.preventDefault(); fazerLogout(); });
 document.getElementById('optimizarImagensBtn').addEventListener("click", otimizarImagensDrive);
 
-/* ═══════════════════════════════════════════════════════════════
-   🔧 BOTÃO "REPARAR PARTILHAS"
-   Chama o backend RESET_repararPartilhas, limpa a cache e recarrega
-   ═══════════════════════════════════════════════════════════════ */
 document.getElementById('repararPartilhasBtn').addEventListener("click", async function(){
   if(!(await confirmDialog(
     "🔧 Reparar partilhas das imagens do Drive?\n\n" +
@@ -3830,7 +3893,7 @@ document.getElementById('repararPartilhasBtn').addEventListener("click", async f
     "• Adicionares imagens novas e aparecerem em branco\n" +
     "• Cópias antigas foram importadas de outra conta\n" +
     "• As imagens deixarem de carregar de um dia para o outro\n\n" +
-    "Pode demorar 30-60 segundos.",
+    "Pode demorar 30-90 segundos.",
     "🔧 Reparar partilhas"
   ))) return;
 
@@ -3870,7 +3933,6 @@ document.getElementById('repararPartilhasBtn').addEventListener("click", async f
   }
 });
 
-/* Botão do diagnóstico do banco */
 (function(){
   var btn = document.getElementById('diagnosticarBancoBtn');
   if(btn) btn.addEventListener('click', function(){ window.diagnosticarBanco(); });
@@ -4007,7 +4069,7 @@ document.addEventListener("keydown", function(ev){
   if(ev.key === "Escape"){ closeCamera(); closeScanner(); $("bancoFrutaModal").classList.remove("show"); $("emailModal").classList.remove("show"); fecharPreviewModal(); $("choiceModal").classList.remove("show"); }
 });
 ["product","internalCode","origem","categoria","calibre","price","oldPrice","ean","capacity","customDepositInput","promoPrice","promoMinQty","customWidth","customHeight","infoExtraData"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("input", updateCard); });
-["presetSizes","store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg","infoExtraTipo","ivaSelect"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
+["store","isPromoActive","depositFeeSelect","promoStart","promoEnd","promoUnit","autoRemoveBg"].forEach(function(id){ var el = document.getElementById(id); if(el) el.addEventListener("change", updateCard); });
 document.getElementById('ivaSelect').addEventListener("change", function(){ updateIvaVisual(); updateCard(); });
 document.getElementById('infoExtraTipo').addEventListener("change", function(){ updateInfoExtraVisibility(); updateCard(); });
 document.getElementById('presetSizes').addEventListener("change", function(){ var v = this.value; $("customDimensionsRow").style.display = (v === "custom") ? "grid" : "none"; updateOrientationVisibility(); updateCard(); });
