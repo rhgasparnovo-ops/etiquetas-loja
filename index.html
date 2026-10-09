@@ -19,7 +19,6 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 
-<!-- ⚡ OTIMIZAÇÃO: preconnect aos servidores de imagens e API -->
 <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin>
 <link rel="preconnect" href="https://accounts.google.com">
 <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
@@ -347,7 +346,6 @@ body[data-view="fila"] .floating-clear{display:flex}
 .pro-print-box{min-width:300px;max-width:380px;padding:28px;border-radius:var(--r-xl);background:#fff;display:grid;gap:12px;text-align:center}
 .pro-spinner{width:32px;height:32px;margin:auto;border-radius:50%;border:3px solid var(--surface-3);border-top-color:var(--brand);animation:spin .7s linear infinite}
 
-/* ⚡ OTIMIZAÇÃO: grelha com content-visibility para saltar cards off-screen */
 .bf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .bf-card{
   cursor:pointer;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
@@ -1109,10 +1107,9 @@ const API_URL = 'https://balcao-api.rh-gasparnovo.workers.dev/';
 const GOOGLE_CLIENT_ID = '268940510478-ko2qq87rmqsa1vn9qq8uci5aq50ofvvi.apps.googleusercontent.com';
 const AUTH_KEY_JWT='balcao_jwt', AUTH_KEY_EXP='balcao_jwt_exp', AUTH_KEY_USER='balcao_jwt_user';
 const SESSION_TTL_SECONDS = 365*24*3600;
-const CACHE_KEY = 'balcao_cache_v249';
-const CACHE_SCHEMA_VERSION = 18;
+const CACHE_KEY = 'balcao_cache_v250';
+const CACHE_SCHEMA_VERSION = 19;
 
-/* ⚡ OTIMIZAÇÃO DE IMAGENS — parâmetros Google Drive thumbnails */
 const THUMB_GRID_1X  = 160;
 const THUMB_GRID_2X  = 320;
 const THUMB_GRID_3X  = 480;
@@ -1129,7 +1126,7 @@ const PRINT_SCALE = 4, PDF_QUALITY = 0.98;
 const NO_RETRY_FNS = ['enviarEtiquetasEmail','otimizarBancoFruta'];
 const FILA_BACKUP_KEY = 'balcao_fila_backup_v1';
 const SYNC_EAN_KEY = 'balcao_sync_ean';
-const THUMB_CACHE_KEY = 'balcao_thumbs_v1';
+const THUMB_CACHE_LF_KEY = 'balcao_thumb_cache_v3';
 
 const TIMEOUT_READ_COLD = 45000;
 const TIMEOUT_READ_WARM = 25000;
@@ -1248,32 +1245,82 @@ function gerarUUID(){ if(self.crypto&&crypto.randomUUID) return crypto.randomUUI
 function escapeHTML(s){ return String(s||"").replace(/[&<>"']/g,function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]; }); }
 function escapeAttr(s){ return String(s||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;'); }
 
-/* ⚡ THUMBNAILS OTIMIZADOS GOOGLE DRIVE
- *  Parâmetros usados:
- *   =wXXX       → largura
- *   -hXXX       → altura (combinada com -p para pad)
- *   -p          → pad (mantém aspect ratio dentro do quadrado)
- *   -k          → keep aspect ratio
- *   -nu         → no upscale (não aumenta imagens pequenas)
- *   -rw         → WebP (formato moderno, ~30% menor que JPEG)
- *  Isto reduz o tráfego sem perder qualidade visual.
- */
+/* ⚡ THUMBNAILS — Sistema híbrido: cache IndexedDB → backend proxy → Google CDN
+ *  Funciona em PC, mobile e PWA standalone. */
 function thumbUrl(id, size){
   if(!id) return '';
   size = size || THUMB_GRID_2X;
-  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + size + '-h' + size + '-p-k-nu-rw';
-}
-function thumbUrlSimple(id, size){
-  if(!id) return '';
-  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + size + '-rw';
-}
-function thumbUrlSrcset(id){
-  if(!id) return '';
-  return thumbUrl(id, THUMB_GRID_1X) + ' 1x, ' + thumbUrl(id, THUMB_GRID_2X) + ' 2x, ' + thumbUrl(id, THUMB_GRID_3X) + ' 3x';
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + size + '-h' + size + '-p-k-nu';
 }
 function thumbUrlApply(id){
   if(!id) return '';
-  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + THUMB_APPLY + '-rw';
+  return 'https://lh3.googleusercontent.com/d/' + id + '=w' + THUMB_APPLY + '-nu';
+}
+
+var _thumbMemCache = Object.create(null);
+var _thumbSaveTimer = null;
+
+async function _getThumbFromCache(fotoId, size){
+  if(!fotoId) return null;
+  var k = fotoId + '_' + size;
+  if(_thumbMemCache[k]) return _thumbMemCache[k];
+  try{
+    var c = await localforage.getItem(THUMB_CACHE_LF_KEY);
+    if(c && c[k]){ _thumbMemCache[k] = c[k]; return c[k]; }
+  }catch(e){}
+  return null;
+}
+
+async function _setThumbInCache(fotoId, size, dataUrl){
+  if(!fotoId || !dataUrl) return;
+  var k = fotoId + '_' + size;
+  _thumbMemCache[k] = dataUrl;
+  if(_thumbSaveTimer) clearTimeout(_thumbSaveTimer);
+  _thumbSaveTimer = setTimeout(async function(){
+    try{
+      var c = await localforage.getItem(THUMB_CACHE_LF_KEY) || {};
+      c[k] = dataUrl;
+      var keys = Object.keys(c);
+      if(keys.length > 300){
+        keys.slice(0, 100).forEach(function(x){ delete c[x]; });
+      }
+      await localforage.setItem(THUMB_CACHE_LF_KEY, c);
+    }catch(e){}
+  }, 300);
+}
+
+async function loadThumbUrl(fotoId, size){
+  size = size || THUMB_GRID_2X;
+  var cached = await _getThumbFromCache(fotoId, size);
+  if(cached) return cached;
+
+  try{
+    var r = await api('obterFotoThumb', { fotoId: fotoId, size: size });
+    if(r && r.base64){
+      _setThumbInCache(fotoId, size, r.base64);
+      return r.base64;
+    }
+  }catch(e){}
+
+  return thumbUrl(fotoId, size);
+}
+
+async function _prefetchThumbs(fotoIds, size, concurrency){
+  size = size || THUMB_GRID_2X;
+  concurrency = concurrency || 3;
+  var queue = fotoIds.slice();
+  async function worker(){
+    while(queue.length){
+      var id = queue.shift();
+      if(!id) continue;
+      var has = await _getThumbFromCache(id, size);
+      if(has) continue;
+      try{ await loadThumbUrl(id, size); }catch(e){}
+    }
+  }
+  var workers = [];
+  for(var i = 0; i < concurrency; i++) workers.push(worker());
+  await Promise.all(workers);
 }
 
 function extrairFotoIdDoUrl(url){ if(!url||url.indexOf('http')!==0) return ''; var m=String(url).match(/\/d\/([^=\/?#]+)/); if(m) return m[1]; m=String(url).match(/[?&]id=([^&=]+)/); return m?m[1]:''; }
@@ -2221,7 +2268,7 @@ function drawITF14(svg,digits){
   svg.setAttribute("viewBox","0 0 "+tw+" 72"); svg.setAttribute("preserveAspectRatio","none");
   for(var j=0;j<bits.length;j++){ if(bits[j]!=="1") continue; var r=document.createElementNS(ns,"rect"); r.setAttribute("x",j+qz); r.setAttribute("y",6); r.setAttribute("width",1); r.setAttribute("height",50); r.setAttribute("fill","black"); svg.appendChild(r); }
   var bt=document.createElementNS(ns,"rect"); bt.setAttribute("x",qz); bt.setAttribute("y",0); bt.setAttribute("width",bits.length); bt.setAttribute("height",6); bt.setAttribute("fill","black"); svg.appendChild(bt);
-  var bb=document.createElementNS(ns,"rect"); bb.setAttribute("x",qz); bt.setAttribute("y",56); bb.setAttribute("width",bits.length); bb.setAttribute("height",6); bb.setAttribute("fill","black"); svg.appendChild(bb);
+  var bb=document.createElementNS(ns,"rect"); bb.setAttribute("x",qz); bb.setAttribute("y",56); bb.setAttribute("width",bits.length); bb.setAttribute("height",6); bb.setAttribute("fill","black"); svg.appendChild(bb);
 }
 function drawBarcode(svg,value){
   if(!svg) return; svg.innerHTML="";
@@ -2653,7 +2700,6 @@ async function saveDbAndQueue(){
 
 function updateBancoCounts(){ var f=0,l=0; bancoFruta.forEach(function(x){ if(x.tipo==='legume') l++; else if(x.tipo==='fruta') f++; }); if($("bfCountFruta")) $("bfCountFruta").textContent = f; if($("bfCountLegume")) $("bfCountLegume").textContent = l; }
 
-/* ⚡ Dedupe O(n) */
 function dedupeBancoFruta(lista){
   var arr = ensureArray(lista);
   var seen = {};
@@ -2674,7 +2720,7 @@ function dedupeBancoFruta(lista){
   return out;
 }
 
-/* ⚡ LAZY LOADING com IntersectionObserver — só carrega imagens visíveis */
+/* ⚡ LAZY LOADING — carrega via backend com cache */
 var _bfObserver = null, _bfObserverInit = false;
 function _setupBfObserver(){
   if(_bfObserverInit) return;
@@ -2685,23 +2731,64 @@ function _setupBfObserver(){
       var entry = entries[i];
       if(!entry.isIntersecting) continue;
       var img = entry.target;
-      var src = img.getAttribute('data-src');
-      var srcset = img.getAttribute('data-srcset');
-      if(src){
-        img.removeAttribute('data-src');
-        if(srcset) img.removeAttribute('data-srcset');
-        img.src = src;
-        if(srcset) img.srcset = srcset;
-      }
+      _carregarThumbNaImg(img);
       try{ _bfObserver.unobserve(img); }catch(e){}
     }
-  }, {rootMargin: '400px 0px', threshold: 0.01});
+  }, {rootMargin: '600px 0px', threshold: 0.01});
 }
 
-/* Placeholder SVG minúsculo embutido (0 pedidos de rede) */
+async function _carregarThumbNaImg(img){
+  if(!img) return;
+  var fotoId = img.getAttribute('data-fotoid');
+  var size = parseInt(img.getAttribute('data-size') || THUMB_GRID_2X, 10);
+  var fallbackUrl = img.getAttribute('data-fallback') || '';
+  if(!fotoId && !fallbackUrl) return;
+
+  if(!fotoId){
+    img.src = fallbackUrl;
+    img.classList.add('loaded');
+    return;
+  }
+
+  /* 1. Cache primeiro */
+  var cached = await _getThumbFromCache(fotoId, size);
+  if(cached){
+    img.src = cached;
+    img.classList.add('loaded');
+    return;
+  }
+
+  /* 2. Backend (fiável em mobile/PWA) */
+  try{
+    var r = await api('obterFotoThumb', { fotoId: fotoId, size: size });
+    if(r && r.base64){
+      _setThumbInCache(fotoId, size, r.base64);
+      img.src = r.base64;
+      img.classList.add('loaded');
+      return;
+    }
+  }catch(e){}
+
+  /* 3. Google CDN (fallback final) */
+  var cdnUrl = thumbUrl(fotoId, size);
+  await new Promise(function(res){
+    var done = false;
+    function finish(){ if(done) return; done = true; res(); }
+    img.addEventListener('load', function(){ img.classList.add('loaded'); finish(); }, {once:true});
+    img.addEventListener('error', function(){
+      if(fallbackUrl){ img.src = fallbackUrl; img.classList.add('loaded'); }
+      else { img.src = _BF_PLACEHOLDER; img.classList.add('loaded'); }
+      finish();
+    }, {once:true});
+    setTimeout(function(){
+      if(!done){ if(fallbackUrl){ img.src = fallbackUrl; img.classList.add('loaded'); } finish(); }
+    }, 4000);
+    img.src = cdnUrl;
+  });
+}
+
 var _BF_PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110"><rect width="200" height="110" fill="#f1f5f9"/><circle cx="100" cy="55" r="18" fill="none" stroke="#cbd5e1" stroke-width="2"/><path d="M92 55l6 6 12-12" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 
-/* Event delegation — um só listener para todos os cards */
 var _bfClickSetup = false;
 function _setupBfClick(){
   if(_bfClickSetup) return;
@@ -2717,8 +2804,10 @@ function _setupBfClick(){
     $('bancoFrutaModal').classList.remove('show');
     setStatus("A preparar imagem…","loading");
     try{
-      /* ⚡ Aplica a versão de alta qualidade (w1200) — qualidade original preservada */
       var applyUrl = id ? thumbUrlApply(id) : url;
+      /* Se temos cache do thumb, usa como preview imediato */
+      var cached = id ? await _getThumbFromCache(id, THUMB_GRID_2X) : null;
+      if(cached){ globalOriginalPhoto = cached; globalProcessedPhoto = cached; updateCard(); }
       var norm = await normalizeUrlForLabel(applyUrl);
       globalOriginalPhoto = norm;
       globalProcessedPhoto = norm;
@@ -2767,14 +2856,14 @@ function renderBancoFruta(filtro){
     img.src = _BF_PLACEHOLDER;
 
     if(f.fotoId){
-      /* ⚡ srcset responsivo com WebP + -nu (no upscale) + -p-k (pad+keep) */
-      var srcset = thumbUrlSrcset(f.fotoId);
-      img.setAttribute('data-src', thumbUrl(f.fotoId, THUMB_GRID_2X));
-      img.setAttribute('data-srcset', srcset);
-      img.setAttribute('sizes', '(max-width:400px) 45vw, (max-width:700px) 30vw, 160px');
+      img.setAttribute('data-fotoid', f.fotoId);
+      img.setAttribute('data-size', String(THUMB_GRID_2X));
       if(f.fotoUrl) img.setAttribute('data-fallback', f.fotoUrl);
+      var cached = _thumbMemCache[f.fotoId + '_' + THUMB_GRID_2X];
+      if(cached){ img.src = cached; img.classList.add('loaded'); }
     } else if(f.fotoUrl){
-      img.setAttribute('data-src', f.fotoUrl);
+      img.src = f.fotoUrl;
+      img.classList.add('loaded');
     }
 
     var tag = document.createElement('span');
@@ -2796,37 +2885,21 @@ function renderBancoFruta(filtro){
   _setupBfObserver();
   _setupBfClick();
 
-  var imgs = c.querySelectorAll('img[data-src]');
+  var imgs = c.querySelectorAll('img.bf-img[data-fotoid]');
   if(_bfObserver){
     for(var k = 0; k < imgs.length; k++) _bfObserver.observe(imgs[k]);
   } else {
-    for(var k2 = 0; k2 < imgs.length; k2++){
-      var src = imgs[k2].getAttribute('data-src');
-      var srcset = imgs[k2].getAttribute('data-srcset');
-      if(src){
-        imgs[k2].removeAttribute('data-src');
-        if(srcset) imgs[k2].removeAttribute('data-srcset');
-        imgs[k2].src = src;
-        if(srcset) imgs[k2].srcset = srcset;
-      }
-    }
+    for(var k2 = 0; k2 < imgs.length; k2++) _carregarThumbNaImg(imgs[k2]);
   }
 
-  /* Fade-in suave + fallback automático */
+  /* Prefetch das 12 primeiras para sensação instantânea */
+  try{
+    var ids = lista.slice(0, 12).map(function(x){ return x.fotoId; }).filter(Boolean);
+    if(ids.length) setTimeout(function(){ _prefetchThumbs(ids, THUMB_GRID_2X, 4); }, 400);
+  }catch(e){}
+
   c.querySelectorAll('img.bf-img').forEach(function(img){
     img.addEventListener('load', function(){ img.classList.add('loaded'); }, {once:true});
-    img.addEventListener('error', function(){
-      var fb = img.getAttribute('data-fallback');
-      if(fb && img.dataset.fbUsed !== '1'){
-        img.dataset.fbUsed = '1';
-        img.removeAttribute('data-src');
-        img.removeAttribute('data-srcset');
-        img.src = fb;
-      } else {
-        img.src = _BF_PLACEHOLDER;
-        img.classList.add('loaded');
-      }
-    });
   });
 }
 async function guardarFotoBanco(nome,dataUrl,tipo){
@@ -2867,6 +2940,8 @@ async function otimizarImagensDrive(){
       var compressed = await compressSmart(uniforme,1400,0.88);
       var r2 = await api('uploadBancoFruta',{base64:compressed,nome:f.nome,tipo:f.tipo||'fruta'});
       f.fotoId = r2.id; f.fotoUrl = r2.url; f.atualizadoEm = new Date().toISOString();
+      /* Invalidar cache local deste ID */
+      try{ delete _thumbMemCache[r2.id + '_' + THUMB_GRID_2X]; }catch(e){}
       done++;
     }catch(e){ errs++; }
   }
@@ -4128,6 +4203,10 @@ function _abrirBancoFrom(presetTipo){
   });
   document.getElementById('bancoFrutaModal').classList.add('show');
   renderBancoFruta($('buscaBancoFruta').value);
+  /* Prefetch das primeiras para carregarem rápido */
+  var lista = bancoFruta.filter(function(f){ return (f.tipo||'fruta') === bancoTipoFiltro; }).slice(0, 12);
+  var ids = lista.map(function(f){ return f.fotoId; }).filter(Boolean);
+  if(ids.length) setTimeout(function(){ _prefetchThumbs(ids, THUMB_GRID_2X, 4); }, 100);
 }
 document.getElementById('abrirBancoFrutaBtn').addEventListener("click", function(e){ e.preventDefault(); _abrirBancoFrom('fruta'); });
 (function(){
