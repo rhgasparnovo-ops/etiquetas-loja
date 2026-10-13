@@ -849,7 +849,7 @@ body[data-view="fila"] .floating-clear{display:flex}
                 <div class="header">
                   <div class="logo-wrapper-1"><img class="brand-logo logo-1" src="https://lh3.googleusercontent.com/d/1vxBDfH2Z4y8PjWGktv_58alk07mK6ugO=w400" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
                   <div class="logo-wrapper-2"><img class="brand-logo logo-2" src="https://lh3.googleusercontent.com/d/1hKzOP0ugZD7T2O0G6EU42nCLuKD8SzVb=w400" loading="eager" decoding="async" onerror="this.style.opacity=.3" alt=""></div>
-                  <div class="header-store-container"><div class="store-text" id="cardStore">GARCIA/PATAIAS</div></div>
+                  <div class="header-store-container"><div class="store-text" id="cardStore">GARCIA | PATAIAS</div></div>
                 </div>
                 <div class="main-content">
                   <div class="col-desc">
@@ -3174,6 +3174,11 @@ function autoLayoutCard(card){
   if(!co()) return;
   card.style.setProperty("padding","1px 3px","important");
 }
+  function displayStore(s){
+  var v = String(s||'').trim();
+  if(v === 'GARCIA/PATAIAS') return 'GARCIA | PATAIAS';
+  return v || 'GARCIA | PATAIAS';
+}
 function updateCardUnsafe(){
   try{
     var storeVal = $("store").value || "GARCIA/PATAIAS";
@@ -3195,7 +3200,7 @@ function updateCardUnsafe(){
     if(isFP) card.classList.add("layout-fruit-promo"); else card.classList.remove("layout-fruit-promo");
     if(isAmanhecer){ card.style.width="380px"; card.style.height="214px"; applySizeClass(card,70,38); }
     else { var pw = dims.width*4, ph = dims.height*4; var ratio = pw/ph; if(pw>500){ pw=500; ph=pw/ratio; } if(ph>380){ ph=380; pw=ph*ratio; } card.style.width = pw+"px"; card.style.height = ph+"px"; applySizeClass(card,dims.width,dims.height); }
-    $("cardStore").textContent = storeVal;
+    $("cardStore").textContent = displayStore(storeVal);
     setProductText($("cardProduct"), productVal || "NOME DO PRODUTO");
     if(codeVal){ $("cardCode").style.display = "block"; $("cardCode").textContent = codeVal; } else { $("cardCode").style.display = "none"; }
     var info = calcUnitInfo(capUnit);
@@ -3252,7 +3257,7 @@ function populateClone(clone, d){
   var frItem = d.presetSizes || d.formato || 'amanhecer';
   var isFPitem = isFruitPromoFormat(frItem);
   if(isFPitem) clone.classList.add('layout-fruit-promo'); else clone.classList.remove('layout-fruit-promo');
-  var st = clone.querySelector('.store-text'); if(st) st.textContent = d.store || "GARCIA/PATAIAS";
+  var st = clone.querySelector('.store-text'); if(st) st.textContent = displayStore(d.store || "GARCIA/PATAIAS");
   var prod = clone.querySelector('.product'); if(prod) setProductText(prod, String(d.product||'').toUpperCase() || 'NOME DO PRODUTO');
   var codeEl = clone.querySelector('.item-code');
   if(codeEl){ if(d.internalCode){ codeEl.style.display = 'block'; codeEl.textContent = String(d.internalCode).toUpperCase(); } else { codeEl.style.display = 'none'; codeEl.textContent = ''; } }
