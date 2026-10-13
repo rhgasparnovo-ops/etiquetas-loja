@@ -218,8 +218,9 @@ input.input-error,select.input-error{border-color:var(--danger)!important;backgr
 .fp-box.fp-normal{flex:1;background:#fff;border:2px solid #0f172a;color:#0f172a}
 .fp-box.fp-promo{flex:1.4;background:#c8102e;border:2px solid #c8102e;color:#fff;position:relative}
 .fp-label{
-  font-size:clamp(7px,2cqw,13px);font-weight:800;text-transform:uppercase;
-  margin-bottom:3px;line-height:1.05;flex-shrink:0;white-space:nowrap;
+  font-size:clamp(9px,2.6cqw,16px);font-weight:900;text-transform:uppercase;
+  margin-bottom:4px;line-height:1.1;flex-shrink:0;white-space:nowrap;
+  letter-spacing:.02em;
 }
 .fp-price{
   font-size:clamp(18px,6.5cqw,44px);font-weight:900;line-height:1;
@@ -3033,7 +3034,7 @@ function applyPrintSizes(card,dims){
   if(!card||!dims||!dims.width) return;
   card.classList.add('print-locked');
   var escala = Math.min(dims.width/70,dims.height/38) * (card.classList.contains('layout-fruit-promo')?0.8:1);
-  var set = function(sel,mm){ var el=card.querySelector(sel); if(el) el.style.setProperty('font-size',(mm*escala).toFixed(3)+'mm','important'); };
+  var set = function(sel,mm){ card.querySelectorAll(sel).forEach(function(el){ el.style.setProperty('font-size',(mm*escala).toFixed(3)+'mm','important'); }); };
   set('.store-text',2.8); set('.item-code',1.9); set('.product',3.2); set('.unit-price-text',2.2);
   set('.price',6.5); set('.price .unit-inline',2.7); set('.promo-tag',3.2); set('.old-price',3.2);
   set('.extra-unit',2.2); set('.fruit-full-bar',2.2); set('.ean-text',1.8);
